@@ -17,7 +17,6 @@ Connection	Origin	Destination	Lower bound	Upper bound	Capacity	Service duration
 8	4	5	0	4	50	4
 9	5	3	0	4	50	5
 10	5	4	5	5	50	4
-
 Demand
 20
 Commodity	Origin node	Destination node	Time available	Volume	Value of time

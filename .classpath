@@ -2,7 +2,7 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="C:/LIB/jorlib-core-1.1.1.jar" sourcepath="E:/Eclipse/Workspace/JORlib/jorlib1.1.1/jorlib1.1.1/src/jorlib-core">
+	<classpathentry kind="lib" path="/Users/sxx/Documents/workspace/jorlib1.1.1/lib/jorlib-core-1.1.1.jar" sourcepath="/Users/sxx/Documents/workspace/jorlib1.1.1/lib/jorlib-core-1.1.1.jar">
 		<attributes>
 			<attribute name="javadoc_location" value="http://coin-or.github.io/jorlib/apidocs/"/>
 		</attributes>
