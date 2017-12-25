@@ -8,7 +8,7 @@ import java.util.Scanner;
 
 import org.jorlib.frameworks.columnGeneration.model.ModelInterface;
 
-public class SNDRC  implements ModelInterface {
+public class SNDRC implements ModelInterface {
 
 	private class Service {
 		private int origin;
@@ -22,8 +22,9 @@ public class SNDRC  implements ModelInterface {
 		private int origin;
 		private int destination;
 		private int timeAvailable;
+		private int timeDue;
 		private int volume;
-		private int valueOfTime;
+		private double valueOfTime;
 	}
 
 	private class Edge {
@@ -32,36 +33,162 @@ public class SNDRC  implements ModelInterface {
 		int u, v, t1, t2;
 	}
 
-	public int fleetSize;
-	public int numNode, abstractNumNode;
-	public int timePeriod;
-	public int numService, numDemand;
-	public ArrayList<Service> serviceSet;
-	public ArrayList<Demand> demandSet;
+	public final int fleetSize;
+	public final int numNode, abstractNumNode;
+	public final int timePeriod;
+	public final int numService, numDemand, numOfCapacity;
+	public final ArrayList<Service> serviceSet;
+	public final ArrayList<Demand> demandSet;
+	public final double[][] b;
 
-	public double alpha, speed, drivingTimePerDay, beta, numOfCapacity;
-	public double[] fixedCost;
-	public int[] capacity;
+	public final double alpha, speed, drivingTimePerDay, beta;
+	public final double[] fixedCost;
+	public final int[] capacity;
 
 	// graph parameter
-	public ArrayList<Edge> edgeSet;
-	public ArrayList<HashSet<Integer>> pointToEdgeSet, pointFromEdgeSet; // not
-																			// record
-																			// holding
-																			// arcs
-	public int numServiceArc, numHoldingArc;
+	public final ArrayList<Edge> edgeSet;
+	public final ArrayList<HashSet<Integer>> pointToEdgeSet, pointFromEdgeSet; // not
+																				// record
+																				// holding
+																				// arcs
+	public final int numServiceArc, numHoldingArc;
 
-	public SNDRC(int readType, String filename) throws IOException {
-		if (readType == 1) {
-			readData1(filename);
-		}
-		if (readType == 2) {
-			readData2(filename);
+	public SNDRC(String filename) throws IOException {
+		// if (readType == 1) {
+		// readData1(filename);
+		// }
+		// if (readType == 2) {
+		// readData2(filename);
+		// }
+
+		// read data
+		Scanner in = new Scanner(Paths.get(filename));
+
+		in.nextLine();
+		fleetSize = in.nextInt();
+		in.nextLine();
+		in.nextLine();
+		numNode = in.nextInt();
+		in.nextLine();
+		in.nextLine();
+		timePeriod = in.nextInt();
+		in.nextLine();
+		in.nextLine();
+		numService = in.nextInt();
+
+		in.nextLine();
+		in.nextLine();
+		serviceSet = new ArrayList<>();
+		demandSet = new ArrayList<>();
+		for (int i = 0; i < numService; i++) {
+			Service service = new Service();
+			in.nextInt();
+			service.origin = in.nextInt() - 1;
+			service.destination = in.nextInt() - 1;
+			service.duration = in.nextInt();
+			serviceSet.add(service);
 		}
 
-		this.graphTransfer();
+		in.nextLine();
+		in.nextLine();
+		numDemand = in.nextInt();
+		in.nextLine();
+		in.nextLine();
+		for (int i = 0; i < numDemand; i++) {
+			Demand demand = new Demand();
+			in.nextInt();
+			demand.origin = in.nextInt() - 1;
+			demand.destination = in.nextInt() - 1;
+			demand.timeAvailable = in.nextInt() - 1;
+			demand.timeDue = in.nextInt() - 1;
+			demand.volume = in.nextInt();
+			demandSet.add(demand);
+		}
+
+		// read parameter
+		in.nextLine();
+		in.nextLine();
+		alpha = in.nextDouble();
+		in.nextLine();
+		in.nextLine();
+		beta = in.nextDouble();
+		in.nextLine();
+		in.nextLine();
+		speed = in.nextDouble();
+		in.nextLine();
+		in.nextLine();
+		drivingTimePerDay = in.nextDouble();
+		in.nextLine();
+		in.nextLine();
+
+		numOfCapacity = in.nextInt();
+		in.nextLine();
+		in.nextLine();
+		capacity = new int[numOfCapacity];
+		fixedCost = new double[numOfCapacity];
+		for (int i = 0; i < numOfCapacity; i++) {
+			capacity[i] = in.nextInt();
+		}
+
+		in.nextLine();
+		in.nextLine();
+		for (int i = 0; i < numOfCapacity; i++) {
+			fixedCost[i] = in.nextDouble();
+		}
+
+		abstractNumNode = numNode * timePeriod;
+		// set b[i][p]
+		b = new double[abstractNumNode][numDemand];
+		for (int i = 0; i < numDemand; i++) {
+			Demand demand = demandSet.get(i);
+			int start = demand.origin * timePeriod + demand.timeAvailable;
+			int end = demand.destination * timePeriod + demand.timeDue;
+			b[start][i] = demand.volume;
+			b[end][i] = -demand.volume;
+		}
+
+		in.close();
+
+		// this.graphTransfer();
+		edgeSet = new ArrayList<Edge>();
+		pointToEdgeSet = new ArrayList<HashSet<Integer>>();
+		pointFromEdgeSet = new ArrayList<HashSet<Integer>>();
+
+		for (int i = 0; i < abstractNumNode; i++) {
+			HashSet<Integer> templist1 = new HashSet();
+			HashSet<Integer> templist2 = new HashSet();
+			pointToEdgeSet.add(templist1);
+			pointFromEdgeSet.add(templist2);
+		}
+
+		// add hat A
+		for (int serviceIndex = 0; serviceIndex < numService; serviceIndex++) {
+			Service service = serviceSet.get(serviceIndex);
+			for (int time = 0; time < timePeriod; time++) {
+				int timeEnd = time + service.duration;
+				if (timeEnd > timePeriod - 1)
+					timeEnd = timeEnd % timePeriod;
+				Edge newEdge = new Edge();
+				int start = service.origin * timePeriod + time;
+				int end = service.destination * timePeriod + timeEnd;
+				newEdge.start = start;
+				newEdge.end = end;
+				newEdge.u = service.origin;
+				newEdge.v = service.destination;
+				newEdge.t1 = time;
+				newEdge.t2 = timeEnd;
+				edgeSet.add(newEdge);
+				pointToEdgeSet.get(start).add(edgeSet.size() - 1);
+				pointFromEdgeSet.get(end).add(edgeSet.size() - 1);
+			}
+
+		}
+		numServiceArc = edgeSet.size();
+		numHoldingArc=abstractNumNode;
+
 	}
 
+/***
 	private void readData1(String filename) throws IOException {
 
 		alpha = 0;
@@ -120,14 +247,91 @@ public class SNDRC  implements ModelInterface {
 			demandSet.add(demand);
 		}
 
+		in.close();
+
 	}
 
-	private void readData2(String filename) {
+	private void readData2(String filename) throws IOException {
 
+		Scanner in = new Scanner(Paths.get(filename));
+
+		in.nextLine();
+		fleetSize = in.nextInt();
+		in.nextLine();
+		in.nextLine();
+		numNode = in.nextInt();
+		in.nextLine();
+		in.nextLine();
+		timePeriod = in.nextInt();
+		in.nextLine();
+		in.nextLine();
+		numService = in.nextInt();
+
+		in.nextLine();
+		in.nextLine();
+		serviceSet = new ArrayList<>();
+		demandSet = new ArrayList<>();
+		for (int i = 0; i < numService; i++) {
+			Service service = new Service();
+			in.nextInt();
+			service.origin = in.nextInt() - 1;
+			service.destination = in.nextInt() - 1;
+			service.duration = in.nextInt();
+			serviceSet.add(service);
+		}
+
+		in.nextLine();
+		in.nextLine();
+		numDemand = in.nextInt();
+		in.nextLine();
+		in.nextLine();
+		for (int i = 0; i < numDemand; i++) {
+			Demand demand = new Demand();
+			in.nextInt();
+			demand.origin = in.nextInt() - 1;
+			demand.destination = in.nextInt() - 1;
+			demand.timeAvailable = in.nextInt() - 1;
+			demand.timeDue = in.nextInt() - 1;
+			demand.volume = in.nextInt();
+			demandSet.add(demand);
+		}
+
+		// read parameter
+		in.nextLine();
+		in.nextLine();
+		alpha = in.nextDouble();
+		in.nextLine();
+		in.nextLine();
+		beta = in.nextDouble();
+		in.nextLine();
+		in.nextLine();
+		speed = in.nextDouble();
+		in.nextLine();
+		in.nextLine();
+		drivingTimePerDay = in.nextDouble();
+		in.nextLine();
+		in.nextLine();
+
+		numOfCapacity = in.nextInt();
+		in.nextLine();
+		in.nextLine();
+		capacity = new int[numOfCapacity];
+		fixedCost = new double[numOfCapacity];
+		for (int i = 0; i < numOfCapacity; i++) {
+			capacity[i] = in.nextInt();
+		}
+
+		in.nextLine();
+		in.nextLine();
+		for (int i = 0; i < numOfCapacity; i++) {
+			fixedCost[i] = in.nextDouble();
+		}
+
+		in.close();
 	}
 
 	private void graphTransfer() {
-		abstractNumNode = numNode * timePeriod;
+
 		edgeSet = new ArrayList<Edge>();
 		pointToEdgeSet = new ArrayList<HashSet<Integer>>();
 		pointFromEdgeSet = new ArrayList<HashSet<Integer>>();
@@ -164,14 +368,14 @@ public class SNDRC  implements ModelInterface {
 		numServiceArc = edgeSet.size();
 
 	}
-	
+***/
 	@Override
-	public String getName(){
+	public String getName() {
 		return "ServiceNetworkDesignModel";
 	}
 
 	public static void main(String[] args) throws IOException {
-		SNDRC test = new SNDRC(1, "./data/Andersen_1.txt");
+		SNDRC test = new SNDRC("./data/data0.txt");
 	}
 
 }
