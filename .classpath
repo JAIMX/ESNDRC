@@ -2,14 +2,11 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="C:/LIB/jorlib-core-1.1.1.jar">
+	<classpathentry kind="lib" path="/Users/sxx/Documents/workspace/jorlib1.1.1/lib/jorlib-core-1.1.1.jar"/>
+	<classpathentry kind="lib" path="/Users/sxx/Applications/IBM/ILOG/CPLEX_Studio1263/cplex/lib/cplex.jar">
 		<attributes>
-			<attribute name="javadoc_location" value="http://coin-or.github.io/jorlib/apidocs/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="C:/LIB/cplex.jar" sourcepath="C:/LIB/cplex.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="file:/C:/Program%20Files%20(x86)/IBM/ILOG/CPLEX_Studio126/doc/html/en-US/refjavacplex/html"/>
+			<attribute name="javadoc_location" value="file:/Users/sxx/Applications/IBM/ILOG/CPLEX_Studio1263/doc/html/en-US/refjavacplex/html/"/>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="/Users/sxx/Applications/IBM/ILOG/CPLEX_Studio1263/cplex/bin/x86-64_osx"/>
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="output" path="bin"/>
