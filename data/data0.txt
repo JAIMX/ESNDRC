@@ -51,7 +51,9 @@ drivingtimeperday
 number of type of capacities
 1
 capcity
-1000
+50
 fixed cost of different trucks
 2000
+amount of vehicle limit
+2 4 5 1 2
 

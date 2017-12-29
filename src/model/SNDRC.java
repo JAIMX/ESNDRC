@@ -44,6 +44,7 @@ public class SNDRC implements ModelInterface {
 	public final double alpha, speed, drivingTimePerDay, beta;
 	public final double[] fixedCost;
 	public final int[] capacity;
+	public final int[][] vehicleLimit;
 
 	// graph parameter
 	public final ArrayList<Edge> edgeSet;
@@ -148,6 +149,16 @@ public class SNDRC implements ModelInterface {
 			// b[end][i] = -demand.volume;
 			b[i][start] = demand.volume;
 			b[i][end] = -demand.volume;
+		}
+		
+		//vehicle limit
+		in.nextLine();
+		in.nextLine();
+		vehicleLimit=new int[numOfCapacity][numNode];
+		for(int s=0;s<numOfCapacity;s++) {
+			for(int o=0;o<numNode;o++) {
+				vehicleLimit[s][o]=in.nextInt();
+			}
 		}
 
 		in.close();
