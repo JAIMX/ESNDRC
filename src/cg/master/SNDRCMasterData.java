@@ -1,5 +1,6 @@
 package cg.master;
 
+import java.util.List;
 import java.util.Map;
 
 import org.jorlib.frameworks.columnGeneration.master.MasterData;
@@ -20,11 +21,13 @@ import model.SNDRC;
  */
 public class SNDRCMasterData extends MasterData<SNDRC,Cycle,SNDRCPricingProblem,IloNumVar>{
 	public final IloCplex cplex;
+	public final  List<SNDRCPricingProblem> pricingProblems;
 	
 	
-	public SNDRCMasterData(IloCplex cplex,Map<SNDRCPricingProblem, OrderedBiMap<Cycle, IloNumVar>> varMap){
+	public SNDRCMasterData(IloCplex cplex,List<SNDRCPricingProblem> pricingProblems,Map<SNDRCPricingProblem, OrderedBiMap<Cycle, IloNumVar>> varMap){
 		super(varMap);
 		this.cplex=cplex;
+		this.pricingProblems=pricingProblems;
 	}
 
 	

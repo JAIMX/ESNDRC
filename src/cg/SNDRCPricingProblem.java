@@ -3,7 +3,7 @@ package cg;
 import org.jorlib.frameworks.columnGeneration.pricing.AbstractPricingProblem;
 import model.SNDRC;
 
-public class SNDRCPricingProblem extends AbstractPricingProblem<SNDRC> {
+public final class SNDRCPricingProblem extends AbstractPricingProblem<SNDRC> {
 
     /**
      * Create a new Pricing Problem
@@ -11,8 +11,14 @@ public class SNDRCPricingProblem extends AbstractPricingProblem<SNDRC> {
      * @param dataModel Data model
      * @param name      Name of the pricing problem
      */
-	public SNDRCPricingProblem(SNDRC dataModel,String name){
-		super(dataModel,name);
+	
+	public final int capacityTypeS;
+	public final int originNodeO;
+	
+	public SNDRCPricingProblem(SNDRC modelData,String name,int capacityTypeS,int originNodeO){
+		super(modelData,name);
+		this.capacityTypeS=capacityTypeS;
+		this.originNodeO=originNodeO;
 	}
 	
 }

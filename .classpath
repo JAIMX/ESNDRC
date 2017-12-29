@@ -2,12 +2,22 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="/Users/sxx/Documents/workspace/jorlib1.1.1/lib/jorlib-core-1.1.1.jar"/>
-	<classpathentry kind="lib" path="/Users/sxx/Applications/IBM/ILOG/CPLEX_Studio1263/cplex/lib/cplex.jar">
+	<classpathentry kind="lib" path="C:/LIB/cplex.jar" sourcepath="C:/LIB/cplex.jar">
 		<attributes>
-			<attribute name="javadoc_location" value="file:/Users/sxx/Applications/IBM/ILOG/CPLEX_Studio1263/doc/html/en-US/refjavacplex/html/"/>
-			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="/Users/sxx/Applications/IBM/ILOG/CPLEX_Studio1263/cplex/bin/x86-64_osx"/>
+			<attribute name="javadoc_location" value="file:/C:/Program%20Files%20(x86)/IBM/ILOG/CPLEX_Studio126/doc/html/en-US/refjavacplex/html"/>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="C:/Program Files (x86)/IBM/ILOG/CPLEX_Studio126/cplex/bin/x86_win32"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="E:/Eclipse/Workspace/JORlib/jorlib1.1.1/jorlib1.1.1/lib/jorlib-core-1.1.1.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="http://coin-or.github.io/jorlib/apidocs/"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="E:/Eclipse/Workspace/JORlib/jorlib1.1.1/jorlib1.1.1/lib/jorlib-core-1.1.1-javadoc.jar"/>
+	<classpathentry kind="lib" path="E:/Eclipse/Workspace/JORlib/jorlib1.1.1/jorlib1.1.1/lib/jorlib-core-1.1.1-sources.jar"/>
+	<classpathentry kind="lib" path="E:/Eclipse/Workspace/JORlib/jorlib1.1.1/jorlib1.1.1/lib/jorlib-demo-1.1.1.jar"/>
+	<classpathentry kind="lib" path="E:/Eclipse/Workspace/JORlib/jorlib1.1.1/jorlib1.1.1/lib/jorlib-demo-1.1.1-javadoc.jar"/>
+	<classpathentry kind="lib" path="E:/Eclipse/Workspace/JORlib/jorlib1.1.1/jorlib1.1.1/lib/jorlib-demo-1.1.1-sources.jar"/>
+	<classpathentry kind="lib" path="E:/Eclipse/Workspace/JORlib/jorlib1.1.1/jorlib1.1.1/lib/jorlib-demo-1.1.1-uber.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
