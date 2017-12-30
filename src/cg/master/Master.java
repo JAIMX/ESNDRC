@@ -189,11 +189,11 @@ public final class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProbl
 			
 			//weak forcing constraints
 			for(int edgeIndex:column.edgeIndexSet) {
-				iloColumn=iloColumn.and(masterData.cplex.column(weakForcingConstraints[edgeIndex],-dataModel.capacity[column.capacityIndex]));
+				iloColumn=iloColumn.and(masterData.cplex.column(weakForcingConstraints[edgeIndex],-dataModel.capacity[column.associatedPricingProblem.capacityTypeS]));
 			}
 			
 			//resource bound constraints
-			iloColumn=iloColumn.and(masterData.cplex.column(resourceBoundConstraints[column.capacityIndex][column.startNode],1));
+			iloColumn=iloColumn.and(masterData.cplex.column(resourceBoundConstraints[column.associatedPricingProblem.capacityTypeS][column.associatedPricingProblem.originNodeO],1));
 			
 			
 			//Create the variable and store it

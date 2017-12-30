@@ -56,4 +56,8 @@ fixed cost of different trucks
 2000
 amount of vehicle limit
 2 4 5 1 2
+maximal distance limit
+20
+maximal leg limit
+4
 

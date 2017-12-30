@@ -45,6 +45,8 @@ public class SNDRC implements ModelInterface {
 	public final double[] fixedCost;
 	public final int[] capacity;
 	public final int[][] vehicleLimit;
+	public final double distanceLimit;
+	public final int legLimit;
 
 	// graph parameter
 	public final ArrayList<Edge> edgeSet;
@@ -160,8 +162,25 @@ public class SNDRC implements ModelInterface {
 				vehicleLimit[s][o]=in.nextInt();
 			}
 		}
+		
+		//distance limit
+		in.nextLine();
+		in.nextLine();
+		distanceLimit=in.nextDouble();
+		//leg limit
+		in.nextLine();
+		in.nextLine();
+		legLimit=in.nextInt();
+		
+			
+		
 
 		in.close();
+		
+		
+		
+		
+		///----------------------------------------graph transfer-----------------------------------------///
 
 		// this.graphTransfer();
 		edgeSet = new ArrayList<Edge>();

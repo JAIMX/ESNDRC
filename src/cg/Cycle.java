@@ -9,18 +9,15 @@ public final class Cycle  extends AbstractColumn<SNDRC, SNDRCPricingProblem>{
 
 	/** Index of edges in a path**/
 	public final Set<Integer> edgeIndexSet;
-	public final int startNode,startTime;
-	public final int capacityIndex;
+	public final int startTime;
 	public final int cost;// parameter in the objective expression
 	
 	
-	public Cycle(SNDRCPricingProblem associatedPricingProblem, boolean isArtificial, String creator, Set<Integer> edgeIndexSet, int startNode,int startTime,int cost,int capacityIndex) {
+	public Cycle(SNDRCPricingProblem associatedPricingProblem, boolean isArtificial, String creator, Set<Integer> edgeIndexSet,int cost,int startTime) {
 		super(associatedPricingProblem,isArtificial,creator);
 		this.edgeIndexSet=edgeIndexSet;
-		this.startNode=startNode;
-		this.startTime=startTime;
 		this.cost=cost;
-		this.capacityIndex=capacityIndex;
+		this.startTime=startTime;
 	}
 	
 	@Override
@@ -43,7 +40,7 @@ public final class Cycle  extends AbstractColumn<SNDRC, SNDRCPricingProblem>{
 	
 	@Override
 	public String toString() {
-		return "artificial: "+isArtificialColumn+" set: "+edgeIndexSet.toString()+" start node= "+this.startNode+" start time= "+this.startTime;
+		return "artificial: "+isArtificialColumn+" set: "+edgeIndexSet.toString()+" start node= "+associatedPricingProblem.originNodeO+" start time= "+this.startTime;
 	}
 	
 }
