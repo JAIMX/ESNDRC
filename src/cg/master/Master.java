@@ -216,12 +216,99 @@ public final class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProbl
 	@Override
 	public void initializePricingProblem(SNDRCPricingProblem pricingProblem) {
 		try {
-			double[] modifiedCosts=new double[]; //Modified cost for every edge
+			double[] modifiedCosts=new double[dataModel.numServiceArc]; //Modified cost for every service edge
+			
+			for(int edgeIndex=0;edgeIndex<dataModel.numServiceArc;edgeIndex++) {
+				modifiedCosts[edgeIndex]=masterData.cplex.getDual(weakForcingConstraints[edgeIndex])*dataModel.capacity[pricingProblem.capacityTypeS];
+				modifiedCosts[edgeIndex]+=dataModel.alpha/(dataModel.speed*dataModel.drivingTimePerDay)*dataModel.edgeSet.get(edgeIndex).duration;
+			}
+			
+			pricingProblem.initPricingProblem(modifiedCosts);
 			
 		} catch (IloException e) {
 			e.printStackTrace();
 		}
 	}
+	
+	
+	/**
+	 * Gets the solution from the master problem
+	 * @return Returns all non-zero valued columns from the master problem
+	 */
+	@Override
+	public List<Cycle> getSolution() {
+		List<Cycle> solution=new ArrayList<>();
+		try {
+			for(SNDRCPricingProblem pricingProblem : pricingProblems){
+				Cycle[] cycles=masterData.getVarMapForPricingProblem(pricingProblem).getKeysAsArray(new Cycle[masterData.getNrColumnsForPricingProblem(pricingProblem)]);
+				IloNumVar[] vars=masterData.getVarMapForPricingProblem(pricingProblem).getValuesAsArray(new IloNumVar[masterData.getNrColumnsForPricingProblem(pricingProblem)]);
+				double[] values=masterData.cplex.getValues(vars);
+				
+				//Iterate over each column and add it to the solution if it has a non-zero value
+				for(int i=0; i<cycles.length; i++){
+					cycles[i].value=values[i];
+					if(values[i]>=config.PRECISION){
+						solution.add(cycles[i]);
+					}
+				}
+			}
+		} catch (IloException e) {
+			e.printStackTrace();
+		}
+		return solution;
+	}
+	
+	
+	
+	/**
+	 * Prints the solution
+	 */
+	@Override
+	public void printSolution() {
+		List<Cycle> solution=this.getSolution();
+		for(Cycle m : solution)
+			System.out.println(m);
+	}
+
+	/**
+	 * Closes the master problem
+	 */
+	@Override
+	public void close() {
+		masterData.cplex.end();
+	}
+	
+	
+//	/**
+//	 * Checks whether there are any violated inequalities, thereby invoking the cut handler
+//	 * @return true if violated inqualities have been found (and added to the master problem)
+//	 */
+//	@Override
+//	public boolean hasNewCuts(){
+//
+//	}
+	
+	
+//	/**
+//	 * Listen to branching decisions
+//	 * @param bd Branching decision
+//	 */
+//	@Override
+//	public void branchingDecisionPerformed(BranchingDecision bd) {
+//		//For simplicity, we simply destroy the master problem and rebuild it. Of course, something more sophisticated may be used which retains the master problem.
+//		this.close(); //Close the old cplex model
+//		masterData=this.buildModel(); //Create a new model without any columns
+//		cutHandler.setMasterData(masterData); //Inform the cutHandler about the new master model
+//	}
+//
+//	/**
+//	 * Undo branching decisions during backtracking in the Branch-and-Price tree
+//	 * @param bd Branching decision
+//	 */
+//	@Override
+//	public void branchingDecisionReversed(BranchingDecision bd) {
+//		//No action required
+//	}
 	
 
 }
