@@ -10,10 +10,10 @@ public final class Cycle  extends AbstractColumn<SNDRC, SNDRCPricingProblem>{
 	/** Index of edges in a path**/
 	public final Set<Integer> edgeIndexSet;
 	public final int startTime;
-	public final int cost;// parameter in the objective expression
+	public final double cost;// parameter in the objective expression
 	
 	
-	public Cycle(SNDRCPricingProblem associatedPricingProblem, boolean isArtificial, String creator, Set<Integer> edgeIndexSet,int cost,int startTime) {
+	public Cycle(SNDRCPricingProblem associatedPricingProblem, boolean isArtificial, String creator, Set<Integer> edgeIndexSet,double cost,int startTime) {
 		super(associatedPricingProblem,isArtificial,creator);
 		this.edgeIndexSet=edgeIndexSet;
 		this.cost=cost;

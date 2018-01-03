@@ -5,9 +5,6 @@ import java.util.*;
 import org.jorlib.frameworks.columnGeneration.io.TimeLimitExceededException;
 import org.jorlib.frameworks.columnGeneration.pricing.AbstractPricingProblemSolver;
 
-import ilog.concert.IloException;
-import ilog.concert.IloObjective;
-import ilog.cplex.IloCplex;
 import model.SNDRC;
 import model.SNDRC.Edge;
 
@@ -58,14 +55,95 @@ public class ExactPricingProblemSolver extends AbstractPricingProblemSolver<SNDR
 				pathRecord[edge.end]=edgeIndex;
 			}
 			//holding arcs
-			dpFunction[(originNodeIndex+1)%dataModel.timePeriod]=0;
 			if(startTime==dataModel.timePeriod-1){
+				dpFunction[originNodeIndex-dataModel.timePeriod+1]=0;
 				pathRecord[originNodeIndex-dataModel.timePeriod+1]=-1;
-			}else pathRecord[originNodeIndex+1]=-1;
+			}else {
+				dpFunction[originNodeIndex+1]=0;
+				pathRecord[originNodeIndex+1]=-1;
+			}
 			
 			
+			int durationLimit=dataModel.timePeriod;
+			
+			//update for the following nodes
+			for(int currentTime=startTime+1;currentTime<startTime+dataModel.timePeriod;currentTime++) {
+				durationLimit--;
+				int time=currentTime%dataModel.timePeriod;
+				
+				for(int localNode=0;localNode<dataModel.numNode;localNode++) {
+					int currentNodeIndex=localNode*dataModel.timePeriod+time;
+					if(dpFunction[currentNodeIndex]<Double.MAX_VALUE-1) {
+						// service arcs
+						for(int edgeIndex:dataModel.pointToEdgeSet.get(currentNodeIndex)) {
+							Edge edge=dataModel.edgeSet.get(edgeIndex);
+							if(edge.duration<durationLimit||(edge.duration==durationLimit&&edge.end==originNodeIndex)) {
+								
+								if(dpFunction[edge.end]>dpFunction[currentNodeIndex]+modifiedCosts[edgeIndex]) {
+									dpFunction[edge.end]=dpFunction[currentNodeIndex]+modifiedCosts[edgeIndex];
+									pathRecord[edge.end]=edgeIndex;
+								}
+								
+							}
+							
+						}
+						
+						//holding arcs
+						int testNodeIndex;
+						if(time==dataModel.timePeriod-1) {
+							testNodeIndex=localNode*dataModel.timePeriod;
+						}else {
+							testNodeIndex=currentNodeIndex+1;
+						}
+						
+
+						if(durationLimit>1||(durationLimit==1&&localNode==pricingProblem.originNodeO)) {
+							if(dpFunction[testNodeIndex]>dpFunction[currentNodeIndex]) {
+								dpFunction[testNodeIndex]=dpFunction[currentNodeIndex];
+								pathRecord[testNodeIndex]=-1;
+							}
+						}
+						
+						
+					}
+				}
+			}
 			
 			
+			if(dpFunction[originNodeIndex]<Double.MAX_VALUE-1) {
+				if(dpFunction[originNodeIndex]+modifiedCost<-config.PRECISION) {
+					Set<Integer> edgeIndexSet=new HashSet<>();
+					double cost=0;
+					double totalLength=0;
+					
+					//create edgeIndexSet for this path
+					int currentNodeIndex=originNodeIndex;
+					int lastNodeIndex;
+					
+					do {
+						//update lastNodeIndex
+						if(pathRecord[currentNodeIndex]>=0) {
+							lastNodeIndex=dataModel.edgeSet.get(pathRecord[currentNodeIndex]).start;
+							totalLength+=dataModel.edgeSet.get(pathRecord[currentNodeIndex]).duration;
+							edgeIndexSet.add(pathRecord[currentNodeIndex]);
+						}else {// holding arcs
+							if(currentNodeIndex%dataModel.timePeriod==0) {
+								lastNodeIndex=currentNodeIndex+dataModel.timePeriod-1;
+							}else lastNodeIndex=currentNodeIndex-1;
+						}
+						
+						//update currentNodeIndex
+						currentNodeIndex=lastNodeIndex;
+						
+					}while(lastNodeIndex!=originNodeIndex);
+					
+					cost=dataModel.alpha*totalLength/(dataModel.speed*dataModel.drivingTimePerDay)+dataModel.fixedCost[pricingProblem.capacityTypeS];
+							
+					Cycle cycle=new Cycle(pricingProblem,false,"exactPricing",edgeIndexSet,cost,startTime);
+					newRoutes.add(cycle);
+					
+				}
+			}
 			
 			
 			
@@ -85,6 +163,14 @@ public class ExactPricingProblemSolver extends AbstractPricingProblemSolver<SNDR
 	protected void setObjective() {
 		modifiedCosts=Arrays.copyOf(pricingProblem.dualCosts, pricingProblem.dualCosts.length);
 		modifiedCost=pricingProblem.dualCost;
+	}
+	
+	/**
+	 * Close the pricing problem
+	 */
+	@Override
+	public void close() {
+//		cplex.end();
 	}
 
 	
