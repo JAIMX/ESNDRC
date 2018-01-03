@@ -217,13 +217,15 @@ public final class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProbl
 	public void initializePricingProblem(SNDRCPricingProblem pricingProblem) {
 		try {
 			double[] modifiedCosts=new double[dataModel.numServiceArc]; //Modified cost for every service edge
+			double modifiedCost=0;
 			
 			for(int edgeIndex=0;edgeIndex<dataModel.numServiceArc;edgeIndex++) {
 				modifiedCosts[edgeIndex]=masterData.cplex.getDual(weakForcingConstraints[edgeIndex])*dataModel.capacity[pricingProblem.capacityTypeS];
 				modifiedCosts[edgeIndex]+=dataModel.alpha/(dataModel.speed*dataModel.drivingTimePerDay)*dataModel.edgeSet.get(edgeIndex).duration;
 			}
 			
-			pricingProblem.initPricingProblem(modifiedCosts);
+			modifiedCost=dataModel.fixedCost[pricingProblem.capacityTypeS]-masterData.cplex.getDual(resourceBoundConstraints[pricingProblem.capacityTypeS][pricingProblem.originNodeO]);
+			pricingProblem.initPricingProblem(modifiedCosts,modifiedCost);
 			
 		} catch (IloException e) {
 			e.printStackTrace();
