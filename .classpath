@@ -5,7 +5,11 @@
 	<classpathentry kind="lib" path="LIB/cplex.jar"/>
 	<classpathentry kind="lib" path="LIB/jorlib-core-1.1.1-javadoc.jar"/>
 	<classpathentry kind="lib" path="LIB/jorlib-core-1.1.1-sources.jar"/>
-	<classpathentry kind="lib" path="LIB/jorlib-core-1.1.1.jar"/>
+	<classpathentry kind="lib" path="LIB/jorlib-core-1.1.1.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="http://coin-or.github.io/jorlib/apidocs/"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="lib" path="LIB/jorlib-demo-1.1.1-javadoc.jar"/>
 	<classpathentry kind="lib" path="LIB/jorlib-demo-1.1.1-sources.jar"/>
 	<classpathentry kind="lib" path="LIB/jorlib-demo-1.1.1-uber.jar"/>
