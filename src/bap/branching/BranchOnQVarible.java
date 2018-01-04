@@ -3,8 +3,10 @@ package bap.branching;
 import java.util.*;
 
 import org.jorlib.frameworks.columnGeneration.branchAndPrice.AbstractBranchCreator;
+import org.jorlib.frameworks.columnGeneration.branchAndPrice.BAPNode;
 import org.jorlib.frameworks.columnGeneration.util.MathProgrammingUtil;
 
+import bap.branching.branchingDecisions.RoundQ;
 import cg.Cycle;
 import cg.SNDRCPricingProblem;
 import model.SNDRC;
@@ -77,5 +79,22 @@ public class BranchOnQVarible extends AbstractBranchCreator<SNDRC, Cycle, SNDRCP
 		return MathProgrammingUtil.isFractional(bestQValue);
 		
 		
+	}
+	
+	
+	/**
+	 * Create the branches
+	 */
+	@Override
+	protected List<BAPNode<SNDRC,Cycle>> getBranches(BAPNode<SNDRC,Cycle> parentNode){
+		//Branch 1:round q down to the nearest integer
+		RoundQ branchingDecision1=new RoundQ(0,capacityTypeBranching,originNodeBranching);
+		BAPNode<SNDRC,Cycle> node1=this.createBranch(parentNode, branchingDecision1, parentNode.getSolution(), parentNode.getInequalities());
+		
+		//Branch 2:round q up to the nearest integer
+		RoundQ branchingDecision2=new RoundQ(1,capacityTypeBranching,originNodeBranching);
+		BAPNode<SNDRC,Cycle> node2=this.createBranch(parentNode, branchingDecision2, parentNode.getSolution(), parentNode.getInequalities());
+		
+		return Arrays.asList(node2,node1);
 	}
 }

@@ -4,10 +4,12 @@ import java.util.*;
 
 import javax.naming.TimeLimitExceededException;
 
+import org.jorlib.frameworks.columnGeneration.branchAndPrice.branchingDecisions.BranchingDecision;
 import org.jorlib.frameworks.columnGeneration.master.AbstractMaster;
 import org.jorlib.frameworks.columnGeneration.master.OptimizationSense;
 import org.jorlib.frameworks.columnGeneration.util.OrderedBiMap;
 
+import bap.branching.branchingDecisions.RoundQ;
 import cg.Cycle;
 import cg.SNDRCPricingProblem;
 import ilog.concert.*;
@@ -291,26 +293,32 @@ public final class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProbl
 //	}
 	
 	
-//	/**
-//	 * Listen to branching decisions
-//	 * @param bd Branching decision
-//	 */
-//	@Override
-//	public void branchingDecisionPerformed(BranchingDecision bd) {
-//		//For simplicity, we simply destroy the master problem and rebuild it. Of course, something more sophisticated may be used which retains the master problem.
-//		this.close(); //Close the old cplex model
-//		masterData=this.buildModel(); //Create a new model without any columns
-//		cutHandler.setMasterData(masterData); //Inform the cutHandler about the new master model
-//	}
-//
-//	/**
-//	 * Undo branching decisions during backtracking in the Branch-and-Price tree
-//	 * @param bd Branching decision
-//	 */
-//	@Override
-//	public void branchingDecisionReversed(BranchingDecision bd) {
-//		//No action required
-//	}
+	/**
+	 * Listen to branching decisions
+	 * 
+	 * @param bd
+	 *            Branching decision
+	 */
+	@Override
+	public void branchingDecisionPerformed(BranchingDecision bd) {
+		if(bd instanceof RoundQ) {
+			if(((RoundQ) bd).roundUpOrDown==0) { //round down
+				
+			}
+		}
+	}
+
+	
+	/**
+	 * Undo branching decisions during backtracking in the Branch-and-Price tree
+	 * 
+	 * @param bd
+	 *            Branching decision
+	 */
+	@Override
+	public void branchingDecisionReversed(BranchingDecision bd) {
+		// No action required
+	}
 	
 
 }
