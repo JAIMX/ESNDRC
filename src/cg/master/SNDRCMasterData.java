@@ -1,14 +1,15 @@
 package cg.master;
 
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.jorlib.frameworks.columnGeneration.master.MasterData;
 import org.jorlib.frameworks.columnGeneration.util.OrderedBiMap;
 
+import bap.branching.branchingDecisions.RoundQ;
 import cg.Cycle;
 import cg.SNDRCPricingProblem;
 import ilog.concert.IloNumVar;
+import ilog.concert.IloRange;
 import ilog.cplex.IloCplex;
 import model.SNDRC;
 
@@ -22,12 +23,16 @@ import model.SNDRC;
 public class SNDRCMasterData extends MasterData<SNDRC,Cycle,SNDRCPricingProblem,IloNumVar>{
 	public final IloCplex cplex;
 	public final  List<SNDRCPricingProblem> pricingProblems;
+	public Map<RoundQ,IloRange> qBranchingconstraints;
+	public Map<SNDRCPricingProblem,IloNumVar> qVaribles;
 	
 	
-	public SNDRCMasterData(IloCplex cplex,List<SNDRCPricingProblem> pricingProblems,Map<SNDRCPricingProblem, OrderedBiMap<Cycle, IloNumVar>> varMap){
+	public SNDRCMasterData(IloCplex cplex,List<SNDRCPricingProblem> pricingProblems,Map<SNDRCPricingProblem, OrderedBiMap<Cycle, IloNumVar>> varMap,Map<SNDRCPricingProblem,IloNumVar> qVaribles){
 		super(varMap);
 		this.cplex=cplex;
 		this.pricingProblems=pricingProblems;
+		qBranchingconstraints=new LinkedHashMap<>();
+		this.qVaribles=qVaribles;
 	}
 
 	

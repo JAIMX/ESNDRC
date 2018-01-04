@@ -4,6 +4,7 @@ import org.jorlib.frameworks.columnGeneration.branchAndPrice.branchingDecisions.
 import org.jorlib.frameworks.columnGeneration.master.cutGeneration.AbstractInequality;
 
 import cg.Cycle;
+import cg.SNDRCPricingProblem;
 import model.SNDRC;
 
 /**
@@ -14,12 +15,16 @@ import model.SNDRC;
 public class RoundQ implements BranchingDecision<SNDRC, Cycle> {
 	
 	public int roundUpOrDown;//0:round down;1:round up
-	public int branchingCapacityType,branchingOriginNode;
+//	public int branchingCapacityType,branchingOriginNode;
+	public SNDRCPricingProblem associatedPricingProblem;
+	public double qValue;
 	
-	public RoundQ(int roundUpOrDown,int branchingCapacityType,int branchingOriginNode) {
+	public RoundQ(int roundUpOrDown,SNDRCPricingProblem associatedPricingProblem,double qValue) {
 		this.roundUpOrDown=roundUpOrDown;
-		this.branchingCapacityType=branchingCapacityType;
-		this.branchingOriginNode=branchingOriginNode;
+//		this.branchingCapacityType=branchingCapacityType;
+//		this.branchingOriginNode=branchingOriginNode;
+		this.associatedPricingProblem=associatedPricingProblem;
+		this.qValue=qValue;
 	}
 	
 
@@ -36,9 +41,9 @@ public class RoundQ implements BranchingDecision<SNDRC, Cycle> {
 	@Override
 	public String toString() {
 		if(roundUpOrDown==0) {
-			return "Round variable q(capcityType: "+branchingCapacityType+" originNode: "+branchingOriginNode+" down";
+			return "Round variable q(capcityType: "+associatedPricingProblem.capacityTypeS+" originNode: "+associatedPricingProblem.originNodeO+") down";
 		}else {
-			return "Round variable q(capcityType: "+branchingCapacityType+" originNode: "+branchingOriginNode+" up";
+			return "Round variable q(capcityType: "+associatedPricingProblem.capacityTypeS+" originNode: "+associatedPricingProblem.originNodeO+") up";
 		}
 		
 	}

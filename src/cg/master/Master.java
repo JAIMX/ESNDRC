@@ -40,6 +40,7 @@ public final class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProbl
 	@Override
 	protected SNDRCMasterData buildModel() {
 		IloCplex cplex = null;
+		Map<SNDRCPricingProblem,IloNumVar> qVariables = null;
 
 		try {
 			cplex = new IloCplex();
@@ -111,6 +112,14 @@ public final class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProbl
 					q[s][o] = cplex.numVar(0, dataModel.vehicleLimit[s][o], "q" + s + "," + o);
 				}
 			}
+			
+			//define Map<SNDRCPricingProblem,IloNumVar> qVaribles
+			qVariables=new HashMap<>();
+			for(SNDRCPricingProblem pricingProblem:pricingProblems) {
+				qVariables.put(pricingProblem, q[pricingProblem.capacityTypeS][pricingProblem.originNodeO]);
+			}
+			
+			
 
 			for (int s = 0; s < dataModel.numOfCapacity; s++) {
 				for (int o = 0; o < dataModel.numNode; o++) {
@@ -131,7 +140,7 @@ public final class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProbl
 
 		// Create a new data object which will store information from the master. This
 		// object automatically be passed to the CutHandler class.
-		return new SNDRCMasterData(cplex, pricingProblems, varMap);
+		return new SNDRCMasterData(cplex, pricingProblems, varMap,qVariables);
 
 	}
 
@@ -302,12 +311,39 @@ public final class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProbl
 	@Override
 	public void branchingDecisionPerformed(BranchingDecision bd) {
 		if(bd instanceof RoundQ) {
+			
 			if(((RoundQ) bd).roundUpOrDown==0) { //round down
+				try {
+					IloLinearNumExpr expr=masterData.cplex.linearNumExpr();
+					expr.addTerm(1, masterData.qVaribles.get(((RoundQ) bd).associatedPricingProblem));
+					IloRange qBranching=masterData.cplex.addGe(Math.floor(((RoundQ) bd).qValue), expr,"round down q");
+					masterData.qBranchingconstraints.put((RoundQ) bd, qBranching);
+				} catch (IloException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				
 			}
+			
+			if(((RoundQ) bd).roundUpOrDown==1) {//round up
+				IloLinearNumExpr expr;
+				try {
+					expr = masterData.cplex.linearNumExpr();
+					expr.addTerm(1, masterData.qVaribles.get(((RoundQ) bd).associatedPricingProblem));
+					IloRange qBranching=masterData.cplex.addLe(Math.ceil(((RoundQ) bd).qValue), expr,"round up q");
+					masterData.qBranchingconstraints.put((RoundQ) bd, qBranching);
+				} catch (IloException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+			}
+			
+			
+			
 		}
 	}
-
+	
 	
 	/**
 	 * Undo branching decisions during backtracking in the Branch-and-Price tree
@@ -317,8 +353,24 @@ public final class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProbl
 	 */
 	@Override
 	public void branchingDecisionReversed(BranchingDecision bd) {
-		// No action required
+		
+		try {
+			if(bd instanceof RoundQ) {
+				masterData.cplex.remove(masterData.qBranchingconstraints.get(bd));
+				masterData.qBranchingconstraints.remove(bd);
+			}
+
+		} catch (IloException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+					
+
 	}
+
+	
+
+
 	
 
 }
