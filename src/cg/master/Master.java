@@ -26,8 +26,8 @@ public final class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProbl
 	private IloRange[] weakForcingConstraints;
 	private IloRange[][] resourceBoundConstraints;
 
-	public Master(SNDRC dataModel, SNDRCPricingProblem pricingProblem) {
-		super(dataModel, pricingProblem, OptimizationSense.MINIMIZE);
+	public Master(SNDRC dataModel, List<SNDRCPricingProblem> pricingProblems) {
+		super(dataModel, pricingProblems, OptimizationSense.MINIMIZE);
 		System.out.println("Master constructor. Columns: " + masterData.getNrColumns());
 	}
 
@@ -203,8 +203,11 @@ public final class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProbl
 				iloColumn=iloColumn.and(masterData.cplex.column(weakForcingConstraints[edgeIndex],-dataModel.capacity[column.associatedPricingProblem.capacityTypeS]));
 			}
 			
+			
 			//resource bound constraints
-			iloColumn=iloColumn.and(masterData.cplex.column(resourceBoundConstraints[column.associatedPricingProblem.capacityTypeS][column.associatedPricingProblem.originNodeO],1));
+			if(!column.isArtificialColumn) {
+				iloColumn=iloColumn.and(masterData.cplex.column(resourceBoundConstraints[column.associatedPricingProblem.capacityTypeS][column.associatedPricingProblem.originNodeO],1));
+			}
 			
 			
 			//Create the variable and store it

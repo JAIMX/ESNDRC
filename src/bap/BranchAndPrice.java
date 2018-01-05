@@ -1,11 +1,15 @@
 package bap;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.jorlib.frameworks.columnGeneration.branchAndPrice.AbstractBranchAndPrice;
 import org.jorlib.frameworks.columnGeneration.branchAndPrice.AbstractBranchCreator;
 import org.jorlib.frameworks.columnGeneration.branchAndPrice.BAPNode;
 import org.jorlib.frameworks.columnGeneration.pricing.AbstractPricingProblemSolver;
+import org.jorlib.frameworks.columnGeneration.util.MathProgrammingUtil;
 
 import cg.Cycle;
 import cg.SNDRCPricingProblem;
@@ -14,9 +18,9 @@ import model.SNDRC;
 
 public class BranchAndPrice extends AbstractBranchAndPrice<SNDRC, Cycle, SNDRCPricingProblem>{
 
-	public BranchAndPrice(SNDRC modelData,Master master,List<SNDRCPricingProblem> pricingProblems,List<Class<? extends AbstractPricingProblemSolver<SNDRC, Cycle,SNDRCPricingProblem>>> solvers,List<? extends AbstractBranchCreator<SNDRC, Cycle, SNDRCPricingProblem>> branchCreators,int objectiveInitialSolution,List<Cycle> initialSolution) {
+	public BranchAndPrice(SNDRC modelData,Master master,List<SNDRCPricingProblem> pricingProblems,List<Class<? extends AbstractPricingProblemSolver<SNDRC, Cycle,SNDRCPricingProblem>>> solvers,List<? extends AbstractBranchCreator<SNDRC, Cycle, SNDRCPricingProblem>> branchCreators,double objectiveInitialSolution) {
 		super(modelData,master,pricingProblems,solvers,branchCreators,0,objectiveInitialSolution);
-		this.warmStart(objectiveInitialSolution,initialSolution);
+//		this.warmStart(objectiveInitialSolution,initialSolution);
 	}
 	
 	
@@ -29,9 +33,36 @@ public class BranchAndPrice extends AbstractBranchAndPrice<SNDRC, Cycle, SNDRCPr
      */
     @Override
     protected List<Cycle> generateInitialFeasibleSolution(BAPNode<SNDRC,Cycle> node) {
-        Matching matching1=new Matching("Artificial", true,	pricingProblems.get(0), incumbentSolution.get(0).edges, incumbentSolution.get(0).succ, objectiveIncumbentSolution);
-        Matching matching2=new Matching("Artificial", true,	pricingProblems.get(1), incumbentSolution.get(1).edges, incumbentSolution.get(1).succ, objectiveIncumbentSolution);
-        return Arrays.asList(matching1, matching2);
+    	
+    	List<Cycle> artificalVars=new ArrayList<Cycle>();
+    	for(int edgeIndex=0;edgeIndex<dataModel.numServiceArc;edgeIndex++) {
+    		Set<Integer> set=new HashSet<>();
+    		set.add(edgeIndex);
+    		Cycle cycle=new Cycle(pricingProblems.get(0),true,"Artificial",set,Double.MAX_VALUE,0);
+    		artificalVars.add(cycle);
+    	}
+        return artificalVars;
+    }
+    
+    
+    /**
+     * Checks whether the given node is integer
+     * @param node Node in the Branch-and-Price tree
+     * @return true if the solution is an integer solution
+     */
+    @Override
+    protected boolean isIntegerNode(BAPNode<SNDRC,Cycle> node) {
+    	List<Cycle> result=node.getSolution();
+    	
+    	boolean out=true;
+    	for(Cycle cycle:result) {
+    		if(MathProgrammingUtil.isFractional(cycle.value)) {
+    			out=false;
+    			break;
+    		}
+    	}
+    	
+    	return out;
     }
 	
 }
