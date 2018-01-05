@@ -1,7 +1,7 @@
 import java.io.File;
+import java.io.IOException;
 import java.util.*;
 
-import org.jorlib.demo.frameworks.columnGeneration.graphColoringBAP.cg.master.Master;
 import org.jorlib.frameworks.columnGeneration.branchAndPrice.AbstractBranchCreator;
 import org.jorlib.frameworks.columnGeneration.io.SimpleBAPLogger;
 import org.jorlib.frameworks.columnGeneration.io.SimpleDebugger;
@@ -12,17 +12,19 @@ import bap.branching.BranchOnQVarible;
 import cg.Cycle;
 import cg.ExactPricingProblemSolver;
 import cg.SNDRCPricingProblem;
+import cg.master.Master;
 import model.SNDRC;
 
 public class SNDRCSolver {
 	public SNDRCSolver(SNDRC dataModel) {
 		
 		//Create the pricing problems
-		List<SNDRCPricingProblem> pricingProblems=new ArrayList<>();
+		List<SNDRCPricingProblem> pricingProblems=new LinkedList<SNDRCPricingProblem>();
 		for(int capacityType=0;capacityType<dataModel.numOfCapacity;capacityType++) {
 			for(int originNode=0;originNode<dataModel.numNode;originNode++) {
 				String name="capacity type: "+capacityType+" origin node: "+originNode;
-				pricingProblems.add(new SNDRCPricingProblem(dataModel,name,capacityType,originNode));
+				SNDRCPricingProblem pricingProblem=new SNDRCPricingProblem(dataModel,name,capacityType,originNode);
+				pricingProblems.add(pricingProblem);
 			}
 		}
 		
@@ -65,6 +67,13 @@ public class SNDRCSolver {
 		
 		bap.close();
 		
+		
+	}
+	
+	public static void main(String[] args) throws IOException {
+		SNDRC sndrc=new SNDRC("./data/data0.txt");
+		
+		new SNDRCSolver(sndrc);
 		
 	}
 
