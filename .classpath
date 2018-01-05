@@ -3,7 +3,7 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER">
 		<attributes>
-			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="C:/Program Files (x86)/IBM/ILOG/CPLEX_Studio126/cplex/bin/x86_win32"/>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="/Users/sxx/Applications/IBM/ILOG/CPLEX_Studio1263/cplex/bin/x86-64_osx"/>
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="LIB/cplex.jar">

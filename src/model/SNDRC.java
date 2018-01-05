@@ -213,6 +213,21 @@ public class SNDRC implements ModelInterface {
 				edgeSet.add(newEdge);
 				pointToEdgeSet.get(start).add(edgeSet.size() - 1);
 				pointFromEdgeSet.get(end).add(edgeSet.size() - 1);
+				
+				//reverse direction arc
+				newEdge = new Edge();
+				start = service.destination * timePeriod + time;
+				end = service.origin * timePeriod + timeEnd;
+				newEdge.start = start;
+				newEdge.end = end;
+				newEdge.u = service.destination;
+				newEdge.v = service.origin;
+				newEdge.t1 = time;
+				newEdge.t2 = timeEnd;
+				edgeSet.add(newEdge);
+				pointToEdgeSet.get(start).add(edgeSet.size() - 1);
+				pointFromEdgeSet.get(end).add(edgeSet.size() - 1);
+				
 			}
 
 		}

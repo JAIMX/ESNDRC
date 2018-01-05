@@ -3,6 +3,7 @@ package cg.master;
 import java.util.*;
 
 import javax.naming.TimeLimitExceededException;
+import javax.security.auth.login.Configuration;
 
 import org.jorlib.frameworks.columnGeneration.branchAndPrice.branchingDecisions.BranchingDecision;
 import org.jorlib.frameworks.columnGeneration.master.AbstractMaster;
@@ -28,7 +29,9 @@ public final class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProbl
 
 	public Master(SNDRC dataModel, List<SNDRCPricingProblem> pricingProblems) {
 		super(dataModel, pricingProblems, OptimizationSense.MINIMIZE);
-		System.out.println("Master constructor. Columns: " + masterData.getNrColumns());
+//		this.buildModel();
+
+//		System.out.println("Master constructor. Columns: " + masterData.getNrColumns());
 	}
 
 	/**
@@ -51,10 +54,10 @@ public final class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProbl
 			// Define variables x
 			x = new IloNumVar[dataModel.numDemand][dataModel.numArc];
 			for (int p = 0; p < dataModel.numDemand; p++) {
-				for (int arc = 0; arc < dataModel.numArc; arc++) {
+				for (int arc = 0; arc < dataModel.numServiceArc; arc++) {
 					Edge edge = dataModel.edgeSet.get(arc);
 					x[p][arc] = cplex.numVar(0, Double.MAX_VALUE,
-							"x" + p + edge.u + "->" + edge.v + "t:" + edge.t1 + "->" + edge.t2);
+							"x" + edge.start + "," + edge.end + "," + p);
 				}
 			}
 

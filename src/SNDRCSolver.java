@@ -6,6 +6,7 @@ import org.jorlib.frameworks.columnGeneration.branchAndPrice.AbstractBranchCreat
 import org.jorlib.frameworks.columnGeneration.io.SimpleBAPLogger;
 import org.jorlib.frameworks.columnGeneration.io.SimpleDebugger;
 import org.jorlib.frameworks.columnGeneration.pricing.AbstractPricingProblemSolver;
+import org.jorlib.frameworks.columnGeneration.util.Configuration;
 
 import bap.BranchAndPrice;
 import bap.branching.BranchOnQVarible;
@@ -71,7 +72,12 @@ public class SNDRCSolver {
 	}
 	
 	public static void main(String[] args) throws IOException {
-		SNDRC sndrc=new SNDRC("./data/data0.txt");
+//		SNDRC sndrc=new SNDRC("./data/data0.txt");
+		SNDRC sndrc=new SNDRC("./data/small_for_test.txt");
+		
+		Properties properties=new Properties();
+		properties.setProperty("EXPORT_MODEL", "True");
+		Configuration.readFromFile(properties);
 		
 		new SNDRCSolver(sndrc);
 		

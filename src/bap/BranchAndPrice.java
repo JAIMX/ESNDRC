@@ -38,7 +38,7 @@ public class BranchAndPrice extends AbstractBranchAndPrice<SNDRC, Cycle, SNDRCPr
     	for(int edgeIndex=0;edgeIndex<dataModel.numServiceArc;edgeIndex++) {
     		Set<Integer> set=new HashSet<>();
     		set.add(edgeIndex);
-    		Cycle cycle=new Cycle(pricingProblems.get(0),true,"Artificial",set,Double.MAX_VALUE,0);
+    		Cycle cycle=new Cycle(pricingProblems.get(0),true,"Artificial",set,1000000,0);
     		artificalVars.add(cycle);
     	}
         return artificalVars;
