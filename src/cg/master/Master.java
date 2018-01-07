@@ -214,7 +214,7 @@ public final class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProbl
 			
 			
 			//Create the variable and store it
-			IloNumVar var=masterData.cplex.numVar(iloColumn, 0, Double.MAX_VALUE, "z_"+masterData.getNrColumnsForPricingProblem(column.associatedPricingProblem));
+			IloNumVar var=masterData.cplex.numVar(iloColumn, 0, Double.MAX_VALUE, "z_"+column.associatedPricingProblem.capacityTypeS+","+column.associatedPricingProblem.originNodeO+","+masterData.getNrColumnsForPricingProblem(column.associatedPricingProblem));
 			masterData.cplex.add(var);
 			masterData.addColumn(column,var);
 			
