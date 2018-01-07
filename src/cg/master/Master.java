@@ -166,7 +166,10 @@ public final class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProbl
 			masterData.cplex.setParam(IloCplex.DoubleParam.TiLim, timeRemaining); //set time limit in seconds
 			
 			//Potentially export the model
-			if(config.EXPORT_MODEL) masterData.cplex.exportModel(config.EXPORT_MASTER_DIR+"master_"+this.getIterationCount()+".lp");
+			if(config.EXPORT_MODEL) {
+				masterData.cplex.exportModel(config.EXPORT_MASTER_DIR+"master_"+this.getIterationCount()+".lp");
+				System.out.println(masterData.cplex.toString());
+			}
 			
 			//Solve the model
 			if(!masterData.cplex.solve() || masterData.cplex.getStatus()!=IloCplex.Status.Optimal){
@@ -176,6 +179,7 @@ public final class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProbl
 					throw new RuntimeException("Master problem solve failed! Status: "+masterData.cplex.getStatus());
 			}else{
 				masterData.objectiveValue=masterData.cplex.getObjValue();
+				
 			}
 		} catch (IloException e) {
 			// TODO Auto-generated catch block

@@ -1,2 +1,1 @@
 BAPNodeID 	 parentNodeID 	 objectiveIncumbentSolution 	 nodeBound 	 nodeValue 	 cgIterations 	 t_master 	 t_pricing 	 nrGenColumns 	 solutionStatus 	 nodesInQueue
-0	-1	2147483647	1200.0	1200.00	2	3	5	4	FRACTIONAL	0

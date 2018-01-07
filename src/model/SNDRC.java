@@ -210,6 +210,7 @@ public class SNDRC implements ModelInterface {
 				newEdge.v = service.destination;
 				newEdge.t1 = time;
 				newEdge.t2 = timeEnd;
+				newEdge.duration=service.duration;
 				edgeSet.add(newEdge);
 				pointToEdgeSet.get(start).add(edgeSet.size() - 1);
 				pointFromEdgeSet.get(end).add(edgeSet.size() - 1);
@@ -224,6 +225,7 @@ public class SNDRC implements ModelInterface {
 				newEdge.v = service.origin;
 				newEdge.t1 = time;
 				newEdge.t2 = timeEnd;
+				newEdge.duration=service.duration;
 				edgeSet.add(newEdge);
 				pointToEdgeSet.get(start).add(edgeSet.size() - 1);
 				pointFromEdgeSet.get(end).add(edgeSet.size() - 1);
