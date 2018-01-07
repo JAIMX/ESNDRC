@@ -3,7 +3,6 @@ package cg.master;
 import java.util.*;
 
 import javax.naming.TimeLimitExceededException;
-import javax.security.auth.login.Configuration;
 
 import org.jorlib.frameworks.columnGeneration.branchAndPrice.branchingDecisions.BranchingDecision;
 import org.jorlib.frameworks.columnGeneration.master.AbstractMaster;
