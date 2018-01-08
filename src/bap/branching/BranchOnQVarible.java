@@ -83,13 +83,19 @@ public class BranchOnQVarible extends AbstractBranchCreator<SNDRC, Cycle, SNDRCP
 	 */
 	@Override
 	protected List<BAPNode<SNDRC,Cycle>> getBranches(BAPNode<SNDRC,Cycle> parentNode){
+//		List<Cycle> initialSolution=new ArrayList<Cycle>();
+		
 		//Branch 1:round q down to the nearest integer
 		RoundQ branchingDecision1=new RoundQ(0,pricingProblemForCycle,bestQValue);
 		BAPNode<SNDRC,Cycle> node1=this.createBranch(parentNode, branchingDecision1, parentNode.getSolution(), parentNode.getInequalities());
+//		BAPNode<SNDRC,Cycle> node1=this.createBranch(parentNode, branchingDecision1,initialSolution , parentNode.getInequalities());
 		
+		
+//		initialSolution=new ArrayList<Cycle>();
 		//Branch 2:round q up to the nearest integer
 		RoundQ branchingDecision2=new RoundQ(1,pricingProblemForCycle,bestQValue);
 		BAPNode<SNDRC,Cycle> node2=this.createBranch(parentNode, branchingDecision2, parentNode.getSolution(), parentNode.getInequalities());
+//		BAPNode<SNDRC,Cycle> node2=this.createBranch(parentNode, branchingDecision2, initialSolution, parentNode.getInequalities());
 		
 		return Arrays.asList(node2,node1);
 	}

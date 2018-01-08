@@ -23,7 +23,8 @@ import model.SNDRC;
 public class SNDRCMasterData extends MasterData<SNDRC,Cycle,SNDRCPricingProblem,IloNumVar>{
 	public final IloCplex cplex;
 	public final  List<SNDRCPricingProblem> pricingProblems;
-	public Map<RoundQ,IloRange> qBranchingconstraints;
+//	public Map<RoundQ,IloRange> qBranchingconstraints;
+	public Set<RoundQ> qBranchingSet;
 	public Map<SNDRCPricingProblem,IloNumVar> qVaribles;
 	
 	
@@ -31,7 +32,8 @@ public class SNDRCMasterData extends MasterData<SNDRC,Cycle,SNDRCPricingProblem,
 		super(varMap);
 		this.cplex=cplex;
 		this.pricingProblems=pricingProblems;
-		qBranchingconstraints=new LinkedHashMap<>();
+//		qBranchingconstraints=new LinkedHashMap<>();
+		qBranchingSet=new HashSet<>();
 		this.qVaribles=qVaribles;
 	}
 
