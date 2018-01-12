@@ -56,7 +56,8 @@ public final class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProbl
 			for (int p = 0; p < dataModel.numDemand; p++) {
 				for (int arc = 0; arc < dataModel.numServiceArc; arc++) {
 					Edge edge = dataModel.edgeSet.get(arc);
-					x[p][arc] = cplex.numVar(0, Double.MAX_VALUE, "x" + edge.start + "," + edge.end + "," + p);
+//					x[p][arc] = cplex.numVar(0, Double.MAX_VALUE, "x" + edge.start + "," + edge.end + "," + p);
+					x[p][arc] = cplex.numVar(0, Double.MAX_VALUE, "x" + edge.start + "," + edge.end );
 				}
 			}
 
@@ -160,6 +161,7 @@ public final class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProbl
 		try {
 			// Set time limit
 			double timeRemaining = Math.max(1, (timeLimit - System.currentTimeMillis()) / 1000.0);
+			System.out.println(masterData.cplex.toString());
 
 			masterData.cplex.setParam(IloCplex.DoubleParam.TiLim, timeRemaining); // set time limit in seconds
 
@@ -177,6 +179,14 @@ public final class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProbl
 					throw new RuntimeException("Master problem solve failed! Status: " + masterData.cplex.getStatus());
 			} else {
 				masterData.objectiveValue = masterData.cplex.getObjValue();
+				
+				System.out.println("||-----------------------temp solution out---------------------||");
+				this.printSolution();
+				for (int s = 0; s < dataModel.numOfCapacity; s++) {
+					for (int o = 0; o < dataModel.numNode; o++) {
+						System.out.println("q"+s+","+o+"="+masterData.cplex.getValue(q[s][o]));
+					}
+				}
 
 			}
 		} catch (IloException e) {
@@ -298,7 +308,7 @@ public final class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProbl
 	public void printSolution() {
 		List<Cycle> solution = this.getSolution();
 		for (Cycle m : solution)
-			System.out.println(m);
+			System.out.println(m+":"+m.value);
 	}
 
 	/**

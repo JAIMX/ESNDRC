@@ -236,6 +236,11 @@ public class SNDRC implements ModelInterface {
 		numServiceArc = edgeSet.size();
 		numHoldingArc = abstractNumNode;
 		numArc = numServiceArc + numHoldingArc;
+		
+		for(int edgeIndex=0;edgeIndex<edgeSet.size();edgeIndex++) {
+			Edge e=edgeSet.get(edgeIndex);
+			System.out.println("edge"+edgeIndex+"--> start="+e.start+" end="+e.end);
+		}
 
 	}
 

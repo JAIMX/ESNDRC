@@ -10,6 +10,7 @@ import org.jorlib.frameworks.columnGeneration.util.MathProgrammingUtil;
 import bap.branching.branchingDecisions.RoundQ;
 import cg.Cycle;
 import cg.SNDRCPricingProblem;
+import jdk.nashorn.internal.runtime.regexp.joni.Config;
 import model.SNDRC;
 
 /**
@@ -63,16 +64,28 @@ public class BranchOnQVarible extends AbstractBranchCreator<SNDRC, Cycle, SNDRCP
 			qValueMap.put(associatedPricingProblem, tempValue - cycle.value);
 		}
 		
+		
+		boolean isAllInteger=true;
+		double bestDifference=1;
+		
 		//Select the variable qso closest to threshold value
-		for(SNDRCPricingProblem pricingProblem:pricingProblems){
+		for(SNDRCPricingProblem pricingProblem:pricingProblems) {
 			double value=qValueMap.get(pricingProblem);
-			if(Math.abs(thresholdValue-value)<Math.abs(thresholdValue-bestQValue)){
-				pricingProblemForCycle=pricingProblem;
-				bestQValue=value;
+			
+			if(MathProgrammingUtil.isFractional(value)) {
+				isAllInteger=false;
+				double decimalQ=value-Math.floor(value);
+				if (Math.abs(thresholdValue - decimalQ) < bestDifference) {
+					pricingProblemForCycle = pricingProblem;
+					bestQValue = value;
+					bestDifference=Math.abs(thresholdValue-decimalQ);
+				}
 			}
 		}
 		
-		return MathProgrammingUtil.isFractional(bestQValue);
+	
+		
+		return (!isAllInteger);
 		
 		
 	}
