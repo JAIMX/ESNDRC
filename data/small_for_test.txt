@@ -15,9 +15,9 @@ Commodity	Origin node	Destination node	Time available Time due	Volume
 Alpha
 2000
 beta
-0.002
+1
 speed
-60
+50
 drivingtimeperday
 10
 number of type of capacities

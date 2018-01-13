@@ -10,6 +10,7 @@ import org.jorlib.frameworks.columnGeneration.util.Configuration;
 
 import bap.BranchAndPrice;
 import bap.branching.BranchOnQVarible;
+import bap.branching.BranchOnServiceEdge;
 import cg.Cycle;
 import cg.ExactPricingProblemSolver;
 import cg.SNDRCPricingProblem;
@@ -37,7 +38,8 @@ public class SNDRCSolver {
 		List<Class<?extends AbstractPricingProblemSolver<SNDRC, Cycle, SNDRCPricingProblem>>> solvers=Collections.singletonList(ExactPricingProblemSolver.class);
 		
 		//Define one or more Branch creators
-		List<? extends AbstractBranchCreator<SNDRC, Cycle, SNDRCPricingProblem>> branchCreators= Collections.singletonList(new BranchOnQVarible(dataModel, pricingProblems,0.5));
+//		List<? extends AbstractBranchCreator<SNDRC, Cycle, SNDRCPricingProblem>> branchCreators=new ArrayList<AbstractBranchCreator<SNDRC, Cycle, SNDRCPricingProblem>>();
+		List<? extends AbstractBranchCreator<SNDRC, Cycle, SNDRCPricingProblem>> branchCreators=Arrays.asList(new BranchOnQVarible(dataModel, pricingProblems,0.5),new BranchOnServiceEdge(dataModel, pricingProblems, 0.5));
 		
 		//Create a Branch-and-Price instance
 		BranchAndPrice bap=new BranchAndPrice(dataModel, master, pricingProblems, solvers, branchCreators,Double.MAX_VALUE);

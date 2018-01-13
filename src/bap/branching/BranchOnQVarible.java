@@ -93,6 +93,8 @@ public class BranchOnQVarible extends AbstractBranchCreator<SNDRC, Cycle, SNDRCP
 	
 	/**
 	 * Create the branches
+	 * 
+	 * 
 	 */
 	@Override
 	protected List<BAPNode<SNDRC,Cycle>> getBranches(BAPNode<SNDRC,Cycle> parentNode){

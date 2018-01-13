@@ -8,6 +8,7 @@ import java.util.Set;
 import org.jorlib.frameworks.columnGeneration.branchAndPrice.AbstractBranchAndPrice;
 import org.jorlib.frameworks.columnGeneration.branchAndPrice.AbstractBranchCreator;
 import org.jorlib.frameworks.columnGeneration.branchAndPrice.BAPNode;
+import org.jorlib.frameworks.columnGeneration.master.MasterData;
 import org.jorlib.frameworks.columnGeneration.pricing.AbstractPricingProblemSolver;
 import org.jorlib.frameworks.columnGeneration.util.MathProgrammingUtil;
 
@@ -35,12 +36,16 @@ public class BranchAndPrice extends AbstractBranchAndPrice<SNDRC, Cycle, SNDRCPr
     protected List<Cycle> generateInitialFeasibleSolution(BAPNode<SNDRC,Cycle> node) {
     	
     	List<Cycle> artificalVars=new ArrayList<Cycle>();
+    	// for weak forcing constraints
     	for(int edgeIndex=0;edgeIndex<dataModel.numServiceArc;edgeIndex++) {
     		Set<Integer> set=new HashSet<>();
     		set.add(edgeIndex);
     		Cycle cycle=new Cycle(pricingProblems.get(0),true,"Artificial",set,1000000,0);
     		artificalVars.add(cycle);
     	}
+    	
+    	// for service edge branching constraints
+    
         return artificalVars;
     }
     

@@ -10,7 +10,10 @@ import org.jorlib.frameworks.columnGeneration.master.MasterData;
 import org.jorlib.frameworks.columnGeneration.master.OptimizationSense;
 import org.jorlib.frameworks.columnGeneration.util.OrderedBiMap;
 
+import com.sun.corba.se.pept.transport.ContactInfo;
+
 import bap.branching.branchingDecisions.RoundQ;
+import bap.branching.branchingDecisions.RoundServiceEdge;
 import cg.Cycle;
 import cg.SNDRCPricingProblem;
 import ilog.concert.*;
@@ -30,11 +33,18 @@ public final class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProbl
 	//branch on q variables
 	private Set<RoundQ> qBranchingSet;
 	private Map<RoundQ,IloRange> qBranchingconstraints;
+	
+	//branch on service edge
+	private Set<RoundServiceEdge> serviceEdgeBrachingSet;
+	private Map<RoundServiceEdge,IloRange> ServiceEdgeBranchingConstraints;
 
 	public Master(SNDRC dataModel, List<SNDRCPricingProblem> pricingProblems) {
 		super(dataModel, pricingProblems, OptimizationSense.MINIMIZE);
 		this.qBranchingSet=new HashSet<RoundQ>();
 		qBranchingconstraints=new HashMap<>();
+		
+		this.serviceEdgeBrachingSet=new HashSet<>();
+		this.ServiceEdgeBranchingConstraints=new HashMap<>();
 		// this.buildModel();
 
 		// System.out.println("Master constructor. Columns: " +
@@ -143,7 +153,7 @@ public final class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProbl
 						try {
 							expr = cplex.linearNumExpr();
 							expr.addTerm(1, q[branch.associatedPricingProblem.capacityTypeS][branch.associatedPricingProblem.originNodeO]);
-							IloRange qBranching = cplex.addGe(Math.floor(branch.qValue), expr, "round down q");
+							IloRange qBranching = cplex.addGe(Math.floor(branch.qValue), expr, "round down q["+branch.associatedPricingProblem.capacityTypeS+"]["+branch.associatedPricingProblem.originNodeO+"]");
 							qBranchingconstraints.put(branch, qBranching);
 						} catch (IloException e) {
 							// TODO Auto-generated catch block
@@ -156,7 +166,7 @@ public final class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProbl
 						try {
 							expr = cplex.linearNumExpr();
 							expr.addTerm(1, q[branch.associatedPricingProblem.capacityTypeS][branch.associatedPricingProblem.originNodeO]);
-							IloRange qBranching = cplex.addLe(Math.ceil(branch.qValue), expr, "round up q");
+							IloRange qBranching = cplex.addLe(Math.ceil(branch.qValue), expr, "round up q["+branch.associatedPricingProblem.capacityTypeS+"]["+branch.associatedPricingProblem.originNodeO+"]");
 							qBranchingconstraints.put(branch, qBranching);
 						} catch (IloException e) {
 							// TODO Auto-generated catch block
@@ -165,6 +175,22 @@ public final class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProbl
 
 					}
 
+				}
+			}
+			
+			
+			//service edge branching constraints
+			if(serviceEdgeBrachingSet!=null) {
+				for(RoundServiceEdge serviceEdgeBranch:serviceEdgeBrachingSet) {
+					if(serviceEdgeBranch.roundUpOrDown==0) {// round down
+						expr=cplex.linearNumExpr();
+						IloRange edgeBranching=cplex.addGe(Math.floor(serviceEdgeBranch.branchEdgeValue), expr,"round down service edge: "+serviceEdgeBranch.branchEdgeIndex);
+						ServiceEdgeBranchingConstraints.put(serviceEdgeBranch, edgeBranching);
+					}else { // round up
+						expr=cplex.linearNumExpr();
+						IloRange edgeBranching=cplex.addLe(Math.ceil(serviceEdgeBranch.branchEdgeValue), expr,"round up service edge: "+serviceEdgeBranch.branchEdgeIndex);
+						ServiceEdgeBranchingConstraints.put(serviceEdgeBranch, edgeBranching);
+					}
 				}
 			}
 
@@ -221,7 +247,7 @@ public final class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProbl
 			if (!masterData.cplex.solve() || masterData.cplex.getStatus() != IloCplex.Status.Optimal) {
 				if (masterData.cplex.getCplexStatus() == IloCplex.CplexStatus.AbortTimeLim) // Aborted due to time limit
 					throw new TimeLimitExceededException();
-				else
+				else 
 					throw new RuntimeException("Master problem solve failed! Status: " + masterData.cplex.getStatus());
 			} else {
 				masterData.objectiveValue = masterData.cplex.getObjValue();
@@ -232,6 +258,10 @@ public final class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProbl
 					for (int o = 0; o < dataModel.numNode; o++) {
 						System.out.println("q"+s+","+o+"="+masterData.cplex.getValue(q[s][o]));
 					}
+				}
+				
+				for(int edgeIndex=0;edgeIndex<dataModel.numServiceArc;edgeIndex++) {
+					System.out.println("x"+edgeIndex+"= "+masterData.cplex.getValue(x[0][edgeIndex]));
 				}
 
 			}
@@ -271,6 +301,25 @@ public final class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProbl
 						resourceBoundConstraints[column.associatedPricingProblem.capacityTypeS][column.associatedPricingProblem.originNodeO],
 						1));
 			}
+			
+			
+			//service edge branching constraints
+			if(column.isArtificialColumn) {
+				for(RoundServiceEdge serviceEdgeBranching:serviceEdgeBrachingSet) {
+					if(serviceEdgeBranching.roundUpOrDown==1&&column.edgeIndexSet.contains(serviceEdgeBranching.branchEdgeIndex)) {
+						IloRange constraint=ServiceEdgeBranchingConstraints.get(serviceEdgeBranching);
+						iloColumn=iloColumn.and(masterData.cplex.column(constraint,1));
+					}
+				}
+			}else { // not an artificial column
+				for(RoundServiceEdge serviceEdgeBranching:serviceEdgeBrachingSet) {
+					if(column.edgeIndexSet.contains(serviceEdgeBranching.branchEdgeIndex)) {
+						IloRange constraint=ServiceEdgeBranchingConstraints.get(serviceEdgeBranching);
+						iloColumn=iloColumn.and(masterData.cplex.column(constraint,1));
+					}
+				}
+			}
+
 
 			// Create the variable and store it
 			IloNumVar var = masterData.cplex.numVar(iloColumn, 0, Double.MAX_VALUE,
@@ -305,6 +354,13 @@ public final class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProbl
 						* dataModel.capacity[pricingProblem.capacityTypeS];
 				modifiedCosts[edgeIndex] += dataModel.alpha / (dataModel.speed * dataModel.drivingTimePerDay)
 						* dataModel.edgeSet.get(edgeIndex).duration;
+			}
+			
+			//service edge branching constraints
+			for(RoundServiceEdge serviceEdgeBranch:serviceEdgeBrachingSet) {
+				IloRange constraint=ServiceEdgeBranchingConstraints.get(serviceEdgeBranch);
+				double dualValue=masterData.cplex.getDual(constraint);
+				modifiedCosts[serviceEdgeBranch.branchEdgeIndex]-=dualValue;
 			}
 
 			modifiedCost = dataModel.fixedCost[pricingProblem.capacityTypeS] - masterData.cplex
@@ -391,40 +447,10 @@ public final class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProbl
 		
 		if(bd instanceof RoundQ) {
 			qBranchingSet.add((RoundQ) bd);
-//			RoundQ branch=(RoundQ) bd;
-//			
-//
-//			if (branch.roundUpOrDown == 0) { // round down
-//				try {
-//					IloLinearNumExpr expr = masterData.cplex.linearNumExpr();
-//					expr = masterData.cplex.linearNumExpr();
-////					expr.addTerm(1, masterData.qVaribles.get(branch.associatedPricingProblem));
-//					expr.addTerm(1, q[branch.associatedPricingProblem.capacityTypeS][branch.associatedPricingProblem.originNodeO]);
-//					IloRange qBranching = masterData.cplex.addGe(Math.floor(branch.qValue), expr, "round down q");
-//					qBranchingconstraints.put(branch, qBranching);
-//				} catch (IloException e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//				}
-//
-//			}
-//
-//			if (branch.roundUpOrDown == 1) {// round up
-//				try {
-//					IloLinearNumExpr expr = masterData.cplex.linearNumExpr();
-//					expr = masterData.cplex.linearNumExpr();
-////					expr.addTerm(1, masterData.qVaribles.get(branch.associatedPricingProblem));
-//					expr.addTerm(1, q[branch.associatedPricingProblem.capacityTypeS][branch.associatedPricingProblem.originNodeO]);
-//					IloRange qBranching = masterData.cplex.addLe(Math.ceil(branch.qValue), expr, "round up q");
-//					qBranchingconstraints.put(branch, qBranching);
-//				} catch (IloException e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//				}
-//
-//			}
-			
-
+		}
+		
+		if(bd instanceof RoundServiceEdge) {
+			serviceEdgeBrachingSet.add((RoundServiceEdge) bd);
 		}
 		
 		
@@ -451,6 +477,11 @@ public final class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProbl
 			this.qBranchingconstraints.remove(bd);
 			this.qBranchingSet.remove(bd);
 
+		}
+		
+		if(bd instanceof RoundServiceEdge) {
+			this.ServiceEdgeBranchingConstraints.remove(bd);
+			this.serviceEdgeBrachingSet.remove(bd);
 		}
 
 	}
