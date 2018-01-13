@@ -24,17 +24,17 @@ public class SNDRCMasterData extends MasterData<SNDRC,Cycle,SNDRCPricingProblem,
 	public final IloCplex cplex;
 	public final  List<SNDRCPricingProblem> pricingProblems;
 //	public Map<RoundQ,IloRange> qBranchingconstraints;
-	public Set<RoundQ> qBranchingSet;
-	public Map<SNDRCPricingProblem,IloNumVar> qVaribles;
+//	public Set<RoundQ> qBranchingSet;
+//	public Map<SNDRCPricingProblem,IloNumVar> qVaribles;
 	
 	
-	public SNDRCMasterData(IloCplex cplex,List<SNDRCPricingProblem> pricingProblems,Map<SNDRCPricingProblem, OrderedBiMap<Cycle, IloNumVar>> varMap,Map<SNDRCPricingProblem,IloNumVar> qVaribles){
+	public SNDRCMasterData(IloCplex cplex,List<SNDRCPricingProblem> pricingProblems,Map<SNDRCPricingProblem, OrderedBiMap<Cycle, IloNumVar>> varMap){
 		super(varMap);
 		this.cplex=cplex;
 		this.pricingProblems=pricingProblems;
 //		qBranchingconstraints=new LinkedHashMap<>();
-		qBranchingSet=new HashSet<>();
-		this.qVaribles=qVaribles;
+//		qBranchingSet=new HashSet<>();
+//		this.qVaribles=qVaribles;
 	}
 
 	
