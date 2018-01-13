@@ -140,6 +140,7 @@ public class ExactPricingProblemSolver extends AbstractPricingProblemSolver<SNDR
 					cost=dataModel.alpha*totalLength/(dataModel.speed*dataModel.drivingTimePerDay)+dataModel.fixedCost[pricingProblem.capacityTypeS];
 							
 					Cycle cycle=new Cycle(pricingProblem,false,"exactPricing",edgeIndexSet,cost,startTime);
+					
 					newRoutes.add(cycle);
 					
 				}

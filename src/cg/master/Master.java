@@ -233,7 +233,7 @@ public final class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProbl
 		try {
 			// Set time limit
 			double timeRemaining = Math.max(1, (timeLimit - System.currentTimeMillis()) / 1000.0);
-			System.out.println(masterData.cplex.toString());
+//			System.out.println(masterData.cplex.toString());
 
 			masterData.cplex.setParam(IloCplex.DoubleParam.TiLim, timeRemaining); // set time limit in seconds
 
@@ -252,17 +252,20 @@ public final class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProbl
 			} else {
 				masterData.objectiveValue = masterData.cplex.getObjValue();
 				
-				System.out.println("||-----------------------temp solution out---------------------||");
-				this.printSolution();
-				for (int s = 0; s < dataModel.numOfCapacity; s++) {
-					for (int o = 0; o < dataModel.numNode; o++) {
-						System.out.println("q"+s+","+o+"="+masterData.cplex.getValue(q[s][o]));
-					}
-				}
-				
-				for(int edgeIndex=0;edgeIndex<dataModel.numServiceArc;edgeIndex++) {
-					System.out.println("x"+edgeIndex+"= "+masterData.cplex.getValue(x[0][edgeIndex]));
-				}
+//				System.out.println("||-----------------------temp solution out---------------------||");
+//				this.printSolution();
+//				for (int s = 0; s < dataModel.numOfCapacity; s++) {
+//					for (int o = 0; o < dataModel.numNode; o++) {
+//						System.out.println("q"+s+","+o+"="+masterData.cplex.getValue(q[s][o]));
+//					}
+//				}
+//				
+//				for(int edgeIndex=0;edgeIndex<dataModel.numServiceArc;edgeIndex++) {
+//					if(masterData.cplex.getValue(x[0][edgeIndex])>config.PRECISION) {
+//						System.out.println("x"+edgeIndex+"= "+masterData.cplex.getValue(x[0][edgeIndex]));
+//					}
+//					
+//				}
 
 			}
 		} catch (IloException e) {
