@@ -71,10 +71,10 @@ public class SNDRCSolver {
 		
 		bap.close();
 		
-		for(int edgeIndex=0;edgeIndex<dataModel.edgeSet.size();edgeIndex++) {
-			Edge e=dataModel.edgeSet.get(edgeIndex);
-			System.out.println("edge"+edgeIndex+"--> start="+e.start+" end="+e.end);
-		}
+//		for(int edgeIndex=0;edgeIndex<dataModel.edgeSet.size();edgeIndex++) {
+//			Edge e=dataModel.edgeSet.get(edgeIndex);
+//			System.out.println("edge"+edgeIndex+"--> start="+e.start+" end="+e.end);
+//		}
 		
 		
 	}
@@ -82,12 +82,12 @@ public class SNDRCSolver {
 	public static void main(String[] args) throws IOException {
 //		SNDRC sndrc=new SNDRC("./data/data0.txt");
 //		SNDRC sndrc=new SNDRC("./data/small_for_test.txt");
-		SNDRC sndrc=new SNDRC("./data/data0.txt");
-//		SNDRC sndrc=new SNDRC("./data/small_for_test2.txt");
+//		SNDRC sndrc=new SNDRC("./data/data0.txt");
+		SNDRC sndrc=new SNDRC("./data/small_for_test3.txt");
 		
-		Properties properties=new Properties();
-		properties.setProperty("EXPORT_MODEL", "True");
-		Configuration.readFromFile(properties);
+//		Properties properties=new Properties();
+//		properties.setProperty("EXPORT_MODEL", "True");
+//		Configuration.readFromFile(properties);
 		
 		new SNDRCSolver(sndrc);
 		
