@@ -82,8 +82,8 @@ public class SNDRCSolver {
 	public static void main(String[] args) throws IOException {
 //		SNDRC sndrc=new SNDRC("./data/data0.txt");
 //		SNDRC sndrc=new SNDRC("./data/small_for_test.txt");
-//		SNDRC sndrc=new SNDRC("./data/data0.txt");
-		SNDRC sndrc=new SNDRC("./data/small_for_test2.txt");
+		SNDRC sndrc=new SNDRC("./data/data0.txt");
+//		SNDRC sndrc=new SNDRC("./data/small_for_test2.txt");
 		
 		Properties properties=new Properties();
 		properties.setProperty("EXPORT_MODEL", "True");

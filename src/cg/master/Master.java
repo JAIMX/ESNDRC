@@ -11,6 +11,7 @@ import org.jorlib.frameworks.columnGeneration.master.OptimizationSense;
 import org.jorlib.frameworks.columnGeneration.util.OrderedBiMap;
 
 import com.sun.corba.se.pept.transport.ContactInfo;
+import com.sun.javafx.scene.EnteredExitedHandler;
 
 import bap.branching.branchingDecisions.RoundQ;
 import bap.branching.branchingDecisions.RoundServiceEdge;
@@ -19,12 +20,14 @@ import cg.SNDRCPricingProblem;
 import ilog.concert.*;
 import ilog.cplex.*;
 import model.SNDRC;
+import model.SNDRC.Demand;
 import model.SNDRC.Edge;
 
 public final class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProblem, SNDRCMasterData> {
 
 	private IloObjective obj;
-	private IloNumVar[][] x;
+//	private IloNumVar[][] x;
+	private List<Map<Integer,IloNumVar>> x; //map:edgeIndex, x variable
 	private IloNumVar[][] q;
 	private IloRange[][] flowBalanceConstraints;
 	private IloRange[] weakForcingConstraints;
@@ -68,25 +71,92 @@ public final class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProbl
 			cplex.setParam(IloCplex.IntParam.Threads, config.MAXTHREADS);
 
 			// Define variables x
-			x = new IloNumVar[dataModel.numDemand][dataModel.numArc];
-			for (int p = 0; p < dataModel.numDemand; p++) {
-				for (int arc = 0; arc < dataModel.numArc; arc++) {
-					Edge edge = dataModel.edgeSet.get(arc);
-//					x[p][arc] = cplex.numVar(0, Double.MAX_VALUE, "x" + edge.start + "," + edge.end + "," + p);
-					x[p][arc] = cplex.numVar(0, Double.MAX_VALUE, "x" +p+","+ edge.start + "," + edge.end );
-				}
+//			x = new IloNumVar[dataModel.numDemand][dataModel.numArc];
+			x=new ArrayList<>();
+			for(int p=0;p<dataModel.numDemand;p++) {
+				Map<Integer,IloNumVar> initialX=new HashMap<Integer,IloNumVar>();
+				x.add(initialX);
 			}
+			
+			// add x variables with edges only needed(dp process)
+			for(int p=0;p<dataModel.numDemand;p++) {
+				boolean[] achieve=new boolean[dataModel.abstractNumNode];
+				for(int i=0;i<achieve.length;i++) {
+					achieve[i]=false;
+				}
+				
+				Demand demand=dataModel.demandSet.get(p);
+				int originNodeIndex=demand.origin*dataModel.timePeriod+demand.timeAvailable;
+				int startTime=demand.timeAvailable;
+				int endTime=demand.timeDue;
+				int durationLimit;
+				achieve[originNodeIndex]=true;
+				
+				
+				if(endTime>startTime) {
+					durationLimit=endTime-startTime;
+				}else {
+					durationLimit=endTime-startTime+dataModel.timePeriod;
+				}
+				
+				
+				int timeDuration=durationLimit;
+				
+				for(int t=0;t<timeDuration;t++) {
+					int currentTime=t+startTime;
+					currentTime=currentTime%dataModel.timePeriod;
+					
+					for(int localNode=0;localNode<dataModel.numNode;localNode++) {
+						int currentNodeIndex=localNode*dataModel.timePeriod+currentTime;
+						
+						if(achieve[currentNodeIndex]) {
+							for(int edgeIndex:dataModel.pointToEdgeSet.get(currentNodeIndex)) {
+								Edge edge=dataModel.edgeSet.get(edgeIndex);
+								
+								if(edge.duration<durationLimit||(edge.duration==durationLimit&&edge.end==demand.destination*dataModel.timePeriod+endTime)) {
+									IloNumVar varX=cplex.numVar(0, demand.volume,"x" +p+","+ edge.start + "," + edge.end );
+									x.get(p).put(edgeIndex, varX);
+									achieve[edge.end]=true;
+								}
+							}
+						}
+						
+					}
+					
+					durationLimit--;
+					
+				}
+				
+				
+				
+				
+			}
+			
+//			for (int p = 0; p < dataModel.numDemand; p++) {
+//				for (int arc = 0; arc < dataModel.numArc; arc++) {
+//					Edge edge = dataModel.edgeSet.get(arc);
+//					x[p][arc] = cplex.numVar(0, Double.MAX_VALUE, "x" +p+","+ edge.start + "," + edge.end );
+//				}
+//			}
 
 			// Define the objective
 			/**
 			 * Here we assume the cost of edge AT is 0
 			 */
 			IloLinearNumExpr exprObj = cplex.linearNumExpr();
-			for (int p = 0; p < dataModel.numDemand; p++) {
-				for (int edgeIndex = 0; edgeIndex < dataModel.numServiceArc; edgeIndex++) {
-					exprObj.addTerm(dataModel.beta * dataModel.edgeSet.get(edgeIndex).duration, x[p][edgeIndex]);
+//			for (int p = 0; p < dataModel.numDemand; p++) {
+//				for (int edgeIndex = 0; edgeIndex < dataModel.numServiceArc; edgeIndex++) {
+//					exprObj.addTerm(dataModel.beta * dataModel.edgeSet.get(edgeIndex).duration, x[p][edgeIndex]);
+//				}
+//			}
+			
+			for(int p=0;p<dataModel.numDemand;p++) {
+				Map<Integer,IloNumVar> map=x.get(p);
+				for(int edgeIndex:map.keySet()) {
+					exprObj.addTerm(dataModel.beta*dataModel.edgeSet.get(edgeIndex).duration, map.get(edgeIndex));
 				}
 			}
+			
 
 			obj = cplex.addMinimize(exprObj);
 
@@ -95,16 +165,24 @@ public final class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProbl
 
 			IloLinearNumExpr expr = cplex.linearNumExpr();
 			for (int p = 0; p < dataModel.numDemand; p++) {
+				Map<Integer,IloNumVar> map=x.get(p);
+				
 				for (int i = 0; i < dataModel.abstractNumNode; i++) {
 					expr.clear();
 					// edges which point from i
 					for (int edgeIndex : dataModel.pointToEdgeSet.get(i)) {
-						expr.addTerm(1, x[p][edgeIndex]);
+//						expr.addTerm(1, x[p][edgeIndex]);
+						if(map.containsKey(edgeIndex)) {
+							expr.addTerm(1, map.get(edgeIndex));
+						}
 					}
 
 					// edges which point to i
 					for (int edgeIndex : dataModel.pointFromEdgeSet.get(i)) {
-						expr.addTerm(-1, x[p][edgeIndex]);
+//						expr.addTerm(-1, x[p][edgeIndex]);
+						if(map.containsKey(edgeIndex)) {
+							expr.addTerm(-1, map.get(edgeIndex));
+						}
 					}
 					flowBalanceConstraints[p][i] = cplex.addEq(dataModel.b[p][i], expr);
 
@@ -116,7 +194,10 @@ public final class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProbl
 			for (int arcIndex = 0; arcIndex < dataModel.numServiceArc; arcIndex++) {
 				expr.clear();
 				for (int p = 0; p < dataModel.numDemand; p++) {
-					expr.addTerm(1, x[p][arcIndex]);
+					if(x.get(p).containsKey(arcIndex)) {
+						expr.addTerm(1, x.get(p).get(arcIndex));
+					}
+//					expr.addTerm(1, x[p][arcIndex]);
 				}
 
 				weakForcingConstraints[arcIndex] = cplex.addGe(0, expr);
@@ -262,10 +343,19 @@ public final class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProbl
 				
 				for(int demand=0;demand<dataModel.numDemand;demand++) {
 					for(int edgeIndex=0;edgeIndex<dataModel.numArc;edgeIndex++) {
-						if(masterData.cplex.getValue(x[demand][edgeIndex])>config.PRECISION) {
-							Edge edge=dataModel.edgeSet.get(edgeIndex);
-							System.out.println("x["+demand+"]:"+edge.start+"->"+edge.end+"= "+masterData.cplex.getValue(x[demand][edgeIndex]));
+						
+						if(x.get(demand).containsKey(edgeIndex)) {
+							if(masterData.cplex.getValue(x.get(demand).get(edgeIndex))>config.PRECISION) {
+								Edge edge=dataModel.edgeSet.get(edgeIndex);
+								System.out.println("x["+demand+"]:"+edge.start+"->"+edge.end+"= "+masterData.cplex.getValue(x.get(demand).get(edgeIndex)));
+							}
 						}
+//						if(masterData.cplex.getValue(x[demand][edgeIndex])>config.PRECISION) {
+//							Edge edge=dataModel.edgeSet.get(edgeIndex);
+//							System.out.println("x["+demand+"]:"+edge.start+"->"+edge.end+"= "+masterData.cplex.getValue(x[demand][edgeIndex]));
+//						}
+						
+						
 					}
 				}
 				

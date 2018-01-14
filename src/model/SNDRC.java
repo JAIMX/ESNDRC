@@ -18,13 +18,13 @@ public class SNDRC implements ModelInterface {
 		private int duration;
 	}
 
-	private class Demand {
-		private int origin;
-		private int destination;
-		private int timeAvailable;
-		private int timeDue;
-		private int volume;
-		private double valueOfTime;
+	public class Demand {
+		public int origin;
+		public int destination;
+		public int timeAvailable;
+		public int timeDue;
+		public int volume;
+		public double valueOfTime;
 	}
 
 	public class Edge {
