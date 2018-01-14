@@ -51,17 +51,24 @@ public class ExactPricingProblemSolver extends AbstractPricingProblemSolver<SNDR
 			//service arcs
 			for(int edgeIndex:dataModel.pointToEdgeSet.get(originNodeIndex)){
 				Edge edge=dataModel.edgeSet.get(edgeIndex);
-				dpFunction[edge.end]=modifiedCosts[edgeIndex];
-				pathRecord[edge.end]=edgeIndex;
+				if(edge.edgeType==0) {
+					dpFunction[edge.end]=modifiedCosts[edgeIndex];
+					pathRecord[edge.end]=edgeIndex;
+				}else { // holding arcs
+					dpFunction[edge.end]=0;
+					pathRecord[edge.end]=edgeIndex;
+				}
 			}
-			//holding arcs
-			if(startTime==dataModel.timePeriod-1){
-				dpFunction[originNodeIndex-dataModel.timePeriod+1]=0;
-				pathRecord[originNodeIndex-dataModel.timePeriod+1]=-1;
-			}else {
-				dpFunction[originNodeIndex+1]=0;
-				pathRecord[originNodeIndex+1]=-1;
-			}
+			
+			
+//			//holding arcs
+//			if(startTime==dataModel.timePeriod-1){
+//				dpFunction[originNodeIndex-dataModel.timePeriod+1]=0;
+//				pathRecord[originNodeIndex-dataModel.timePeriod+1]=-1;
+//			}else {
+//				dpFunction[originNodeIndex+1]=0;
+//				pathRecord[originNodeIndex+1]=-1;
+//			}
 			
 			
 			int durationLimit=dataModel.timePeriod;
@@ -74,35 +81,46 @@ public class ExactPricingProblemSolver extends AbstractPricingProblemSolver<SNDR
 				for(int localNode=0;localNode<dataModel.numNode;localNode++) {
 					int currentNodeIndex=localNode*dataModel.timePeriod+time;
 					if(dpFunction[currentNodeIndex]<Double.MAX_VALUE-1) {
-						// service arcs
+						
+						
 						for(int edgeIndex:dataModel.pointToEdgeSet.get(currentNodeIndex)) {
 							Edge edge=dataModel.edgeSet.get(edgeIndex);
-							if(edge.duration<durationLimit||(edge.duration==durationLimit&&edge.end==originNodeIndex)) {
-								
-								if(dpFunction[edge.end]>dpFunction[currentNodeIndex]+modifiedCosts[edgeIndex]) {
-									dpFunction[edge.end]=dpFunction[currentNodeIndex]+modifiedCosts[edgeIndex];
-									pathRecord[edge.end]=edgeIndex;
+							if(edge.edgeType==0) {  // service arcs 
+								if(edge.duration<durationLimit||(edge.duration==durationLimit&&edge.end==originNodeIndex)) {
+									
+									if(dpFunction[edge.end]>dpFunction[currentNodeIndex]+modifiedCosts[edgeIndex]) {
+										dpFunction[edge.end]=dpFunction[currentNodeIndex]+modifiedCosts[edgeIndex];
+										pathRecord[edge.end]=edgeIndex;
+									}
+									
 								}
-								
+							}else { // holding arcs
+								if(durationLimit>1||(durationLimit==1&&localNode==pricingProblem.originNodeO)) {
+									if(dpFunction[edge.end]>dpFunction[currentNodeIndex]) {
+										dpFunction[edge.end]=dpFunction[currentNodeIndex];
+										pathRecord[edge.end]=edgeIndex;
+									}
+								}
 							}
+
 							
 						}
 						
-						//holding arcs
-						int testNodeIndex;
-						if(time==dataModel.timePeriod-1) {
-							testNodeIndex=localNode*dataModel.timePeriod;
-						}else {
-							testNodeIndex=currentNodeIndex+1;
-						}
-						
-
-						if(durationLimit>1||(durationLimit==1&&localNode==pricingProblem.originNodeO)) {
-							if(dpFunction[testNodeIndex]>dpFunction[currentNodeIndex]) {
-								dpFunction[testNodeIndex]=dpFunction[currentNodeIndex];
-								pathRecord[testNodeIndex]=-1;
-							}
-						}
+//						//holding arcs
+//						int testNodeIndex;
+//						if(time==dataModel.timePeriod-1) {
+//							testNodeIndex=localNode*dataModel.timePeriod;
+//						}else {
+//							testNodeIndex=currentNodeIndex+1;
+//						}
+//						
+//
+//						if(durationLimit>1||(durationLimit==1&&localNode==pricingProblem.originNodeO)) {
+//							if(dpFunction[testNodeIndex]>dpFunction[currentNodeIndex]) {
+//								dpFunction[testNodeIndex]=dpFunction[currentNodeIndex];
+//								pathRecord[testNodeIndex]=-1;
+//							}
+//						}
 						
 						
 					}
@@ -122,26 +140,46 @@ public class ExactPricingProblemSolver extends AbstractPricingProblemSolver<SNDR
 					
 					do {
 						//update lastNodeIndex
-						if(pathRecord[currentNodeIndex]>=0) {
-							lastNodeIndex=dataModel.edgeSet.get(pathRecord[currentNodeIndex]).start;
-							totalLength+=dataModel.edgeSet.get(pathRecord[currentNodeIndex]).duration;
-							edgeIndexSet.add(pathRecord[currentNodeIndex]);
-						}else {// holding arcs
-							if(currentNodeIndex%dataModel.timePeriod==0) {
-								lastNodeIndex=currentNodeIndex+dataModel.timePeriod-1;
-							}else lastNodeIndex=currentNodeIndex-1;
-						}
+						Edge edge=dataModel.edgeSet.get(pathRecord[currentNodeIndex]);
+//						if(edge.edgeType==0) {  // service arcs
+//							lastNodeIndex=edge.start;
+//							totalLength+=edge.duration;
+//							edgeIndexSet.add(pathRecord[currentNodeIndex]);
+//						}else {// holding arcs
+//							if(currentNodeIndex%dataModel.timePeriod==0) {
+//								lastNodeIndex=currentNodeIndex+dataModel.timePeriod-1;
+//							}else lastNodeIndex=currentNodeIndex-1;
+//						}
+						
+						lastNodeIndex=edge.start;
+						totalLength+=edge.duration;
+						edgeIndexSet.add(pathRecord[currentNodeIndex]);
 						
 						//update currentNodeIndex
 						currentNodeIndex=lastNodeIndex;
 						
 					}while(lastNodeIndex!=originNodeIndex);
 					
+					
 					cost=dataModel.alpha*totalLength/(dataModel.speed*dataModel.drivingTimePerDay)+dataModel.fixedCost[pricingProblem.capacityTypeS];
 							
-					Cycle cycle=new Cycle(pricingProblem,false,"exactPricing",edgeIndexSet,cost,startTime);
+
 					
-					newRoutes.add(cycle);
+					// if just the start time is different, we only add one cycle
+					boolean repeat=false;
+					for(Cycle route:newRoutes) {
+						if (edgeIndexSet.equals(route.edgeIndexSet)) {
+							repeat=true;
+							break;
+						}
+					}
+					
+					if(!repeat) {
+						Cycle cycle=new Cycle(pricingProblem,false,"exactPricing",edgeIndexSet,cost,startTime);
+						newRoutes.add(cycle);
+					}
+					
+
 					
 				}
 			}

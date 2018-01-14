@@ -70,10 +70,10 @@ public final class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProbl
 			// Define variables x
 			x = new IloNumVar[dataModel.numDemand][dataModel.numArc];
 			for (int p = 0; p < dataModel.numDemand; p++) {
-				for (int arc = 0; arc < dataModel.numServiceArc; arc++) {
+				for (int arc = 0; arc < dataModel.numArc; arc++) {
 					Edge edge = dataModel.edgeSet.get(arc);
 //					x[p][arc] = cplex.numVar(0, Double.MAX_VALUE, "x" + edge.start + "," + edge.end + "," + p);
-					x[p][arc] = cplex.numVar(0, Double.MAX_VALUE, "x" + edge.start + "," + edge.end );
+					x[p][arc] = cplex.numVar(0, Double.MAX_VALUE, "x" +p+","+ edge.start + "," + edge.end );
 				}
 			}
 
@@ -252,14 +252,24 @@ public final class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProbl
 			} else {
 				masterData.objectiveValue = masterData.cplex.getObjValue();
 				
-//				System.out.println("||-----------------------temp solution out---------------------||");
-//				this.printSolution();
-//				for (int s = 0; s < dataModel.numOfCapacity; s++) {
-//					for (int o = 0; o < dataModel.numNode; o++) {
-//						System.out.println("q"+s+","+o+"="+masterData.cplex.getValue(q[s][o]));
-//					}
-//				}
-//				
+				System.out.println("||-----------------------temp solution out---------------------||");
+				this.printSolution();
+				for (int s = 0; s < dataModel.numOfCapacity; s++) {
+					for (int o = 0; o < dataModel.numNode; o++) {
+						System.out.println("q"+s+","+o+"="+masterData.cplex.getValue(q[s][o]));
+					}
+				}
+				
+				for(int demand=0;demand<dataModel.numDemand;demand++) {
+					for(int edgeIndex=0;edgeIndex<dataModel.numArc;edgeIndex++) {
+						if(masterData.cplex.getValue(x[demand][edgeIndex])>config.PRECISION) {
+							Edge edge=dataModel.edgeSet.get(edgeIndex);
+							System.out.println("x["+demand+"]:"+edge.start+"->"+edge.end+"= "+masterData.cplex.getValue(x[demand][edgeIndex]));
+						}
+					}
+				}
+				
+				
 //				for(int edgeIndex=0;edgeIndex<dataModel.numServiceArc;edgeIndex++) {
 //					if(masterData.cplex.getValue(x[0][edgeIndex])>config.PRECISION) {
 //						System.out.println("x"+edgeIndex+"= "+masterData.cplex.getValue(x[0][edgeIndex]));
@@ -294,8 +304,11 @@ public final class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProbl
 
 			// weak forcing constraints
 			for (int edgeIndex : column.edgeIndexSet) {
-				iloColumn = iloColumn.and(masterData.cplex.column(weakForcingConstraints[edgeIndex],
-						-dataModel.capacity[column.associatedPricingProblem.capacityTypeS]));
+				if(dataModel.edgeSet.get(edgeIndex).edgeType==0) {
+					iloColumn = iloColumn.and(masterData.cplex.column(weakForcingConstraints[edgeIndex],
+							-dataModel.capacity[column.associatedPricingProblem.capacityTypeS]));
+				}
+
 			}
 
 			// resource bound constraints

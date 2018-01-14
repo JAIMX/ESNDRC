@@ -29,7 +29,7 @@ public final class Cycle  extends AbstractColumn<SNDRC, SNDRCPricingProblem>{
 		}
 		
 		Cycle other=(Cycle)o;
-		return this.edgeIndexSet.equals(other.edgeIndexSet)&& (this.isArtificialColumn==other.isArtificialColumn)&&(this.associatedPricingProblem==other.associatedPricingProblem)&&(this.startTime==other.startTime);
+		return this.edgeIndexSet.equals(other.edgeIndexSet)&& (this.isArtificialColumn==other.isArtificialColumn)&&(this.associatedPricingProblem==other.associatedPricingProblem);
 		
 	}
 	

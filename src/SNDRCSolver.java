@@ -16,6 +16,7 @@ import cg.ExactPricingProblemSolver;
 import cg.SNDRCPricingProblem;
 import cg.master.Master;
 import model.SNDRC;
+import model.SNDRC.Edge;
 
 public class SNDRCSolver {
 	public SNDRCSolver(SNDRC dataModel) {
@@ -69,6 +70,11 @@ public class SNDRCSolver {
 		}
 		
 		bap.close();
+		
+		for(int edgeIndex=0;edgeIndex<dataModel.edgeSet.size();edgeIndex++) {
+			Edge e=dataModel.edgeSet.get(edgeIndex);
+			System.out.println("edge"+edgeIndex+"--> start="+e.start+" end="+e.end);
+		}
 		
 		
 	}

@@ -46,7 +46,9 @@ public class BranchOnServiceEdge extends AbstractBranchCreator<SNDRC, Cycle, SND
 			Set<Integer> cycleEdgeIndexSet=cycle.edgeIndexSet;
 			double value=cycle.value;
 			for(int edgeIndex:cycleEdgeIndexSet) {
-				serviceEdgeCount[edgeIndex]+=value;
+				if(dataModel.edgeSet.get(edgeIndex).edgeType==0) {
+					serviceEdgeCount[edgeIndex]+=value;
+				}
 			}
 		}
 		

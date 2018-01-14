@@ -31,6 +31,7 @@ public class SNDRC implements ModelInterface {
 		public int start, end;
 		public double duration;
 		public int u, v, t1, t2;
+		public int edgeType;// 0: service arc | 1: holding arc
 	}
 
 	public final int fleetSize;
@@ -211,6 +212,7 @@ public class SNDRC implements ModelInterface {
 				newEdge.t1 = time;
 				newEdge.t2 = timeEnd;
 				newEdge.duration=service.duration;
+				newEdge.edgeType=0;
 				edgeSet.add(newEdge);
 				pointToEdgeSet.get(start).add(edgeSet.size() - 1);
 				pointFromEdgeSet.get(end).add(edgeSet.size() - 1);
@@ -227,20 +229,55 @@ public class SNDRC implements ModelInterface {
 				newEdge.t2 = timeEnd;
 				newEdge.duration=service.duration;
 				edgeSet.add(newEdge);
+				newEdge.edgeType=0;
 				pointToEdgeSet.get(start).add(edgeSet.size() - 1);
 				pointFromEdgeSet.get(end).add(edgeSet.size() - 1);
 				
 			}
 
 		}
+		
 		numServiceArc = edgeSet.size();
+		
+		
+		// add holding arcs
+		for(int localNode=0;localNode<numNode;localNode++) {
+			for(int time=0;time<timePeriod;time++) {
+				
+				Edge newEdge = new Edge();
+				int start = localNode*timePeriod+time;
+				int end;
+				if(time==timePeriod-1) {
+					end=localNode*timePeriod;
+				}else end=start+1;
+				
+				newEdge.start = start;
+				newEdge.end = end;
+				newEdge.u = localNode;
+				newEdge.v = localNode;
+				newEdge.t1 = time;
+				if(time==timePeriod-1) {
+					newEdge.t2=0;
+				}else newEdge.t2=time+1;
+				newEdge.duration=0;
+//				newEdge.duration=1;
+				newEdge.edgeType=1;
+				edgeSet.add(newEdge);
+				pointToEdgeSet.get(start).add(edgeSet.size() - 1);
+				pointFromEdgeSet.get(end).add(edgeSet.size() - 1);
+			}
+		}
+		
+
+		
+
 		numHoldingArc = abstractNumNode;
 		numArc = numServiceArc + numHoldingArc;
 		
-		for(int edgeIndex=0;edgeIndex<edgeSet.size();edgeIndex++) {
-			Edge e=edgeSet.get(edgeIndex);
-			System.out.println("edge"+edgeIndex+"--> start="+e.start+" end="+e.end);
-		}
+		
+
+		
+
 
 	}
 
