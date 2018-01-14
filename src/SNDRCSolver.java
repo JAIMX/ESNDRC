@@ -81,6 +81,7 @@ public class SNDRCSolver {
 //		SNDRC sndrc=new SNDRC("./data/data0.txt");
 //		SNDRC sndrc=new SNDRC("./data/small_for_test.txt");
 //		SNDRC sndrc=new SNDRC("./data/data0.txt");
+//		SNDRC sndrc=new SNDRC("./data/small_for_test3.txt");
 		SNDRC sndrc=new SNDRC("./data/small_for_test3.txt");
 		
 //		Properties properties=new Properties();
