@@ -3,16 +3,16 @@ Fleet size
 No of nodes
 4
 Time periods
-5
+15
 Service connections and holding arcs
 6
 Connection	Origin	Destination		Service duration
-1	1	2	2
-2   1   3   1
-3   1   4   1
-4	2	3	2
-5   2   4   1
-6   3   4   1
+1	1	2	4
+2   1   3   3
+3   1   4   5
+4	2	3	5
+5   2   4   3
+6   3   4   4
 Demand
 4
 Commodity	Origin node	Destination node	Time available Time due	Volume

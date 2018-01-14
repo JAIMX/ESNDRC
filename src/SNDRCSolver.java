@@ -6,7 +6,6 @@ import org.jorlib.frameworks.columnGeneration.branchAndPrice.AbstractBranchCreat
 import org.jorlib.frameworks.columnGeneration.io.SimpleBAPLogger;
 import org.jorlib.frameworks.columnGeneration.io.SimpleDebugger;
 import org.jorlib.frameworks.columnGeneration.pricing.AbstractPricingProblemSolver;
-import org.jorlib.frameworks.columnGeneration.util.Configuration;
 
 import bap.BranchAndPrice;
 import bap.branching.BranchOnQVarible;
@@ -16,7 +15,6 @@ import cg.ExactPricingProblemSolver;
 import cg.SNDRCPricingProblem;
 import cg.master.Master;
 import model.SNDRC;
-import model.SNDRC.Edge;
 
 public class SNDRCSolver {
 	public SNDRCSolver(SNDRC dataModel) {
@@ -46,7 +44,7 @@ public class SNDRCSolver {
 		BranchAndPrice bap=new BranchAndPrice(dataModel, master, pricingProblems, solvers, branchCreators,Double.MAX_VALUE);
 
 		//OPTIONAL: Attach a debugger
-		SimpleDebugger debugger=new SimpleDebugger(bap, true);
+//		SimpleDebugger debugger=new SimpleDebugger(bap, true);
 
 		//OPTIONAL: Attach a logger to the Branch-and-Price procedure.
 		SimpleBAPLogger logger=new SimpleBAPLogger(bap, new File("./output/SNDRC.log"));
