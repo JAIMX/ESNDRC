@@ -39,11 +39,20 @@ public class BranchAndPrice extends AbstractBranchAndPrice<SNDRC, Cycle, SNDRCPr
     	for(int edgeIndex=0;edgeIndex<dataModel.numServiceArc;edgeIndex++) {
     		Set<Integer> set=new HashSet<>();
     		set.add(edgeIndex);
-    		Cycle cycle=new Cycle(pricingProblems.get(0),true,"Artificial",set,100000000,0);
+    		Cycle cycle=new Cycle(pricingProblems.get(0),true,"Artificial",set,100000000,0,0);
     		artificalVars.add(cycle);
     	}
     	
-    	// for service edge branching constraints
+    	// for resource bound constraints
+    	int count=0;
+    	for(int capacityType=0;capacityType<dataModel.numOfCapacity;capacityType++) {
+    		for(int originNode=0;originNode<dataModel.numNode;originNode++) {
+    			Set<Integer> set=new HashSet<>();
+    			Cycle cycle=new Cycle(pricingProblems.get(count), true, "Artificial", set, 100000000, 0, 1);
+    			artificalVars.add(cycle);
+    			count++;
+    		}
+    	}
     
         return artificalVars;
     }

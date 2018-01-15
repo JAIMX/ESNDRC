@@ -175,7 +175,7 @@ public class ExactPricingProblemSolver extends AbstractPricingProblemSolver<SNDR
 					}
 					
 					if(!repeat) {
-						Cycle cycle=new Cycle(pricingProblem,false,"exactPricing",edgeIndexSet,cost,startTime);
+						Cycle cycle=new Cycle(pricingProblem,false,"exactPricing",edgeIndexSet,cost,startTime,0);
 						newRoutes.add(cycle);
 					}
 					

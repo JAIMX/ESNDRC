@@ -11,13 +11,15 @@ public final class Cycle  extends AbstractColumn<SNDRC, SNDRCPricingProblem>{
 	public final Set<Integer> edgeIndexSet;
 	public final int startTime;
 	public final double cost;// parameter in the objective expression
+	public final int ifForResourceBoundConstraints;//0: no; 1:yes
 	
 	
-	public Cycle(SNDRCPricingProblem associatedPricingProblem, boolean isArtificial, String creator, Set<Integer> edgeIndexSet,double cost,int startTime) {
+	public Cycle(SNDRCPricingProblem associatedPricingProblem, boolean isArtificial, String creator, Set<Integer> edgeIndexSet,double cost,int startTime,int ifForResourceBoundConstraints) {
 		super(associatedPricingProblem,isArtificial,creator);
 		this.edgeIndexSet=edgeIndexSet;
 		this.cost=cost;
 		this.startTime=startTime;
+		this.ifForResourceBoundConstraints=ifForResourceBoundConstraints;
 	}
 	
 	@Override

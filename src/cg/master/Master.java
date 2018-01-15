@@ -14,6 +14,7 @@ import bap.branching.branchingDecisions.RoundQ;
 import bap.branching.branchingDecisions.RoundServiceEdge;
 import cg.Cycle;
 import cg.SNDRCPricingProblem;
+import ch.qos.logback.core.db.dialect.HSQLDBDialect;
 import ilog.concert.*;
 import ilog.cplex.*;
 import model.SNDRC;
@@ -24,7 +25,7 @@ public final class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProbl
 
 	private IloObjective obj;
 //	private IloNumVar[][] x;
-	private List<Set<Integer>> edgesForX;
+//	private List<Set<Integer>> edgesForX;
 	private List<Map<Integer,IloNumVar>> x; //map:edgeIndex, x variable
 	private IloNumVar[][] q;
 	private IloRange[][] flowBalanceConstraints;
@@ -52,7 +53,6 @@ public final class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProbl
 		// masterData.getNrColumns());
 		
 		
-		this.edgesForX=new ArrayList<Set<Integer>>();
 		
 	}
 
@@ -81,55 +81,65 @@ public final class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProbl
 				x.add(initialX);
 			}
 			
-			// add x variables with edges only needed(dp process)
+//			// add x variables with edges only needed(dp process)
+//			for(int p=0;p<dataModel.numDemand;p++) {
+//				boolean[] achieve=new boolean[dataModel.abstractNumNode];
+//				for(int i=0;i<achieve.length;i++) {
+//					achieve[i]=false;
+//				}
+//				
+//				Demand demand=dataModel.demandSet.get(p);
+//				int originNodeIndex=demand.origin*dataModel.timePeriod+demand.timeAvailable;
+//				int startTime=demand.timeAvailable;
+//				int endTime=demand.timeDue;
+//				int durationLimit;
+//				achieve[originNodeIndex]=true;
+//				
+//				
+//				if(endTime>startTime) {
+//					durationLimit=endTime-startTime;
+//				}else {
+//					durationLimit=endTime-startTime+dataModel.timePeriod;
+//				}
+//				
+//				
+//				int timeDuration=durationLimit;
+//				
+//				for(int t=0;t<timeDuration;t++) {
+//					int currentTime=t+startTime;
+//					currentTime=currentTime%dataModel.timePeriod;
+//					
+//					for(int localNode=0;localNode<dataModel.numNode;localNode++) {
+//						int currentNodeIndex=localNode*dataModel.timePeriod+currentTime;
+//						
+//						if(achieve[currentNodeIndex]) {
+//							for(int edgeIndex:dataModel.pointToEdgeSet.get(currentNodeIndex)) {
+//								Edge edge=dataModel.edgeSet.get(edgeIndex);
+//								
+//								if(edge.duration<durationLimit||(edge.duration==durationLimit&&edge.end==demand.destination*dataModel.timePeriod+endTime)) {
+//									IloNumVar varX=cplex.numVar(0, demand.volume,"x" +p+","+ edge.start + "," + edge.end );
+//									x.get(p).put(edgeIndex, varX);
+//									achieve[edge.end]=true;
+//								}
+//							}
+//						}
+//						
+//					}
+//					
+//					durationLimit--;
+//					
+//				}
+//				
+//			}
+			
+			
+			// add x variables
 			for(int p=0;p<dataModel.numDemand;p++) {
-				boolean[] achieve=new boolean[dataModel.abstractNumNode];
-				for(int i=0;i<achieve.length;i++) {
-					achieve[i]=false;
+				for(int edgeIndex:dataModel.edgesForX.get(p)) {
+					Edge edge=dataModel.edgeSet.get(edgeIndex);
+					IloNumVar varX=cplex.numVar(0, dataModel.demandSet.get(p).volume,"x" +p+","+ edge.start + "," + edge.end );
+					x.get(p).put(edgeIndex, varX);
 				}
-				
-				Demand demand=dataModel.demandSet.get(p);
-				int originNodeIndex=demand.origin*dataModel.timePeriod+demand.timeAvailable;
-				int startTime=demand.timeAvailable;
-				int endTime=demand.timeDue;
-				int durationLimit;
-				achieve[originNodeIndex]=true;
-				
-				
-				if(endTime>startTime) {
-					durationLimit=endTime-startTime;
-				}else {
-					durationLimit=endTime-startTime+dataModel.timePeriod;
-				}
-				
-				
-				int timeDuration=durationLimit;
-				
-				for(int t=0;t<timeDuration;t++) {
-					int currentTime=t+startTime;
-					currentTime=currentTime%dataModel.timePeriod;
-					
-					for(int localNode=0;localNode<dataModel.numNode;localNode++) {
-						int currentNodeIndex=localNode*dataModel.timePeriod+currentTime;
-						
-						if(achieve[currentNodeIndex]) {
-							for(int edgeIndex:dataModel.pointToEdgeSet.get(currentNodeIndex)) {
-								Edge edge=dataModel.edgeSet.get(edgeIndex);
-								
-								if(edge.duration<durationLimit||(edge.duration==durationLimit&&edge.end==demand.destination*dataModel.timePeriod+endTime)) {
-									IloNumVar varX=cplex.numVar(0, demand.volume,"x" +p+","+ edge.start + "," + edge.end );
-									x.get(p).put(edgeIndex, varX);
-									achieve[edge.end]=true;
-								}
-							}
-						}
-						
-					}
-					
-					durationLimit--;
-					
-				}
-				
 			}
 			
 
@@ -409,6 +419,13 @@ public final class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProbl
 						iloColumn=iloColumn.and(masterData.cplex.column(constraint,1));
 					}
 				}
+			}
+			
+			
+			// add artificial cycles for resource bound constraints
+			if(column.isArtificialColumn&&column.ifForResourceBoundConstraints==1) {
+				IloRange constraint=resourceBoundConstraints[column.associatedPricingProblem.capacityTypeS][column.associatedPricingProblem.originNodeO];
+				iloColumn=iloColumn.and(masterData.cplex.column(constraint,1));
 			}
 
 

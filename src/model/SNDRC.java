@@ -4,9 +4,14 @@ import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Scanner;
+import java.util.Set;
 
 import org.jorlib.frameworks.columnGeneration.model.ModelInterface;
+
+import model.SNDRC.Demand;
+import model.SNDRC.Edge;
 
 public class SNDRC implements ModelInterface {
 
@@ -56,6 +61,8 @@ public class SNDRC implements ModelInterface {
 																				// holding
 																				// arcs
 	public final int numServiceArc, numHoldingArc, numArc;
+	
+	public List<Set<Integer>> edgesForX;
 
 	public SNDRC(String filename) throws IOException {
 		// if (readType == 1) {
@@ -273,6 +280,63 @@ public class SNDRC implements ModelInterface {
 
 		numHoldingArc = abstractNumNode;
 		numArc = numServiceArc + numHoldingArc;
+		
+		
+		this.edgesForX=new ArrayList<Set<Integer>>();
+		for(int p=0;p<numDemand;p++) {
+			Set<Integer> set=new HashSet<>();
+			edgesForX.add(set);
+		}
+		
+		// add x variables with edges only needed(dp process)
+		for(int p=0;p<numDemand;p++) {
+			boolean[] achieve=new boolean[abstractNumNode];
+			for(int i=0;i<achieve.length;i++) {
+				achieve[i]=false;
+			}
+			
+			Demand demand=demandSet.get(p);
+			int originNodeIndex=demand.origin*timePeriod+demand.timeAvailable;
+			int startTime=demand.timeAvailable;
+			int endTime=demand.timeDue;
+			int durationLimit;
+			achieve[originNodeIndex]=true;
+			
+			
+			if(endTime>startTime) {
+				durationLimit=endTime-startTime;
+			}else {
+				durationLimit=endTime-startTime+timePeriod;
+			}
+			
+			
+			int timeDuration=durationLimit;
+			
+			for(int t=0;t<timeDuration;t++) {
+				int currentTime=t+startTime;
+				currentTime=currentTime%timePeriod;
+				
+				for(int localNode=0;localNode<numNode;localNode++) {
+					int currentNodeIndex=localNode*timePeriod+currentTime;
+					
+					if(achieve[currentNodeIndex]) {
+						for(int edgeIndex:pointToEdgeSet.get(currentNodeIndex)) {
+							Edge edge=edgeSet.get(edgeIndex);
+							
+							if(edge.duration<durationLimit||(edge.duration==durationLimit&&edge.end==demand.destination*timePeriod+endTime)) {
+								edgesForX.get(p).add(edgeIndex);
+								achieve[edge.end]=true;
+							}
+						}
+					}
+					
+				}
+				
+				durationLimit--;
+				
+			}
+			
+		}
 		
 		
 
