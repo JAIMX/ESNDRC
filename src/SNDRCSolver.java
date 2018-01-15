@@ -6,6 +6,7 @@ import org.jorlib.frameworks.columnGeneration.branchAndPrice.AbstractBranchCreat
 import org.jorlib.frameworks.columnGeneration.io.SimpleBAPLogger;
 import org.jorlib.frameworks.columnGeneration.io.SimpleDebugger;
 import org.jorlib.frameworks.columnGeneration.pricing.AbstractPricingProblemSolver;
+import org.jorlib.frameworks.columnGeneration.util.Configuration;
 
 import bap.BranchAndPrice;
 import bap.branching.BranchOnQVarible;
@@ -15,6 +16,7 @@ import cg.ExactPricingProblemSolver;
 import cg.SNDRCPricingProblem;
 import cg.master.Master;
 import model.SNDRC;
+import model.SNDRC.Edge;
 
 public class SNDRCSolver {
 	public SNDRCSolver(SNDRC dataModel) {
@@ -69,10 +71,10 @@ public class SNDRCSolver {
 		
 		bap.close();
 		
-//		for(int edgeIndex=0;edgeIndex<dataModel.edgeSet.size();edgeIndex++) {
-//			Edge e=dataModel.edgeSet.get(edgeIndex);
-//			System.out.println("edge"+edgeIndex+"--> start="+e.start+" end="+e.end);
-//		}
+		for(int edgeIndex=0;edgeIndex<dataModel.edgeSet.size();edgeIndex++) {
+			Edge e=dataModel.edgeSet.get(edgeIndex);
+			System.out.println("edge"+edgeIndex+"--> start="+e.start+" end="+e.end);
+		}
 		
 		
 	}
@@ -81,8 +83,9 @@ public class SNDRCSolver {
 //		SNDRC sndrc=new SNDRC("./data/data0.txt");
 //		SNDRC sndrc=new SNDRC("./data/small_for_test.txt");
 //		SNDRC sndrc=new SNDRC("./data/data0.txt");
+//		SNDRC sndrc=new SNDRC("./data/small_for_test2.txt");
 //		SNDRC sndrc=new SNDRC("./data/small_for_test3.txt");
-		SNDRC sndrc=new SNDRC("./data/small_for_test3.txt");
+		SNDRC sndrc=new SNDRC("./data/small_for_test4.txt");
 		
 //		Properties properties=new Properties();
 //		properties.setProperty("EXPORT_MODEL", "True");

@@ -6,12 +6,9 @@ import javax.naming.TimeLimitExceededException;
 
 import org.jorlib.frameworks.columnGeneration.branchAndPrice.branchingDecisions.BranchingDecision;
 import org.jorlib.frameworks.columnGeneration.master.AbstractMaster;
-import org.jorlib.frameworks.columnGeneration.master.MasterData;
 import org.jorlib.frameworks.columnGeneration.master.OptimizationSense;
 import org.jorlib.frameworks.columnGeneration.util.OrderedBiMap;
 
-import com.sun.corba.se.pept.transport.ContactInfo;
-import com.sun.javafx.scene.EnteredExitedHandler;
 
 import bap.branching.branchingDecisions.RoundQ;
 import bap.branching.branchingDecisions.RoundServiceEdge;
@@ -27,6 +24,7 @@ public final class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProbl
 
 	private IloObjective obj;
 //	private IloNumVar[][] x;
+	private List<Set<Integer>> edgesForX;
 	private List<Map<Integer,IloNumVar>> x; //map:edgeIndex, x variable
 	private IloNumVar[][] q;
 	private IloRange[][] flowBalanceConstraints;
@@ -52,6 +50,10 @@ public final class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProbl
 
 		// System.out.println("Master constructor. Columns: " +
 		// masterData.getNrColumns());
+		
+		
+		this.edgesForX=new ArrayList<Set<Integer>>();
+		
 	}
 
 	/**
@@ -69,6 +71,7 @@ public final class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProbl
 
 			cplex.setOut(null);
 			cplex.setParam(IloCplex.IntParam.Threads, config.MAXTHREADS);
+			cplex.setParam(IloCplex.Param.Simplex.Tolerances.Markowitz, 0.1);
 
 			// Define variables x
 //			x = new IloNumVar[dataModel.numDemand][dataModel.numArc];
@@ -127,17 +130,9 @@ public final class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProbl
 					
 				}
 				
-				
-				
-				
 			}
 			
-//			for (int p = 0; p < dataModel.numDemand; p++) {
-//				for (int arc = 0; arc < dataModel.numArc; arc++) {
-//					Edge edge = dataModel.edgeSet.get(arc);
-//					x[p][arc] = cplex.numVar(0, Double.MAX_VALUE, "x" +p+","+ edge.start + "," + edge.end );
-//				}
-//			}
+
 
 			// Define the objective
 			/**
@@ -325,8 +320,11 @@ public final class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProbl
 			if (!masterData.cplex.solve() || masterData.cplex.getStatus() != IloCplex.Status.Optimal) {
 				if (masterData.cplex.getCplexStatus() == IloCplex.CplexStatus.AbortTimeLim) // Aborted due to time limit
 					throw new TimeLimitExceededException();
-				else 
+				else {
+					masterData.cplex.exportModel(config.EXPORT_MASTER_DIR + "check.lp");
 					throw new RuntimeException("Master problem solve failed! Status: " + masterData.cplex.getStatus());
+				}
+
 			} else {
 				masterData.objectiveValue = masterData.cplex.getObjValue();
 				
