@@ -296,7 +296,7 @@ public final class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProbl
 
 		// Create a new data object which will store information from the master. This
 		// object automatically be passed to the CutHandler class.
-		return new SNDRCMasterData(cplex, pricingProblems, varMap);
+		return new SNDRCMasterData(cplex, pricingProblems, varMap,qBranchingconstraints,ServiceEdgeBranchingConstraints);
 
 	}
 
@@ -406,16 +406,16 @@ public final class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProbl
 			
 			//service edge branching constraints
 			if(column.isArtificialColumn) {
-				for(RoundServiceEdge serviceEdgeBranching:serviceEdgeBrachingSet) {
+				for(RoundServiceEdge serviceEdgeBranching:masterData.serviceEdgeBrachingSet) {
 					if(serviceEdgeBranching.roundUpOrDown==1&&column.edgeIndexSet.contains(serviceEdgeBranching.branchEdgeIndex)) {
-						IloRange constraint=ServiceEdgeBranchingConstraints.get(serviceEdgeBranching);
+						IloRange constraint=masterData.ServiceEdgeBranchingConstraints.get(serviceEdgeBranching);
 						iloColumn=iloColumn.and(masterData.cplex.column(constraint,1));
 					}
 				}
 			}else { // not an artificial column
-				for(RoundServiceEdge serviceEdgeBranching:serviceEdgeBrachingSet) {
+				for(RoundServiceEdge serviceEdgeBranching:masterData.serviceEdgeBrachingSet) {
 					if(column.edgeIndexSet.contains(serviceEdgeBranching.branchEdgeIndex)) {
-						IloRange constraint=ServiceEdgeBranchingConstraints.get(serviceEdgeBranching);
+						IloRange constraint=masterData.ServiceEdgeBranchingConstraints.get(serviceEdgeBranching);
 						iloColumn=iloColumn.and(masterData.cplex.column(constraint,1));
 					}
 				}
@@ -465,8 +465,8 @@ public final class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProbl
 			}
 			
 			//service edge branching constraints
-			for(RoundServiceEdge serviceEdgeBranch:serviceEdgeBrachingSet) {
-				IloRange constraint=ServiceEdgeBranchingConstraints.get(serviceEdgeBranch);
+			for(RoundServiceEdge serviceEdgeBranch:masterData.serviceEdgeBrachingSet) {
+				IloRange constraint=masterData.ServiceEdgeBranchingConstraints.get(serviceEdgeBranch);
 				double dualValue=masterData.cplex.getDual(constraint);
 				modifiedCosts[serviceEdgeBranch.branchEdgeIndex]-=dualValue;
 			}

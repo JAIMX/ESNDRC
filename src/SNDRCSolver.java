@@ -10,12 +10,14 @@ import org.jorlib.frameworks.columnGeneration.pricing.AbstractPricingProblemSolv
 import org.jorlib.frameworks.columnGeneration.util.Configuration;
 
 import bap.BranchAndPrice;
+import bap.bapNodeComparators.NodeBoundbapNodeComparator;
 import bap.branching.BranchOnQVarible;
 import bap.branching.BranchOnServiceEdge;
 import cg.Cycle;
 import cg.ExactPricingProblemSolver;
 import cg.SNDRCPricingProblem;
 import cg.master.Master;
+import logger.BapLogger;
 import model.SNDRC;
 import model.SNDRC.Edge;
 
@@ -46,12 +48,14 @@ public class SNDRCSolver {
 		//Create a Branch-and-Price instance
 		BranchAndPrice bap=new BranchAndPrice(dataModel, master, pricingProblems, solvers, branchCreators,Double.MAX_VALUE);
 //		bap.setNodeOrdering(new BFSbapNodeComparator());
+		bap.setNodeOrdering(new NodeBoundbapNodeComparator());
 		
 		//OPTIONAL: Attach a debugger
 //		SimpleDebugger debugger=new SimpleDebugger(bap, true);
 
 		//OPTIONAL: Attach a logger to the Branch-and-Price procedure.
-		SimpleBAPLogger logger=new SimpleBAPLogger(bap, new File("./output/SNDRC.log"));
+//		SimpleBAPLogger logger=new SimpleBAPLogger(bap, new File("./output/SNDRC.log"));
+		BapLogger logger=new BapLogger(bap, new File("./output/BAPlogger.log"));
 
 		//Solve the TSP problem through Branch-and-Price
 		bap.runBranchAndPrice(System.currentTimeMillis()+8000000L);

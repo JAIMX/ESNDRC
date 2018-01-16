@@ -6,6 +6,7 @@ import org.jorlib.frameworks.columnGeneration.master.MasterData;
 import org.jorlib.frameworks.columnGeneration.util.OrderedBiMap;
 
 import bap.branching.branchingDecisions.RoundQ;
+import bap.branching.branchingDecisions.RoundServiceEdge;
 import cg.Cycle;
 import cg.SNDRCPricingProblem;
 import ilog.concert.IloNumVar;
@@ -23,18 +24,41 @@ import model.SNDRC;
 public class SNDRCMasterData extends MasterData<SNDRC,Cycle,SNDRCPricingProblem,IloNumVar>{
 	public final IloCplex cplex;
 	public final  List<SNDRCPricingProblem> pricingProblems;
-//	public Map<RoundQ,IloRange> qBranchingconstraints;
-//	public Set<RoundQ> qBranchingSet;
-//	public Map<SNDRCPricingProblem,IloNumVar> qVaribles;
+	
+	//branch on q variables	
+	public final Set<RoundQ> qBranchingSet;
+	public final Map<RoundQ,IloRange> qBranchingconstraints;
+	
+	//branch on service edge
+	public final Set<RoundServiceEdge> serviceEdgeBrachingSet;
+	public final Map<RoundServiceEdge,IloRange> ServiceEdgeBranchingConstraints;
 	
 	
-	public SNDRCMasterData(IloCplex cplex,List<SNDRCPricingProblem> pricingProblems,Map<SNDRCPricingProblem, OrderedBiMap<Cycle, IloNumVar>> varMap){
+	public SNDRCMasterData(IloCplex cplex,List<SNDRCPricingProblem> pricingProblems,Map<SNDRCPricingProblem, OrderedBiMap<Cycle, IloNumVar>> varMap,Map<RoundQ,IloRange> qBranchingconstraints,Map<RoundServiceEdge,IloRange> ServiceEdgeBranchingConstraints){
 		super(varMap);
 		this.cplex=cplex;
 		this.pricingProblems=pricingProblems;
-//		qBranchingconstraints=new LinkedHashMap<>();
-//		qBranchingSet=new HashSet<>();
-//		this.qVaribles=qVaribles;
+		
+		this.qBranchingSet=new HashSet<>();
+		this.qBranchingconstraints=new HashMap<>();
+		
+		if(qBranchingconstraints!=null) {
+			for(RoundQ roundQ:qBranchingconstraints.keySet()) {
+				this.qBranchingSet.add(roundQ);
+				this.qBranchingconstraints.put(roundQ, qBranchingconstraints.get(roundQ));
+			}
+		}
+
+		
+		this.serviceEdgeBrachingSet=new HashSet<>();
+		this.ServiceEdgeBranchingConstraints=new HashMap<>();
+		if(ServiceEdgeBranchingConstraints!=null) {
+			for(RoundServiceEdge roundServiceEdge:ServiceEdgeBranchingConstraints.keySet()) {
+				this.serviceEdgeBrachingSet.add(roundServiceEdge);
+				this.ServiceEdgeBranchingConstraints.put(roundServiceEdge, ServiceEdgeBranchingConstraints.get(roundServiceEdge));
+			}
+		}
+
 	}
 
 	
