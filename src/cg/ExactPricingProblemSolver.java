@@ -161,7 +161,7 @@ public class ExactPricingProblemSolver extends AbstractPricingProblemSolver<SNDR
 					}while(lastNodeIndex!=originNodeIndex);
 					
 					
-					cost=dataModel.alpha*totalLength/(dataModel.speed*dataModel.drivingTimePerDay)+dataModel.fixedCost[pricingProblem.capacityTypeS];
+					cost=dataModel.alpha*totalLength/(dataModel.speed*dataModel.drivingTimePerDay)+dataModel.fixedCost[pricingProblem.originNodeO][pricingProblem.capacityTypeS];
 							
 
 					

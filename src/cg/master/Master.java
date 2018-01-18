@@ -471,7 +471,7 @@ public final class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProbl
 				modifiedCosts[serviceEdgeBranch.branchEdgeIndex]-=dualValue;
 			}
 
-			modifiedCost = dataModel.fixedCost[pricingProblem.capacityTypeS] - masterData.cplex
+			modifiedCost = dataModel.fixedCost[pricingProblem.originNodeO][pricingProblem.capacityTypeS] - masterData.cplex
 					.getDual(resourceBoundConstraints[pricingProblem.capacityTypeS][pricingProblem.originNodeO]);
 			pricingProblem.initPricingProblem(modifiedCosts, modifiedCost);
 

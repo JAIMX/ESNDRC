@@ -48,7 +48,7 @@ public class SNDRC implements ModelInterface {
 	public final double[][] b;
 
 	public final double alpha, speed, drivingTimePerDay, beta;
-	public final double[] fixedCost;
+	public final double[][] fixedCost;
 	public final int[] capacity;
 	public final int[][] vehicleLimit;
 	public final double distanceLimit;
@@ -136,15 +136,18 @@ public class SNDRC implements ModelInterface {
 		in.nextLine();
 		in.nextLine();
 		capacity = new int[numOfCapacity];
-		fixedCost = new double[numOfCapacity];
+		fixedCost = new double[numNode][numOfCapacity];
 		for (int i = 0; i < numOfCapacity; i++) {
 			capacity[i] = in.nextInt();
 		}
 
 		in.nextLine();
 		in.nextLine();
-		for (int i = 0; i < numOfCapacity; i++) {
-			fixedCost[i] = in.nextDouble();
+		
+		for(int city=0;city<numNode;city++) {
+			for (int i = 0; i < numOfCapacity; i++) {
+				fixedCost[city][i] = in.nextDouble();
+			}
 		}
 
 		abstractNumNode = numNode * timePeriod;
