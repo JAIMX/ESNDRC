@@ -32,11 +32,16 @@ public class SNDRC implements ModelInterface {
 		public double valueOfTime;
 	}
 
-	public class Edge {
+	public class Edge implements Comparable<Edge>{
 		public int start, end;
 		public double duration;
 		public int u, v, t1, t2;
 		public int edgeType;// 0: service arc | 1: holding arc
+		
+		public int compareTo(Edge other) {
+			return this.t1-other.t1;
+		}
+		
 	}
 
 	public final int fleetSize;

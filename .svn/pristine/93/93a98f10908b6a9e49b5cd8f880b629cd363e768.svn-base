@@ -3,8 +3,11 @@ import java.io.IOException;
 import java.util.*;
 
 import org.jorlib.frameworks.columnGeneration.branchAndPrice.AbstractBranchCreator;
+import org.jorlib.frameworks.columnGeneration.branchAndPrice.bapNodeComparators.BFSbapNodeComparator;
+import org.jorlib.frameworks.columnGeneration.io.SimpleBAPLogger;
 import org.jorlib.frameworks.columnGeneration.io.SimpleDebugger;
 import org.jorlib.frameworks.columnGeneration.pricing.AbstractPricingProblemSolver;
+import org.jorlib.frameworks.columnGeneration.util.Configuration;
 
 import bap.BranchAndPrice;
 import bap.bapNodeComparators.NodeBoundbapNodeComparator;
@@ -19,9 +22,7 @@ import model.SNDRC;
 import model.SNDRC.Edge;
 
 public class SNDRCSolver {
-	SNDRC dataModel;
 	public SNDRCSolver(SNDRC dataModel) {
-		this.dataModel=dataModel;
 		
 		//Create the pricing problems
 		List<SNDRCPricingProblem> pricingProblems=new LinkedList<SNDRCPricingProblem>();
@@ -70,73 +71,29 @@ public class SNDRCSolver {
 			System.out.println("Solution is optimal: "+bap.isOptimal());
 			System.out.println("Columns (only non-zero columns are returned):");
 			List<Cycle> solution = bap.getSolution();
-			for (Cycle column : solution) {
+			for (Cycle column : solution)
 				System.out.println(column);
-				System.out.println(out(column));
-				System.out.println();
-			}
-				
 		}
 		
 		bap.close();
 		
-		
-		
-	}
-	
-	public String out(Cycle column) {
-		
-		Queue<Edge> path=new PriorityQueue<>();
-		for(int edgeIndex:column.edgeIndexSet) {
-			path.add(dataModel.edgeSet.get(edgeIndex));
+		for(int edgeIndex=0;edgeIndex<dataModel.edgeSet.size();edgeIndex++) {
+			Edge e=dataModel.edgeSet.get(edgeIndex);
+			System.out.println("edge"+edgeIndex+"--> start="+e.start+" end="+e.end);
 		}
 		
-		StringBuilder pathRecord=new StringBuilder();
-		
-//		int count=0;
-//		for(Edge edge:path) {
-//			count++;
-//			pathRecord.append(edge.start);
-//			
-//			if(count!=column.edgeIndexSet.size()) {
-//				pathRecord.append("->");
-//			}
-//
-//		}
-		
-		Edge edge=null;
-		int size=path.size();
-		for(int i=0;i<size;i++) {
-
-		    edge=path.poll();
-			pathRecord.append('(');
-			pathRecord.append(edge.u);
-			pathRecord.append(',');
-			pathRecord.append(edge.t1);
-			pathRecord.append(')');
-			
-			
-			pathRecord.append("->");
-
-		}
-		
-		pathRecord.append('(');
-		pathRecord.append(edge.v);
-		pathRecord.append(',');
-		pathRecord.append(edge.t2);
-		pathRecord.append(')');
-		
-		
-		return pathRecord.toString();
 		
 	}
 	
 	public static void main(String[] args) throws IOException {
-//		SNDRC sndrc=new SNDRC("./data/test1_5_15.txt");
-//		SNDRC sndrc=new SNDRC("./data/test2_5_8.txt");
-		SNDRC sndrc=new SNDRC("./data/test3_5_10.txt");
+//		SNDRC sndrc=new SNDRC("./data/data0.txt");
+//		SNDRC sndrc=new SNDRC("./data/small_for_test.txt");
+//		SNDRC sndrc=new SNDRC("./data/data0.txt");
+//		SNDRC sndrc=new SNDRC("./data/small_for_test2.txt");
+//		SNDRC sndrc=new SNDRC("./data/small_for_test3.txt");
+//		SNDRC sndrc=new SNDRC("./data/small_for_test4.txt");
 //		SNDRC sndrc=new SNDRC("./data/change_fixedCost.txt");
-//		SNDRC sndrc=new SNDRC("./data/change_fixedCost4.txt");
+		SNDRC sndrc=new SNDRC("./data/change_fixedCost4.txt");
 		
 //		Properties properties=new Properties();
 //		properties.setProperty("EXPORT_MODEL", "True");

@@ -3,6 +3,7 @@ package cg;
 import java.util.Set;
 
 import org.jorlib.frameworks.columnGeneration.colgenMain.AbstractColumn;
+
 import model.SNDRC;
 
 public final class Cycle  extends AbstractColumn<SNDRC, SNDRCPricingProblem>{
@@ -21,6 +22,8 @@ public final class Cycle  extends AbstractColumn<SNDRC, SNDRCPricingProblem>{
 		this.startTime=startTime;
 		this.ifForResourceBoundConstraints=ifForResourceBoundConstraints;
 	}
+	
+
 	
 	@Override
 	public boolean equals(Object o) {
