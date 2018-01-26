@@ -5,6 +5,7 @@ import java.util.*;
 import org.jorlib.frameworks.columnGeneration.branchAndPrice.AbstractBranchCreator;
 import org.jorlib.frameworks.columnGeneration.io.SimpleDebugger;
 import org.jorlib.frameworks.columnGeneration.pricing.AbstractPricingProblemSolver;
+import org.jorlib.frameworks.columnGeneration.util.Configuration;
 
 import bap.BranchAndPrice;
 import bap.bapNodeComparators.NodeBoundbapNodeComparator;
@@ -47,10 +48,10 @@ public class SNDRCSolver {
 		//Create a Branch-and-Price instance
 		BranchAndPrice bap=new BranchAndPrice(dataModel, master, pricingProblems, solvers, branchCreators,Double.MAX_VALUE);
 //		bap.setNodeOrdering(new BFSbapNodeComparator());
-		bap.setNodeOrdering(new NodeBoundbapNodeComparator());
+//		bap.setNodeOrdering(new NodeBoundbapNodeComparator());
 		
 		//OPTIONAL: Attach a debugger
-//		SimpleDebugger debugger=new SimpleDebugger(bap, true);
+		SimpleDebugger debugger=new SimpleDebugger(bap, true);
 
 		//OPTIONAL: Attach a logger to the Branch-and-Price procedure.
 //		SimpleBAPLogger logger=new SimpleBAPLogger(bap, new File("./output/SNDRC.log"));
@@ -77,6 +78,7 @@ public class SNDRCSolver {
 			}
 				
 		}
+//		System.out.println(bap.getBound());
 		
 		bap.close();
 		
@@ -132,15 +134,16 @@ public class SNDRCSolver {
 	}
 	
 	public static void main(String[] args) throws IOException {
-//		SNDRC sndrc=new SNDRC("./data/test1_5_15.txt");
 //		SNDRC sndrc=new SNDRC("./data/test2_5_8.txt");
-		SNDRC sndrc=new SNDRC("./data/test3_5_10.txt");
-//		SNDRC sndrc=new SNDRC("./data/change_fixedCost.txt");
-//		SNDRC sndrc=new SNDRC("./data/change_fixedCost4.txt");
+//		SNDRC sndrc=new SNDRC("./data/test4_5_8_5.txt");
+//		SNDRC sndrc=new SNDRC("./data/test3_5_15.txt");
+//		SNDRC sndrc=new SNDRC("./data/test1_5_15_5.txt");
+		SNDRC sndrc=new SNDRC("./data/change_fixedCost4.txt");
 		
-//		Properties properties=new Properties();
+		Properties properties=new Properties();
 //		properties.setProperty("EXPORT_MODEL", "True");
-//		Configuration.readFromFile(properties);
+		properties.setProperty("MAXTHREADS", "10");
+		Configuration.readFromFile(properties);
 		
 		new SNDRCSolver(sndrc);
 		

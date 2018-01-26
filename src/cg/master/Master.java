@@ -338,27 +338,27 @@ public final class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProbl
 			} else {
 				masterData.objectiveValue = masterData.cplex.getObjValue();
 				
-//				System.out.println("||-----------------------temp solution out---------------------||");
-//				this.printSolution();
-//				for (int s = 0; s < dataModel.numOfCapacity; s++) {
-//					for (int o = 0; o < dataModel.numNode; o++) {
-//						System.out.println("q"+s+","+o+"="+masterData.cplex.getValue(q[s][o]));
-//					}
-//				}
-//				
-//				for(int demand=0;demand<dataModel.numDemand;demand++) {
-//					for(int edgeIndex=0;edgeIndex<dataModel.numArc;edgeIndex++) {
-//						
-//						if(x.get(demand).containsKey(edgeIndex)) {
-//							if(masterData.cplex.getValue(x.get(demand).get(edgeIndex))>config.PRECISION) {
-//								Edge edge=dataModel.edgeSet.get(edgeIndex);
-//								System.out.println("x["+demand+"]:"+edge.start+"->"+edge.end+"= "+masterData.cplex.getValue(x.get(demand).get(edgeIndex)));
-//							}
-//						}
-//						
-//						
-//					}
-//				}
+				System.out.println("||-----------------------temp solution out---------------------||");
+				this.printSolution();
+				for (int s = 0; s < dataModel.numOfCapacity; s++) {
+					for (int o = 0; o < dataModel.numNode; o++) {
+						System.out.println("q"+s+","+o+"="+masterData.cplex.getValue(q[s][o]));
+					}
+				}
+				
+				for(int demand=0;demand<dataModel.numDemand;demand++) {
+					for(int edgeIndex=0;edgeIndex<dataModel.numArc;edgeIndex++) {
+						
+						if(x.get(demand).containsKey(edgeIndex)) {
+							if(masterData.cplex.getValue(x.get(demand).get(edgeIndex))>config.PRECISION) {
+								Edge edge=dataModel.edgeSet.get(edgeIndex);
+								System.out.println("x["+demand+"]:"+edge.start+"->"+edge.end+"= "+masterData.cplex.getValue(x.get(demand).get(edgeIndex)));
+							}
+						}
+						
+						
+					}
+				}
 				
 				
 
