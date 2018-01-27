@@ -34,9 +34,9 @@ public class RoundServiceEdge implements BranchingDecision<SNDRC, Cycle>{
 	@Override
 	public String toString() {
 		if(roundUpOrDown==0) {
-			return "Round service edge(edgeIndex: "+branchEdgeIndex+") down,"+"originNode: "+pricingProblem.originNodeO+"capacityType: "+pricingProblem.capacityTypeS;
+			return "Round service edge(edgeIndex: "+branchEdgeIndex+") down";
 		}else {
-			return "Round service edge(edgeIndex: "+branchEdgeIndex+") up,"+"originNode: "+pricingProblem.originNodeO+"capacityType: "+pricingProblem.capacityTypeS;
+			return "Round service edge(edgeIndex: "+branchEdgeIndex+") up";
 		}
 		
 	}

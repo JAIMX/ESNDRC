@@ -12,7 +12,6 @@ import org.jorlib.frameworks.columnGeneration.util.OrderedBiMap;
 
 import bap.branching.branchingDecisions.RoundQ;
 import bap.branching.branchingDecisions.RoundServiceEdge;
-import bap.branching.branchingDecisions.RoundServiceEdgeForAllPricingProblems;
 import cg.Cycle;
 import cg.SNDRCPricingProblem;
 import ilog.concert.*;
@@ -35,12 +34,9 @@ public final class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProbl
 	private Map<RoundQ,IloRange> qBranchingconstraints;
 	
 	//branch on service edge
+//	private Map<SNDRCPricingProblem, Set<RoundServiceEdge>> serviceEdgeBrachingSet;
 	private Set<RoundServiceEdge> serviceEdgeBrachingSet;
 	private Map<RoundServiceEdge,IloRange> ServiceEdgeBranchingConstraints;
-	
-	//branch on service edge for all pricing problems
-	private Set<RoundServiceEdgeForAllPricingProblems> serviceEdge4AllBrachingSet;
-	private Map<RoundServiceEdgeForAllPricingProblems,IloRange> serviceEdge4AllBranchingConstraints; 
 
 	public Master(SNDRC dataModel, List<SNDRCPricingProblem> pricingProblems) {
 		super(dataModel, pricingProblems, OptimizationSense.MINIMIZE);
@@ -49,9 +45,6 @@ public final class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProbl
 		
 		this.serviceEdgeBrachingSet=new HashSet<>();
 		this.ServiceEdgeBranchingConstraints=new HashMap<>();
-		
-		this.serviceEdge4AllBrachingSet=new HashSet<>();
-		this.serviceEdge4AllBranchingConstraints=new HashMap<>();
 		// this.buildModel();
 
 		// System.out.println("Master constructor. Columns: " +
@@ -88,6 +81,57 @@ public final class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProbl
 				Map<Integer,IloNumVar> initialX=new HashMap<Integer,IloNumVar>();
 				x.add(initialX);
 			}
+			
+//			// add x variables with edges only needed(dp process)
+//			for(int p=0;p<dataModel.numDemand;p++) {
+//				boolean[] achieve=new boolean[dataModel.abstractNumNode];
+//				for(int i=0;i<achieve.length;i++) {
+//					achieve[i]=false;
+//				}
+//				
+//				Demand demand=dataModel.demandSet.get(p);
+//				int originNodeIndex=demand.origin*dataModel.timePeriod+demand.timeAvailable;
+//				int startTime=demand.timeAvailable;
+//				int endTime=demand.timeDue;
+//				int durationLimit;
+//				achieve[originNodeIndex]=true;
+//				
+//				
+//				if(endTime>startTime) {
+//					durationLimit=endTime-startTime;
+//				}else {
+//					durationLimit=endTime-startTime+dataModel.timePeriod;
+//				}
+//				
+//				
+//				int timeDuration=durationLimit;
+//				
+//				for(int t=0;t<timeDuration;t++) {
+//					int currentTime=t+startTime;
+//					currentTime=currentTime%dataModel.timePeriod;
+//					
+//					for(int localNode=0;localNode<dataModel.numNode;localNode++) {
+//						int currentNodeIndex=localNode*dataModel.timePeriod+currentTime;
+//						
+//						if(achieve[currentNodeIndex]) {
+//							for(int edgeIndex:dataModel.pointToEdgeSet.get(currentNodeIndex)) {
+//								Edge edge=dataModel.edgeSet.get(edgeIndex);
+//								
+//								if(edge.duration<durationLimit||(edge.duration==durationLimit&&edge.end==demand.destination*dataModel.timePeriod+endTime)) {
+//									IloNumVar varX=cplex.numVar(0, demand.volume,"x" +p+","+ edge.start + "," + edge.end );
+//									x.get(p).put(edgeIndex, varX);
+//									achieve[edge.end]=true;
+//								}
+//							}
+//						}
+//						
+//					}
+//					
+//					durationLimit--;
+//					
+//				}
+//				
+//			}
 			
 			
 			// add x variables
@@ -233,21 +277,6 @@ public final class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProbl
 					}
 				}
 			}
-			
-			//service edge branching for all pricing problems constraints
-			if(serviceEdge4AllBrachingSet!=null) {
-				for(RoundServiceEdgeForAllPricingProblems serviceEdgeBranch:serviceEdge4AllBrachingSet) {
-					if(serviceEdgeBranch.roundUpOrDown==0) {// round down
-						expr=cplex.linearNumExpr();
-						IloRange edgeBranching=cplex.addGe(Math.floor(serviceEdgeBranch.branchEdgeValue), expr,"round down service edge: "+serviceEdgeBranch.branchEdgeIndex);
-						serviceEdge4AllBranchingConstraints.put(serviceEdgeBranch, edgeBranching);
-					}else { // round up
-						expr=cplex.linearNumExpr();
-						IloRange edgeBranching=cplex.addLe(Math.ceil(serviceEdgeBranch.branchEdgeValue), expr,"round up service edge: "+serviceEdgeBranch.branchEdgeIndex);
-						serviceEdge4AllBranchingConstraints.put(serviceEdgeBranch, edgeBranching);
-					}
-				}
-			}
 
 			
 			
@@ -257,7 +286,7 @@ public final class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProbl
 
 			// Create a new data object which will store information from the master. This
 			// object automatically be passed to the CutHandler class.
-			return new SNDRCMasterData(cplex, pricingProblems, varMap,qBranchingconstraints,ServiceEdgeBranchingConstraints,x,q,serviceEdge4AllBranchingConstraints);
+			return new SNDRCMasterData(cplex, pricingProblems, varMap,qBranchingconstraints,ServiceEdgeBranchingConstraints,x,q);
 			
 			
 			
@@ -393,23 +422,6 @@ public final class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProbl
 				}
 			}
 			
-			//service edge for all pricing problems branching constraints
-			if(column.isArtificialColumn) {
-				for(RoundServiceEdgeForAllPricingProblems serviceEdgeBranching:masterData.serviceEdge4AllBrachingSet) {
-					if(serviceEdgeBranching.roundUpOrDown==1&&column.edgeIndexSet.contains(serviceEdgeBranching.branchEdgeIndex)) {
-						IloRange constraint=masterData.serviceEdge4AllBranchingConstraints.get(serviceEdgeBranching);
-						iloColumn=iloColumn.and(masterData.cplex.column(constraint,1));
-					}
-				}
-			}else { // not an artificial column
-				for(RoundServiceEdgeForAllPricingProblems serviceEdgeBranching:masterData.serviceEdge4AllBrachingSet) {
-					if(column.edgeIndexSet.contains(serviceEdgeBranching.branchEdgeIndex)) {
-						IloRange constraint=masterData.serviceEdge4AllBranchingConstraints.get(serviceEdgeBranching);
-						iloColumn=iloColumn.and(masterData.cplex.column(constraint,1));
-					}
-				}
-			}
-			
 			
 			// add artificial cycles for resource bound constraints
 			if(column.isArtificialColumn&&column.ifForResourceBoundConstraints==1) {
@@ -468,14 +480,6 @@ public final class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProbl
 					modifiedCosts[serviceEdgeBranch.branchEdgeIndex]-=dualValue;
 				}
 			}
-			
-			//service edge 4 all pricing problems branching constraints
-			for(RoundServiceEdgeForAllPricingProblems serviceEdgeBranch:masterData.serviceEdge4AllBrachingSet) {
-				IloRange constraint=masterData.serviceEdge4AllBranchingConstraints.get(serviceEdgeBranch);
-				double dualValue=masterData.cplex.getDual(constraint);
-				modifiedCosts[serviceEdgeBranch.branchEdgeIndex]-=dualValue;
-			}
-			
 
 			modifiedCost = dataModel.fixedCost[pricingProblem.originNodeO][pricingProblem.capacityTypeS] - masterData.cplex
 					.getDual(resourceBoundConstraints[pricingProblem.capacityTypeS][pricingProblem.originNodeO]);
@@ -567,12 +571,6 @@ public final class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProbl
 			serviceEdgeBrachingSet.add((RoundServiceEdge) bd);
 		}
 		
-		if(bd instanceof RoundServiceEdgeForAllPricingProblems) {
-			serviceEdge4AllBrachingSet.add((RoundServiceEdgeForAllPricingProblems) bd);
-		}
-		
-		
-		
 		
 		// destroy the master and rebuild it		
 		this.close();
@@ -614,21 +612,6 @@ public final class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProbl
 				masterData.ServiceEdgeBranchingConstraints.remove(bd);
 				this.ServiceEdgeBranchingConstraints.remove(bd);
 				this.serviceEdgeBrachingSet.remove(bd);
-				
-				
-			} catch (IloException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		
-		if(bd instanceof RoundServiceEdgeForAllPricingProblems) {
-			try {
-				masterData.cplex.remove(masterData.serviceEdge4AllBranchingConstraints.get(bd));
-				masterData.serviceEdge4AllBrachingSet.remove(bd);
-				masterData.serviceEdge4AllBranchingConstraints.remove(bd);
-				this.serviceEdge4AllBranchingConstraints.remove(bd);
-				this.serviceEdge4AllBrachingSet.remove(bd);
 				
 				
 			} catch (IloException e) {
