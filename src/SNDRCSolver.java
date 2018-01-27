@@ -3,6 +3,7 @@ import java.io.IOException;
 import java.util.*;
 
 import org.jorlib.frameworks.columnGeneration.branchAndPrice.AbstractBranchCreator;
+import org.jorlib.frameworks.columnGeneration.branchAndPrice.bapNodeComparators.BFSbapNodeComparator;
 import org.jorlib.frameworks.columnGeneration.io.SimpleDebugger;
 import org.jorlib.frameworks.columnGeneration.pricing.AbstractPricingProblemSolver;
 import org.jorlib.frameworks.columnGeneration.util.Configuration;
@@ -48,10 +49,10 @@ public class SNDRCSolver {
 		//Create a Branch-and-Price instance
 		BranchAndPrice bap=new BranchAndPrice(dataModel, master, pricingProblems, solvers, branchCreators,Double.MAX_VALUE);
 //		bap.setNodeOrdering(new BFSbapNodeComparator());
-//		bap.setNodeOrdering(new NodeBoundbapNodeComparator());
+		bap.setNodeOrdering(new NodeBoundbapNodeComparator());
 		
 		//OPTIONAL: Attach a debugger
-		SimpleDebugger debugger=new SimpleDebugger(bap, true);
+//		SimpleDebugger debugger=new SimpleDebugger(bap, true);
 
 		//OPTIONAL: Attach a logger to the Branch-and-Price procedure.
 //		SimpleBAPLogger logger=new SimpleBAPLogger(bap, new File("./output/SNDRC.log"));
@@ -134,11 +135,13 @@ public class SNDRCSolver {
 	}
 	
 	public static void main(String[] args) throws IOException {
+		long time0=System.currentTimeMillis();
 //		SNDRC sndrc=new SNDRC("./data/test2_5_8.txt");
 //		SNDRC sndrc=new SNDRC("./data/test4_5_8_5.txt");
 //		SNDRC sndrc=new SNDRC("./data/test3_5_15.txt");
-//		SNDRC sndrc=new SNDRC("./data/test1_5_15_5.txt");
-		SNDRC sndrc=new SNDRC("./data/change_fixedCost4.txt");
+		SNDRC sndrc=new SNDRC("./data/test1_5_15_5.txt");
+//		SNDRC sndrc=new SNDRC("./data/change_fixedCost4.txt");
+//		SNDRC sndrc=new SNDRC("./data/change_fixedCost.txt");
 		
 		Properties properties=new Properties();
 //		properties.setProperty("EXPORT_MODEL", "True");
@@ -146,6 +149,9 @@ public class SNDRCSolver {
 		Configuration.readFromFile(properties);
 		
 		new SNDRCSolver(sndrc);
+		
+		long time1=System.currentTimeMillis();
+		System.out.println("Total time= "+(time1-time0));
 		
 	}
 
