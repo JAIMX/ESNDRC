@@ -454,9 +454,10 @@ public class CplexSolver {
 		long time0=System.currentTimeMillis();
 
 //		SNDRC sndrc=new SNDRC("./data/test1_5_15_5.txt");
-		SNDRC sndrc=new SNDRC("./data/change_fixedCost4.txt");
+//		SNDRC sndrc=new SNDRC("./data/change_fixedCost4.txt");
 //		SNDRC sndrc=new SNDRC("./data/change_fixedCost.txt");
 //		SNDRC sndrc=new SNDRC("./data/test_cplexSolver.txt");
+		SNDRC sndrc=new SNDRC("./data/test2_5_8.txt");
 		
 		CplexSolver cplexSolver=new CplexSolver(sndrc,"./output/path/PathOut.txt");
 		cplexSolver.GeneratePathFile();

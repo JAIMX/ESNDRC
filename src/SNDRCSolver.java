@@ -138,7 +138,7 @@ public class SNDRCSolver {
 	
 	public static void main(String[] args) throws IOException {
 		long time0=System.currentTimeMillis();
-//		SNDRC sndrc=new SNDRC("./data/test2_5_8.txt");
+		SNDRC sndrc=new SNDRC("./data/test2_5_8.txt");
 //		SNDRC sndrc=new SNDRC("./data/test4_5_8_5.txt");
 //		SNDRC sndrc=new SNDRC("./data/test3_5_15.txt");
 //		SNDRC sndrc=new SNDRC("./data/test1_5_15_5.txt");
