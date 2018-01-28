@@ -143,8 +143,9 @@ public class SNDRCSolver {
 //		SNDRC sndrc=new SNDRC("./data/test3_5_15.txt");
 //		SNDRC sndrc=new SNDRC("./data/test1_5_15_5.txt");
 //		SNDRC sndrc=new SNDRC("./data/change_fixedCost4.txt");
-		SNDRC sndrc=new SNDRC("./data/change_fixedCost.txt");
+//		SNDRC sndrc=new SNDRC("./data/change_fixedCost.txt");
 //		SNDRC sndrc=new SNDRC("./data/test5_25_10.txt");
+//		SNDRC sndrc=new SNDRC("./data/test_cplexSolver.txt");
 		
 		Properties properties=new Properties();
 //		properties.setProperty("EXPORT_MODEL", "True");

@@ -145,8 +145,10 @@ public class CplexSolver {
 			for (int o = 0; o < dataModel.numNode; o++) {
 //				expr.clear();
 //				expr.addTerm(1, q[s][o]);
-//				resourceBoundConstraints[s][o] = cplex.addEq(dataModel.vehicleLimit[s][o], expr);
-				resourceBoundConstraints[s][o]=cplex.range(0,dataModel.vehicleLimit[s][o]);
+				expr.clear();
+//				resourceBoundConstraints[s][o] = cplex.addEq(dataModel.vehicleLimit[s][o], 0);
+//				resourceBoundConstraints[s][o]=cplex.range(0,dataModel.vehicleLimit[s][o]);
+				resourceBoundConstraints[s][o]=cplex.addRange(0,dataModel.vehicleLimit[s][o]);
 			}
 		}
 		
@@ -157,9 +159,9 @@ public class CplexSolver {
 		Scanner in = new Scanner(Paths.get(fileName));
 		
 		for(int originNode=0;originNode<dataModel.numNode;originNode++) {
-			
-			
 			int count=0;
+			
+
 			
 			in.nextLine();
 			
@@ -169,9 +171,12 @@ public class CplexSolver {
 			while(path.charAt(0)!='-') {
 				
 				String[] stringSet=path.split(" ");
+				pathEdgeSet=new HashSet<Integer>();
 				for(int i=0;i<stringSet.length;i++) {
 					pathEdgeSet.add(Integer.parseInt(stringSet[i]));
 				}
+				
+//				System.out.println(pathEdgeSet.toString());
 				
 				int pathLength=0;
 				for(int edgeIndex:pathEdgeSet) {
@@ -179,6 +184,8 @@ public class CplexSolver {
 				}
 				
 				for(int capacityType=0;capacityType<dataModel.numOfCapacity;capacityType++) {
+
+					
 					double cost=0;
 					cost+=dataModel.alpha*pathLength/(dataModel.speed*dataModel.drivingTimePerDay)+dataModel.fixedCost[originNode][capacityType];
 					
@@ -197,10 +204,12 @@ public class CplexSolver {
 					
 					// resource bound constraints
 					iloColumn = iloColumn.and(cplex.column(resourceBoundConstraints[capacityType][originNode],1));
+//					cplex.exportModel("check.lp");
 					
 					
 					// Create the variable and store it
-					IloNumVar var =cplex.intVar(iloColumn, 0, dataModel.vehicleLimit[capacityType][originNode],"z_" + capacityType + ","+originNode+","+count);
+//					IloNumVar var =cplex.intVar(iloColumn, 0, dataModel.vehicleLimit[capacityType][originNode],"z_" + capacityType + ","+originNode+","+count);
+					IloNumVar var =cplex.intVar(iloColumn, 0, Integer.MAX_VALUE,"z_" + capacityType + ","+originNode+","+count);
 					Path newPath=new Path();
 					newPath.capacityType=capacityType;
 					newPath.originNode=originNode;
@@ -229,7 +238,72 @@ public class CplexSolver {
 		
 		cplex.solve();
 		System.out.println("optimal objective= "+cplex.getObjValue());
+//		cplex.exportModel("check.lp");
 		
+		
+		//----------------------------output--------------------------------//
+		for (int demand = 0; demand < dataModel.numDemand; demand++) {
+			for (int edgeIndex = 0; edgeIndex < dataModel.numArc; edgeIndex++) {
+
+				if (x.get(demand).containsKey(edgeIndex)) {
+					if (cplex.getValue(x.get(demand).get(edgeIndex)) > 0.01) {
+						Edge edge = dataModel.edgeSet.get(edgeIndex);
+						System.out.println("x[" + demand + "]:" + edge.start + "->" + edge.end + "= "
+								+ cplex.getValue(x.get(demand).get(edgeIndex)));
+					}
+				}
+
+			}
+			
+			System.out.println();
+		}
+		
+		
+		for(Path path:pathVarMap.keySet()) {
+			double value=cplex.getValue(pathVarMap.get(path));
+			if(Math.abs(value)>0.01) {
+				
+				//------------------------------------check---------------------------------------//					
+				Queue<Edge> outPath=new PriorityQueue<>();
+				for(int edgeIndex:path.edgeIndexSet) {
+					outPath.add(dataModel.edgeSet.get(edgeIndex));
+				}
+				
+				System.out.println();
+				
+				StringBuilder pathRecord=new StringBuilder();
+				
+				Edge edge=null;
+				int size=outPath.size();
+				for(int i=0;i<size;i++) {
+
+				    edge=outPath.poll();
+					pathRecord.append('(');
+					pathRecord.append(edge.u);
+					pathRecord.append(',');
+					pathRecord.append(edge.t1);
+					pathRecord.append(')');
+					
+//				    pathRecord.append(edge.start);
+					pathRecord.append("->");
+
+				}
+				
+				pathRecord.append('(');
+				pathRecord.append(edge.v);
+				pathRecord.append(',');
+				pathRecord.append(edge.t2);
+				pathRecord.append(')');
+//				pathRecord.append(edge.end);
+//				out.println(pathRecord.toString());
+				System.out.println("originNode= "+path.originNode+" capacityType= "+path.capacityType);
+				System.out.println(path.edgeIndexSet.toString());
+				System.out.println(pathRecord.toString()+":"+value);
+				
+//-----------------------------------------------------------------------------//
+			}
+			
+		}
 		
 		
 		
@@ -380,8 +454,8 @@ public class CplexSolver {
 		long time0=System.currentTimeMillis();
 
 //		SNDRC sndrc=new SNDRC("./data/test1_5_15_5.txt");
-//		SNDRC sndrc=new SNDRC("./data/change_fixedCost4.txt");
-		SNDRC sndrc=new SNDRC("./data/change_fixedCost.txt");
+		SNDRC sndrc=new SNDRC("./data/change_fixedCost4.txt");
+//		SNDRC sndrc=new SNDRC("./data/change_fixedCost.txt");
 //		SNDRC sndrc=new SNDRC("./data/test_cplexSolver.txt");
 		
 		CplexSolver cplexSolver=new CplexSolver(sndrc,"./output/path/PathOut.txt");
