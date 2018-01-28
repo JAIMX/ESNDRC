@@ -141,14 +141,15 @@ public class SNDRCSolver {
 //		SNDRC sndrc=new SNDRC("./data/test2_5_8.txt");
 //		SNDRC sndrc=new SNDRC("./data/test4_5_8_5.txt");
 //		SNDRC sndrc=new SNDRC("./data/test3_5_15.txt");
-		SNDRC sndrc=new SNDRC("./data/test1_5_15_5.txt");
+//		SNDRC sndrc=new SNDRC("./data/test1_5_15_5.txt");
 //		SNDRC sndrc=new SNDRC("./data/change_fixedCost4.txt");
-//		SNDRC sndrc=new SNDRC("./data/change_fixedCost.txt");
+		SNDRC sndrc=new SNDRC("./data/change_fixedCost.txt");
 //		SNDRC sndrc=new SNDRC("./data/test5_25_10.txt");
 		
 		Properties properties=new Properties();
 //		properties.setProperty("EXPORT_MODEL", "True");
-		properties.setProperty("MAXTHREADS", "10");
+//		properties.setProperty("MAXTHREADS", "10");
+		properties.setProperty("PRECISION", "0.001");
 		Configuration.readFromFile(properties);
 		
 		new SNDRCSolver(sndrc);

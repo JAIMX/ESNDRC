@@ -22,3 +22,20 @@ artificial: false set: [35, 87, 90, 46] start node= 4 start time= 5 capacity typ
 (3,1)->(2,3)->(4,5)->(2,7)->(3,1)
 
 
+test1_5_15_5
+================ Solution ================
+BAP terminated with objective : 641
+Total Number of iterations: 29899
+Total Number of processed nodes: 2417
+Total Time spent on master problems: 1339658 Total time spent on pricing problems: 51972
+Solution is optimal: true
+Columns (only non-zero columns are returned):
+artificial: false set: [257, 2, 20, 100, 216, 25, 58, 31] start node= 4 start time= 3 capacity type= 0
+(1,0)->(0,1)->(4,3)->(2,5)->(3,8)->(0,10)->(4,12)->(0,14)->(1,0)
+
+artificial: false set: [229, 245, 341, 70, 38, 118, 234] start node= 4 start time= 11 capacity type= 0
+(3,2)->(0,4)->(1,5)->(2,9)->(4,11)->(4,12)->(2,14)->(3,2)
+
+Total time= 1424483
+
+
