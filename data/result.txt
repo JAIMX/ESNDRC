@@ -39,3 +39,15 @@ artificial: false set: [229, 245, 341, 70, 38, 118, 234] start node= 4 start tim
 Total time= 1424483
 
 
+
+
+
+test5_25_10.txt
+================ Solution ================
+BAP terminated with objective : 2147483647
+Total Number of iterations: 1237585
+Total Number of processed nodes: 81341
+Total Time spent on master problems: 50884439 Total time spent on pricing problems: 23108140
+Total time= 80000236
+
+

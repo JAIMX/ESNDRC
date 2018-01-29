@@ -61,7 +61,7 @@ public class SNDRCSolver {
 		BapLogger logger=new BapLogger(bap, new File("./output/BAPlogger.log"));
 
 		//Solve the TSP problem through Branch-and-Price
-		bap.runBranchAndPrice(System.currentTimeMillis()+80000000L);
+		bap.runBranchAndPrice(System.currentTimeMillis()+36000000L);
 		
 		
 		//Print solution:
@@ -70,6 +70,7 @@ public class SNDRCSolver {
 		System.out.println("Total Number of iterations: "+bap.getTotalNrIterations());
 		System.out.println("Total Number of processed nodes: "+bap.getNumberOfProcessedNodes());
 		System.out.println("Total Time spent on master problems: "+bap.getMasterSolveTime()+" Total time spent on pricing problems: "+bap.getPricingSolveTime());
+		System.out.println("Best bound : "+bap.getBound());
 		if(bap.hasSolution()) {
 			System.out.println("Solution is optimal: "+bap.isOptimal());
 			System.out.println("Columns (only non-zero columns are returned):");
@@ -137,26 +138,34 @@ public class SNDRCSolver {
 	}
 	
 	public static void main(String[] args) throws IOException {
-		long time0=System.currentTimeMillis();
-		SNDRC sndrc=new SNDRC("./data/test2_5_8.txt");
+
+//		SNDRC sndrc=new SNDRC("./data/test2_5_8.txt");
 //		SNDRC sndrc=new SNDRC("./data/test4_5_8_5.txt");
 //		SNDRC sndrc=new SNDRC("./data/test3_5_15.txt");
 //		SNDRC sndrc=new SNDRC("./data/test1_5_15_5.txt");
 //		SNDRC sndrc=new SNDRC("./data/change_fixedCost4.txt");
 //		SNDRC sndrc=new SNDRC("./data/change_fixedCost.txt");
 //		SNDRC sndrc=new SNDRC("./data/test5_25_10.txt");
-//		SNDRC sndrc=new SNDRC("./data/test_cplexSolver.txt");
+//		SNDRC sndrc=new SNDRC("./data/testset/test1_5_10_15_20.txt");
 		
-		Properties properties=new Properties();
-//		properties.setProperty("EXPORT_MODEL", "True");
-//		properties.setProperty("MAXTHREADS", "10");
-		properties.setProperty("PRECISION", "0.001");
-		Configuration.readFromFile(properties);
+		SNDRC sndrc;
+		for(String arg:args) {
+			long time0=System.currentTimeMillis();
+			sndrc=new SNDRC(arg);
+			Properties properties=new Properties();
+//			properties.setProperty("EXPORT_MODEL", "True");
+//			properties.setProperty("MAXTHREADS", "10");
+			properties.setProperty("PRECISION", "0.001");
+			Configuration.readFromFile(properties);
+			
+			new SNDRCSolver(sndrc);
+			
+			long time1=System.currentTimeMillis();
+			System.out.println("Total time= "+(time1-time0));
+			
+		}
 		
-		new SNDRCSolver(sndrc);
-		
-		long time1=System.currentTimeMillis();
-		System.out.println("Total time= "+(time1-time0));
+
 		
 	}
 

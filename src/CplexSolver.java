@@ -55,6 +55,7 @@ public class CplexSolver {
 //		cplex.setOut(null);
 		cplex.setParam(IloCplex.IntParam.Threads, 4);
 		cplex.setParam(IloCplex.Param.Simplex.Tolerances.Markowitz, 0.1);
+		cplex.setParam(IloCplex.DoubleParam.TiLim, 3600);
 		List<Map<Integer,IloNumVar>> x; //map:edgeIndex, x variable
 		Map<Path,IloNumVar> pathVarMap=new HashMap<>();
 		
@@ -451,20 +452,24 @@ public class CplexSolver {
 	
 	
 	public static void main(String[] args) throws IOException, IloException {
-		long time0=System.currentTimeMillis();
+		
+		
+		for(String arg:args) {
+			long time0=System.currentTimeMillis();
+			SNDRC sndrc=new SNDRC(arg);
+			
+			CplexSolver cplexSolver=new CplexSolver(sndrc,"./output/path/outpath.txt");
+			cplexSolver.GeneratePathFile();
+			cplexSolver.Solve();
+			
+			long time1=System.currentTimeMillis();
+			System.out.println("Total time= "+(time1-time0));
+		}
 
-//		SNDRC sndrc=new SNDRC("./data/test1_5_15_5.txt");
-//		SNDRC sndrc=new SNDRC("./data/change_fixedCost4.txt");
-//		SNDRC sndrc=new SNDRC("./data/change_fixedCost.txt");
-//		SNDRC sndrc=new SNDRC("./data/test_cplexSolver.txt");
-		SNDRC sndrc=new SNDRC("./data/test2_5_8.txt");
+
+
 		
-		CplexSolver cplexSolver=new CplexSolver(sndrc,"./output/path/PathOut.txt");
-		cplexSolver.GeneratePathFile();
-		cplexSolver.Solve();
-		
-		long time1=System.currentTimeMillis();
-		System.out.println("Total time= "+(time1-time0));
+
 	}
 	
 	

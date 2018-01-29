@@ -232,27 +232,28 @@ public class SNDRC implements ModelInterface {
 				pointToEdgeSet.get(start).add(edgeSet.size() - 1);
 				pointFromEdgeSet.get(end).add(edgeSet.size() - 1);
 				
-				//reverse direction arc
-				newEdge = new Edge();
-				start = service.destination * timePeriod + time;
-				end = service.origin * timePeriod + timeEnd;
-				newEdge.start = start;
-				newEdge.end = end;
-				newEdge.u = service.destination;
-				newEdge.v = service.origin;
-				newEdge.t1 = time;
-				newEdge.t2 = timeEnd;
-				newEdge.duration=service.duration;
-				edgeSet.add(newEdge);
-				newEdge.edgeType=0;
-				pointToEdgeSet.get(start).add(edgeSet.size() - 1);
-				pointFromEdgeSet.get(end).add(edgeSet.size() - 1);
+//				//reverse direction arc
+//				newEdge = new Edge();
+//				start = service.destination * timePeriod + time;
+//				end = service.origin * timePeriod + timeEnd;
+//				newEdge.start = start;
+//				newEdge.end = end;
+//				newEdge.u = service.destination;
+//				newEdge.v = service.origin;
+//				newEdge.t1 = time;
+//				newEdge.t2 = timeEnd;
+//				newEdge.duration=service.duration;
+//				edgeSet.add(newEdge);
+//				newEdge.edgeType=0;
+//				pointToEdgeSet.get(start).add(edgeSet.size() - 1);
+//				pointFromEdgeSet.get(end).add(edgeSet.size() - 1);
 				
 			}
 
 		}
 		
 		numServiceArc = edgeSet.size();
+		
 		
 		
 		// add holding arcs
@@ -288,6 +289,9 @@ public class SNDRC implements ModelInterface {
 
 		numHoldingArc = abstractNumNode;
 		numArc = numServiceArc + numHoldingArc;
+		System.out.println("number of service arcs="+numServiceArc);
+		System.out.println("number of holding arcs="+numHoldingArc);
+		System.out.println();
 		
 		
 		this.edgesForX=new ArrayList<Set<Integer>>();
