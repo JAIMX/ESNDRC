@@ -529,9 +529,18 @@ Total time= 3604115
 
 
 //----------------------------------------------------------------------------------------------------------------------------------------//
-test1_5_10_15_10
+test1_5_10_15_20
 
+number of service arcs=150
+number of holding arcs=75
 
+================ Solution ================
+BAP terminated with objective : 2147483647
+Total Number of iterations: 1160261
+Total Number of processed nodes: 163263
+Total Time spent on master problems: 10920079 Total time spent on pricing problems: 18355416
+Best bound : 3687.2400000000007
+Total time= 36000222
 
 ----------------------------------------------------------------------------------------------------------------------------------------
  1396426 851315     3800.7732    28     3836.0000     3739.3780 65001315    2.52%

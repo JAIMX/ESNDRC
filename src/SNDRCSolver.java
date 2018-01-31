@@ -51,7 +51,7 @@ public class SNDRCSolver {
 		//Create a Branch-and-Price instance
 		BranchAndPrice bap=new BranchAndPrice(dataModel, master, pricingProblems, solvers, branchCreators,Double.MAX_VALUE,0.5);
 //		bap.setNodeOrdering(new BFSbapNodeComparator());
-//		bap.setNodeOrdering(new NodeBoundbapNodeComparator());
+		bap.setNodeOrdering(new NodeBoundbapNodeComparator());
 		
 		//OPTIONAL: Attach a debugger
 //		SimpleDebugger debugger=new SimpleDebugger(bap, true);

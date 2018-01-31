@@ -94,132 +94,132 @@ public class BranchAndPrice<V> extends AbstractBranchAndPrice<SNDRC, Cycle, SNDR
     
     
     
-	/**
-	 * Starts running the Branch-and-Price algorithm.
-	 * Note: In the current version of the code, one should not invoke this function multiple times on the same instance!
-	 * @param timeLimit Future point in time by which the algorithm should finish
-	 */
-    @Override
-	public void runBranchAndPrice(long timeLimit){
-		notifier.fireStartBAPEvent(); //Signal start Branch-and-Price process
-		this.runtime=System.currentTimeMillis();
-
-		//Check whether an warm start is provided, if not, invoke generateInitialFeasibleSolution
-		BAPNode<SNDRC, Cycle> rootNode = queue.peek();
-		if(rootNode.getInitialColumns().isEmpty())
-			rootNode.addInitialColumns(this.generateInitialFeasibleSolution(rootNode));
-
-		//Start processing nodes until the queue is empty
-		while(!queue.isEmpty()){
-			BAPNode<SNDRC, Cycle> bapNode = queue.poll();
-			notifier.fireNextNodeEvent(bapNode);
-
-			//Prune this node if its bound is worse than the best found solution. Since all solutions are integral, we may round up/down, depending on the optimization sense
-			if(this.nodeCanBePruned(bapNode)){
-				notifier.firePruneNodeEvent(bapNode, bapNode.getBound());
-				nodesProcessed++;
-				continue;
-			}
-			
-			graphManipulator.next(bapNode); //Prepare data structures for the next node
-
-			//Generate an initial solution for this node to guarantee that the master problem is feasible
-			if(bapNode.nodeID != 0){
-				bapNode.addInitialColumns(this.generateInitialFeasibleSolution(bapNode));
-			}
-
-			//Solve the next BAPNode
-			try {
-				this.solveBAPNode(bapNode, timeLimit);
-			} catch (TimeLimitExceededException e) {
-				queue.add(bapNode);
-				notifier.fireTimeOutEvent(bapNode);
-				break;
-			}
-
-			//Prune this node if its bound is worse than the best found solution. Since all solutions are integral, we may round up/down, depending on the optimization sense
-			if(this.nodeCanBePruned(bapNode)){
-				notifier.firePruneNodeEvent(bapNode, bapNode.getBound());
-				nodesProcessed++;
-				continue;
-			}
-			
-			//Check whether the node is infeasible, i.e. whether there are artifical columns in the solution. If so, ignore it and continue with the next node.
-			if(this.isInfeasibleNode(bapNode)){
-				notifier.fireNodeIsInfeasibleEvent(bapNode);
-				nodesProcessed++;
-				continue;
-			}
-
-			//If solution is integral, check whether it is better than the current best solution
-			if(this.isIntegerNode(bapNode)){
-				int integerObjective=MathProgrammingUtil.doubleToInt(bapNode.getObjective());
-				notifier.fireNodeIsIntegerEvent(bapNode, bapNode.getBound(), integerObjective);
-				if(optimizationSenseMaster == OptimizationSense.MINIMIZE && integerObjective < this.upperBoundOnObjective){
-					this.objectiveIncumbentSolution = integerObjective;
-					this.upperBoundOnObjective = integerObjective;
-					this.incumbentSolution =bapNode.getSolution();
-				}else if(optimizationSenseMaster == OptimizationSense.MAXIMIZE && integerObjective > this.lowerBoundOnObjective){
-					this.objectiveIncumbentSolution = integerObjective;
-					this.lowerBoundOnObjective = integerObjective;
-					this.incumbentSolution =bapNode.getSolution();
-				}
-			}else{ //We need to branch
-				
-//----------------------------------------------------------------------------------------------------------------------------------//
-				
-				// An acceleration technique for ub
-				try {
-					this.AccelerationForUB(bapNode);
-				} catch (IloException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				
-				
-				
-				notifier.fireNodeIsFractionalEvent(bapNode, bapNode.getBound(), bapNode.getObjective());
-				List<BAPNode<SNDRC, Cycle>> newBranches=new ArrayList<>();
-				for(AbstractBranchCreator<SNDRC, Cycle, SNDRCPricingProblem> bc : branchCreators){
-					newBranches.addAll(bc.branch(bapNode));
-					if(!newBranches.isEmpty()) break;
-				}
-				
-				if(newBranches.isEmpty())
-					throw new RuntimeException("BAP encountered fractional solution, but non of the BranchCreators produced any new branches?");
-				else {
-					queue.addAll(newBranches);
-					notifier.fireBranchEvent(bapNode, Collections.unmodifiableList(newBranches));
-				}
-			}
-
-			nodesProcessed++;
-		}
-		
-		//Update statistics
-		if(queue.isEmpty()){ //Problem solved to optimality
-			this.isOptimal=true;
-			if(optimizationSenseMaster == OptimizationSense.MINIMIZE)
-				this.lowerBoundOnObjective=this.objectiveIncumbentSolution;
-			else
-				this.upperBoundOnObjective=this.objectiveIncumbentSolution;
-		}else{ //Problem NOT solved to optimality
-			this.isOptimal=false;
-			if(optimizationSenseMaster == OptimizationSense.MINIMIZE) {
-				lowerBoundOnObjective = queue.peek().getBound();
-				for (BAPNode bapNode : queue) {
-					lowerBoundOnObjective = Math.min(lowerBoundOnObjective, bapNode.getBound());
-				}
-			}else{
-				upperBoundOnObjective = queue.peek().getBound();
-				for (BAPNode bapNode : queue) {
-					upperBoundOnObjective = Math.max(upperBoundOnObjective, bapNode.getBound());
-				}
-			}
-		}
-		notifier.fireStopBAPEvent(); //Signal that BAP has been completed
-		this.runtime=System.currentTimeMillis()-runtime;
-	}
+//	/**
+//	 * Starts running the Branch-and-Price algorithm.
+//	 * Note: In the current version of the code, one should not invoke this function multiple times on the same instance!
+//	 * @param timeLimit Future point in time by which the algorithm should finish
+//	 */
+//    @Override
+//	public void runBranchAndPrice(long timeLimit){
+//		notifier.fireStartBAPEvent(); //Signal start Branch-and-Price process
+//		this.runtime=System.currentTimeMillis();
+//
+//		//Check whether an warm start is provided, if not, invoke generateInitialFeasibleSolution
+//		BAPNode<SNDRC, Cycle> rootNode = queue.peek();
+//		if(rootNode.getInitialColumns().isEmpty())
+//			rootNode.addInitialColumns(this.generateInitialFeasibleSolution(rootNode));
+//
+//		//Start processing nodes until the queue is empty
+//		while(!queue.isEmpty()){
+//			BAPNode<SNDRC, Cycle> bapNode = queue.poll();
+//			notifier.fireNextNodeEvent(bapNode);
+//
+//			//Prune this node if its bound is worse than the best found solution. Since all solutions are integral, we may round up/down, depending on the optimization sense
+//			if(this.nodeCanBePruned(bapNode)){
+//				notifier.firePruneNodeEvent(bapNode, bapNode.getBound());
+//				nodesProcessed++;
+//				continue;
+//			}
+//			
+//			graphManipulator.next(bapNode); //Prepare data structures for the next node
+//
+//			//Generate an initial solution for this node to guarantee that the master problem is feasible
+//			if(bapNode.nodeID != 0){
+//				bapNode.addInitialColumns(this.generateInitialFeasibleSolution(bapNode));
+//			}
+//
+//			//Solve the next BAPNode
+//			try {
+//				this.solveBAPNode(bapNode, timeLimit);
+//			} catch (TimeLimitExceededException e) {
+//				queue.add(bapNode);
+//				notifier.fireTimeOutEvent(bapNode);
+//				break;
+//			}
+//
+//			//Prune this node if its bound is worse than the best found solution. Since all solutions are integral, we may round up/down, depending on the optimization sense
+//			if(this.nodeCanBePruned(bapNode)){
+//				notifier.firePruneNodeEvent(bapNode, bapNode.getBound());
+//				nodesProcessed++;
+//				continue;
+//			}
+//			
+//			//Check whether the node is infeasible, i.e. whether there are artifical columns in the solution. If so, ignore it and continue with the next node.
+//			if(this.isInfeasibleNode(bapNode)){
+//				notifier.fireNodeIsInfeasibleEvent(bapNode);
+//				nodesProcessed++;
+//				continue;
+//			}
+//
+//			//If solution is integral, check whether it is better than the current best solution
+//			if(this.isIntegerNode(bapNode)){
+//				int integerObjective=MathProgrammingUtil.doubleToInt(bapNode.getObjective());
+//				notifier.fireNodeIsIntegerEvent(bapNode, bapNode.getBound(), integerObjective);
+//				if(optimizationSenseMaster == OptimizationSense.MINIMIZE && integerObjective < this.upperBoundOnObjective){
+//					this.objectiveIncumbentSolution = integerObjective;
+//					this.upperBoundOnObjective = integerObjective;
+//					this.incumbentSolution =bapNode.getSolution();
+//				}else if(optimizationSenseMaster == OptimizationSense.MAXIMIZE && integerObjective > this.lowerBoundOnObjective){
+//					this.objectiveIncumbentSolution = integerObjective;
+//					this.lowerBoundOnObjective = integerObjective;
+//					this.incumbentSolution =bapNode.getSolution();
+//				}
+//			}else{ //We need to branch
+//				
+////----------------------------------------------------------------------------------------------------------------------------------//
+//				
+//				// An acceleration technique for ub
+//				try {
+//					this.AccelerationForUB(bapNode);
+//				} catch (IloException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
+//				
+//				
+//				
+//				notifier.fireNodeIsFractionalEvent(bapNode, bapNode.getBound(), bapNode.getObjective());
+//				List<BAPNode<SNDRC, Cycle>> newBranches=new ArrayList<>();
+//				for(AbstractBranchCreator<SNDRC, Cycle, SNDRCPricingProblem> bc : branchCreators){
+//					newBranches.addAll(bc.branch(bapNode));
+//					if(!newBranches.isEmpty()) break;
+//				}
+//				
+//				if(newBranches.isEmpty())
+//					throw new RuntimeException("BAP encountered fractional solution, but non of the BranchCreators produced any new branches?");
+//				else {
+//					queue.addAll(newBranches);
+//					notifier.fireBranchEvent(bapNode, Collections.unmodifiableList(newBranches));
+//				}
+//			}
+//
+//			nodesProcessed++;
+//		}
+//		
+//		//Update statistics
+//		if(queue.isEmpty()){ //Problem solved to optimality
+//			this.isOptimal=true;
+//			if(optimizationSenseMaster == OptimizationSense.MINIMIZE)
+//				this.lowerBoundOnObjective=this.objectiveIncumbentSolution;
+//			else
+//				this.upperBoundOnObjective=this.objectiveIncumbentSolution;
+//		}else{ //Problem NOT solved to optimality
+//			this.isOptimal=false;
+//			if(optimizationSenseMaster == OptimizationSense.MINIMIZE) {
+//				lowerBoundOnObjective = queue.peek().getBound();
+//				for (BAPNode bapNode : queue) {
+//					lowerBoundOnObjective = Math.min(lowerBoundOnObjective, bapNode.getBound());
+//				}
+//			}else{
+//				upperBoundOnObjective = queue.peek().getBound();
+//				for (BAPNode bapNode : queue) {
+//					upperBoundOnObjective = Math.max(upperBoundOnObjective, bapNode.getBound());
+//				}
+//			}
+//		}
+//		notifier.fireStopBAPEvent(); //Signal that BAP has been completed
+//		this.runtime=System.currentTimeMillis()-runtime;
+//	}
     
     
     public void AccelerationForUB(BAPNode<SNDRC, Cycle> bapNode) throws IloException {

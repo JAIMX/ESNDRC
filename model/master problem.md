@@ -39,6 +39,7 @@ Parameters
 <br/>
 <br/>
 <br/>
+<br/>
 
  
 Decision variables
@@ -76,10 +77,10 @@ $$
 <br/>
 <br/>
 <br/>
-<br/>
+
 
 ***Minimize***
-$\sum_{\tau\in \theta} \sum_{(i,j)\in \tilde{A}\cup A_{T}} \frac{\alpha l_{ij}b_{ij}^{\tau}z_{\tau}}{Speed*DrivingTimePerDay}+ \sum_{s\in S}\sum_{\tau\in \theta _{s}} \gamma _{s}z _{\tau}+\sum_{p\in P} \sum_{(i,j)\in \tilde{A}\cup A_{T}}\beta l_{ij}x_{ij}^{p}$
+$\sum_{\tau\in \theta} \sum_{(i,j)\in \tilde{A}\cup A_{T}} \frac{\alpha l_{ij}b_{ij}^{\tau}z_{\tau}}{Speed*DrivingTimePerDay}+ \sum_{s\in S}\sum_{o\in O}\sum_{\tau\in \theta _{so}} \gamma _{so}z _{\tau}+\sum_{p\in P} \sum_{(i,j)\in \tilde{A}\cup A_{T}}\beta l_{ij}x_{ij}^{p}$
 
 ***Subject to:***
   
@@ -88,12 +89,15 @@ $\sum_{\tau\in \theta} \sum_{(i,j)\in \tilde{A}\cup A_{T}} \frac{\alpha l_{ij}b_
    
 $\sum_{p\in P}x_{ij}^{p} \leqslant \sum_{s\in S}\sum_{\tau\in \theta _{s}} C_{s}b_{ij}^{\tau}z_{\tau} \qquad \forall(i,j)\in \tilde{A}\qquad(2)$
 
-$\sum_{\tau\in \theta}b_{ij}^{\tau}z_{\tau} \leqslant1 \qquad\forall(i,j)\in \tilde{A}\qquad(3)$
 
-   $\sum_{\tau\in \theta_{so}}z_{\tau} \leqslant L_{so}\qquad \forall s\in S,\forall o\in O \qquad(4)$
+
+   $\sum_{\tau\in \theta_{so}}z_{\tau}+q_{so} \leqslant L_{so}\qquad \forall s\in S,\forall o\in O \qquad(3)$
    
 
    
-   $x_{ij}^{p}\geqslant 0\qquad \forall p\in P,(i,j) \in \tilde{A}\cup A_{T}\qquad(5)$
-   $z_{\tau}\in Z\qquad \forall \tau\in \theta\qquad(6)$
+   $x_{ij}^{p}\geqslant 0\qquad \forall p\in P,(i,j) \in \tilde{A}\cup A_{T}\qquad(4)$
+   $z_{\tau}\in Z\qquad \forall \tau\in \theta\qquad(5)$
+    $q_{so}\geqslant0\qquad \forall s\in S,o\in O \qquad(6)$
    
+  <br/> 
+$\sum_{\tau\in \theta}b_{ij}^{\tau}z_{\tau} \leqslant1 \qquad\forall(i,j)\in \tilde{A}$
