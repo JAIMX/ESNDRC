@@ -3,7 +3,10 @@ package cg.master;
 import java.util.*;
 
 import org.jorlib.frameworks.columnGeneration.master.MasterData;
+import org.jorlib.frameworks.columnGeneration.util.MathProgrammingUtil;
 import org.jorlib.frameworks.columnGeneration.util.OrderedBiMap;
+
+import com.google.common.collect.RangeSet;
 
 import bap.branching.branchingDecisions.RoundQ;
 import bap.branching.branchingDecisions.RoundServiceEdge;
@@ -31,6 +34,7 @@ public class SNDRCMasterData extends MasterData<SNDRC,Cycle,SNDRCPricingProblem,
 	//branch on q variables	
 	public final Set<RoundQ> qBranchingSet;
 	public final Map<RoundQ,IloRange> qBranchingconstraints;
+	public final Map<SNDRCPricingProblem,Integer> qVariableLimit;
 	
 	//branch on service edge
 	public final Set<RoundServiceEdge> serviceEdgeBrachingSet;
@@ -43,7 +47,7 @@ public class SNDRCMasterData extends MasterData<SNDRC,Cycle,SNDRCPricingProblem,
 	//for acceleration:
 	public Map<Cycle,IloRange> fixVarConstraints;
 	
-	public SNDRCMasterData(IloCplex cplex,List<SNDRCPricingProblem> pricingProblems,Map<SNDRCPricingProblem, OrderedBiMap<Cycle, IloNumVar>> varMap,Map<RoundQ,IloRange> qBranchingconstraints,Map<RoundServiceEdge,IloRange> ServiceEdgeBranchingConstraints,List<Map<Integer,IloNumVar>> x,IloNumVar[][] q,Map<RoundServiceEdgeForAllPricingProblems,IloRange> serviceEdge4AllBranchingConstraints){
+	public SNDRCMasterData(IloCplex cplex,List<SNDRCPricingProblem> pricingProblems,Map<SNDRCPricingProblem, OrderedBiMap<Cycle, IloNumVar>> varMap,Map<RoundQ,IloRange> qBranchingconstraints,Map<RoundServiceEdge,IloRange> ServiceEdgeBranchingConstraints,List<Map<Integer,IloNumVar>> x,IloNumVar[][] q,Map<RoundServiceEdgeForAllPricingProblems,IloRange> serviceEdge4AllBranchingConstraints,SNDRC dataModel){
 		super(varMap);
 		this.cplex=cplex;
 		this.x=x;
@@ -59,6 +63,26 @@ public class SNDRCMasterData extends MasterData<SNDRC,Cycle,SNDRCPricingProblem,
 				this.qBranchingconstraints.put(roundQ, qBranchingconstraints.get(roundQ));
 			}
 		}
+		
+		//calculate qVariableLimit
+		qVariableLimit=new HashMap<>();
+		HashMap<SNDRCPricingProblem, Integer> temp=new HashMap<>();
+		for(SNDRCPricingProblem pricingProblem:pricingProblems) {
+			temp.put(pricingProblem, 0);
+			qVariableLimit.put(pricingProblem,dataModel.vehicleLimit[pricingProblem.capacityTypeS][pricingProblem.originNodeO]);
+		}
+		
+		for(RoundQ roundQ:qBranchingSet) {
+			if(roundQ.roundUpOrDown==1&&temp.get(roundQ.associatedPricingProblem)<roundQ.qValue) {
+//				temp.put(roundQ.associatedPricingProblem, MathProgrammingUtil.doubleToInt(roundQ.qValue));
+				temp.put(roundQ.associatedPricingProblem, MathProgrammingUtil.doubleToInt(Math.ceil(roundQ.qValue)));
+			}
+		}
+		
+		for(SNDRCPricingProblem pricingProblem: pricingProblems) {
+			qVariableLimit.put(pricingProblem, qVariableLimit.get(pricingProblem)-temp.get(pricingProblem));
+		}
+		
 
 		
 		this.serviceEdgeBrachingSet=new HashSet<>();

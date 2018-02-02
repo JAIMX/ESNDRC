@@ -257,7 +257,7 @@ public final class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProbl
 
 			// Create a new data object which will store information from the master. This
 			// object automatically be passed to the CutHandler class.
-			return new SNDRCMasterData(cplex, pricingProblems, varMap,qBranchingconstraints,ServiceEdgeBranchingConstraints,x,q,serviceEdge4AllBranchingConstraints);
+			return new SNDRCMasterData(cplex, pricingProblems, varMap,qBranchingconstraints,ServiceEdgeBranchingConstraints,x,q,serviceEdge4AllBranchingConstraints,dataModel);
 			
 			
 			
@@ -419,12 +419,22 @@ public final class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProbl
 
 
 			// Create the variable and store it
-			IloNumVar var = masterData.cplex.numVar(iloColumn, 0, Double.MAX_VALUE,
-					"z_" + column.associatedPricingProblem.capacityTypeS + ","
-							+ column.associatedPricingProblem.originNodeO + ","
-							+ masterData.getNrColumnsForPricingProblem(column.associatedPricingProblem));
-			masterData.cplex.add(var);
-			masterData.addColumn(column, var);
+			if(column.isArtificialColumn) {
+				IloNumVar var = masterData.cplex.numVar(iloColumn, 0, Double.MAX_VALUE,
+						"art_" + column.associatedPricingProblem.capacityTypeS + ","
+								+ column.associatedPricingProblem.originNodeO + ","
+								+ masterData.getNrColumnsForPricingProblem(column.associatedPricingProblem));
+				masterData.cplex.add(var);
+				masterData.addColumn(column, var);
+			}else {
+				IloNumVar var = masterData.cplex.numVar(iloColumn, 0, Double.MAX_VALUE,
+						"z_" + column.associatedPricingProblem.capacityTypeS + ","
+								+ column.associatedPricingProblem.originNodeO + ","
+								+ masterData.getNrColumnsForPricingProblem(column.associatedPricingProblem));
+				masterData.cplex.add(var);
+				masterData.addColumn(column, var);
+			}
+
 
 		} catch (IloException e) {
 			// TODO Auto-generated catch block
@@ -667,6 +677,11 @@ public final class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProbl
 		}
 		
 		masterData.fixVarConstraints=new HashMap<>();
+	}
+	
+	
+	public Map<SNDRCPricingProblem,Integer> getQVarLimit(){
+		return masterData.qVariableLimit;
 	}
 
 }

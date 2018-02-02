@@ -26,7 +26,6 @@ import com.sun.media.jfxmedia.events.NewFrameEvent;
 import cg.Cycle;
 import cg.SNDRCPricingProblem;
 import cg.master.Master;
-import cg.master.SNDRCMasterData;
 import ilog.concert.IloException;
 import ilog.concert.IloRange;
 import model.SNDRC;
@@ -62,14 +61,21 @@ public class BranchAndPrice<V> extends AbstractBranchAndPrice<SNDRC, Cycle, SNDR
     	}
     	
     	// for resource bound constraints
-    	int count=0;
-    	for(int capacityType=0;capacityType<dataModel.numOfCapacity;capacityType++) {
-    		for(int originNode=0;originNode<dataModel.numNode;originNode++) {
-    			Set<Integer> set=new HashSet<>();
-    			Cycle cycle=new Cycle(pricingProblems.get(count), true, "Artificial", set, 100000000, 0, 1);
-    			artificalVars.add(cycle);
-    			count++;
-    		}
+//    	int count=0;
+//    	for(int capacityType=0;capacityType<dataModel.numOfCapacity;capacityType++) {
+//    		for(int originNode=0;originNode<dataModel.numNode;originNode++) {
+//    			Set<Integer> set=new HashSet<>();
+//    			Cycle cycle=new Cycle(pricingProblems.get(count), true, "Artificial", set, 100000000, 0, 1);
+//    			artificalVars.add(cycle);
+//    			count++;
+//    		}
+//    	}
+    	
+    	// for resource bound constraints
+    	for(SNDRCPricingProblem pricingProblem:pricingProblems) {
+    		Set<Integer> set=new HashSet<>();
+    		Cycle cycle=new Cycle(pricingProblem,true,"Artificial", set, 100000000, 0, 1);
+    		artificalVars.add(cycle);
     	}
     
         return artificalVars;
@@ -248,21 +254,26 @@ public class BranchAndPrice<V> extends AbstractBranchAndPrice<SNDRC, Cycle, SNDR
     	}
     	
     	
-//    	int count=0;
+    	Map<SNDRCPricingProblem,Integer> cycleLimit=((Master) master).getQVarLimit();
+    	Map<SNDRCPricingProblem,Integer> fixUsed=new HashMap<>();
+    	for(SNDRCPricingProblem pricingProblem:pricingProblems) {
+    		fixUsed.put(pricingProblem, 0);
+    	}
+    	
     	while(!this.isIntegerNode(bapNode)) {
-//    		count++;
-//    		System.out.println(count);
     		
     		boolean ifAllBelowThresholdValue=true;
+    		boolean ifFindOneToFix=false;
     		solution=bapNode.getSolution();
     		
     		for(Cycle cycle:solution) {
     			
     			if(MathProgrammingUtil.isFractional(cycle.value)) {
     				double decimalValue=cycle.value-(int)cycle.value;
-    				if(decimalValue>thresholdValue) {
+    				if(decimalValue>thresholdValue&&cycleLimit.get(cycle.associatedPricingProblem)>fixUsed.get(cycle.associatedPricingProblem)) {
+    					fixUsed.put(cycle.associatedPricingProblem, fixUsed.get(cycle.associatedPricingProblem)+1);
+    					ifFindOneToFix=true;
     					ifAllBelowThresholdValue=false;
-//    					fixVarConstraints.add(((Master) master).addFixVarConstraint(cycle));
     					((Master) master).addFixVarConstraint(cycle);
     				}
     			}
@@ -273,7 +284,7 @@ public class BranchAndPrice<V> extends AbstractBranchAndPrice<SNDRC, Cycle, SNDR
     		Cycle cycleRecord=null;
     		if(ifAllBelowThresholdValue) {
     			for(Cycle cycle:solution) {
-    				if(MathProgrammingUtil.isFractional(cycle.value)) {
+    				if(MathProgrammingUtil.isFractional(cycle.value)&&cycleLimit.get(cycle.associatedPricingProblem)>fixUsed.get(cycle.associatedPricingProblem)) {
     					double decimalValue=cycle.value-(int)cycle.value;
     					if(decimalValue>record) {
     						cycleRecord=cycle;
@@ -282,8 +293,14 @@ public class BranchAndPrice<V> extends AbstractBranchAndPrice<SNDRC, Cycle, SNDR
     				}
     			}
     			
-//        		fixVarConstraints.add(((Master) master).addFixVarConstraint(cycleRecord));
-        		((Master) master).addFixVarConstraint(cycleRecord);
+    			if(cycleRecord!=null) {
+    				fixUsed.put(cycleRecord.associatedPricingProblem, fixUsed.get(cycleRecord.associatedPricingProblem)+1);
+    				ifFindOneToFix=true;
+            		((Master) master).addFixVarConstraint(cycleRecord);
+    			}else {
+    				break;
+    			}
+
     		}
     		
     		

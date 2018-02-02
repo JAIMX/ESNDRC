@@ -1,0 +1,44 @@
+test0_5_10_10_5
+
+number of service arcs=100
+number of holding arcs=50
+
+================ Solution ================
+BAP terminated with objective : 552
+Total Number of iterations: 10077
+Total Number of processed nodes: 1031
+Total Time spent on master problems: 85049 Total time spent on pricing problems: 39446
+Best bound : 552.0
+Solution is optimal: true
+Columns (only non-zero columns are returned):
+artificial: false set: [33, 5, 87, 11, 59] start node= 4 start time= 7 capacity type= 0
+(0,1)->(1,3)->(0,5)->(4,7)->(2,9)->(0,1)
+
+artificial: false set: [66, 72, 40, 28, 94] start node= 4 start time= 4 capacity type= 1
+(2,0)->(3,2)->(4,4)->(3,6)->(1,8)->(2,0)
+
+Total time= 254247
+
+---------------------------------------------------------------------------------------------------
+test1_5_10_15_5
+
+number of service arcs=150
+number of holding arcs=75
+
+================ Solution ================
+BAP terminated with objective : 959
+Total Number of iterations: 58943
+Total Number of processed nodes: 7983
+Total Time spent on master problems: 517207 Total time spent on pricing problems: 869474
+Best bound : 959.0
+Solution is optimal: true
+Columns (only non-zero columns are returned):
+artificial: false set: [129, 3, 216, 89, 217, 218] start node= 4 start time= 6 capacity type= 0
+(0,3)->(4,6)->(4,7)->(4,8)->(4,9)->(2,14)->(0,3)
+
+artificial: false set: [33, 67, 100, 165, 166, 167] start node= 1 start time= 0 capacity type= 1
+(1,0)->(1,1)->(1,2)->(1,3)->(2,7)->(3,10)->(1,0)
+
+Total time= 2801489
+
+------------------------------------------------------------------------------------------------------
