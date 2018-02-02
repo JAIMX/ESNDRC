@@ -5,6 +5,7 @@ import java.util.*;
 import org.jorlib.frameworks.columnGeneration.io.TimeLimitExceededException;
 import org.jorlib.frameworks.columnGeneration.pricing.AbstractPricingProblemSolver;
 
+import cg.master.SNDRCMasterData;
 import model.SNDRC;
 import model.SNDRC.Edge;
 
@@ -176,7 +177,9 @@ public class ExactPricingProblemSolver extends AbstractPricingProblemSolver<SNDR
 					
 					if(!repeat) {
 						Cycle cycle=new Cycle(pricingProblem,false,"exactPricing",edgeIndexSet,cost,startTime,0);
-						newRoutes.add(cycle);
+						if(!pricingProblem.fixCycleSet.contains(cycle)) {
+							newRoutes.add(cycle);
+						}
 					}
 					
 

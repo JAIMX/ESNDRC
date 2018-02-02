@@ -5,13 +5,18 @@ No of nodes
 Time periods
 5
 Service connections and holding arcs
-5
+10
 Connection	Origin	Destination		Service duration
 1	1	2	1
 2   3   5   1
 3   1   4   2
 4	2	3	2
 5   4   5   3
+6	2	1	1
+7   5   3   1
+8   4   1   2
+9	3	2	2
+10   5   4   3
 Demand
 5
 Commodity	Origin node	Destination node	Time available Time due	Volume

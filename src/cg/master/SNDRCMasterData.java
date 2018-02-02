@@ -40,6 +40,8 @@ public class SNDRCMasterData extends MasterData<SNDRC,Cycle,SNDRCPricingProblem,
 	public Set<RoundServiceEdgeForAllPricingProblems> serviceEdge4AllBrachingSet;
 	public Map<RoundServiceEdgeForAllPricingProblems,IloRange> serviceEdge4AllBranchingConstraints; 
 	
+	//for acceleration:
+	public Map<Cycle,IloRange> fixVarConstraints;
 	
 	public SNDRCMasterData(IloCplex cplex,List<SNDRCPricingProblem> pricingProblems,Map<SNDRCPricingProblem, OrderedBiMap<Cycle, IloNumVar>> varMap,Map<RoundQ,IloRange> qBranchingconstraints,Map<RoundServiceEdge,IloRange> ServiceEdgeBranchingConstraints,List<Map<Integer,IloNumVar>> x,IloNumVar[][] q,Map<RoundServiceEdgeForAllPricingProblems,IloRange> serviceEdge4AllBranchingConstraints){
 		super(varMap);
@@ -76,6 +78,9 @@ public class SNDRCMasterData extends MasterData<SNDRC,Cycle,SNDRCPricingProblem,
 				this.serviceEdge4AllBranchingConstraints.put(roundServiceEdge4All, serviceEdge4AllBranchingConstraints.get(roundServiceEdge4All));
 			}
 		}
+		
+		
+		fixVarConstraints=new HashMap<>();
 
 	}
 

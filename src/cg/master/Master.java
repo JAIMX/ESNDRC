@@ -453,12 +453,6 @@ public final class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProbl
 						* dataModel.edgeSet.get(edgeIndex).duration;
 			}
 			
-//			//service edge branching constraints
-//			for(RoundServiceEdge serviceEdgeBranch:masterData.serviceEdgeBrachingSet) {
-//				IloRange constraint=masterData.ServiceEdgeBranchingConstraints.get(serviceEdgeBranch);
-//				double dualValue=masterData.cplex.getDual(constraint);
-//				modifiedCosts[serviceEdgeBranch.branchEdgeIndex]-=dualValue;
-//			}
 			
 			//service edge branching constraints
 			for(RoundServiceEdge serviceEdgeBranch:masterData.serviceEdgeBrachingSet) {
@@ -644,21 +638,35 @@ public final class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProbl
 	}
 	
 	
-	public IloRange addFixVarConstraint(Cycle cycle) throws IloException {
+	public void addFixVarConstraint(Cycle cycle) throws IloException {
 		
 		IloLinearNumExpr expr=masterData.cplex.linearNumExpr();
 		expr.addTerm(masterData.getVar(cycle.associatedPricingProblem,cycle), 1);
 		IloRange fixVarConstraint=masterData.cplex.addEq(expr, Math.ceil(cycle.value));
 		
-		System.out.println(masterData.cplex.toString());
-		return fixVarConstraint;
+		masterData.fixVarConstraints.put(cycle, fixVarConstraint);
+		SNDRCPricingProblem pricingProblem=pricingProblems.get(cycle.associatedPricingProblem.capacityTypeS*dataModel.numNode+cycle.associatedPricingProblem.originNodeO);
+		pricingProblem.fixCycleSet.add(cycle);
+		
+//		System.out.println(masterData.cplex.toString());
+//		return fixVarConstraint;
 		
 	}
 	
-	public void removeFixVarConstraint(Set<IloRange> constraints) throws IloException {
-		for(IloRange constraint:constraints) {
-			masterData.cplex.remove(constraint);
+	public void removeFixVarConstraint() throws IloException {
+//		for(IloRange constraint:constraints) {
+//			masterData.cplex.remove(constraint);
+//		}
+		
+		for(Cycle cycle:masterData.fixVarConstraints.keySet()) {
+			masterData.cplex.remove(masterData.fixVarConstraints.get(cycle));
 		}
+		
+		for(SNDRCPricingProblem problem:pricingProblems) {
+			problem.fixCycleSet=new HashSet<>();
+		}
+		
+		masterData.fixVarConstraints=new HashMap<>();
 	}
 
 }
