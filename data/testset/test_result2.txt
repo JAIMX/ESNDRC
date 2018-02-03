@@ -66,3 +66,34 @@ Total time= 2801489
 DFS
 
 ------------------------------------------------------------------------------------------------------
+test1_5_10_15_10
+
+number of service arcs=150
+number of holding arcs=75
+================ Solution ================
+BAP terminated with objective : 2330
+Total Number of iterations: 859355
+Total Number of processed nodes: 99711
+Total Time spent on master problems: 4042933 Total time spent on pricing problems: 15666102
+Best bound : 2288.9199999999996
+Solution is optimal: false
+Columns (only non-zero columns are returned):
+artificial: false set: [210, 211, 116, 212, 213, 214, 215, 205, 141] start node= 4 start time= 0 capacity type= 0
+(4,0)->(4,1)->(4,2)->(4,3)->(4,4)->(4,5)->(4,6)->(3,10)->(3,11)->(4,0)
+
+artificial: false set: [210, 83, 211, 122, 187, 12] start node= 4 start time= 0 capacity type= 0
+(4,0)->(4,1)->(4,2)->(2,7)->(2,8)->(0,12)->(4,0)
+
+artificial: false set: [1, 214, 87, 215, 216, 127] start node= 4 start time= 4 capacity type= 0
+(0,1)->(4,4)->(4,5)->(4,6)->(4,7)->(2,12)->(0,1)
+
+artificial: false set: [1, 164, 85, 150, 124, 189] start node= 4 start time= 4 capacity type= 0
+(0,0)->(0,1)->(4,4)->(2,9)->(2,10)->(0,14)->(0,0)
+
+artificial: false set: [34, 69, 102, 167, 168, 188] start node= 1 start time= 2 capacity type= 1
+(1,2)->(1,3)->(1,4)->(2,8)->(2,9)->(3,12)->(1,2)
+
+artificial: false set: [210, 211, 116, 68, 212, 123] start node= 4 start time= 0 capacity type= 1
+(4,0)->(4,1)->(4,2)->(4,3)->(2,8)->(3,11)->(4,0)
+
+Total time= 36000383
