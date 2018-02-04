@@ -303,6 +303,10 @@ public class BranchAndPrice<V> extends AbstractBranchAndPrice<SNDRC, Cycle, SNDR
 
     		}
     		
+    		//here we should check if the master problem is feasible
+    		if(((Master) master).CheckFeasibility()==false){
+    			break;
+    		}
     		
     		
     		//start to solve master problem
