@@ -683,5 +683,9 @@ public final class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProbl
 	public Map<SNDRCPricingProblem,Integer> getQVarLimit(){
 		return masterData.qVariableLimit;
 	}
+	
+	public boolean CheckFeasibility() throws IloException{
+		return masterData.cplex.solve();
+	}
 
 }

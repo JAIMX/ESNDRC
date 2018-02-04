@@ -65,6 +65,27 @@ Total time= 2801489
 --------------------------------------------
 DFS
 
+number of service arcs=150
+number of holding arcs=75
+
+================ Solution ================
+BAP terminated with objective : 959
+Total Number of iterations: 132749
+Total Number of processed nodes: 18559
+Total Time spent on master problems: 574702 Total time spent on pricing problems: 567577
+Best bound : 959.0
+Solution is optimal: true
+Columns (only non-zero columns are returned):
+artificial: false set: [131, 181, 182, 183, 8, 79] start node= 4 start time= 11 capacity type= 0
+(2,1)->(2,2)->(2,3)->(2,4)->(0,8)->(4,11)->(2,1)
+
+artificial: false set: [131, 181, 8, 156, 157, 77] start node= 4 start time= 11 capacity type= 0
+(2,1)->(2,2)->(0,6)->(0,7)->(0,8)->(4,11)->(2,1)
+
+artificial: false set: [39, 73, 91, 171, 172, 173] start node= 1 start time= 6 capacity type= 1
+(3,1)->(1,6)->(1,7)->(1,8)->(1,9)->(2,13)->(3,1)
+
+Total time= 2046216
 ------------------------------------------------------------------------------------------------------
 test1_5_10_15_10
 
@@ -98,16 +119,22 @@ artificial: false set: [210, 211, 116, 68, 212, 123] start node= 4 start time= 0
 
 Total time= 36000383
 
+<<<<<<< HEAD
 
 
 
 ------------------------------------------------------------------------------------------------------
 test1_5_10_15_20
+=======
+-----------------------------------------------
+DFS
+>>>>>>> 4da286261902e7bb0b231519fb18b1a8db7bd1cf
 
 number of service arcs=150
 number of holding arcs=75
 
 ================ Solution ================
+<<<<<<< HEAD
 BAP terminated with objective : 3890
 Total Number of iterations: 421927
 Total Number of processed nodes: 62962
@@ -140,3 +167,34 @@ artificial: false set: [210, 83, 211, 212, 123, 12] start node= 4 start time= 0 
 (4,0)->(4,1)->(4,2)->(4,3)->(2,8)->(0,12)->(4,0)
 
 Total time= 36001597
+=======
+BAP terminated with objective : 2558
+Total Number of iterations: 326322
+Total Number of processed nodes: 34024
+Total Time spent on master problems: 6889155 Total time spent on pricing problems: 29868039
+Best bound : 2155.68
+Solution is optimal: false
+Columns (only non-zero columns are returned):
+artificial: false set: [33, 69, 103, 187, 188, 207] start node= 2 start time= 7 capacity type= 0
+(1,3)->(2,7)->(2,8)->(2,9)->(3,12)->(3,13)->(1,3)
+
+artificial: false set: [224, 112, 210, 211, 212, 138, 221, 222, 223] start node= 4 start time= 1 capacity type= 0
+(4,0)->(4,1)->(4,2)->(4,3)->(3,7)->(4,11)->(4,12)->(4,13)->(4,14)->(4,0)
+
+artificial: false set: [212, 213, 118, 214, 204, 140, 205, 206, 207] start node= 4 start time= 2 capacity type= 0
+(4,2)->(4,3)->(4,4)->(4,5)->(3,9)->(3,10)->(3,11)->(3,12)->(3,13)->(4,2)
+
+artificial: false set: [160, 80, 161, 120, 12, 159] start node= 4 start time= 0 capacity type= 0
+(4,0)->(2,5)->(0,9)->(0,10)->(0,11)->(0,12)->(4,0)
+
+artificial: false set: [39, 73, 91, 171, 172, 173] start node= 1 start time= 6 capacity type= 1
+(3,1)->(1,6)->(1,7)->(1,8)->(1,9)->(2,13)->(3,1)
+
+artificial: false set: [212, 213, 118, 70, 214, 125] start node= 4 start time= 2 capacity type= 1
+(4,2)->(4,3)->(4,4)->(4,5)->(2,10)->(3,13)->(4,2)
+
+artificial: false set: [2, 164, 85, 150, 151, 125] start node= 4 start time= 5 capacity type= 1
+(0,0)->(0,1)->(0,2)->(4,5)->(2,10)->(0,14)->(0,0)
+
+Total time= 39526444
+>>>>>>> 4da286261902e7bb0b231519fb18b1a8db7bd1cf
