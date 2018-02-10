@@ -13,6 +13,7 @@ import bap.branching.branchingDecisions.RoundServiceEdge;
 import bap.branching.branchingDecisions.RoundServiceEdgeForAllPricingProblems;
 import cg.Cycle;
 import cg.SNDRCPricingProblem;
+import cg.master.cuts.StrongInequality;
 import ilog.concert.IloNumVar;
 import ilog.concert.IloRange;
 import ilog.cplex.IloCplex;
@@ -46,6 +47,10 @@ public class SNDRCMasterData extends MasterData<SNDRC,Cycle,SNDRCPricingProblem,
 	
 	//for acceleration:
 	public Map<Cycle,IloRange> fixVarConstraints;
+	
+	//for strong cut
+	public Map<Integer,Double> edgeValueMap;
+	public final Map<StrongInequality,IloRange> strongInequalities;
 	
 	public SNDRCMasterData(IloCplex cplex,List<SNDRCPricingProblem> pricingProblems,Map<SNDRCPricingProblem, OrderedBiMap<Cycle, IloNumVar>> varMap,Map<RoundQ,IloRange> qBranchingconstraints,Map<RoundServiceEdge,IloRange> ServiceEdgeBranchingConstraints,List<Map<Integer,IloNumVar>> x,IloNumVar[][] q,Map<RoundServiceEdgeForAllPricingProblems,IloRange> serviceEdge4AllBranchingConstraints,SNDRC dataModel){
 		super(varMap);
@@ -105,6 +110,9 @@ public class SNDRCMasterData extends MasterData<SNDRC,Cycle,SNDRCPricingProblem,
 		
 		
 		fixVarConstraints=new HashMap<>();
+		
+		edgeValueMap=new HashMap<Integer, Double>();
+		strongInequalities=new HashMap<>();
 
 	}
 
