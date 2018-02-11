@@ -156,6 +156,7 @@ public class BranchAndPrice<V> extends AbstractBranchAndPrice<SNDRC, Cycle, SNDR
 			//Solve the next BAPNode
 			try {
 				this.solveBAPNode(bapNode, timeLimit);
+//				System.out.println(bapNode.getInequalities().size());
 			} catch (TimeLimitExceededException e) {
 				queue.add(bapNode);
 				lowBoundQueue.add(bapNode);

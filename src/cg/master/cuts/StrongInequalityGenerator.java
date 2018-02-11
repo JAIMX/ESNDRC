@@ -30,6 +30,18 @@ public final class StrongInequalityGenerator extends AbstractCutGenerator<SNDRC,
 
 	@Override
 	public List<AbstractInequality> generateInqualities() {
+		
+//		//check
+//		for(int edgeIndex:masterData.edgeValueMap.keySet()) {
+//			System.out.println(edgeIndex+": "+masterData.edgeValueMap.get(edgeIndex));
+//			if(masterData.edgeValueMap.get(edgeIndex)<1) {
+//				for(int commodity=0;commodity<dataModel.numDemand;commodity++) {
+//					System.out.println("x"+commodity+","+edgeIndex+"= "+masterData.xValues.get(commodity).get(edgeIndex)+" demandVolumn="+dataModel.demandSet.get(commodity).volume);
+//				}
+//			}
+//			System.out.println();
+//		}
+		
 		// Check for violated situations. When found, generate an inequality.
 		for (int edgeIndex : masterData.edgeValueMap.keySet()) {
 			Double edgeValue = masterData.edgeValueMap.get(edgeIndex);
@@ -43,6 +55,7 @@ public final class StrongInequalityGenerator extends AbstractCutGenerator<SNDRC,
 						if (xValue > demandValue * edgeValue) {
 							StrongInequality inequality = new StrongInequality(this, edgeIndex, commodity);
 							this.addCut(inequality);
+							System.out.println("add cut");
 							return Collections.singletonList(inequality);
 						}
 					}

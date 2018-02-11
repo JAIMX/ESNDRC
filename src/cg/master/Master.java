@@ -311,40 +311,38 @@ public final class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProbl
 
 			} else {
 				masterData.objectiveValue = masterData.cplex.getObjValue();
-				
-				masterData.xValues=new ArrayList<>();
-				for(int commodity=0;commodity<dataModel.numDemand;commodity++) {
-					Map tempMap=new HashMap<>();
-					for(int edgeIndex:masterData.x.get(commodity).keySet()) {
+
+				masterData.xValues = new ArrayList<>();
+				for (int commodity = 0; commodity < dataModel.numDemand; commodity++) {
+					Map tempMap = new HashMap<>();
+					for (int edgeIndex : masterData.x.get(commodity).keySet()) {
 						tempMap.put(edgeIndex, masterData.cplex.getValue(masterData.x.get(commodity).get(edgeIndex)));
 					}
 					masterData.xValues.add(tempMap);
 				}
 
-				// System.out.println("||-----------------------temp solution
-				// out---------------------||");
-				// this.printSolution();
-				// for (int s = 0; s < dataModel.numOfCapacity; s++) {
-				// for (int o = 0; o < dataModel.numNode; o++) {
-				// System.out.println("q"+s+","+o+"="+masterData.cplex.getValue(masterData.q[s][o]));
-				// }
-				// }
-				//
-				// for(int demand=0;demand<dataModel.numDemand;demand++) {
-				// for(int edgeIndex=0;edgeIndex<dataModel.numArc;edgeIndex++) {
-				//
-				// if(masterData.x.get(demand).containsKey(edgeIndex)) {
-				// if(masterData.cplex.getValue(masterData.x.get(demand).get(edgeIndex))>config.PRECISION)
-				// {
-				// Edge edge=dataModel.edgeSet.get(edgeIndex);
-				// System.out.println("x["+demand+"]:"+edge.start+"->"+edge.end+"=
-				// "+masterData.cplex.getValue(masterData.x.get(demand).get(edgeIndex)));
-				// }
-				// }
-				//
-				//
-				// }
-				// }
+//				System.out.println("||-----------------------temp solution out---------------------||");
+//				this.printSolution();
+//				for (int s = 0; s < dataModel.numOfCapacity; s++) {
+//					for (int o = 0; o < dataModel.numNode; o++) {
+//						System.out.println("q" + s + "," + o + "=" + masterData.cplex.getValue(masterData.q[s][o]));
+//					}
+//				}
+//
+//				for (int demand = 0; demand < dataModel.numDemand; demand++) {
+//					for (int edgeIndex = 0; edgeIndex < dataModel.numArc; edgeIndex++) {
+//
+//						if (masterData.x.get(demand).containsKey(edgeIndex)) {
+//							if (masterData.cplex.getValue(masterData.x.get(demand).get(edgeIndex)) > config.PRECISION) {
+//								Edge edge = dataModel.edgeSet.get(edgeIndex);
+//								System.out.println("x[" + demand + "]:" + edge.start + "->" + edge.end + "="
+//										+ masterData.cplex.getValue(masterData.x.get(demand).get(edgeIndex)));
+//							}
+//						}
+//
+//					}
+//				}
+//				System.out.println();
 
 			}
 		} catch (IloException e) {
@@ -429,18 +427,15 @@ public final class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProbl
 				IloRange constraint = resourceBoundConstraints[column.associatedPricingProblem.capacityTypeS][column.associatedPricingProblem.originNodeO];
 				iloColumn = iloColumn.and(masterData.cplex.column(constraint, 1));
 			}
-			
-			
-			
-			
-			
-			// for strong cuts , including artificial and non-artificial variables(we use first kind of artificial variables to insert)
-			for(StrongInequality inequality:masterData.strongInequalities.keySet()) {
-				if(column.edgeIndexSet.contains(inequality.edgeIndex)) {
-					iloColumn=iloColumn.and(masterData.cplex.column(masterData.strongInequalities.get(inequality),-dataModel.demandSet.get(inequality.commodity).volume));
+
+			// for strong cuts , including artificial and non-artificial variables(we use
+			// first kind of artificial variables to insert)
+			for (StrongInequality inequality : masterData.strongInequalities.keySet()) {
+				if (column.edgeIndexSet.contains(inequality.edgeIndex)) {
+					iloColumn = iloColumn.and(masterData.cplex.column(masterData.strongInequalities.get(inequality),
+							-dataModel.demandSet.get(inequality.commodity).volume));
 				}
 			}
-
 
 			// Create the variable and store it
 			if (column.isArtificialColumn) {
@@ -501,12 +496,12 @@ public final class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProbl
 				double dualValue = masterData.cplex.getDual(constraint);
 				modifiedCosts[serviceEdgeBranch.branchEdgeIndex] -= dualValue;
 			}
-			
-			//strong cuts
-			for(StrongInequality inequality:masterData.strongInequalities.keySet()) {
-				IloRange constraint=masterData.strongInequalities.get(inequality);
-				double dualValue=masterData.cplex.getDual(constraint);
-				modifiedCosts[inequality.edgeIndex]+=dataModel.demandSet.get(inequality.commodity).volume*dualValue;
+
+			// strong cuts
+			for (StrongInequality inequality : masterData.strongInequalities.keySet()) {
+				IloRange constraint = masterData.strongInequalities.get(inequality);
+				double dualValue = masterData.cplex.getDual(constraint);
+				modifiedCosts[inequality.edgeIndex] += dataModel.demandSet.get(inequality.commodity).volume * dualValue;
 			}
 
 			modifiedCost = dataModel.fixedCost[pricingProblem.originNodeO][pricingProblem.capacityTypeS]
