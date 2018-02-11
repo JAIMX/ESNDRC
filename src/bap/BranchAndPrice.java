@@ -2,10 +2,12 @@ package bap;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.PriorityQueue;
 import java.util.Set;
 
 import org.jorlib.demo.frameworks.columnGeneration.cuttingStockCG.cg.PricingProblem;
@@ -23,6 +25,7 @@ import org.jorlib.frameworks.columnGeneration.util.MathProgrammingUtil;
 
 import com.sun.media.jfxmedia.events.NewFrameEvent;
 
+import bap.bapNodeComparators.NodeBoundbapNodeComparator;
 import cg.Cycle;
 import cg.SNDRCPricingProblem;
 import cg.master.Master;
@@ -33,11 +36,14 @@ import model.SNDRC;
 public class BranchAndPrice<V> extends AbstractBranchAndPrice<SNDRC, Cycle, SNDRCPricingProblem>{
 	
 	private double thresholdValue;
+	private PriorityQueue<BAPNode<SNDRC, Cycle>> lowBoundQueue;
+	
 
 	public BranchAndPrice(SNDRC modelData,Master master,List<SNDRCPricingProblem> pricingProblems,List<Class<? extends AbstractPricingProblemSolver<SNDRC, Cycle,SNDRCPricingProblem>>> solvers,List<? extends AbstractBranchCreator<SNDRC, Cycle, SNDRCPricingProblem>> branchCreators,double objectiveInitialSolution,double thresholdValue) {
 		super(modelData,master,pricingProblems,solvers,branchCreators,0,objectiveInitialSolution);
 //		this.warmStart(objectiveInitialSolution,initialSolution);
 		this.thresholdValue=thresholdValue;
+		lowBoundQueue=new PriorityQueue<>(new NodeBoundbapNodeComparator());
 	}
 	
 	
@@ -119,11 +125,19 @@ public class BranchAndPrice<V> extends AbstractBranchAndPrice<SNDRC, Cycle, SNDR
 		BAPNode<SNDRC, Cycle> rootNode = queue.peek();
 		if(rootNode.getInitialColumns().isEmpty())
 			rootNode.addInitialColumns(this.generateInitialFeasibleSolution(rootNode));
+		
+		
+		lowBoundQueue.add(rootNode);
 
+		
+		
 		//Start processing nodes until the queue is empty
 		while(!queue.isEmpty()){
 			BAPNode<SNDRC, Cycle> bapNode = queue.poll();
+//			lowBoundQueue.poll();
+			
 			notifier.fireNextNodeEvent(bapNode);
+			lowBoundQueue.poll();
 
 			//Prune this node if its bound is worse than the best found solution. Since all solutions are integral, we may round up/down, depending on the optimization sense
 			if(this.nodeCanBePruned(bapNode)){
@@ -144,6 +158,7 @@ public class BranchAndPrice<V> extends AbstractBranchAndPrice<SNDRC, Cycle, SNDR
 				this.solveBAPNode(bapNode, timeLimit);
 			} catch (TimeLimitExceededException e) {
 				queue.add(bapNode);
+				lowBoundQueue.add(bapNode);
 				notifier.fireTimeOutEvent(bapNode);
 				break;
 			}
@@ -201,6 +216,7 @@ public class BranchAndPrice<V> extends AbstractBranchAndPrice<SNDRC, Cycle, SNDR
 					throw new RuntimeException("BAP encountered fractional solution, but non of the BranchCreators produced any new branches?");
 				else {
 					queue.addAll(newBranches);
+					lowBoundQueue.addAll(newBranches);
 					notifier.fireBranchEvent(bapNode, Collections.unmodifiableList(newBranches));
 				}
 			}
@@ -382,6 +398,10 @@ public class BranchAndPrice<V> extends AbstractBranchAndPrice<SNDRC, Cycle, SNDR
     	
     	
     	
+    }
+    
+    public PriorityQueue<BAPNode<SNDRC, Cycle>> getLowBoundQueue(){
+    	return lowBoundQueue;
     }
     
 

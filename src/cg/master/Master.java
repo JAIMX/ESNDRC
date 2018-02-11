@@ -311,6 +311,15 @@ public final class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProbl
 
 			} else {
 				masterData.objectiveValue = masterData.cplex.getObjValue();
+				
+				masterData.xValues=new ArrayList<>();
+				for(int commodity=0;commodity<dataModel.numDemand;commodity++) {
+					Map tempMap=new HashMap<>();
+					for(int edgeIndex:masterData.x.get(commodity).keySet()) {
+						tempMap.put(edgeIndex, masterData.cplex.getValue(masterData.x.get(commodity).get(edgeIndex)));
+					}
+					masterData.xValues.add(tempMap);
+				}
 
 				// System.out.println("||-----------------------temp solution
 				// out---------------------||");

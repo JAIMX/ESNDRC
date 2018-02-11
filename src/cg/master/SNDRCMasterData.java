@@ -29,6 +29,7 @@ import model.SNDRC;
 public class SNDRCMasterData extends MasterData<SNDRC,Cycle,SNDRCPricingProblem,IloNumVar>{
 	public final IloCplex cplex;
 	public List<Map<Integer,IloNumVar>> x; //map:edgeIndex, x variable
+	public List<Map<Integer,Double>> xValues;//record the value of x variables
 	public IloNumVar[][] q;
 	public final  List<SNDRCPricingProblem> pricingProblems;
 	
