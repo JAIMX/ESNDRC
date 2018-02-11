@@ -5,6 +5,7 @@ import java.util.*;
 import org.jorlib.frameworks.columnGeneration.branchAndPrice.AbstractBranchCreator;
 import org.jorlib.frameworks.columnGeneration.branchAndPrice.bapNodeComparators.BFSbapNodeComparator;
 import org.jorlib.frameworks.columnGeneration.io.SimpleDebugger;
+import org.jorlib.frameworks.columnGeneration.master.cutGeneration.CutHandler;
 import org.jorlib.frameworks.columnGeneration.pricing.AbstractPricingProblemSolver;
 import org.jorlib.frameworks.columnGeneration.util.Configuration;
 
@@ -17,6 +18,8 @@ import cg.Cycle;
 import cg.ExactPricingProblemSolver;
 import cg.SNDRCPricingProblem;
 import cg.master.Master;
+import cg.master.SNDRCMasterData;
+import cg.master.cuts.StrongInequalityGenerator;
 import logger.BapLogger;
 import model.SNDRC;
 import model.SNDRC.Edge;
@@ -37,8 +40,13 @@ public class SNDRCSolver {
 		}
 		
 		
+		//Create a cutHandler
+		CutHandler<SNDRC, SNDRCMasterData> cutHandler=new CutHandler<>();
+		StrongInequalityGenerator cutGen=new StrongInequalityGenerator(dataModel);
+		cutHandler.addCutGenerator(cutGen);
+		
 		//Create the Master Problem
-		Master master=new Master(dataModel,pricingProblems);
+		Master master=new Master(dataModel,pricingProblems,cutHandler);
 		
 		//Define which solvers to use
 		List<Class<?extends AbstractPricingProblemSolver<SNDRC, Cycle, SNDRCPricingProblem>>> solvers=Collections.singletonList(ExactPricingProblemSolver.class);
@@ -85,6 +93,7 @@ public class SNDRCSolver {
 //		System.out.println(bap.getBound());
 		
 		bap.close();
+		cutHandler.close();
 		
 		
 		

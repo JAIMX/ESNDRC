@@ -91,7 +91,7 @@ $\sum_{p\in P}x_{ij}^{p} \leqslant \sum_{s\in S}\sum_{\tau\in \theta _{s}} C_{s}
 
 
 
-   $\sum_{\tau\in \theta_{so}}z_{\tau}+q_{so} \leqslant L_{so}\qquad \forall s\in S,\forall o\in O \qquad(3)$
+   $\sum_{\tau\in \theta_{so}}z_{\tau}+q_{so} = L_{so}\qquad \forall s\in S,\forall o\in O \qquad(3)$
    
 
    

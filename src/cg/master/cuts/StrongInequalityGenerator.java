@@ -38,7 +38,12 @@ public final class StrongInequalityGenerator extends AbstractCutGenerator<SNDRC,
 					
 					
 					try {
-						if(masterData.cplex.getValue(masterData.x.get(commodity).get(edgeIndex))>dataModel.demandSet.get(commodity).volume*edgeValue) {
+						System.out.println(masterData.cplex.getValue(masterData.x.get(commodity).get(edgeIndex)));
+						System.out.println(dataModel.demandSet.get(commodity).volume);
+						System.out.println(edgeValue);
+						double xValue=masterData.cplex.getValue(masterData.x.get(commodity).get(edgeIndex));
+						double demandValue=dataModel.demandSet.get(commodity).volume;
+						if(xValue>demandValue*edgeValue) {
 							StrongInequality inequality=new StrongInequality(this, edgeIndex, commodity);
 							this.addCut(inequality);
 							return Collections.singletonList(inequality);

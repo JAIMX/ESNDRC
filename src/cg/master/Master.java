@@ -15,6 +15,7 @@ import bap.branching.branchingDecisions.RoundServiceEdge;
 import bap.branching.branchingDecisions.RoundServiceEdgeForAllPricingProblems;
 import cg.Cycle;
 import cg.SNDRCPricingProblem;
+import cg.master.cuts.StrongInequality;
 import ilog.concert.*;
 import ilog.cplex.*;
 import model.SNDRC;
@@ -419,6 +420,18 @@ public final class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProbl
 				IloRange constraint = resourceBoundConstraints[column.associatedPricingProblem.capacityTypeS][column.associatedPricingProblem.originNodeO];
 				iloColumn = iloColumn.and(masterData.cplex.column(constraint, 1));
 			}
+			
+			
+			
+			
+			
+			// for strong cuts , including artificial and non-artificial variables(we use first kind of artificial variables to insert)
+			for(StrongInequality inequality:masterData.strongInequalities.keySet()) {
+				if(column.edgeIndexSet.contains(inequality.edgeIndex)) {
+					iloColumn=iloColumn.and(masterData.cplex.column(masterData.strongInequalities.get(inequality),-dataModel.demandSet.get(inequality.commodity).volume));
+				}
+			}
+
 
 			// Create the variable and store it
 			if (column.isArtificialColumn) {
@@ -478,6 +491,13 @@ public final class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProbl
 				IloRange constraint = masterData.serviceEdge4AllBranchingConstraints.get(serviceEdgeBranch);
 				double dualValue = masterData.cplex.getDual(constraint);
 				modifiedCosts[serviceEdgeBranch.branchEdgeIndex] -= dualValue;
+			}
+			
+			//strong cuts
+			for(StrongInequality inequality:masterData.strongInequalities.keySet()) {
+				IloRange constraint=masterData.strongInequalities.get(inequality);
+				double dualValue=masterData.cplex.getDual(constraint);
+				modifiedCosts[inequality.edgeIndex]+=dataModel.demandSet.get(inequality.commodity).volume*dualValue;
 			}
 
 			modifiedCost = dataModel.fixedCost[pricingProblem.originNodeO][pricingProblem.capacityTypeS]
@@ -594,6 +614,7 @@ public final class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProbl
 		// destroy the master and rebuild it
 		this.close();
 		masterData = this.buildModel();
+		cutHandler.setMasterData(masterData);
 
 	}
 
