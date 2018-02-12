@@ -8,6 +8,7 @@ import org.jorlib.frameworks.columnGeneration.master.cutGeneration.AbstractCutGe
 import org.jorlib.frameworks.columnGeneration.master.cutGeneration.AbstractInequality;
 
 import cg.Cycle;
+import cg.SNDRCPricingProblem;
 import cg.master.SNDRCMasterData;
 import ilog.concert.IloException;
 import ilog.concert.IloLinearNumExpr;
@@ -17,9 +18,11 @@ import ilog.cplex.IloCplex.UnknownObjectException;
 import model.SNDRC;
 
 public final class StrongInequalityGenerator extends AbstractCutGenerator<SNDRC, SNDRCMasterData> {
+	List<SNDRCPricingProblem> pricingProblems;
 
-	public StrongInequalityGenerator(SNDRC modelData) {
+	public StrongInequalityGenerator(SNDRC modelData,List<SNDRCPricingProblem> pricingProblems) {
 		super(modelData, "strongIneqGenerator");
+		this.pricingProblems=pricingProblems;
 	}
 
 	/**
@@ -31,7 +34,7 @@ public final class StrongInequalityGenerator extends AbstractCutGenerator<SNDRC,
 	@Override
 	public List<AbstractInequality> generateInqualities() {
 		
-//		//check
+		//check
 //		for(int edgeIndex:masterData.edgeValueMap.keySet()) {
 //			System.out.println(edgeIndex+": "+masterData.edgeValueMap.get(edgeIndex));
 //			if(masterData.edgeValueMap.get(edgeIndex)<1) {
@@ -42,24 +45,43 @@ public final class StrongInequalityGenerator extends AbstractCutGenerator<SNDRC,
 //			System.out.println();
 //		}
 		
+//		// Check for violated situations. When found, generate an inequality.
+//		for (int edgeIndex : masterData.edgeValueMap.keySet()) {
+//			Double edgeValue = masterData.edgeValueMap.get(edgeIndex);
+//			if (edgeValue < 1) {
+//				for (int commodity = 0; commodity < dataModel.numDemand; commodity++) {
+//					if(masterData.xValues.get(commodity).containsKey(edgeValue)) {
+//						double xValue = masterData.xValues.get(commodity).get(edgeIndex);
+//						double demandValue = dataModel.demandSet.get(commodity).volume;
+//
+//						
+//						if (xValue > demandValue * edgeValue) {
+//							StrongInequality inequality = new StrongInequality(this, edgeIndex, commodity);
+//							this.addCut(inequality);
+//							System.out.println("add cut");
+//							return Collections.singletonList(inequality);
+//						}
+//					}
+//
+//				}
+//			}
+//		}
+		
 		// Check for violated situations. When found, generate an inequality.
-		for (int edgeIndex : masterData.edgeValueMap.keySet()) {
-			Double edgeValue = masterData.edgeValueMap.get(edgeIndex);
-			if (edgeValue < 1) {
-				for (int commodity = 0; commodity < dataModel.numDemand; commodity++) {
-					if(masterData.xValues.get(commodity).containsKey(edgeValue)) {
-						double xValue = masterData.xValues.get(commodity).get(edgeIndex);
-						double demandValue = dataModel.demandSet.get(commodity).volume;
-
-						
-						if (xValue > demandValue * edgeValue) {
-							StrongInequality inequality = new StrongInequality(this, edgeIndex, commodity);
-							this.addCut(inequality);
-							System.out.println("add cut");
-							return Collections.singletonList(inequality);
-						}
+		for(int commodity=0;commodity<dataModel.numDemand;commodity++) {
+			double demandValue=dataModel.demandSet.get(commodity).volume;
+			for(int edgeIndex:masterData.xValues.get(commodity).keySet()) {
+				if(masterData.edgeValueMap.containsKey(edgeIndex)&&masterData.edgeValueMap.get(edgeIndex)<1) {
+					double xValue=masterData.xValues.get(commodity).get(edgeIndex);
+					double edgeValue=masterData.edgeValueMap.get(edgeIndex);
+					
+					if (xValue > demandValue * edgeValue+0.05) {
+						StrongInequality inequality = new StrongInequality(this, edgeIndex, commodity);
+						this.addCut(inequality);
+//						System.out.println("add cut: "+inequality.toString());
+//						System.out.println(masterData.cplex.toString());
+						return Collections.singletonList(inequality);
 					}
-
 				}
 			}
 		}
@@ -85,10 +107,19 @@ public final class StrongInequalityGenerator extends AbstractCutGenerator<SNDRC,
 			expr.addTerm(1, masterData.x.get(strongInequality.commodity).get(strongInequality.edgeIndex));
 
 			// register the columns with this constraints
-			for (Cycle cycle : masterData.getColumns()) {
-				if (cycle.edgeIndexSet.contains(strongInequality.edgeIndex)) {
-					IloNumVar var = masterData.getVar(cycle);
-					expr.addTerm(-dataModel.demandSet.get(strongInequality.commodity).volume, var);
+//			for (Cycle cycle : masterData.getColumns()) {
+//				if (cycle.edgeIndexSet.contains(strongInequality.edgeIndex)) {
+//					IloNumVar var = masterData.getVar(cycle);
+//					expr.addTerm(-dataModel.demandSet.get(strongInequality.commodity).volume, var);
+//				}
+//			}
+			
+			for(SNDRCPricingProblem pricingProblem:pricingProblems) {
+				for(Cycle cycle:masterData.getColumnsForPricingProblem(pricingProblem)) {
+					if (cycle.edgeIndexSet.contains(strongInequality.edgeIndex)) {
+						IloNumVar var = masterData.getVar(pricingProblem, cycle);
+						expr.addTerm(-dataModel.demandSet.get(strongInequality.commodity).volume, var);
+					}
 				}
 			}
 

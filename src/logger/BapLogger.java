@@ -141,24 +141,28 @@ public class BapLogger implements BAPListener{
     public void pruneNode(PruneNodeEvent pruneNodeEvent) {
         this.nodeStatus =NodeResultStatus.PRUNED;
         this.nodeBound =pruneNodeEvent.nodeBound;
+        this.nrInequalities=pruneNodeEvent.node.getInequalities().size();
         this.constructAndWriteLine();
     }
 
     @Override
     public void nodeIsInfeasible(NodeIsInfeasibleEvent nodeIsInfeasibleEvent) {
         this.nodeStatus =NodeResultStatus.INFEASIBLE;
+        this.nrInequalities=nodeIsInfeasibleEvent.node.getInequalities().size();
         this.constructAndWriteLine();
     }
 
     @Override
     public void nodeIsInteger(NodeIsIntegerEvent nodeIsIntegerEvent) {
         this.nodeStatus =NodeResultStatus.INTEGER;
+        this.nrInequalities=nodeIsIntegerEvent.node.getInequalities().size();
         this.constructAndWriteLine();
     }
 
     @Override
     public void nodeIsFractional(NodeIsFractionalEvent nodeIsFractionalEvent) {
         this.nodeStatus =NodeResultStatus.FRACTIONAL;
+        this.nrInequalities=nodeIsFractionalEvent.node.getInequalities().size();
         this.constructAndWriteLine();
     }
     
@@ -185,7 +189,7 @@ public class BapLogger implements BAPListener{
         this.timeSolvingMaster= finishProcessingNodeEvent.masterSolveTime;
         this.timeSolvingPricing= finishProcessingNodeEvent.pricingSolveTime;
         this.nrGeneratedColumns= finishProcessingNodeEvent.nrGeneratedColumns;
-        this.nrInequalities=finishProcessingNodeEvent.node.getInequalities().size();
+//        this.nrInequalities=finishProcessingNodeEvent.node.getInequalities().size();
 //        this.LB=bap.getBound();
 
 

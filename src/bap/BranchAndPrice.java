@@ -251,6 +251,7 @@ public class BranchAndPrice<V> extends AbstractBranchAndPrice<SNDRC, Cycle, SNDR
 	}
     
     
+    
     public void AccelerationForUB(BAPNode<SNDRC, Cycle> bapNode) throws IloException {
     	
     	List<Cycle> solution=bapNode.getSolution();

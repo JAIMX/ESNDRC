@@ -28,4 +28,9 @@ public final class StrongInequality extends AbstractInequality {
 	public int hashCode() {
 		return this.edgeIndex*19+this.commodity;
 	}
+	
+	@Override 
+	public String toString() {
+		return "edgeIndex= "+edgeIndex+" commodity= "+commodity;
+	}
 }
