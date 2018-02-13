@@ -42,7 +42,7 @@ public class SNDRCSolver {
 		
 		//Create a cutHandler
 		CutHandler<SNDRC, SNDRCMasterData> cutHandler=new CutHandler<>();
-		StrongInequalityGenerator cutGen=new StrongInequalityGenerator(dataModel,pricingProblems);
+		StrongInequalityGenerator cutGen=new StrongInequalityGenerator(dataModel,pricingProblems,0);
 		cutHandler.addCutGenerator(cutGen);
 		
 		//Create the Master Problem

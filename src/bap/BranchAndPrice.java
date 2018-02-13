@@ -38,12 +38,19 @@ public class BranchAndPrice<V> extends AbstractBranchAndPrice<SNDRC, Cycle, SNDR
 	private double thresholdValue;
 	private PriorityQueue<BAPNode<SNDRC, Cycle>> lowBoundQueue;
 	
+	private final double probLB;
+	private final double c;
+	private int nrNonImproForAcce;
+	
 
-	public BranchAndPrice(SNDRC modelData,Master master,List<SNDRCPricingProblem> pricingProblems,List<Class<? extends AbstractPricingProblemSolver<SNDRC, Cycle,SNDRCPricingProblem>>> solvers,List<? extends AbstractBranchCreator<SNDRC, Cycle, SNDRCPricingProblem>> branchCreators,double objectiveInitialSolution,double thresholdValue) {
+	public BranchAndPrice(SNDRC modelData,Master master,List<SNDRCPricingProblem> pricingProblems,List<Class<? extends AbstractPricingProblemSolver<SNDRC, Cycle,SNDRCPricingProblem>>> solvers,List<? extends AbstractBranchCreator<SNDRC, Cycle, SNDRCPricingProblem>> branchCreators,double objectiveInitialSolution,double thresholdValue,double probLB,double c) {
 		super(modelData,master,pricingProblems,solvers,branchCreators,0,objectiveInitialSolution);
 //		this.warmStart(objectiveInitialSolution,initialSolution);
 		this.thresholdValue=thresholdValue;
 		lowBoundQueue=new PriorityQueue<>(new NodeBoundbapNodeComparator());
+		this.probLB=probLB;
+		this.c=c;
+		nrNonImproForAcce=0;
 	}
 	
 	

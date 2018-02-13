@@ -19,10 +19,12 @@ import model.SNDRC;
 
 public final class StrongInequalityGenerator extends AbstractCutGenerator<SNDRC, SNDRCMasterData> {
 	List<SNDRCPricingProblem> pricingProblems;
+	int ifOnlyOneCut; //0:no;   1:yes
 
-	public StrongInequalityGenerator(SNDRC modelData,List<SNDRCPricingProblem> pricingProblems) {
+	public StrongInequalityGenerator(SNDRC modelData,List<SNDRCPricingProblem> pricingProblems,int ifOnlyOneCut) {
 		super(modelData, "strongIneqGenerator");
 		this.pricingProblems=pricingProblems;
+		this.ifOnlyOneCut=ifOnlyOneCut;
 	}
 
 	/**
@@ -45,46 +47,59 @@ public final class StrongInequalityGenerator extends AbstractCutGenerator<SNDRC,
 //			System.out.println();
 //		}
 		
-//		// Check for violated situations. When found, generate an inequality.
-//		for (int edgeIndex : masterData.edgeValueMap.keySet()) {
-//			Double edgeValue = masterData.edgeValueMap.get(edgeIndex);
-//			if (edgeValue < 1) {
-//				for (int commodity = 0; commodity < dataModel.numDemand; commodity++) {
-//					if(masterData.xValues.get(commodity).containsKey(edgeValue)) {
-//						double xValue = masterData.xValues.get(commodity).get(edgeIndex);
-//						double demandValue = dataModel.demandSet.get(commodity).volume;
-//
-//						
-//						if (xValue > demandValue * edgeValue) {
-//							StrongInequality inequality = new StrongInequality(this, edgeIndex, commodity);
-//							this.addCut(inequality);
-//							System.out.println("add cut");
-//							return Collections.singletonList(inequality);
-//						}
-//					}
-//
-//				}
-//			}
-//		}
 		
 		// Check for violated situations. When found, generate an inequality.
-		for(int commodity=0;commodity<dataModel.numDemand;commodity++) {
-			double demandValue=dataModel.demandSet.get(commodity).volume;
-			for(int edgeIndex:masterData.xValues.get(commodity).keySet()) {
-				if(masterData.edgeValueMap.containsKey(edgeIndex)&&masterData.edgeValueMap.get(edgeIndex)<1) {
-					double xValue=masterData.xValues.get(commodity).get(edgeIndex);
-					double edgeValue=masterData.edgeValueMap.get(edgeIndex);
-					
-					if (xValue > demandValue * edgeValue+0.05) {
-						StrongInequality inequality = new StrongInequality(this, edgeIndex, commodity);
-						this.addCut(inequality);
-//						System.out.println("add cut: "+inequality.toString());
-//						System.out.println(masterData.cplex.toString());
-						return Collections.singletonList(inequality);
+		if(ifOnlyOneCut==1) {
+			for(int commodity=0;commodity<dataModel.numDemand;commodity++) {
+				double demandValue=dataModel.demandSet.get(commodity).volume;
+				
+				for(int edgeIndex:masterData.xValues.get(commodity).keySet()) {
+					if(masterData.edgeValueMap.containsKey(edgeIndex)&&masterData.edgeValueMap.get(edgeIndex)<1) {
+						double xValue=masterData.xValues.get(commodity).get(edgeIndex);
+						double edgeValue=masterData.edgeValueMap.get(edgeIndex);
+						
+						if (xValue > demandValue * edgeValue+0.05) {
+							StrongInequality inequality = new StrongInequality(this, edgeIndex, commodity);
+							this.addCut(inequality);
+							return Collections.singletonList(inequality);
+						}
 					}
 				}
+				
+				
 			}
 		}
+		
+		if(ifOnlyOneCut==0) { // we add cuts for one commodity
+			
+			for(int commodity=0;commodity<dataModel.numDemand;commodity++) {
+				double demandValue=dataModel.demandSet.get(commodity).volume;
+				List<AbstractInequality> cutList=new ArrayList<>();
+				
+				for(int edgeIndex:masterData.xValues.get(commodity).keySet()) {
+					if(masterData.edgeValueMap.containsKey(edgeIndex)&&masterData.edgeValueMap.get(edgeIndex)<1) {
+						double xValue=masterData.xValues.get(commodity).get(edgeIndex);
+						double edgeValue=masterData.edgeValueMap.get(edgeIndex);
+						
+						if (xValue > demandValue * edgeValue+0.05) {
+							StrongInequality inequality = new StrongInequality(this, edgeIndex, commodity);
+							this.addCut(inequality);
+							cutList.add(inequality);
+//							return Collections.singletonList(inequality);
+						}
+					}
+				}
+				
+				if(cutList.size()>0) {
+					return cutList;
+				}
+				
+			}
+			
+			
+		}
+		
+
 
 		return Collections.emptyList();
 	}
