@@ -204,7 +204,12 @@ public class BranchAndPrice<V> extends AbstractBranchAndPrice<SNDRC, Cycle, SNDR
 				
 				// An acceleration technique for ub
 				try {
-					this.AccelerationForUB(bapNode);
+					double prob=CalculateProb();
+					double random=Math.random();
+					if(random<prob) {
+						this.AccelerationForUB(bapNode);
+					}
+
 				} catch (IloException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -258,8 +263,14 @@ public class BranchAndPrice<V> extends AbstractBranchAndPrice<SNDRC, Cycle, SNDR
 	}
     
     
+    public Double CalculateProb() {
+    	double prob=2-probLB;
+    	prob-=(2-2*probLB)/(1+Math.pow(Math.E, -c*nrNonImproForAcce));
+    	return prob;
+    }
     
     public void AccelerationForUB(BAPNode<SNDRC, Cycle> bapNode) throws IloException {
+    	boolean ifFindBetterUB=false;
     	
     	List<Cycle> solution=bapNode.getSolution();
     	
@@ -376,6 +387,10 @@ public class BranchAndPrice<V> extends AbstractBranchAndPrice<SNDRC, Cycle, SNDR
     						this.incumbentSolution.add(cycle);
     					}
     					
+    					//deal with nrNonImproForAcce
+    					nrNonImproForAcce=0;
+    					ifFindBetterUB=true;
+    					
     				}else if(optimizationSenseMaster == OptimizationSense.MAXIMIZE && integerObjective > this.lowerBoundOnObjective){
     					this.objectiveIncumbentSolution = integerObjective;
     					this.lowerBoundOnObjective = integerObjective;
@@ -383,11 +398,13 @@ public class BranchAndPrice<V> extends AbstractBranchAndPrice<SNDRC, Cycle, SNDR
     					for(Cycle cycle:bapNode.getSolution()) {
     						this.incumbentSolution.add(cycle);
     					}
+    					
+    					nrNonImproForAcce=0;
+    					ifFindBetterUB=true;
     				}
     				
     				
     				break;
-    				
     			
     		}
     		
@@ -404,7 +421,7 @@ public class BranchAndPrice<V> extends AbstractBranchAndPrice<SNDRC, Cycle, SNDR
     	}
 		bapNode.storeSolution(objRecord, boundRecord, solutionRecord, inequalityRecord);
     	
-    	
+    	if(!ifFindBetterUB) nrNonImproForAcce++;
     	
     	
     }
