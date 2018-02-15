@@ -81,7 +81,7 @@ public final class StrongInequalityGenerator extends AbstractCutGenerator<SNDRC,
 						double xValue=masterData.xValues.get(commodity).get(edgeIndex);
 						double edgeValue=masterData.edgeValueMap.get(edgeIndex);
 						
-						if (xValue > demandValue * edgeValue+0.05) {
+						if (xValue > demandValue * edgeValue+0.1) {
 							StrongInequality inequality = new StrongInequality(this, edgeIndex, commodity);
 							this.addCut(inequality);
 							cutList.add(inequality);
