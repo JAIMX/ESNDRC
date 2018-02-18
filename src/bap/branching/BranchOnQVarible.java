@@ -4,6 +4,7 @@ import java.util.*;
 
 import org.jorlib.frameworks.columnGeneration.branchAndPrice.AbstractBranchCreator;
 import org.jorlib.frameworks.columnGeneration.branchAndPrice.BAPNode;
+import org.jorlib.frameworks.columnGeneration.branchAndPrice.branchingDecisions.BranchingDecision;
 import org.jorlib.frameworks.columnGeneration.master.MasterData;
 import org.jorlib.frameworks.columnGeneration.util.MathProgrammingUtil;
 
@@ -99,6 +100,17 @@ public class BranchOnQVarible extends AbstractBranchCreator<SNDRC, Cycle, SNDRCP
 	@Override
 	protected List<BAPNode<SNDRC,Cycle>> getBranches(BAPNode<SNDRC,Cycle> parentNode){
 //		List<Cycle> initialSolution=new ArrayList<Cycle>();
+
+//		if(pricingProblemForCycle.capacityTypeS==1&&pricingProblemForCycle.originNodeO==4) {
+//			System.out.println("We now ready to do branch for q1,4: "+bestQValue);
+//			for(Cycle cycle:parentNode.getSolution()) {
+//				if(cycle.associatedPricingProblem.capacityTypeS==1&&cycle.associatedPricingProblem.originNodeO==4) {
+//					System.out.println(cycle.toString()+":"+cycle.value);
+//				}
+//
+//			}
+//		}
+//		System.out.println();
 		
 		//Branch 1:round q down to the nearest integer
 		RoundQ branchingDecision1=new RoundQ(0,pricingProblemForCycle,bestQValue);

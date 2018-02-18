@@ -164,7 +164,7 @@ public class SNDRCSolver {
 			Properties properties=new Properties();
 //			properties.setProperty("EXPORT_MODEL", "True");
 //			properties.setProperty("MAXTHREADS", "10");
-			properties.setProperty("PRECISION", "0.001");
+//			properties.setProperty("PRECISION", "0.001");
 			Configuration.readFromFile(properties);
 			
 			new SNDRCSolver(sndrc);

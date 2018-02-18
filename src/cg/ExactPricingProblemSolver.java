@@ -130,7 +130,8 @@ public class ExactPricingProblemSolver extends AbstractPricingProblemSolver<SNDR
 			
 			
 			if(dpFunction[originNodeIndex]<Double.MAX_VALUE-1) {
-				if(dpFunction[originNodeIndex]+modifiedCost<-config.PRECISION) {
+//				if(dpFunction[originNodeIndex]+modifiedCost<-config.PRECISION) {
+				if(dpFunction[originNodeIndex]+modifiedCost<-0.001) {
 					Set<Integer> edgeIndexSet=new HashSet<>();
 					double cost=0;
 					double totalLength=0;
@@ -142,15 +143,6 @@ public class ExactPricingProblemSolver extends AbstractPricingProblemSolver<SNDR
 					do {
 						//update lastNodeIndex
 						Edge edge=dataModel.edgeSet.get(pathRecord[currentNodeIndex]);
-//						if(edge.edgeType==0) {  // service arcs
-//							lastNodeIndex=edge.start;
-//							totalLength+=edge.duration;
-//							edgeIndexSet.add(pathRecord[currentNodeIndex]);
-//						}else {// holding arcs
-//							if(currentNodeIndex%dataModel.timePeriod==0) {
-//								lastNodeIndex=currentNodeIndex+dataModel.timePeriod-1;
-//							}else lastNodeIndex=currentNodeIndex-1;
-//						}
 						
 						lastNodeIndex=edge.start;
 						totalLength+=edge.duration;

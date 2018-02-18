@@ -38,12 +38,22 @@ public class RoundQ implements BranchingDecision<SNDRC, Cycle> {
 		return true;
 	}
 	
+//	@Override
+//	public String toString() {
+//		if(roundUpOrDown==0) {
+//			return "Round variable q(capcityType: "+associatedPricingProblem.capacityTypeS+" originNode: "+associatedPricingProblem.originNodeO+") down";
+//		}else {
+//			return "Round variable q(capcityType: "+associatedPricingProblem.capacityTypeS+" originNode: "+associatedPricingProblem.originNodeO+") up";
+//		}
+//		
+//	}
+	
 	@Override
 	public String toString() {
 		if(roundUpOrDown==0) {
-			return "Round variable q(capcityType: "+associatedPricingProblem.capacityTypeS+" originNode: "+associatedPricingProblem.originNodeO+") down";
+			return "Round q("+associatedPricingProblem.capacityTypeS+")("+associatedPricingProblem.originNodeO+") down:"+qValue;
 		}else {
-			return "Round variable q(capcityType: "+associatedPricingProblem.capacityTypeS+" originNode: "+associatedPricingProblem.originNodeO+") up";
+			return "Round q("+associatedPricingProblem.capacityTypeS+")("+associatedPricingProblem.originNodeO+") up"+qValue;
 		}
 		
 	}
