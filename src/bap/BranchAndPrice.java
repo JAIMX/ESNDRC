@@ -26,6 +26,7 @@ import org.jorlib.frameworks.columnGeneration.util.MathProgrammingUtil;
 import com.sun.media.jfxmedia.events.NewFrameEvent;
 
 import bap.bapNodeComparators.NodeBoundbapNodeComparator;
+import bap.bapNodeComparators.NodeBoundbapNodeComparatorForLB;
 import cg.Cycle;
 import cg.SNDRCPricingProblem;
 import cg.master.Master;
@@ -47,7 +48,7 @@ public class BranchAndPrice<V> extends AbstractBranchAndPrice<SNDRC, Cycle, SNDR
 		super(modelData,master,pricingProblems,solvers,branchCreators,0,objectiveInitialSolution);
 //		this.warmStart(objectiveInitialSolution,initialSolution);
 		this.thresholdValue=thresholdValue;
-		lowBoundQueue=new PriorityQueue<>(new NodeBoundbapNodeComparator());
+		lowBoundQueue=new PriorityQueue<>(new NodeBoundbapNodeComparatorForLB());
 		this.probLB=probLB;
 		this.c=c;
 		nrNonImproForAcce=0;
@@ -144,7 +145,8 @@ public class BranchAndPrice<V> extends AbstractBranchAndPrice<SNDRC, Cycle, SNDR
 //			lowBoundQueue.poll();
 			
 			notifier.fireNextNodeEvent(bapNode);
-			lowBoundQueue.poll();
+//			lowBoundQueue.poll();
+			lowBoundQueue.remove(bapNode);
 
 			//Prune this node if its bound is worse than the best found solution. Since all solutions are integral, we may round up/down, depending on the optimization sense
 			if(this.nodeCanBePruned(bapNode)){
