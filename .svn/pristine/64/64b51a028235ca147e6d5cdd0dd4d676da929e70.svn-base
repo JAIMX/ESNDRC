@@ -1,6 +1,0 @@
-#忽略.classpath 文件
-.classpath
-.project
-
-/output/
-/bin/
