@@ -18,6 +18,7 @@ import cg.SNDRCPricingProblem;
 import cg.master.cuts.StrongInequality;
 import ilog.concert.*;
 import ilog.cplex.*;
+import ilog.cplex.IloCplex.UnknownObjectException;
 import model.SNDRC;
 import model.SNDRC.Edge;
 
@@ -715,6 +716,27 @@ public final class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProbl
 
 	public boolean CheckFeasibility() throws IloException {
 		return masterData.cplex.solve();
+	}
+	
+	public List<Map<Integer,Double>> getXValues() throws UnknownObjectException, IloException{
+//	    List<Map<Integer,Double>> xValues=new ArrayList<>();
+//	    List<Map<Integer,IloNumVar>> x=masterData.x;
+//	    List<Set<Integer>> edgesForX=dataModel.edgesForX;
+//	   
+//	    for(int p=0;p<dataModel.numDemand;p++){
+//	        Map<Integer,Double> xValue=new HashMap<>();
+//	        
+//	        for(int edgeIndex:edgesForX.get(p)){
+//	            xValue.put(edgeIndex,masterData.cplex.getValue(x.get(p).get(edgeIndex)));
+//	        }
+//	        
+//	        xValues.add(xValue);
+//	        
+//	    }
+//	    
+//	    
+//	    return xValues;
+	    return masterData.xValues;
 	}
 
 }

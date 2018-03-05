@@ -85,12 +85,24 @@ public class SNDRCSolver {
 			List<Cycle> solution = bap.getSolution();
 			for (Cycle column : solution) {
 				System.out.println(column);
-				System.out.println(out(column));
+				System.out.println(out(column)+":"+bap.GetOptSolutionValueMap().get(column));
 				System.out.println();
 			}
 				
 		}
 //		System.out.println(bap.getBound());
+		
+		List<Map<Integer,Double>> optXValues=bap.GetOptXValues();
+		//output x variables
+		for(int demand=0;demand<dataModel.numDemand;demand++){
+		    for(int edgeIndex:optXValues.get(demand).keySet()){
+		        if(optXValues.get(demand).get(edgeIndex)>0.01){
+		            Edge edge=dataModel.edgeSet.get(edgeIndex);
+		            System.out.println("x[" + demand + "]:" + edge.start + "->" + edge.end + "= "+optXValues.get(demand).get(edgeIndex));
+		        }
+		    }
+		    System.out.println();
+		}
 		
 		bap.close();
 		cutHandler.close();
