@@ -57,7 +57,8 @@ public class SNDRCSolver {
 		List<? extends AbstractBranchCreator<SNDRC, Cycle, SNDRCPricingProblem>> branchCreators=Arrays.asList(new BranchOnQVarible(dataModel, pricingProblems,0.5),new BranchOnServiceEdge(dataModel, pricingProblems, 0.5));
 		
 		//Create a Branch-and-Price instance
-		BranchAndPrice bap=new BranchAndPrice(dataModel, master, pricingProblems, solvers, branchCreators,Double.MAX_VALUE,0.5,0.3,0.1);
+//		BranchAndPrice bap=new BranchAndPrice(dataModel, master, pricingProblems, solvers, branchCreators,Double.MAX_VALUE,0.5,0.3,0.1);
+		BranchAndPrice bap=new BranchAndPrice(dataModel, master, pricingProblems, solvers, branchCreators,Double.MAX_VALUE,0.65,0.3,0.1);
 //		bap.setNodeOrdering(new BFSbapNodeComparator());
 		bap.setNodeOrdering(new NodeBoundbapNodeComparator());
 		
