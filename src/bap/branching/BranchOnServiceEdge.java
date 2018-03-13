@@ -111,12 +111,19 @@ public class BranchOnServiceEdge extends AbstractBranchCreator<SNDRC, Cycle, SND
 		return (!isAllInteger);
 		
 		
-		
 	}
 	
 	
 	@Override
 	protected List<BAPNode<SNDRC,Cycle>> getBranches(BAPNode<SNDRC,Cycle> parentNode){
+	    
+
+	    if(parentNode.nodeID==19){                                                                                                                        
+	        System.out.println(branchEdgeValue);
+	        System.out.println("original Node: "+branchPricingProblem.originNodeO);
+	        System.out.println("capacity type: "+branchPricingProblem.capacityTypeS);
+	        System.out.println("edge index: "+branchEdgeIndex+" "+dataModel.edgeSet.get(branchEdgeIndex).start+"->"+dataModel.edgeSet.get(branchEdgeIndex).end);
+	    }
 		//Branch 1:round q down to the nearest integer
 //		RoundServiceEdge branchingDecision1=new RoundServiceEdge(0,branchEdgeIndex,branchEdgeValue);
 		RoundServiceEdge branchingDecision1=new RoundServiceEdge(0,branchEdgeIndex,branchEdgeValue,branchPricingProblem);

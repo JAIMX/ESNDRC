@@ -44,6 +44,7 @@ public class BranchAndPrice<V> extends AbstractBranchAndPrice<SNDRC, Cycle, SNDR
     private int nrNonImproForAcce;
     private Map<Cycle, Double> optSolutionValueMap;
     private List<Map<Integer,Double>> optXValues;
+    private double[] nodeBoundRecord;
 
     public BranchAndPrice(SNDRC modelData, Master master, List<SNDRCPricingProblem> pricingProblems,
             List<Class<? extends AbstractPricingProblemSolver<SNDRC, Cycle, SNDRCPricingProblem>>> solvers,
@@ -57,6 +58,7 @@ public class BranchAndPrice<V> extends AbstractBranchAndPrice<SNDRC, Cycle, SNDR
         this.c = c;
         nrNonImproForAcce = 0;
         optSolutionValueMap = new HashMap<>();
+        nodeBoundRecord=new double[5000];
     }
 
     /**
@@ -176,12 +178,19 @@ public class BranchAndPrice<V> extends AbstractBranchAndPrice<SNDRC, Cycle, SNDR
             // Solve the next BAPNode
             try {
                 this.solveBAPNode(bapNode, timeLimit);
-                // System.out.println(bapNode.getInequalities().size());
+                
+                //output the model
+                ((Master) master).Output(bapNode.nodeID);
+                nodeBoundRecord[bapNode.nodeID]=bapNode.getBound();
+                
             } catch (TimeLimitExceededException e) {
                 queue.add(bapNode);
                 lowBoundQueue.add(bapNode);
                 notifier.fireTimeOutEvent(bapNode);
                 break;
+            } catch (IloException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
             }
 
             // Prune this node if its bound is worse than the best found
@@ -245,17 +254,32 @@ public class BranchAndPrice<V> extends AbstractBranchAndPrice<SNDRC, Cycle, SNDR
                 // ----------------------------------------------------------------------------------------------------------------------------------//
 
                 // An acceleration technique for ub
-                try {
-                    double prob = CalculateProb();
-                    double random = Math.random();
-                    if (random < prob) {
-                        this.AccelerationForUB(bapNode);
+//                try {
+//                    double prob = CalculateProb();
+//                    double random = Math.random();
+//                    if (random < prob) {
+//                        this.AccelerationForUB(bapNode);
+//                    }
+//
+//                } catch (IloException e) {
+//                    // TODO Auto-generated catch block
+//                    e.printStackTrace();
+//                }
+                if(bapNode.nodeID==19||bapNode.nodeID==21){
+                    System.out.println("NodeID="+bapNode.nodeID);
+                    List<Cycle> temp=bapNode.getSolution();
+                    for(Cycle cycle:temp){
+                        if(cycle.associatedPricingProblem.originNodeO==1&&cycle.associatedPricingProblem.capacityTypeS==1){
+                            System.out.println(cycle.toString()+" : "+cycle.value);
+                        }
                     }
-
-                } catch (IloException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
                 }
+                if(bapNode.getParentID()>=0){
+                    if(Math.abs(bapNode.getBound()-nodeBoundRecord[bapNode.getParentID()])<0.000001){
+                        throw new RuntimeException("LB doesn't improve!!!  " +"node: "+bapNode.nodeID+" "+bapNode.getParentID());
+                    }
+                }
+
 
                 notifier.fireNodeIsFractionalEvent(bapNode, bapNode.getBound(), bapNode.getObjective());
                 List<BAPNode<SNDRC, Cycle>> newBranches = new ArrayList<>();

@@ -718,6 +718,11 @@ public final class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProbl
 		return masterData.cplex.solve();
 	}
 	
+	//output the current masterData.cplex.tostring file
+	public void Output(int nodeIndex) throws IloException{
+	    masterData.cplex.exportModel(config.EXPORT_MASTER_DIR +nodeIndex+ ".lp");
+	}
+	
 	public List<Map<Integer,Double>> getXValues() throws UnknownObjectException, IloException{
 //	    List<Map<Integer,Double>> xValues=new ArrayList<>();
 //	    List<Map<Integer,IloNumVar>> x=masterData.x;

@@ -450,6 +450,13 @@ public class SNDRC implements ModelInterface {
 	public String getName() {
 		return "ServiceNetworkDesignModel";
 	}
+	
+	public void Output(){
+	    for(int edgeIndex=0;edgeIndex<numArc;edgeIndex++){
+	        Edge edge=edgeSet.get(edgeIndex);
+	        System.out.println("edgeIndex="+edgeIndex+" "+edge.start+"->"+edge.end+" "+edge.u+","+edge.t1+"->"+edge.v+","+edge.t2);
+	    }
+	}
 
 	public static void main(String[] args) throws IOException {
 		SNDRC test = new SNDRC("./data/data0.txt");
