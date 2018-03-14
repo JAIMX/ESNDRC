@@ -43,7 +43,7 @@ public class BranchAndPrice<V> extends AbstractBranchAndPrice<SNDRC, Cycle, SNDR
     private final double c;
     private int nrNonImproForAcce;
     private Map<Cycle, Double> optSolutionValueMap;
-    private List<Map<Integer,Double>> optXValues;
+    private List<Map<Integer, Double>> optXValues;
     private double[] nodeBoundRecord;
 
     public BranchAndPrice(SNDRC modelData, Master master, List<SNDRCPricingProblem> pricingProblems,
@@ -58,7 +58,7 @@ public class BranchAndPrice<V> extends AbstractBranchAndPrice<SNDRC, Cycle, SNDR
         this.c = c;
         nrNonImproForAcce = 0;
         optSolutionValueMap = new HashMap<>();
-        nodeBoundRecord=new double[5000];
+        nodeBoundRecord = new double[5000];
     }
 
     /**
@@ -178,19 +178,16 @@ public class BranchAndPrice<V> extends AbstractBranchAndPrice<SNDRC, Cycle, SNDR
             // Solve the next BAPNode
             try {
                 this.solveBAPNode(bapNode, timeLimit);
-                
-                //output the model
-                ((Master) master).Output(bapNode.nodeID);
-                nodeBoundRecord[bapNode.nodeID]=bapNode.getBound();
-                
+
+                // output the model
+                // ((Master) master).Output(bapNode.nodeID);
+                // nodeBoundRecord[bapNode.nodeID]=bapNode.getBound();
+
             } catch (TimeLimitExceededException e) {
                 queue.add(bapNode);
                 lowBoundQueue.add(bapNode);
                 notifier.fireTimeOutEvent(bapNode);
                 break;
-            } catch (IloException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
             }
 
             // Prune this node if its bound is worse than the best found
@@ -227,7 +224,7 @@ public class BranchAndPrice<V> extends AbstractBranchAndPrice<SNDRC, Cycle, SNDR
                         optSolutionValueMap.put(cycle, cycle.value);
                     }
                     try {
-                        optXValues=((Master) master).getXValues();
+                        optXValues = ((Master) master).getXValues();
                     } catch (IloException e) {
                         // TODO Auto-generated catch block
                         e.printStackTrace();
@@ -243,7 +240,7 @@ public class BranchAndPrice<V> extends AbstractBranchAndPrice<SNDRC, Cycle, SNDR
                         optSolutionValueMap.put(cycle, cycle.value);
                     }
                     try {
-                        optXValues=((Master) master).getXValues();
+                        optXValues = ((Master) master).getXValues();
                     } catch (IloException e) {
                         // TODO Auto-generated catch block
                         e.printStackTrace();
@@ -254,32 +251,33 @@ public class BranchAndPrice<V> extends AbstractBranchAndPrice<SNDRC, Cycle, SNDR
                 // ----------------------------------------------------------------------------------------------------------------------------------//
 
                 // An acceleration technique for ub
-//                try {
-//                    double prob = CalculateProb();
-//                    double random = Math.random();
-//                    if (random < prob) {
-//                        this.AccelerationForUB(bapNode);
-//                    }
-//
-//                } catch (IloException e) {
-//                    // TODO Auto-generated catch block
-//                    e.printStackTrace();
-//                }
-                if(bapNode.nodeID==19||bapNode.nodeID==21){
-                    System.out.println("NodeID="+bapNode.nodeID);
-                    List<Cycle> temp=bapNode.getSolution();
-                    for(Cycle cycle:temp){
-                        if(cycle.associatedPricingProblem.originNodeO==1&&cycle.associatedPricingProblem.capacityTypeS==1){
-                            System.out.println(cycle.toString()+" : "+cycle.value);
-                        }
+                try {
+                    double prob = CalculateProb();
+                    double random = Math.random();
+                    if (random < prob) {
+                        this.AccelerationForUB(bapNode);
                     }
-                }
-                if(bapNode.getParentID()>=0){
-                    if(Math.abs(bapNode.getBound()-nodeBoundRecord[bapNode.getParentID()])<0.000001){
-                        throw new RuntimeException("LB doesn't improve!!!  " +"node: "+bapNode.nodeID+" "+bapNode.getParentID());
-                    }
+
+                } catch (IloException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
                 }
 
+                // if(bapNode.nodeID==19||bapNode.nodeID==21){
+                // System.out.println("NodeID="+bapNode.nodeID);
+                // List<Cycle> temp=bapNode.getSolution();
+                // for(Cycle cycle:temp){
+                // if(cycle.associatedPricingProblem.originNodeO==1&&cycle.associatedPricingProblem.capacityTypeS==1){
+                // System.out.println(cycle.toString()+" : "+cycle.value);
+                // }
+                // }
+                // }
+                // if(bapNode.getParentID()>=0){
+                // if(Math.abs(bapNode.getBound()-nodeBoundRecord[bapNode.getParentID()])<0.000001){
+                // throw new RuntimeException("LB doesn't improve!!! " +"node:
+                // "+bapNode.nodeID+" "+bapNode.getParentID());
+                // }
+                // }
 
                 notifier.fireNodeIsFractionalEvent(bapNode, bapNode.getBound(), bapNode.getObjective());
                 List<BAPNode<SNDRC, Cycle>> newBranches = new ArrayList<>();
@@ -467,7 +465,7 @@ public class BranchAndPrice<V> extends AbstractBranchAndPrice<SNDRC, Cycle, SNDR
                         optSolutionValueMap.put(cycle, cycle.value);
                     }
                     try {
-                        optXValues=((Master) master).getXValues();
+                        optXValues = ((Master) master).getXValues();
                     } catch (IloException e) {
                         // TODO Auto-generated catch block
                         e.printStackTrace();
@@ -490,7 +488,7 @@ public class BranchAndPrice<V> extends AbstractBranchAndPrice<SNDRC, Cycle, SNDR
                         optSolutionValueMap.put(cycle, cycle.value);
                     }
                     try {
-                        optXValues=((Master) master).getXValues();
+                        optXValues = ((Master) master).getXValues();
                     } catch (IloException e) {
                         // TODO Auto-generated catch block
                         e.printStackTrace();
@@ -523,11 +521,12 @@ public class BranchAndPrice<V> extends AbstractBranchAndPrice<SNDRC, Cycle, SNDR
     public PriorityQueue<BAPNode<SNDRC, Cycle>> getLowBoundQueue() {
         return lowBoundQueue;
     }
-    
-    public Map<Cycle, Double> GetOptSolutionValueMap(){
+
+    public Map<Cycle, Double> GetOptSolutionValueMap() {
         return optSolutionValueMap;
     }
-    public List<Map<Integer,Double>> GetOptXValues(){
+
+    public List<Map<Integer, Double>> GetOptXValues() {
         return optXValues;
     }
 

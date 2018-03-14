@@ -37,6 +37,7 @@ public class SNDRC implements ModelInterface {
 		public double duration;
 		public int u, v, t1, t2;
 		public int edgeType;// 0: service arc | 1: holding arc
+		public int serviceIndex;
 		
 		public int compareTo(Edge other) {
 			return this.t1-other.t1;
@@ -228,6 +229,8 @@ public class SNDRC implements ModelInterface {
 				newEdge.t2 = timeEnd;
 				newEdge.duration=service.duration;
 				newEdge.edgeType=0;
+				newEdge.serviceIndex=serviceIndex;
+				
 				edgeSet.add(newEdge);
 				pointToEdgeSet.get(start).add(edgeSet.size() - 1);
 				pointFromEdgeSet.get(end).add(edgeSet.size() - 1);
@@ -278,6 +281,7 @@ public class SNDRC implements ModelInterface {
 				newEdge.duration=0;
 //				newEdge.duration=1;
 				newEdge.edgeType=1;
+				newEdge.serviceIndex=-1;
 				edgeSet.add(newEdge);
 				pointToEdgeSet.get(start).add(edgeSet.size() - 1);
 				pointFromEdgeSet.get(end).add(edgeSet.size() - 1);

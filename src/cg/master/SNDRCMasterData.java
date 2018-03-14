@@ -8,6 +8,7 @@ import org.jorlib.frameworks.columnGeneration.util.OrderedBiMap;
 
 import com.google.common.collect.RangeSet;
 
+import bap.branching.branchingDecisions.RoundLocalService;
 import bap.branching.branchingDecisions.RoundQ;
 import bap.branching.branchingDecisions.RoundServiceEdge;
 import bap.branching.branchingDecisions.RoundServiceEdgeForAllPricingProblems;
@@ -46,6 +47,10 @@ public class SNDRCMasterData extends MasterData<SNDRC,Cycle,SNDRCPricingProblem,
 	public Set<RoundServiceEdgeForAllPricingProblems> serviceEdge4AllBrachingSet;
 	public Map<RoundServiceEdgeForAllPricingProblems,IloRange> serviceEdge4AllBranchingConstraints; 
 	
+	//branch on local service for all cycles
+	public Set<RoundLocalService> localServiceBranchingSet;
+	public Map<RoundLocalService,IloRange> localServiceBranchingConstraints;
+	
 	//for acceleration:
 	public Map<Cycle,IloRange> fixVarConstraints;
 	
@@ -53,7 +58,7 @@ public class SNDRCMasterData extends MasterData<SNDRC,Cycle,SNDRCPricingProblem,
 	public Map<Integer,Double> edgeValueMap;
 	public final Map<StrongInequality,IloRange> strongInequalities;
 	
-	public SNDRCMasterData(IloCplex cplex,List<SNDRCPricingProblem> pricingProblems,Map<SNDRCPricingProblem, OrderedBiMap<Cycle, IloNumVar>> varMap,Map<RoundQ,IloRange> qBranchingconstraints,Map<RoundServiceEdge,IloRange> ServiceEdgeBranchingConstraints,List<Map<Integer,IloNumVar>> x,IloNumVar[][] q,Map<RoundServiceEdgeForAllPricingProblems,IloRange> serviceEdge4AllBranchingConstraints,SNDRC dataModel){
+	public SNDRCMasterData(IloCplex cplex,List<SNDRCPricingProblem> pricingProblems,Map<SNDRCPricingProblem, OrderedBiMap<Cycle, IloNumVar>> varMap,Map<RoundQ,IloRange> qBranchingconstraints,Map<RoundServiceEdge,IloRange> ServiceEdgeBranchingConstraints,List<Map<Integer,IloNumVar>> x,IloNumVar[][] q,Map<RoundServiceEdgeForAllPricingProblems,IloRange> serviceEdge4AllBranchingConstraints,Map<RoundLocalService,IloRange> localServiceBranchingConstraints,SNDRC dataModel){
 		super(varMap);
 		this.cplex=cplex;
 		this.x=x;
@@ -107,6 +112,15 @@ public class SNDRCMasterData extends MasterData<SNDRC,Cycle,SNDRCPricingProblem,
 				this.serviceEdge4AllBrachingSet.add(roundServiceEdge4All);
 				this.serviceEdge4AllBranchingConstraints.put(roundServiceEdge4All, serviceEdge4AllBranchingConstraints.get(roundServiceEdge4All));
 			}
+		}
+		
+		this.localServiceBranchingSet=new HashSet<>();
+		this.localServiceBranchingConstraints=new HashMap<>();
+		if(localServiceBranchingConstraints!=null){
+		    for(RoundLocalService roundLocalService:localServiceBranchingConstraints.keySet()){
+		        this.localServiceBranchingSet.add(roundLocalService);
+		        this.localServiceBranchingConstraints.put(roundLocalService, localServiceBranchingConstraints.get(roundLocalService));
+		    }
 		}
 		
 		

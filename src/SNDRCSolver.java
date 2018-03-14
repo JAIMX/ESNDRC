@@ -11,6 +11,7 @@ import org.jorlib.frameworks.columnGeneration.util.Configuration;
 
 import bap.BranchAndPrice;
 import bap.bapNodeComparators.NodeBoundbapNodeComparator;
+import bap.branching.BranchOnLocalService;
 import bap.branching.BranchOnQVarible;
 import bap.branching.BranchOnServiceEdge;
 import bap.branching.BranchOnServiceEdgeForAllPricingProblems;
@@ -43,7 +44,7 @@ public class SNDRCSolver {
 		//Create a cutHandler
 		CutHandler<SNDRC, SNDRCMasterData> cutHandler=new CutHandler<>();
 		StrongInequalityGenerator cutGen=new StrongInequalityGenerator(dataModel,pricingProblems,1);
-//		cutHandler.addCutGenerator(cutGen);
+		cutHandler.addCutGenerator(cutGen);
 		
 		//Create the Master Problem
 		Master master=new Master(dataModel,pricingProblems,cutHandler);
@@ -54,13 +55,14 @@ public class SNDRCSolver {
 		//Define one or more Branch creators
 //		List<? extends AbstractBranchCreator<SNDRC, Cycle, SNDRCPricingProblem>> branchCreators=new ArrayList<AbstractBranchCreator<SNDRC, Cycle, SNDRCPricingProblem>>();
 //		List<? extends AbstractBranchCreator<SNDRC, Cycle, SNDRCPricingProblem>> branchCreators=Arrays.asList(new BranchOnQVarible(dataModel, pricingProblems,0.5),new BranchOnServiceEdgeForAllPricingProblems(dataModel, pricingProblems, 0.5),new BranchOnServiceEdge(dataModel, pricingProblems, 0.5));
-		List<? extends AbstractBranchCreator<SNDRC, Cycle, SNDRCPricingProblem>> branchCreators=Arrays.asList(new BranchOnQVarible(dataModel, pricingProblems,0.5),new BranchOnServiceEdge(dataModel, pricingProblems, 0.5));
-		
+		List<? extends AbstractBranchCreator<SNDRC, Cycle, SNDRCPricingProblem>> branchCreators=Arrays.asList(new BranchOnLocalService(dataModel, pricingProblems, 0.5),new BranchOnQVarible(dataModel, pricingProblems,0.5),new BranchOnServiceEdge(dataModel, pricingProblems, 0.5));
+//	    List<? extends AbstractBranchCreator<SNDRC, Cycle, SNDRCPricingProblem>> branchCreators=Arrays.asList(new BranchOnQVarible(dataModel, pricingProblems,0.5),new BranchOnServiceEdge(dataModel, pricingProblems, 0.5));
+	      
 		//Create a Branch-and-Price instance
 //		BranchAndPrice bap=new BranchAndPrice(dataModel, master, pricingProblems, solvers, branchCreators,Double.MAX_VALUE,0.5,0.3,0.1);
-		BranchAndPrice bap=new BranchAndPrice(dataModel, master, pricingProblems, solvers, branchCreators,Double.MAX_VALUE,0.65,0.3,0.1);
+		BranchAndPrice bap=new BranchAndPrice(dataModel, master, pricingProblems, solvers, branchCreators,Double.MAX_VALUE,0.5,0.3,0.1);
 //		bap.setNodeOrdering(new BFSbapNodeComparator());
-//		bap.setNodeOrdering(new NodeBoundbapNodeComparator());
+		bap.setNodeOrdering(new NodeBoundbapNodeComparator());
 		
 		//OPTIONAL: Attach a debugger
 //		SimpleDebugger debugger=new SimpleDebugger(bap, true);
@@ -174,7 +176,7 @@ public class SNDRCSolver {
 		for(String arg:args) {
 			long time0=System.currentTimeMillis();
 			sndrc=new SNDRC(arg);
-			sndrc.Output();
+//			sndrc.Output();
 			Properties properties=new Properties();
 //			properties.setProperty("EXPORT_MODEL", "True");
 //			properties.setProperty("MAXTHREADS", "10");
