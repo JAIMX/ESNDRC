@@ -19,8 +19,13 @@ import org.jorlib.frameworks.columnGeneration.branchAndPrice.EventHandling.Proce
 import org.jorlib.frameworks.columnGeneration.branchAndPrice.EventHandling.PruneNodeEvent;
 import org.jorlib.frameworks.columnGeneration.branchAndPrice.EventHandling.StartEvent;
 import org.jorlib.frameworks.columnGeneration.branchAndPrice.EventHandling.TimeLimitExceededEvent;
- 
+import org.jorlib.frameworks.columnGeneration.branchAndPrice.branchingDecisions.BranchingDecision;
+
 import bap.BranchAndPrice;
+import bap.branching.branchingDecisions.RoundLocalService;
+import bap.branching.branchingDecisions.RoundQ;
+import bap.branching.branchingDecisions.RoundServiceEdge;
+import bap.branching.branchingDecisions.RoundServiceEdgeForAllPricingProblems;
 import cg.Cycle;
 import model.SNDRC;
 
@@ -59,6 +64,7 @@ public class BapLogger implements BAPListener{
     protected int nrGeneratedColumns;
     protected double LB;
     protected int nrInequalities;
+    protected String branchType;
     protected BranchAndPrice bap;
     
     
@@ -110,6 +116,7 @@ public class BapLogger implements BAPListener{
         nodesInQueue=-1;
         LB=0;
         nrInequalities=-1;
+        branchType=null;
     }
     
     
@@ -118,12 +125,14 @@ public class BapLogger implements BAPListener{
      * Construct a single line in the log file, and write it to the output file
      */
     protected void constructAndWriteLine(){
-        this.writeLine(String.valueOf(bapNodeID) + "\t" + parentNodeID + "\t" + objectiveIncumbentSolution + "\t" + nodeBound + "\t" + formatter.format(nodeValue) + "\t" + cgIterations + "\t" + timeSolvingMaster + "\t" + timeSolvingPricing + "\t" + nrGeneratedColumns + "\t" + nodeStatus + "\t" + nodesInQueue + "\t" + LB+ "\t"+nrInequalities);
+    	this.writeLine(String.valueOf(bapNodeID) + "\t" + parentNodeID + "\t" + objectiveIncumbentSolution + "\t" + nodeBound  + "\t" + timeSolvingMaster + "\t" + timeSolvingPricing + "\t" + nodeStatus + "\t" + nodesInQueue + "\t" + LB+ "\t"+nrInequalities+"\t"+branchType);
+//    	this.writeLine(String.valueOf(bapNodeID) + "\t" + parentNodeID + "\t" + objectiveIncumbentSolution + "\t" + nodeBound + "\t" + formatter.format(nodeValue) + "\t" + cgIterations + "\t" + timeSolvingMaster + "\t" + timeSolvingPricing + "\t" + nrGeneratedColumns + "\t" + nodeStatus + "\t" + nodesInQueue + "\t" + LB+ "\t"+nrInequalities+"\t"+branchType);
     }
 
     @Override
     public void startBAP(StartEvent startEvent) {
-        this.writeLine("BAPNodeID \t parentNodeID \t objectiveIncumbentSolution \t nodeBound \t nodeValue \t cgIterations \t t_master \t t_pricing \t nrGenColumns \t solutionStatus \t nodesInQueue \t LB \t nrInequalities");
+        this.writeLine("BAPNodeID \t parentNodeID \t objectiveIncumbentSolution \t nodeBound \t t_master \t t_pricing  \t solutionStatus \t nodesInQueue \t LB \t nrInequalities \t branchType");
+//        this.writeLine("BAPNodeID \t parentNodeID \t objectiveIncumbentSolution \t nodeBound \t nodeValue \t cgIterations \t t_master \t t_pricing \t nrGenColumns \t solutionStatus \t nodesInQueue \t LB \t nrInequalities \t branchType");
     }
 
     @Override
@@ -191,6 +200,22 @@ public class BapLogger implements BAPListener{
         this.nrGeneratedColumns= finishProcessingNodeEvent.nrGeneratedColumns;
 //        this.nrInequalities=finishProcessingNodeEvent.node.getInequalities().size();
 //        this.LB=bap.getBound();
+        BranchingDecision bd=finishProcessingNodeEvent.node.getBranchingDecision();
+        if (bd instanceof RoundQ) {
+            this.branchType="Q";
+        }
+
+        if (bd instanceof RoundServiceEdge) {
+            this.branchType="ServiceEdge";
+        }
+
+        if (bd instanceof RoundServiceEdgeForAllPricingProblems) {
+        	this.branchType="ServiceEdge4All";
+        }
+
+        if (bd instanceof RoundLocalService) {
+        	this.branchType="localService";
+        }
 
 
     }
