@@ -13,7 +13,7 @@ public final class Cycle  extends AbstractColumn<SNDRC, SNDRCPricingProblem>{
 	public final Set<Integer> edgeIndexSet;
 	public final int startTime;
 	public final double cost;// parameter in the objective expression
-	public final int ifForResourceBoundConstraints;//0: no; 1:yes
+	public final int ifForResourceBoundConstraints;//0: no; 1:yes; 2:for holding branch constraints
 	
 	
 	public Cycle(SNDRCPricingProblem associatedPricingProblem, boolean isArtificial, String creator, Set<Integer> edgeIndexSet,double cost,int startTime,int ifForResourceBoundConstraints) {

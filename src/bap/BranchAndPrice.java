@@ -76,7 +76,7 @@ public class BranchAndPrice<V> extends AbstractBranchAndPrice<SNDRC, Cycle, SNDR
     protected List<Cycle> generateInitialFeasibleSolution(BAPNode<SNDRC, Cycle> node) {
 
         List<Cycle> artificalVars = new ArrayList<Cycle>();
-        // for weak forcing constraints
+        // for weak forcing constraints(ifForResourceBoundConstraints=0)
         for (int edgeIndex = 0; edgeIndex < dataModel.numServiceArc; edgeIndex++) {
             Set<Integer> set = new HashSet<>();
             set.add(edgeIndex);
@@ -84,25 +84,17 @@ public class BranchAndPrice<V> extends AbstractBranchAndPrice<SNDRC, Cycle, SNDR
             artificalVars.add(cycle);
         }
 
-        // for resource bound constraints
-        // int count=0;
-        // for(int
-        // capacityType=0;capacityType<dataModel.numOfCapacity;capacityType++) {
-        // for(int originNode=0;originNode<dataModel.numNode;originNode++) {
-        // Set<Integer> set=new HashSet<>();
-        // Cycle cycle=new Cycle(pricingProblems.get(count), true, "Artificial",
-        // set, 100000000, 0, 1);
-        // artificalVars.add(cycle);
-        // count++;
-        // }
-        // }
-
-        // for resource bound constraints
+        // for resource bound constraints(ifForResourceBoundConstraints=1)
         for (SNDRCPricingProblem pricingProblem : pricingProblems) {
             Set<Integer> set = new HashSet<>();
             Cycle cycle = new Cycle(pricingProblem, true, "Artificial", set, 100000000, 0, 1);
             artificalVars.add(cycle);
         }
+
+        // for holding edge branch constraints(ifForResourceBoundConstraints=2)
+        Set<Integer> set = new HashSet<>();
+        Cycle cycle = new Cycle(pricingProblems.get(0), true, "Artificial", set, 100000000, 0, 2);
+        artificalVars.add(cycle);
 
         return artificalVars;
     }
@@ -182,22 +174,23 @@ public class BranchAndPrice<V> extends AbstractBranchAndPrice<SNDRC, Cycle, SNDR
                 this.solveBAPNode(bapNode, timeLimit);
 
                 // output the model
-//                ((Master) master).Output(bapNode.nodeID);
+                // ((Master) master).Output(bapNode.nodeID);
                 nodeBoundRecord[bapNode.nodeID] = bapNode.getBound();
-                
-                if(bapNode.nodeID==0){
-                    List<Cycle> rootSolution=bapNode.getSolution();
-                    for(Cycle cycle:rootSolution){
-                        System.out.println(cycle.toString()+":"+cycle.value);
-                        for(int edgeIndex:cycle.edgeIndexSet){
-                            Edge edge=dataModel.edgeSet.get(edgeIndex);
-                            if(edge.edgeType==0){
-                                System.out.print("("+edge.u+","+edge.t1+")->("+edge.v+","+edge.t2+") ");
-                            }
-                        }
-                        System.out.println();
-                    }
-                }
+
+                // if(bapNode.nodeID==0){
+                // List<Cycle> rootSolution=bapNode.getSolution();
+                // for(Cycle cycle:rootSolution){
+                // System.out.println(cycle.toString()+":"+cycle.value);
+                // for(int edgeIndex:cycle.edgeIndexSet){
+                // Edge edge=dataModel.edgeSet.get(edgeIndex);
+                // if(edge.edgeType==0){
+                // System.out.print("("+edge.u+","+edge.t1+")->("+edge.v+","+edge.t2+")
+                // ");
+                // }
+                // }
+                // System.out.println();
+                // }
+                // }
 
             } catch (TimeLimitExceededException e) {
                 queue.add(bapNode);
@@ -279,24 +272,28 @@ public class BranchAndPrice<V> extends AbstractBranchAndPrice<SNDRC, Cycle, SNDR
                     e.printStackTrace();
                 }
 
-//                if (bapNode.nodeID == 22 || bapNode.nodeID == 57) {
-//                    System.out.println("NodeID=" + bapNode.nodeID);
-//                    System.out.println(bapNode.getBranchingDecision().toString());
-//                    List<Cycle> temp = bapNode.getSolution();
-//                    for (Cycle cycle : temp) {
-////                        if (cycle.associatedPricingProblem.originNodeO == 1
-////                                && cycle.associatedPricingProblem.capacityTypeS == 1) {
-////                            System.out.println(cycle.toString() + " : " + cycle.value);
-////                        }
-//                        System.out.println(cycle.toString() + " : " + cycle.value);
-//                    }
-//                }
-//                if (bapNode.getParentID() >= 0) {
-//                    if (Math.abs(bapNode.getBound() - nodeBoundRecord[bapNode.getParentID()]) < 0.000001&&bapNode.getBranchingDecision() instanceof RoundServiceEdge) {
-//                        throw new RuntimeException(
-//                                "LB doesn't improve!!! " + "node:" + bapNode.nodeID + " " + bapNode.getParentID());
-//                    }
-//                }
+                // if (bapNode.nodeID == 22 || bapNode.nodeID == 57) {
+                // System.out.println("NodeID=" + bapNode.nodeID);
+                // System.out.println(bapNode.getBranchingDecision().toString());
+                // List<Cycle> temp = bapNode.getSolution();
+                // for (Cycle cycle : temp) {
+                //// if (cycle.associatedPricingProblem.originNodeO == 1
+                //// && cycle.associatedPricingProblem.capacityTypeS == 1) {
+                //// System.out.println(cycle.toString() + " : " + cycle.value);
+                //// }
+                // System.out.println(cycle.toString() + " : " + cycle.value);
+                // }
+                // }
+                // if (bapNode.getParentID() >= 0) {
+                // if (Math.abs(bapNode.getBound() -
+                // nodeBoundRecord[bapNode.getParentID()]) <
+                // 0.000001&&bapNode.getBranchingDecision() instanceof
+                // RoundServiceEdge) {
+                // throw new RuntimeException(
+                // "LB doesn't improve!!! " + "node:" + bapNode.nodeID + " " +
+                // bapNode.getParentID());
+                // }
+                // }
 
                 notifier.fireNodeIsFractionalEvent(bapNode, bapNode.getBound(), bapNode.getObjective());
                 List<BAPNode<SNDRC, Cycle>> newBranches = new ArrayList<>();

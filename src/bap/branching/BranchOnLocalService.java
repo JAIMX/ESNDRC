@@ -67,14 +67,13 @@ public class BranchOnLocalService extends AbstractBranchCreator<SNDRC, Cycle, SN
     
     protected List<BAPNode<SNDRC,Cycle>> getBranches(BAPNode<SNDRC,Cycle> parentNode){
         
-        //Branch 1:round q down to the nearest integer
+        //Branch 1:round down to the nearest integer
         RoundLocalService branchingDecision1=new RoundLocalService(0,branchServiceIndex,bestServiceValue);
         BAPNode<SNDRC,Cycle> node1=this.createBranch(parentNode, branchingDecision1, parentNode.getSolution(), parentNode.getInequalities());
 //      BAPNode<SNDRC,Cycle> node1=this.createBranch(parentNode, branchingDecision1,initialSolution , parentNode.getInequalities());
         
         
-//      initialSolution=new ArrayList<Cycle>();
-        //Branch 2:round q up to the nearest integer
+        //Branch 2:round up to the nearest integer
         RoundLocalService branchingDecision2=new RoundLocalService(1,branchServiceIndex,bestServiceValue);
         BAPNode<SNDRC,Cycle> node2=this.createBranch(parentNode, branchingDecision2, parentNode.getSolution(), parentNode.getInequalities());
 //      BAPNode<SNDRC,Cycle> node2=this.createBranch(parentNode, branchingDecision2, initialSolution, parentNode.getInequalities());

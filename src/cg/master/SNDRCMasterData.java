@@ -8,6 +8,7 @@ import org.jorlib.frameworks.columnGeneration.util.OrderedBiMap;
 
 import com.google.common.collect.RangeSet;
 
+import bap.branching.branchingDecisions.RoundHoldingEdge;
 import bap.branching.branchingDecisions.RoundLocalService;
 import bap.branching.branchingDecisions.RoundQ;
 import bap.branching.branchingDecisions.RoundServiceEdge;
@@ -50,6 +51,10 @@ public class SNDRCMasterData extends MasterData<SNDRC,Cycle,SNDRCPricingProblem,
 	//branch on local service for all cycles
 	public Set<RoundLocalService> localServiceBranchingSet;
 	public Map<RoundLocalService,IloRange> localServiceBranchingConstraints;
+	
+    // branch on holding edges
+    public Set<RoundHoldingEdge> holdingEdgeBranchingSet;
+    public Map<RoundHoldingEdge, IloRange> holdingEdgeBranchingConstraints;
 	
 	//for acceleration:
 	public Map<Cycle,IloRange> fixVarConstraints;
