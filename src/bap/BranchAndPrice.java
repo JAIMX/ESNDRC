@@ -27,12 +27,14 @@ import com.sun.media.jfxmedia.events.NewFrameEvent;
 
 import bap.bapNodeComparators.NodeBoundbapNodeComparator;
 import bap.bapNodeComparators.NodeBoundbapNodeComparatorForLB;
+import bap.branching.branchingDecisions.RoundServiceEdge;
 import cg.Cycle;
 import cg.SNDRCPricingProblem;
 import cg.master.Master;
 import ilog.concert.IloException;
 import ilog.concert.IloRange;
 import model.SNDRC;
+import model.SNDRC.Edge;
 
 public class BranchAndPrice<V> extends AbstractBranchAndPrice<SNDRC, Cycle, SNDRCPricingProblem> {
 
@@ -180,8 +182,22 @@ public class BranchAndPrice<V> extends AbstractBranchAndPrice<SNDRC, Cycle, SNDR
                 this.solveBAPNode(bapNode, timeLimit);
 
                 // output the model
-                // ((Master) master).Output(bapNode.nodeID);
-                // nodeBoundRecord[bapNode.nodeID]=bapNode.getBound();
+//                ((Master) master).Output(bapNode.nodeID);
+                nodeBoundRecord[bapNode.nodeID] = bapNode.getBound();
+                
+                if(bapNode.nodeID==0){
+                    List<Cycle> rootSolution=bapNode.getSolution();
+                    for(Cycle cycle:rootSolution){
+                        System.out.println(cycle.toString()+":"+cycle.value);
+                        for(int edgeIndex:cycle.edgeIndexSet){
+                            Edge edge=dataModel.edgeSet.get(edgeIndex);
+                            if(edge.edgeType==0){
+                                System.out.print("("+edge.u+","+edge.t1+")->("+edge.v+","+edge.t2+") ");
+                            }
+                        }
+                        System.out.println();
+                    }
+                }
 
             } catch (TimeLimitExceededException e) {
                 queue.add(bapNode);
@@ -263,21 +279,24 @@ public class BranchAndPrice<V> extends AbstractBranchAndPrice<SNDRC, Cycle, SNDR
                     e.printStackTrace();
                 }
 
-                // if(bapNode.nodeID==19||bapNode.nodeID==21){
-                // System.out.println("NodeID="+bapNode.nodeID);
-                // List<Cycle> temp=bapNode.getSolution();
-                // for(Cycle cycle:temp){
-                // if(cycle.associatedPricingProblem.originNodeO==1&&cycle.associatedPricingProblem.capacityTypeS==1){
-                // System.out.println(cycle.toString()+" : "+cycle.value);
-                // }
-                // }
-                // }
-                // if(bapNode.getParentID()>=0){
-                // if(Math.abs(bapNode.getBound()-nodeBoundRecord[bapNode.getParentID()])<0.000001){
-                // throw new RuntimeException("LB doesn't improve!!! " +"node:
-                // "+bapNode.nodeID+" "+bapNode.getParentID());
-                // }
-                // }
+//                if (bapNode.nodeID == 22 || bapNode.nodeID == 57) {
+//                    System.out.println("NodeID=" + bapNode.nodeID);
+//                    System.out.println(bapNode.getBranchingDecision().toString());
+//                    List<Cycle> temp = bapNode.getSolution();
+//                    for (Cycle cycle : temp) {
+////                        if (cycle.associatedPricingProblem.originNodeO == 1
+////                                && cycle.associatedPricingProblem.capacityTypeS == 1) {
+////                            System.out.println(cycle.toString() + " : " + cycle.value);
+////                        }
+//                        System.out.println(cycle.toString() + " : " + cycle.value);
+//                    }
+//                }
+//                if (bapNode.getParentID() >= 0) {
+//                    if (Math.abs(bapNode.getBound() - nodeBoundRecord[bapNode.getParentID()]) < 0.000001&&bapNode.getBranchingDecision() instanceof RoundServiceEdge) {
+//                        throw new RuntimeException(
+//                                "LB doesn't improve!!! " + "node:" + bapNode.nodeID + " " + bapNode.getParentID());
+//                    }
+//                }
 
                 notifier.fireNodeIsFractionalEvent(bapNode, bapNode.getBound(), bapNode.getObjective());
                 List<BAPNode<SNDRC, Cycle>> newBranches = new ArrayList<>();
