@@ -46,7 +46,7 @@ public class BranchAndPrice<V> extends AbstractBranchAndPrice<SNDRC, Cycle, SNDR
     private int nrNonImproForAcce;
     private Map<Cycle, Double> optSolutionValueMap;
     private List<Map<Integer, Double>> optXValues;
-    private double[] nodeBoundRecord;
+//    private double[] nodeBoundRecord;
 
     public BranchAndPrice(SNDRC modelData, Master master, List<SNDRCPricingProblem> pricingProblems,
             List<Class<? extends AbstractPricingProblemSolver<SNDRC, Cycle, SNDRCPricingProblem>>> solvers,
@@ -60,7 +60,7 @@ public class BranchAndPrice<V> extends AbstractBranchAndPrice<SNDRC, Cycle, SNDR
         this.c = c;
         nrNonImproForAcce = 0;
         optSolutionValueMap = new HashMap<>();
-        nodeBoundRecord = new double[5000];
+//        nodeBoundRecord = new double[5000];
     }
 
     /**
@@ -175,7 +175,7 @@ public class BranchAndPrice<V> extends AbstractBranchAndPrice<SNDRC, Cycle, SNDR
 
                 // output the model
                 // ((Master) master).Output(bapNode.nodeID);
-                nodeBoundRecord[bapNode.nodeID] = bapNode.getBound();
+//                nodeBoundRecord[bapNode.nodeID] = bapNode.getBound();
 
                 // if(bapNode.nodeID==0){
                 // List<Cycle> rootSolution=bapNode.getSolution();

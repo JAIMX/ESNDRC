@@ -11,204 +11,206 @@ import model.SNDRC.Edge;
 
 public class ExactPricingProblemSolver extends AbstractPricingProblemSolver<SNDRC, Cycle, SNDRCPricingProblem> {
 
-	private double[] modifiedCosts;
-	private double modifiedCost;
-	/**
-	 * Creates a new solver instance for a particular pricing problem
-	 * 
-	 * @param dataModel
-	 *            data model
-	 * @param pricingProblem
-	 *            pricing problem
-	 */
-	public ExactPricingProblemSolver(SNDRC dataModel, SNDRCPricingProblem pricingProblem) {
-		super(dataModel, pricingProblem);
-		this.name = "ExactShortestPathSolver";
+    private double[] modifiedCosts;
+    private double modifiedCost;
 
-	}
+    /**
+     * Creates a new solver instance for a particular pricing problem
+     * 
+     * @param dataModel
+     *            data model
+     * @param pricingProblem
+     *            pricing problem
+     */
+    public ExactPricingProblemSolver(SNDRC dataModel, SNDRCPricingProblem pricingProblem) {
+        super(dataModel, pricingProblem);
+        this.name = "ExactShortestPathSolver";
 
-	/**
-	 * Main method which solves the pricing problem.
-	 * @return List of columns (cycles) with negative reduced cost.
-	 * @throws TimeLimitExceededException TimeLimitExceededException
-	 */
-	
-	@Override
-	protected List<Cycle> generateNewColumns()throws TimeLimitExceededException {
-		List<Cycle> newRoutes=new ArrayList<>();
-		
-		//explore routes starting from different time
-		for(int startTime=0;startTime<dataModel.timePeriod;startTime++){
-			
-			int originNodeIndex=pricingProblem.originNodeO*dataModel.timePeriod+startTime;
-			
-			double[] dpFunction=new double[dataModel.abstractNumNode];
-			int[] pathRecord=new int[dataModel.abstractNumNode];
-			for(int i=0;i<dpFunction.length;i++){
-				dpFunction[i]=Double.MAX_VALUE;
-			}
-			
-			//update for original node
-			//service arcs
-			for(int edgeIndex:dataModel.pointToEdgeSet.get(originNodeIndex)){
-				Edge edge=dataModel.edgeSet.get(edgeIndex);
-				if(edge.edgeType==0) {
-					dpFunction[edge.end]=modifiedCosts[edgeIndex];
-					pathRecord[edge.end]=edgeIndex;
-				}else { // holding arcs
-					dpFunction[edge.end]=0;
-					pathRecord[edge.end]=edgeIndex;
-				}
-			}
-			
-			
-//			//holding arcs
-//			if(startTime==dataModel.timePeriod-1){
-//				dpFunction[originNodeIndex-dataModel.timePeriod+1]=0;
-//				pathRecord[originNodeIndex-dataModel.timePeriod+1]=-1;
-//			}else {
-//				dpFunction[originNodeIndex+1]=0;
-//				pathRecord[originNodeIndex+1]=-1;
-//			}
-			
-			
-			int durationLimit=dataModel.timePeriod;
-			
-			//update for the following nodes
-			for(int currentTime=startTime+1;currentTime<startTime+dataModel.timePeriod;currentTime++) {
-				durationLimit--;
-				int time=currentTime%dataModel.timePeriod;
-				
-				for(int localNode=0;localNode<dataModel.numNode;localNode++) {
-					int currentNodeIndex=localNode*dataModel.timePeriod+time;
-					if(dpFunction[currentNodeIndex]<Double.MAX_VALUE-1) {
-						
-						
-						for(int edgeIndex:dataModel.pointToEdgeSet.get(currentNodeIndex)) {
-							Edge edge=dataModel.edgeSet.get(edgeIndex);
-							if(edge.edgeType==0) {  // service arcs 
-								if(edge.duration<durationLimit||(edge.duration==durationLimit&&edge.end==originNodeIndex)) {
-									
-									if(dpFunction[edge.end]>dpFunction[currentNodeIndex]+modifiedCosts[edgeIndex]) {
-										dpFunction[edge.end]=dpFunction[currentNodeIndex]+modifiedCosts[edgeIndex];
-										pathRecord[edge.end]=edgeIndex;
-									}
-									
-								}
-							}else { // holding arcs
-								if(durationLimit>1||(durationLimit==1&&localNode==pricingProblem.originNodeO)) {
-									if(dpFunction[edge.end]>dpFunction[currentNodeIndex]) {
-										dpFunction[edge.end]=dpFunction[currentNodeIndex];
-										pathRecord[edge.end]=edgeIndex;
-									}
-								}
-							}
+    }
 
-							
-						}
-						
-//						//holding arcs
-//						int testNodeIndex;
-//						if(time==dataModel.timePeriod-1) {
-//							testNodeIndex=localNode*dataModel.timePeriod;
-//						}else {
-//							testNodeIndex=currentNodeIndex+1;
-//						}
-//						
+    /**
+     * Main method which solves the pricing problem.
+     * 
+     * @return List of columns (cycles) with negative reduced cost.
+     * @throws TimeLimitExceededException
+     *             TimeLimitExceededException
+     */
+
+    @Override
+    protected List<Cycle> generateNewColumns() throws TimeLimitExceededException {
+        List<Cycle> newRoutes = new ArrayList<>();
+
+        // explore routes starting from different time
+        for (int startTime = 0; startTime < dataModel.timePeriod; startTime++) {
+
+            int originNodeIndex = pricingProblem.originNodeO * dataModel.timePeriod + startTime;
+
+            double[] dpFunction = new double[dataModel.abstractNumNode];
+            int[] pathRecord = new int[dataModel.abstractNumNode];
+            for (int i = 0; i < dpFunction.length; i++) {
+                dpFunction[i] = Double.MAX_VALUE;
+            }
+
+            // //update for original node
+            // //service arcs
+            // for(int edgeIndex:dataModel.pointToEdgeSet.get(originNodeIndex)){
+            // Edge edge=dataModel.edgeSet.get(edgeIndex);
+            // if(edge.edgeType==0) {
+            // dpFunction[edge.end]=modifiedCosts[edgeIndex];
+            // pathRecord[edge.end]=edgeIndex;
+            // }else { // holding arcs
+            // dpFunction[edge.end]=0;
+            // pathRecord[edge.end]=edgeIndex;
+            // }
+            // }
+
+            // update for original node
+            for (int edgeIndex : dataModel.pointToEdgeSet.get(originNodeIndex)) {
+                Edge edge = dataModel.edgeSet.get(edgeIndex);
+                dpFunction[edge.end] = modifiedCosts[edgeIndex];
+                pathRecord[edge.end] = edgeIndex;
+            }
+
+            int durationLimit = dataModel.timePeriod;
+
+            // update for the following nodes
+            for (int currentTime = startTime + 1; currentTime < startTime + dataModel.timePeriod; currentTime++) {
+                durationLimit--;
+                int time = currentTime % dataModel.timePeriod;
+
+                for (int localNode = 0; localNode < dataModel.numNode; localNode++) {
+                    int currentNodeIndex = localNode * dataModel.timePeriod + time;
+                    if (dpFunction[currentNodeIndex] < Double.MAX_VALUE - 1) {
+
+                        for (int edgeIndex : dataModel.pointToEdgeSet.get(currentNodeIndex)) {
+                            Edge edge = dataModel.edgeSet.get(edgeIndex);
+                            
+                            /**
+                             * Note that the duration of holding arcs is 0(duration represents the distance)
+                             */
+                            
+//                            if (edge.edgeType == 0) { // service arcs
+//                                if (edge.duration < durationLimit
+//                                        || (edge.duration == durationLimit && edge.end == originNodeIndex)) {
 //
-//						if(durationLimit>1||(durationLimit==1&&localNode==pricingProblem.originNodeO)) {
-//							if(dpFunction[testNodeIndex]>dpFunction[currentNodeIndex]) {
-//								dpFunction[testNodeIndex]=dpFunction[currentNodeIndex];
-//								pathRecord[testNodeIndex]=-1;
-//							}
-//						}
-						
-						
-					}
-				}
-			}
-			
-			
-			if(dpFunction[originNodeIndex]<Double.MAX_VALUE-1) {
-//				if(dpFunction[originNodeIndex]+modifiedCost<-config.PRECISION) {
-				if(dpFunction[originNodeIndex]+modifiedCost<-0.001) {
-					Set<Integer> edgeIndexSet=new HashSet<>();
-					double cost=0;
-					double totalLength=0;
-					
-					//create edgeIndexSet for this path
-					int currentNodeIndex=originNodeIndex;
-					int lastNodeIndex;
-					
-					do {
-						//update lastNodeIndex
-						Edge edge=dataModel.edgeSet.get(pathRecord[currentNodeIndex]);
-						
-						lastNodeIndex=edge.start;
-						totalLength+=edge.duration;
-						edgeIndexSet.add(pathRecord[currentNodeIndex]);
-						
-						//update currentNodeIndex
-						currentNodeIndex=lastNodeIndex;
-						
-					}while(lastNodeIndex!=originNodeIndex);
-					
-					
-					cost=dataModel.alpha*totalLength/(dataModel.speed*dataModel.drivingTimePerDay)+dataModel.fixedCost[pricingProblem.originNodeO][pricingProblem.capacityTypeS];
-							
+//                                    if (dpFunction[edge.end] > dpFunction[currentNodeIndex]
+//                                            + modifiedCosts[edgeIndex]) {
+//                                        dpFunction[edge.end] = dpFunction[currentNodeIndex] + modifiedCosts[edgeIndex];
+//                                        pathRecord[edge.end] = edgeIndex;
+//                                    }
+//
+//                                }
+//                            } else { // holding arcs
+//                                if (durationLimit > 1
+//                                        || (durationLimit == 1 && localNode == pricingProblem.originNodeO)) {
+//                                    if (dpFunction[edge.end] > dpFunction[currentNodeIndex]) {
+//                                        dpFunction[edge.end] = dpFunction[currentNodeIndex];
+//                                        pathRecord[edge.end] = edgeIndex;
+//                                    }
+//                                }
+//                            }
 
-					
-					// if just the start time is different, we only add one cycle
-					boolean repeat=false;
-					for(Cycle route:newRoutes) {
-						if (edgeIndexSet.equals(route.edgeIndexSet)) {
-							repeat=true;
-							break;
-						}
-					}
-					
-					if(!repeat) {
-						Cycle cycle=new Cycle(pricingProblem,false,"exactPricing",edgeIndexSet,cost,startTime,0);
-						if(!pricingProblem.fixCycleSet.contains(cycle)) {
-							newRoutes.add(cycle);
-						}
-					}
-					
 
-					
-				}
-			}
-			
-			
-			
-		}
-		
-		
-		
-		return newRoutes;	
-	}
-	
-	
-	/**
-	 * Update the objective function of the pricing problem with the new pricing information (modified costs).
-	 * The modified costs are stored in the pricing problem.
-	 */
-	@Override
-	protected void setObjective() {
-		modifiedCosts=Arrays.copyOf(pricingProblem.dualCosts, pricingProblem.dualCosts.length);
-		modifiedCost=pricingProblem.dualCost;
-	}
-	
-	/**
-	 * Close the pricing problem
-	 */
-	@Override
-	public void close() {
-//		cplex.end();
-	}
+                            if (edge.edgeType == 0) { // service arcs
+                                if (edge.duration < durationLimit
+                                        || (edge.duration == durationLimit && edge.end == originNodeIndex)) {
 
-	
-	
-	
-}	
+                                    if (dpFunction[edge.end] > dpFunction[currentNodeIndex]
+                                            + modifiedCosts[edgeIndex]) {
+                                        dpFunction[edge.end] = dpFunction[currentNodeIndex] + modifiedCosts[edgeIndex];
+                                        pathRecord[edge.end] = edgeIndex;
+                                    }
 
+                                }
+                            } else { // holding arcs
+                                if (durationLimit > 1
+                                        || (durationLimit == 1 && localNode == pricingProblem.originNodeO)) {
+                                    if (dpFunction[edge.end] > dpFunction[currentNodeIndex]+modifiedCosts[edgeIndex]) {
+                                        dpFunction[edge.end] = dpFunction[currentNodeIndex]+modifiedCosts[edgeIndex];
+                                        pathRecord[edge.end] = edgeIndex;
+                                    }
+                                }
+                            }
+                            
+
+                        }
+
+
+                    }
+                }
+            }
+
+            if (dpFunction[originNodeIndex] < Double.MAX_VALUE - 1) {
+                // if(dpFunction[originNodeIndex]+modifiedCost<-config.PRECISION)
+                // {
+                if (dpFunction[originNodeIndex] + modifiedCost < -0.001) {
+                    Set<Integer> edgeIndexSet = new HashSet<>();
+                    double cost = 0;
+                    double totalLength = 0;
+
+                    // create edgeIndexSet for this path
+                    int currentNodeIndex = originNodeIndex;
+                    int lastNodeIndex;
+
+                    do {
+                        // update lastNodeIndex
+                        Edge edge = dataModel.edgeSet.get(pathRecord[currentNodeIndex]);
+
+                        lastNodeIndex = edge.start;
+                        totalLength += edge.duration;
+                        edgeIndexSet.add(pathRecord[currentNodeIndex]);
+
+                        // update currentNodeIndex
+                        currentNodeIndex = lastNodeIndex;
+
+                    } while (lastNodeIndex != originNodeIndex);
+
+                    cost = dataModel.alpha * totalLength / (dataModel.speed * dataModel.drivingTimePerDay)
+                            + dataModel.fixedCost[pricingProblem.originNodeO][pricingProblem.capacityTypeS];
+
+                    // if just the start time is different, we only add one
+                    // cycle
+                    boolean repeat = false;
+                    for (Cycle route : newRoutes) {
+                        if (edgeIndexSet.equals(route.edgeIndexSet)) {
+                            repeat = true;
+                            break;
+                        }
+                    }
+
+                    if (!repeat) {
+                        Cycle cycle = new Cycle(pricingProblem, false, "exactPricing", edgeIndexSet, cost, startTime,
+                                0);
+                        if (!pricingProblem.fixCycleSet.contains(cycle)) {
+                            newRoutes.add(cycle);
+                        }
+                    }
+
+                }
+            }
+
+        }
+
+        return newRoutes;
+    }
+
+    /**
+     * Update the objective function of the pricing problem with the new pricing
+     * information (modified costs). The modified costs are stored in the
+     * pricing problem.
+     */
+    @Override
+    protected void setObjective() {
+        modifiedCosts = Arrays.copyOf(pricingProblem.dualCosts, pricingProblem.dualCosts.length);
+        modifiedCost = pricingProblem.dualCost;
+    }
+
+    /**
+     * Close the pricing problem
+     */
+    @Override
+    public void close() {
+        // cplex.end();
+    }
+
+}

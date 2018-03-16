@@ -319,7 +319,7 @@ public final class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProbl
             // object automatically be passed to the CutHandler class.
             return new SNDRCMasterData(cplex, pricingProblems, varMap, qBranchingconstraints,
                     ServiceEdgeBranchingConstraints, x, q, serviceEdge4AllBranchingConstraints,
-                    localServiceBranchingConstraints, dataModel);
+                    localServiceBranchingConstraints,holdingEdgeBranchingConstraints, dataModel);
 
         } catch (IloException e) {
             // TODO Auto-generated catch block
@@ -603,20 +603,25 @@ public final class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProbl
     @Override
     public void initializePricingProblem(SNDRCPricingProblem pricingProblem) {
         try {
-            double[] modifiedCosts = new double[dataModel.numServiceArc]; // Modified
-                                                                          // cost
-                                                                          // for
-                                                                          // every
-                                                                          // service
-                                                                          // edge
+//            double[] modifiedCosts = new double[dataModel.numServiceArc]; 
+            double[] modifiedCosts = new double[dataModel.numArc];
+            
             double modifiedCost = 0;
 
+            //initialize for holding arcs
+            for(int edgeIndex=dataModel.numServiceArc;edgeIndex<dataModel.numArc;edgeIndex++){
+                modifiedCosts[edgeIndex]=0;
+            }
+            
+            //week force constraints and cj in objective
             for (int edgeIndex = 0; edgeIndex < dataModel.numServiceArc; edgeIndex++) {
                 modifiedCosts[edgeIndex] = masterData.cplex.getDual(weakForcingConstraints[edgeIndex])
                         * dataModel.capacity[pricingProblem.capacityTypeS];
                 modifiedCosts[edgeIndex] += dataModel.alpha / (dataModel.speed * dataModel.drivingTimePerDay)
                         * dataModel.edgeSet.get(edgeIndex).duration;
             }
+            
+
 
             // service edge branching constraints
             for (RoundServiceEdge serviceEdgeBranch : masterData.serviceEdgeBrachingSet) {
@@ -648,7 +653,21 @@ public final class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProbl
 
             }
             
-            //
+            /**
+             * Here the index of holding arcs are calculated as : localNode*T+t+numServiceArc
+             */
+            //holding edges branching constraints
+            for(RoundHoldingEdge branch:masterData.holdingEdgeBranchingSet){
+                IloRange constraint=masterData.holdingEdgeBranchingConstraints.get(branch);
+                double dualValue=masterData.cplex.getDual(constraint);
+                
+                int time=branch.branchTime;
+                for(int localNode=0;localNode<dataModel.numNode;localNode++){
+                    int edgeIndex=localNode*dataModel.timePeriod+time+dataModel.numServiceArc;
+                    modifiedCosts[edgeIndex]-=dualValue;
+                }
+            }
+            
 
             // strong cuts
             for (StrongInequality inequality : masterData.strongInequalities.keySet()) {

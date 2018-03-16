@@ -63,7 +63,7 @@ public class SNDRCMasterData extends MasterData<SNDRC,Cycle,SNDRCPricingProblem,
 	public Map<Integer,Double> edgeValueMap;
 	public final Map<StrongInequality,IloRange> strongInequalities;
 	
-	public SNDRCMasterData(IloCplex cplex,List<SNDRCPricingProblem> pricingProblems,Map<SNDRCPricingProblem, OrderedBiMap<Cycle, IloNumVar>> varMap,Map<RoundQ,IloRange> qBranchingconstraints,Map<RoundServiceEdge,IloRange> ServiceEdgeBranchingConstraints,List<Map<Integer,IloNumVar>> x,IloNumVar[][] q,Map<RoundServiceEdgeForAllPricingProblems,IloRange> serviceEdge4AllBranchingConstraints,Map<RoundLocalService,IloRange> localServiceBranchingConstraints,SNDRC dataModel){
+	public SNDRCMasterData(IloCplex cplex,List<SNDRCPricingProblem> pricingProblems,Map<SNDRCPricingProblem, OrderedBiMap<Cycle, IloNumVar>> varMap,Map<RoundQ,IloRange> qBranchingconstraints,Map<RoundServiceEdge,IloRange> ServiceEdgeBranchingConstraints,List<Map<Integer,IloNumVar>> x,IloNumVar[][] q,Map<RoundServiceEdgeForAllPricingProblems,IloRange> serviceEdge4AllBranchingConstraints,Map<RoundLocalService,IloRange> localServiceBranchingConstraints, Map<RoundHoldingEdge, IloRange> holdingEdgeBranchingConstraints,SNDRC dataModel){
 		super(varMap);
 		this.cplex=cplex;
 		this.x=x;
@@ -125,6 +125,15 @@ public class SNDRCMasterData extends MasterData<SNDRC,Cycle,SNDRCPricingProblem,
 		    for(RoundLocalService roundLocalService:localServiceBranchingConstraints.keySet()){
 		        this.localServiceBranchingSet.add(roundLocalService);
 		        this.localServiceBranchingConstraints.put(roundLocalService, localServiceBranchingConstraints.get(roundLocalService));
+		    }
+		}
+		
+		this.holdingEdgeBranchingSet=new HashSet<>();
+		this.holdingEdgeBranchingConstraints=new HashMap<>();
+		if(holdingEdgeBranchingConstraints!=null){
+		    for(RoundHoldingEdge branch:holdingEdgeBranchingConstraints.keySet()){
+		        this.holdingEdgeBranchingSet.add(branch);
+		        this.holdingEdgeBranchingConstraints.put(branch, holdingEdgeBranchingConstraints.get(branch));
 		    }
 		}
 		
