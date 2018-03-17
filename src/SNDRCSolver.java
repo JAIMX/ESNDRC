@@ -45,7 +45,7 @@ public class SNDRCSolver {
 		//Create a cutHandler
 		CutHandler<SNDRC, SNDRCMasterData> cutHandler=new CutHandler<>();
 		StrongInequalityGenerator cutGen=new StrongInequalityGenerator(dataModel,pricingProblems,1);
-//		cutHandler.addCutGenerator(cutGen);
+		cutHandler.addCutGenerator(cutGen);
 		
 		//Create the Master Problem
 		Master master=new Master(dataModel,pricingProblems,cutHandler);
@@ -56,7 +56,7 @@ public class SNDRCSolver {
 		//Define one or more Branch creators
 //		List<? extends AbstractBranchCreator<SNDRC, Cycle, SNDRCPricingProblem>> branchCreators=new ArrayList<AbstractBranchCreator<SNDRC, Cycle, SNDRCPricingProblem>>();
 //		List<? extends AbstractBranchCreator<SNDRC, Cycle, SNDRCPricingProblem>> branchCreators=Arrays.asList(new BranchOnQVarible(dataModel, pricingProblems,0.5),new BranchOnServiceEdgeForAllPricingProblems(dataModel, pricingProblems, 0.5),new BranchOnServiceEdge(dataModel, pricingProblems, 0.5));
-		List<? extends AbstractBranchCreator<SNDRC, Cycle, SNDRCPricingProblem>> branchCreators=Arrays.asList( new BranchOnLocalService(dataModel, pricingProblems, 0.5),new BranchOnQVarible(dataModel, pricingProblems,0.5),new BranchOnHoldingEdge(dataModel,pricingProblems,0.5),new BranchOnServiceEdge(dataModel, pricingProblems, 0.5));
+		List<? extends AbstractBranchCreator<SNDRC, Cycle, SNDRCPricingProblem>> branchCreators=Arrays.asList( new BranchOnLocalService(dataModel, pricingProblems, 0.5),new BranchOnQVarible(dataModel, pricingProblems,0.5),new BranchOnServiceEdge(dataModel, pricingProblems, 0.5));
 //	    List<? extends AbstractBranchCreator<SNDRC, Cycle, SNDRCPricingProblem>> branchCreators=Arrays.asList(new BranchOnQVarible(dataModel, pricingProblems,0.5),new BranchOnServiceEdge(dataModel, pricingProblems, 0.5));
 	      
 		//Create a Branch-and-Price instance

@@ -1,7 +1,9 @@
 package bap.branching;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.jorlib.frameworks.columnGeneration.branchAndPrice.AbstractBranchCreator;
 import org.jorlib.frameworks.columnGeneration.branchAndPrice.BAPNode;
@@ -17,7 +19,8 @@ public class BranchOnHoldingEdge extends AbstractBranchCreator<SNDRC, Cycle, SND
 
     private int branchTime;
     private double thresholdValue; // fractional in the specific pricing problem
-    double branchValue;
+    private double branchValue;
+    private SNDRCPricingProblem associatedPricingProblem;
 
     public BranchOnHoldingEdge(SNDRC modelData, List<SNDRCPricingProblem> pricingProblems, double thresholdValue) {
         super(modelData, pricingProblems);
@@ -30,16 +33,25 @@ public class BranchOnHoldingEdge extends AbstractBranchCreator<SNDRC, Cycle, SND
         branchValue = 0;
 
         // calculate the number of holding arcs starting from each time point
-        Double[] holdingArcTotalValue = new Double[dataModel.timePeriod];
-        for (int t = 0; t < dataModel.timePeriod; t++) {
-            holdingArcTotalValue[t] = (double) 0;
+        Map<SNDRCPricingProblem,Double[]> holdingArcTotalValue=new HashMap<>();
+        for(SNDRCPricingProblem associatedPricingProblem:pricingProblems){
+        	Double[] temp=new Double[dataModel.timePeriod];
+        	
+            for (int t = 0; t < dataModel.timePeriod; t++) {
+                temp[t] = (double) 0;
+            }
+            holdingArcTotalValue.put(associatedPricingProblem, temp);
         }
 
+
         for (Cycle cycle : solution) {
+        	SNDRCPricingProblem associatedPricingProblem=cycle.associatedPricingProblem;
+        	Double[] temp=holdingArcTotalValue.get(associatedPricingProblem);
+        	
             for (int edgeIndex : cycle.edgeIndexSet) {
                 Edge edge = dataModel.edgeSet.get(edgeIndex);
                 if (edge.edgeType == 1) { // holding arc
-                    holdingArcTotalValue[edge.t1] += cycle.value;
+                    temp[edge.t1] += cycle.value;
                 }
             }
         }
@@ -49,18 +61,40 @@ public class BranchOnHoldingEdge extends AbstractBranchCreator<SNDRC, Cycle, SND
         double bestDifference = 1;
 
         // Select the time point closest to threshold value
-        for (int time = 0; time < dataModel.timePeriod; time++) {
-            double value = holdingArcTotalValue[time];
+//        for (int time = 0; time < dataModel.timePeriod; time++) {
+//            double value = holdingArcTotalValue[time];
+//
+//            if (MathProgrammingUtil.isFractional(value)) {
+//                isAllInteger = false;
+//                double decimalPart = value - Math.floor(value);
+//                if (Math.abs(thresholdValue - decimalPart) < bestDifference) {
+//                    branchTime = time;
+//                    branchValue = value;
+//                    bestDifference = Math.abs(thresholdValue - decimalPart);
+//                }
+//            }
+//        }
+        
+        // Select the time point closest to threshold value
+        for(SNDRCPricingProblem pricingProblem:pricingProblems){
+        	Double[] temp=holdingArcTotalValue.get(pricingProblem);
+        	
+			for (int time = 0; time < dataModel.timePeriod; time++) {
+				double value = temp[time];
 
-            if (MathProgrammingUtil.isFractional(value)) {
-                isAllInteger = false;
-                double decimalPart = value - Math.floor(value);
-                if (Math.abs(thresholdValue - decimalPart) < bestDifference) {
-                    branchTime = time;
-                    branchValue = value;
-                    bestDifference = Math.abs(thresholdValue - decimalPart);
-                }
-            }
+				if (MathProgrammingUtil.isFractional(value)) {
+					isAllInteger = false;
+					double decimalPart = value - Math.floor(value);
+					if (Math.abs(thresholdValue - decimalPart) < bestDifference) {
+						this.associatedPricingProblem=pricingProblem;
+						branchTime = time;
+						branchValue = value;
+						bestDifference = Math.abs(thresholdValue - decimalPart);
+					}
+				}
+			}
+        	
+        	
         }
 
         return (!isAllInteger);
@@ -70,13 +104,13 @@ public class BranchOnHoldingEdge extends AbstractBranchCreator<SNDRC, Cycle, SND
     protected List<BAPNode<SNDRC, Cycle>> getBranches(BAPNode<SNDRC, Cycle> parentNode) {
 
         // Branch 1:round down to the nearest integer
-        RoundHoldingEdge branchingDecision1 = new RoundHoldingEdge(0, branchTime, branchValue);
+        RoundHoldingEdge branchingDecision1 = new RoundHoldingEdge(0, branchTime, branchValue,associatedPricingProblem);
         BAPNode<SNDRC, Cycle> node1 = this.createBranch(parentNode, branchingDecision1, parentNode.getSolution(),
                 parentNode.getInequalities());
 
         // Branch 2:round up to the nearest integer
-        RoundHoldingEdge branchingDecision2 = new RoundHoldingEdge(1, branchTime, branchValue);
-        BAPNode<SNDRC, Cycle> node2 = this.createBranch(parentNode, branchingDecision1, parentNode.getSolution(),
+        RoundHoldingEdge branchingDecision2 = new RoundHoldingEdge(1, branchTime, branchValue,associatedPricingProblem);
+        BAPNode<SNDRC, Cycle> node2 = this.createBranch(parentNode, branchingDecision2, parentNode.getSolution(),
                 parentNode.getInequalities());
 
         return Arrays.asList(node2, node1);

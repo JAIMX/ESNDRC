@@ -292,7 +292,7 @@ public final class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProbl
                 }
             }
             
-            //holding edge branching constaints;
+            //holding edge branching constraints;
             if(holdingEdgeBranchingSet!=null){
                 for(RoundHoldingEdge branch:holdingEdgeBranchingSet){
                     if(branch.roundUpOrDown==0){ //round down
@@ -549,7 +549,7 @@ public final class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProbl
                     if(edge.edgeType==1){
                         int startTime=edge.t1;
                         for(RoundHoldingEdge branch:masterData.holdingEdgeBranchingSet){
-                            if(branch.branchTime==startTime){
+                            if(branch.branchTime==startTime&&branch.associatedPricingProblem==column.associatedPricingProblem){
                                 IloRange constraint=masterData.holdingEdgeBranchingConstraints.get(branch);
                                 iloColumn=iloColumn.and(masterData.cplex.column(constraint,1));
                             }
@@ -658,14 +658,19 @@ public final class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProbl
              */
             //holding edges branching constraints
             for(RoundHoldingEdge branch:masterData.holdingEdgeBranchingSet){
-                IloRange constraint=masterData.holdingEdgeBranchingConstraints.get(branch);
-                double dualValue=masterData.cplex.getDual(constraint);
-                
-                int time=branch.branchTime;
-                for(int localNode=0;localNode<dataModel.numNode;localNode++){
-                    int edgeIndex=localNode*dataModel.timePeriod+time+dataModel.numServiceArc;
-                    modifiedCosts[edgeIndex]-=dualValue;
-                }
+            	
+            	if(branch.associatedPricingProblem==pricingProblem){
+                    IloRange constraint=masterData.holdingEdgeBranchingConstraints.get(branch);
+                    double dualValue=masterData.cplex.getDual(constraint);
+                    
+                    int time=branch.branchTime;
+                    for(int localNode=0;localNode<dataModel.numNode;localNode++){
+                        int edgeIndex=localNode*dataModel.timePeriod+time+dataModel.numServiceArc;
+                        modifiedCosts[edgeIndex]-=dualValue;
+                    }
+            	}
+            	
+            	
             }
             
 

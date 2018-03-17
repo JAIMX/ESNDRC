@@ -2,8 +2,10 @@ package bap.branching.branchingDecisions;
 
 import org.jorlib.frameworks.columnGeneration.branchAndPrice.branchingDecisions.BranchingDecision;
 import org.jorlib.frameworks.columnGeneration.master.cutGeneration.AbstractInequality;
+import org.jorlib.frameworks.columnGeneration.pricing.AbstractPricingProblem;
 
 import cg.Cycle;
+import cg.SNDRCPricingProblem;
 import model.SNDRC;
 
 /**
@@ -16,12 +18,14 @@ public class RoundHoldingEdge implements BranchingDecision<SNDRC, Cycle>{
     public int roundUpOrDown;//0:round down;1:round up
     public int branchTime;
     public double branchValue;
+    public SNDRCPricingProblem associatedPricingProblem;
     
     
-    public RoundHoldingEdge(int roundUpOrDown, int branchTime,double branchValue){
+    public RoundHoldingEdge(int roundUpOrDown, int branchTime,double branchValue,SNDRCPricingProblem associatedPricingProblem){
         this.roundUpOrDown=roundUpOrDown;
         this.branchTime=branchTime;
         this.branchValue=branchValue;
+        this.associatedPricingProblem=associatedPricingProblem;
     }
     
     @Override
@@ -38,9 +42,9 @@ public class RoundHoldingEdge implements BranchingDecision<SNDRC, Cycle>{
     @Override
     public String toString() {
         if(roundUpOrDown==0) {
-            return "Round time="+branchTime+" down:"+branchValue;
+            return "Round capacity="+associatedPricingProblem.capacityTypeS+" origin node="+associatedPricingProblem.originNodeO+" time="+branchTime+" down:"+branchValue;
         }else {
-            return "Round time="+branchTime+" up:"+branchValue;
+        	return "Round capacity="+associatedPricingProblem.capacityTypeS+" origin node="+associatedPricingProblem.originNodeO+" time="+branchTime+" up:"+branchValue;
         }
         
     }

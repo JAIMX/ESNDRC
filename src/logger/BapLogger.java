@@ -22,6 +22,7 @@ import org.jorlib.frameworks.columnGeneration.branchAndPrice.EventHandling.TimeL
 import org.jorlib.frameworks.columnGeneration.branchAndPrice.branchingDecisions.BranchingDecision;
 
 import bap.BranchAndPrice;
+import bap.branching.branchingDecisions.RoundHoldingEdge;
 import bap.branching.branchingDecisions.RoundLocalService;
 import bap.branching.branchingDecisions.RoundQ;
 import bap.branching.branchingDecisions.RoundServiceEdge;
@@ -215,6 +216,10 @@ public class BapLogger implements BAPListener{
 
         if (bd instanceof RoundLocalService) {
         	this.branchType="localService";
+        }
+        
+        if (bd instanceof RoundHoldingEdge) {
+        	this.branchType="holdingEdge";
         }
 
 
