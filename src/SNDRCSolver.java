@@ -45,7 +45,7 @@ public class SNDRCSolver {
 		//Create a cutHandler
 		CutHandler<SNDRC, SNDRCMasterData> cutHandler=new CutHandler<>();
 		StrongInequalityGenerator cutGen=new StrongInequalityGenerator(dataModel,pricingProblems,1);
-		cutHandler.addCutGenerator(cutGen);
+//		cutHandler.addCutGenerator(cutGen);
 		
 		//Create the Master Problem
 		Master master=new Master(dataModel,pricingProblems,cutHandler);
@@ -94,7 +94,6 @@ public class SNDRCSolver {
 			}
 				
 		}
-//		System.out.println(bap.getBound());
 		
 		List<Map<Integer,Double>> optXValues=bap.GetOptXValues();
 		//output x variables
@@ -177,7 +176,7 @@ public class SNDRCSolver {
 		for(String arg:args) {
 			long time0=System.currentTimeMillis();
 			sndrc=new SNDRC(arg);
-//			sndrc.Output();
+			sndrc.Output();
 			Properties properties=new Properties();
 //			properties.setProperty("EXPORT_MODEL", "True");
 //			properties.setProperty("MAXTHREADS", "10");
