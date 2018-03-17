@@ -520,15 +520,18 @@ public final class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProbl
                 if (!column.isArtificialColumn) {
 
                     for (RoundLocalService localServiceBranching : masterData.localServiceBranchingSet) {
-
-                        IloRange constraint = masterData.localServiceBranchingConstraints.get(localServiceBranching);
-                        int count = 0;
-                        for (int edgeIndex : column.edgeIndexSet) {
-                            Edge edge = dataModel.edgeSet.get(edgeIndex);
-                            if (edge.serviceIndex == localServiceBranching.localServiceIndex)
-                                count++;
-                        }
-                        iloColumn = iloColumn.and(masterData.cplex.column(constraint, count));
+                    	
+                    	if(column.associatedPricingProblem==localServiceBranching.associatedPricingProblem){
+                            IloRange constraint = masterData.localServiceBranchingConstraints.get(localServiceBranching);
+                            int count = 0;
+                            for (int edgeIndex : column.edgeIndexSet) {
+                                Edge edge = dataModel.edgeSet.get(edgeIndex);
+                                if (edge.serviceIndex == localServiceBranching.localServiceIndex)
+                                    count++;
+                            }
+                            iloColumn = iloColumn.and(masterData.cplex.column(constraint, count));
+                    	}
+                        
                     }
 
                 }
@@ -641,15 +644,20 @@ public final class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProbl
 
             // local service branching constraints
             for (RoundLocalService localServiceBranch : masterData.localServiceBranchingSet) {
-                IloRange constraint = masterData.localServiceBranchingConstraints.get(localServiceBranch);
-                double dualValue = masterData.cplex.getDual(constraint);
+            	
+            	if(localServiceBranch.associatedPricingProblem==pricingProblem){
+                    IloRange constraint = masterData.localServiceBranchingConstraints.get(localServiceBranch);
+                    double dualValue = masterData.cplex.getDual(constraint);
 
-                for (int serviceEdgeIndex = 0; serviceEdgeIndex < dataModel.numServiceArc; serviceEdgeIndex++) {
-                    Edge edge = dataModel.edgeSet.get(serviceEdgeIndex);
-                    if (edge.serviceIndex == localServiceBranch.localServiceIndex) {
-                        modifiedCosts[serviceEdgeIndex] -= dualValue;
+                    for (int serviceEdgeIndex = 0; serviceEdgeIndex < dataModel.numServiceArc; serviceEdgeIndex++) {
+                        Edge edge = dataModel.edgeSet.get(serviceEdgeIndex);
+                        if (edge.serviceIndex == localServiceBranch.localServiceIndex) {
+                            modifiedCosts[serviceEdgeIndex] -= dualValue;
+                        }
                     }
-                }
+            	}
+            	
+
 
             }
             

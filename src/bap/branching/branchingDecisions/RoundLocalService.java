@@ -4,6 +4,7 @@ import org.jorlib.frameworks.columnGeneration.branchAndPrice.branchingDecisions.
 import org.jorlib.frameworks.columnGeneration.master.cutGeneration.AbstractInequality;
 
 import cg.Cycle;
+import cg.SNDRCPricingProblem;
 import model.SNDRC;
 
 /**
@@ -16,11 +17,13 @@ public class RoundLocalService implements BranchingDecision<SNDRC, Cycle> {
     public int roundUpOrDown;//0:round down;1:round up
     public int localServiceIndex; //correspond to serviceSet in SNDRC
     public double branchValue;
+    public SNDRCPricingProblem associatedPricingProblem;
     
-    public RoundLocalService(int roundUpOrDown,int localServiceIndex,double branchValue){
+    public RoundLocalService(int roundUpOrDown,int localServiceIndex,double branchValue,SNDRCPricingProblem associatedPricingProblem){
         this.roundUpOrDown=roundUpOrDown;
         this.localServiceIndex=localServiceIndex;
         this.branchValue=branchValue;
+        this.associatedPricingProblem=associatedPricingProblem;
     }
     
     
@@ -37,9 +40,9 @@ public class RoundLocalService implements BranchingDecision<SNDRC, Cycle> {
     @Override
     public String toString() {
         if(roundUpOrDown==0) {
-            return "Round service("+localServiceIndex+") down:"+branchValue;
+            return "Round service("+localServiceIndex+")"+" capacityType="+associatedPricingProblem.capacityTypeS+" originNode="+associatedPricingProblem.originNodeO+" down:"+branchValue;
         }else {
-            return "Round service("+localServiceIndex+") up:"+branchValue;
+        	return "Round service("+localServiceIndex+")"+" capacityType="+associatedPricingProblem.capacityTypeS+" originNode="+associatedPricingProblem.originNodeO+" up:"+branchValue;
         }
         
     }

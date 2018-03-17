@@ -266,35 +266,35 @@ public class BranchAndPrice<V> extends AbstractBranchAndPrice<SNDRC, Cycle, SNDR
                     e.printStackTrace();
                 }
 
-                if (bapNode.nodeID == 2496 || bapNode.nodeID == 2897) {
-                    System.out.println("NodeID=" + bapNode.nodeID);
-                    System.out.println(bapNode.getBranchingDecision().toString());
-                    try {
-                        bapNodeSolutionOutput(bapNode);
-                        ((Master) master).Output(bapNode.nodeID);
-                        
-                    } catch (IloException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                    }
-                }
-                
-                if (bapNode.getParentID() >= 0) {
-                    if (Math.abs(bapNode.getBound() - nodeBoundRecord[bapNode.getParentID()]) < 0.000001
-                            && Math.abs(bapNode.getBound() - 2326) < 0.000001){
-//                        try {
-//                            System.out.println(bapNode.getBranchingDecision().toString());
-//                            bapNodeSolutionOutput(bapNode);
-//                        } catch (IloException e) {
-//                            // TODO Auto-generated catch block
-//                            e.printStackTrace();
-//                        }
-                        throw new RuntimeException(
-                                "LB doesn't improve!!! " + "node:" + bapNode.nodeID + " " + bapNode.getParentID()
-                                );
-                        
-                    }
-                }
+//                if (bapNode.nodeID == 2496 || bapNode.nodeID == 2897) {
+//                    System.out.println("NodeID=" + bapNode.nodeID);
+//                    System.out.println(bapNode.getBranchingDecision().toString());
+//                    try {
+//                        bapNodeSolutionOutput(bapNode);
+//                        ((Master) master).Output(bapNode.nodeID);
+//                        
+//                    } catch (IloException e) {
+//                        // TODO Auto-generated catch block
+//                        e.printStackTrace();
+//                    }
+//                }
+//                
+//                if (bapNode.getParentID() >= 0) {
+//                    if (Math.abs(bapNode.getBound() - nodeBoundRecord[bapNode.getParentID()]) < 0.000001
+//                            && Math.abs(bapNode.getBound() - 2326) < 0.000001){
+////                        try {
+////                            System.out.println(bapNode.getBranchingDecision().toString());
+////                            bapNodeSolutionOutput(bapNode);
+////                        } catch (IloException e) {
+////                            // TODO Auto-generated catch block
+////                            e.printStackTrace();
+////                        }
+//                        throw new RuntimeException(
+//                                "LB doesn't improve!!! " + "node:" + bapNode.nodeID + " " + bapNode.getParentID()
+//                                );
+//                        
+//                    }
+//                }
 
                 notifier.fireNodeIsFractionalEvent(bapNode, bapNode.getBound(), bapNode.getObjective());
                 List<BAPNode<SNDRC, Cycle>> newBranches = new ArrayList<>();
