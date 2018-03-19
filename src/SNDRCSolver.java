@@ -13,6 +13,7 @@ import bap.BranchAndPrice;
 import bap.bapNodeComparators.NodeBoundbapNodeComparator;
 import bap.branching.BranchOnHoldingEdge;
 import bap.branching.BranchOnLocalService;
+import bap.branching.BranchOnLocalServiceForAllPricingProblems;
 import bap.branching.BranchOnQVarible;
 import bap.branching.BranchOnServiceEdge;
 import bap.branching.BranchOnServiceEdgeForAllPricingProblems;
@@ -56,7 +57,7 @@ public class SNDRCSolver {
 		//Define one or more Branch creators
 //		List<? extends AbstractBranchCreator<SNDRC, Cycle, SNDRCPricingProblem>> branchCreators=new ArrayList<AbstractBranchCreator<SNDRC, Cycle, SNDRCPricingProblem>>();
 //		List<? extends AbstractBranchCreator<SNDRC, Cycle, SNDRCPricingProblem>> branchCreators=Arrays.asList(new BranchOnQVarible(dataModel, pricingProblems,0.5),new BranchOnServiceEdgeForAllPricingProblems(dataModel, pricingProblems, 0.5),new BranchOnServiceEdge(dataModel, pricingProblems, 0.5));
-		List<? extends AbstractBranchCreator<SNDRC, Cycle, SNDRCPricingProblem>> branchCreators=Arrays.asList( new BranchOnLocalService(dataModel, pricingProblems, 0.5),new BranchOnQVarible(dataModel, pricingProblems,0.5),new BranchOnServiceEdge(dataModel, pricingProblems, 0.5));
+		List<? extends AbstractBranchCreator<SNDRC, Cycle, SNDRCPricingProblem>> branchCreators=Arrays.asList( new BranchOnLocalServiceForAllPricingProblems(dataModel, pricingProblems, 0.5),new BranchOnLocalService(dataModel, pricingProblems, 0.5),new BranchOnServiceEdge(dataModel, pricingProblems, 0.5));
 //	    List<? extends AbstractBranchCreator<SNDRC, Cycle, SNDRCPricingProblem>> branchCreators=Arrays.asList(new BranchOnQVarible(dataModel, pricingProblems,0.5),new BranchOnServiceEdge(dataModel, pricingProblems, 0.5));
 	      
 		//Create a Branch-and-Price instance
