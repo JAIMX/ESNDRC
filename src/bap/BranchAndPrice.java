@@ -178,9 +178,9 @@ public class BranchAndPrice<V> extends AbstractBranchAndPrice<SNDRC, Cycle, SNDR
 //                ((Master) master).Output(bapNode.nodeID);
                 nodeBoundRecord[bapNode.nodeID] = bapNode.getBound();
 
-                if (bapNode.nodeID == 0) {
-                    bapNodeSolutionOutput(bapNode);
-                }
+//                if (bapNode.nodeID == 0) {
+//                    bapNodeSolutionOutput(bapNode);
+//                }
                 
 
             } catch (TimeLimitExceededException e) {
@@ -188,9 +188,6 @@ public class BranchAndPrice<V> extends AbstractBranchAndPrice<SNDRC, Cycle, SNDR
                 lowBoundQueue.add(bapNode);
                 notifier.fireTimeOutEvent(bapNode);
                 break;
-            } catch (IloException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
             }
 
             // Prune this node if its bound is worse than the best found
