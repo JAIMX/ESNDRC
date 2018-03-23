@@ -180,9 +180,6 @@ public class BranchAndPrice<V> extends AbstractBranchAndPrice<SNDRC, Cycle, SNDR
 //                ((Master) master).Output(bapNode.nodeID);
                 nodeBoundRecord[bapNode.nodeID] = bapNode.getBound();
 
-//                if (bapNode.nodeID == 0) {
-//                    bapNodeSolutionOutput(bapNode);
-//                }
                 
 
             } catch (TimeLimitExceededException e) {
@@ -572,18 +569,19 @@ public class BranchAndPrice<V> extends AbstractBranchAndPrice<SNDRC, Cycle, SNDR
             }
             System.out.println();
         }
+        System.out.println();
         
-        List<Map<Integer,Double>> optXValues=((Master) master).getXValues();
-        //output x variables
-        for(int demand=0;demand<dataModel.numDemand;demand++){
-            for(int edgeIndex:optXValues.get(demand).keySet()){
-                if(optXValues.get(demand).get(edgeIndex)>0.01){
-                    Edge edge=dataModel.edgeSet.get(edgeIndex);
-                    System.out.println("x[" + demand + "]:" + edge.start + "->" + edge.end +" "+edge.u+","+edge.t1+"->"+edge.v+","+edge.t2+" = "+optXValues.get(demand).get(edgeIndex));
-                }
-            }
-            System.out.println();
-        }
+//        List<Map<Integer,Double>> optXValues=((Master) master).getXValues();
+//        //output x variables
+//        for(int demand=0;demand<dataModel.numDemand;demand++){
+//            for(int edgeIndex:optXValues.get(demand).keySet()){
+//                if(optXValues.get(demand).get(edgeIndex)>0.01){
+//                    Edge edge=dataModel.edgeSet.get(edgeIndex);
+//                    System.out.println("x[" + demand + "]:" + edge.start + "->" + edge.end +" "+edge.u+","+edge.t1+"->"+edge.v+","+edge.t2+" = "+optXValues.get(demand).get(edgeIndex));
+//                }
+//            }
+//            System.out.println();
+//        }
     }
 
 }
