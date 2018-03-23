@@ -48,12 +48,32 @@ public class BranchAndPrice<V> extends AbstractBranchAndPrice<SNDRC, Cycle, SNDR
     private Map<Cycle, Double> optSolutionValueMap;
     private List<Map<Integer, Double>> optXValues;
     private double[] nodeBoundRecord;
-    private int helpOutPut;
+//    private int helpOutPut;
+    
+    //For learning upper bound
+    private int[] edgeFrequency,cutFrequency;
+    private double[] accumulatedReducedCost;
+    private int nodeFre;
+    
+    
+    /**
+     * 
+     * @param modelData
+     * @param master
+     * @param pricingProblems
+     * @param solvers
+     * @param branchCreators
+     * @param objectiveInitialSolution
+     * @param thresholdValue   for AccelerationForUB()
+     * @param probLB  for AccelerationForUB()
+     * @param c  for AccelerationForUB()
+     * @param nodeFre for learningUB()
+     */
 
     public BranchAndPrice(SNDRC modelData, Master master, List<SNDRCPricingProblem> pricingProblems,
             List<Class<? extends AbstractPricingProblemSolver<SNDRC, Cycle, SNDRCPricingProblem>>> solvers,
             List<? extends AbstractBranchCreator<SNDRC, Cycle, SNDRCPricingProblem>> branchCreators,
-            double objectiveInitialSolution, double thresholdValue, double probLB, double c) {
+            double objectiveInitialSolution, double thresholdValue, double probLB, double c,int nodeFre) {
         super(modelData, master, pricingProblems, solvers, branchCreators, 0, objectiveInitialSolution);
         // this.warmStart(objectiveInitialSolution,initialSolution);
         this.thresholdValue = thresholdValue;
@@ -63,7 +83,13 @@ public class BranchAndPrice<V> extends AbstractBranchAndPrice<SNDRC, Cycle, SNDR
         nrNonImproForAcce = 0;
         optSolutionValueMap = new HashMap<>();
         nodeBoundRecord = new double[5000];
-        helpOutPut=0;
+//        helpOutPut=0;
+        
+        edgeFrequency=new int[modelData.numServiceArc];
+        cutFrequency=new int[modelData.numServiceArc];
+        accumulatedReducedCost=new double[modelData.numServiceArc];
+        this.nodeFre=nodeFre;
+        
     }
 
     /**
@@ -188,6 +214,8 @@ public class BranchAndPrice<V> extends AbstractBranchAndPrice<SNDRC, Cycle, SNDR
                 notifier.fireTimeOutEvent(bapNode);
                 break;
             }
+            
+            //Collect the information for learning upper bound
 
             // Prune this node if its bound is worse than the best found
             // solution. Since all solutions are integral, we may round up/down,

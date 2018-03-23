@@ -127,14 +127,14 @@ public class BapLogger implements BAPListener{
      * Construct a single line in the log file, and write it to the output file
      */
     protected void constructAndWriteLine(){
-    	this.writeLine(String.valueOf(bapNodeID) + "\t" + parentNodeID + "\t" + objectiveIncumbentSolution + "\t" + nodeBound  + "\t" + timeSolvingMaster + "\t" + timeSolvingPricing + "\t" + nodeStatus + "\t" + nodesInQueue + "\t" + LB+ "\t"+nrInequalities+"\t"+branchType);
-//    	this.writeLine(String.valueOf(bapNodeID) + "\t" + parentNodeID + "\t" + objectiveIncumbentSolution + "\t" + nodeBound + "\t" + formatter.format(nodeValue) + "\t" + cgIterations + "\t" + timeSolvingMaster + "\t" + timeSolvingPricing + "\t" + nrGeneratedColumns + "\t" + nodeStatus + "\t" + nodesInQueue + "\t" + LB+ "\t"+nrInequalities+"\t"+branchType);
+//    	this.writeLine(String.valueOf(bapNodeID) + "\t" + parentNodeID + "\t" + objectiveIncumbentSolution + "\t" + nodeBound  + "\t" + timeSolvingMaster + "\t" + timeSolvingPricing + "\t" + nodeStatus + "\t" + nodesInQueue + "\t" + LB+ "\t"+nrInequalities+"\t"+branchType);
+    	this.writeLine(String.valueOf(bapNodeID) + "\t" + parentNodeID + "\t" + objectiveIncumbentSolution + "\t" + nodeBound + "\t" + formatter.format(nodeValue) + "\t" + cgIterations + "\t" + timeSolvingMaster + "\t" + timeSolvingPricing + "\t" + nrGeneratedColumns + "\t" + nodeStatus + "\t" + nodesInQueue + "\t" + LB+ "\t"+nrInequalities+"\t"+branchType);
     }
 
     @Override
     public void startBAP(StartEvent startEvent) {
-        this.writeLine("BAPNodeID \t parentNodeID \t objectiveIncumbentSolution \t nodeBound \t t_master \t t_pricing  \t solutionStatus \t nodesInQueue \t LB \t nrInequalities \t branchType");
-//        this.writeLine("BAPNodeID \t parentNodeID \t objectiveIncumbentSolution \t nodeBound \t nodeValue \t cgIterations \t t_master \t t_pricing \t nrGenColumns \t solutionStatus \t nodesInQueue \t LB \t nrInequalities \t branchType");
+//        this.writeLine("BAPNodeID \t parentNodeID \t objectiveIncumbentSolution \t nodeBound \t t_master \t t_pricing  \t solutionStatus \t nodesInQueue \t LB \t nrInequalities \t branchType");
+        this.writeLine("BAPNodeID \t parentNodeID \t objectiveIncumbentSolution \t nodeBound \t nodeValue \t cgIterations \t t_master \t t_pricing \t nrGenColumns \t solutionStatus \t nodesInQueue \t LB \t nrInequalities \t branchType");
     }
 
     @Override
