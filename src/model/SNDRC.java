@@ -10,12 +10,14 @@ import java.util.Set;
 
 import org.jorlib.frameworks.columnGeneration.model.ModelInterface;
 
+import com.sun.org.apache.bcel.internal.generic.AASTORE;
+
 import model.SNDRC.Demand;
 import model.SNDRC.Edge;
 
 public class SNDRC implements ModelInterface {
 
-	private class Service {
+	public class Service {
 		private int origin;
 		private int destination;
 		private int LB, UB;
@@ -69,7 +71,123 @@ public class SNDRC implements ModelInterface {
 	public final int numServiceArc, numHoldingArc, numArc;
 	
 	public List<Set<Integer>> edgesForX;
+	
+	
 
+	public SNDRC(SNDRC sndrcParent,Set<Integer> serviceEdgeSet){
+	    this.fleetSize=sndrcParent.fleetSize;
+	    this.numNode=sndrcParent.numNode;
+	    this.abstractNumNode=sndrcParent.abstractNumNode;
+	    this.timePeriod=sndrcParent.timePeriod;
+	    this.numService=sndrcParent.numService;
+	    this.numDemand=sndrcParent.numDemand;
+	    this.numOfCapacity=sndrcParent.numOfCapacity;
+	    this.serviceSet=sndrcParent.serviceSet;
+	    this.demandSet=sndrcParent.demandSet;
+	    this.b=sndrcParent.b;
+	    
+	    this.alpha=sndrcParent.alpha;
+	    this.speed=sndrcParent.speed;
+	    this.drivingTimePerDay=sndrcParent.drivingTimePerDay;
+	    this.beta=sndrcParent.beta;
+	    this.fixedCost=sndrcParent.fixedCost;
+	    this.capacity=sndrcParent.capacity;
+	    this.vehicleLimit=sndrcParent.vehicleLimit;
+	    this.distanceLimit=sndrcParent.distanceLimit;
+	    this.legLimit=sndrcParent.legLimit;
+	    
+	    
+	    
+	    
+	    edgeSet = new ArrayList<Edge>();
+        pointToEdgeSet = new ArrayList<HashSet<Integer>>();
+        pointFromEdgeSet = new ArrayList<HashSet<Integer>>();
+
+        for (int i = 0; i < abstractNumNode; i++) {
+            HashSet<Integer> templist1 = new HashSet();
+            HashSet<Integer> templist2 = new HashSet();
+            pointToEdgeSet.add(templist1);
+            pointFromEdgeSet.add(templist2);
+        }
+        
+        //for service edge
+        for(int edgeIndex=0;edgeIndex<sndrcParent.numServiceArc;edgeIndex++){
+            if(serviceEdgeSet.contains(edgeIndex)){
+                Edge edge=sndrcParent.edgeSet.get(edgeIndex);
+                edgeSet.add(edge);
+                pointToEdgeSet.get(edge.start).add(edgeSet.size()-1);
+                pointFromEdgeSet.get(edge.end).add(edgeSet.size()-1);
+            }
+        }
+        
+        numServiceArc=edgeSet.size();
+        numHoldingArc=sndrcParent.numHoldingArc;
+        numArc=numServiceArc+numHoldingArc;
+        
+        //for holding edge
+        for(int holdingEdgeIndex=0;holdingEdgeIndex<sndrcParent.numHoldingArc;holdingEdgeIndex++){
+            int tempIndex=sndrcParent.numServiceArc+holdingEdgeIndex;
+            Edge edge=sndrcParent.edgeSet.get(tempIndex);
+            edgeSet.add(edge);
+            
+            pointToEdgeSet.get(edge.start).add(edgeSet.size()-1);
+            pointFromEdgeSet.get(edge.end).add(edgeSet.size()-1);
+        }
+        
+        
+        // add x variables with edges only needed(dp process)
+        for(int p=0;p<numDemand;p++) {
+            boolean[] achieve=new boolean[abstractNumNode];
+            for(int i=0;i<achieve.length;i++) {
+                achieve[i]=false;
+            }
+            
+            Demand demand=demandSet.get(p);
+            int originNodeIndex=demand.origin*timePeriod+demand.timeAvailable;
+            int startTime=demand.timeAvailable;
+            int endTime=demand.timeDue;
+            int durationLimit;
+            achieve[originNodeIndex]=true;
+            
+            
+            if(endTime>startTime) {
+                durationLimit=endTime-startTime;
+            }else {
+                durationLimit=endTime-startTime+timePeriod;
+            }
+            
+            
+            int timeDuration=durationLimit;
+            
+            for(int t=0;t<timeDuration;t++) {
+                int currentTime=t+startTime;
+                currentTime=currentTime%timePeriod;
+                
+                for(int localNode=0;localNode<numNode;localNode++) {
+                    int currentNodeIndex=localNode*timePeriod+currentTime;
+                    
+                    if(achieve[currentNodeIndex]) {
+                        for(int edgeIndex:pointToEdgeSet.get(currentNodeIndex)) {
+                            Edge edge=edgeSet.get(edgeIndex);
+                            
+                            if(edge.duration<durationLimit||(edge.duration==durationLimit&&edge.end==demand.destination*timePeriod+endTime)) {
+                                edgesForX.get(p).add(edgeIndex);
+                                achieve[edge.end]=true;
+                            }
+                        }
+                    }
+                    
+                }
+                
+                durationLimit--;
+                
+            }
+            
+        }
+        
+	    
+	}
+	
 	public SNDRC(String filename) throws IOException {
 		// if (readType == 1) {
 		// readData1(filename);

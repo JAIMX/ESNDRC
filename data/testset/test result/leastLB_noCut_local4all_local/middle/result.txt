@@ -129,7 +129,54 @@ artificial: false set: [464, 209, 402, 388, 374, 471, 457, 395, 381, 525, 478] s
 Total time= 36000806
 --------------------------------------------------------------------------------------------------------------
 test6_5_15_40_200D
+number of service arcs=600
+number of holding arcs=200
 
+javax.naming.TimeLimitExceededException
+	at cg.master.Master.solveMasterProblem(Master.java:395)
+	at org.jorlib.frameworks.columnGeneration.master.AbstractMaster.solve(AbstractMaster.java:152)
+	at org.jorlib.frameworks.columnGeneration.colgenMain.ColGen.invokeMaster(ColGen.java:271)
+	at org.jorlib.frameworks.columnGeneration.colgenMain.ColGen.solve(ColGen.java:224)
+	at org.jorlib.frameworks.columnGeneration.branchAndPrice.AbstractBranchAndPrice.solveBAPNode(AbstractBranchAndPrice.java:342)
+	at bap.BranchAndPrice.runBranchAndPrice(BranchAndPrice.java:177)
+	at SNDRCSolver.<init>(SNDRCSolver.java:78)
+	at SNDRCSolver.main(SNDRCSolver.java:188)
+================ Solution ================
+BAP terminated with objective : 27382
+Total Number of iterations: 441
+Total Number of processed nodes: 46
+Total Time spent on master problems: 8246382 Total time spent on pricing problems: 5856
+Best bound : 26501.51999999999
+Solution is optimal: false
+Columns (only non-zero columns are returned):
+artificial: false set: [161, 113, 97, 277, 261, 565, 105, 89, 269, 253] start node= 4 start time= 5 capacity type= 1
+(1,1)->(4,5)->(1,9)->(2,13)->(1,17)->(2,21)->(1,25)->(2,29)->(1,33)->(2,37)->(1,1):1.0
+
+artificial: false set: [176, 434, 483, 149, 24, 11, 540, 158, 527] start node= 4 start time= 7 capacity type= 1
+(3,3)->(4,7)->(0,11)->(1,16)->(4,20)->(0,24)->(1,29)->(3,34)->(1,38)->(3,3):1.0
+
+artificial: false set: [512, 464, 96, 80, 596, 308, 488, 300, 572, 284] start node= 1 start time= 0 capacity type= 2
+(1,0)->(2,4)->(3,8)->(4,12)->(1,16)->(2,20)->(3,24)->(2,28)->(3,32)->(4,36)->(1,0):1.0
+
+artificial: false set: [561, 209, 99, 517, 85, 343, 152, 588, 14] start node= 1 start time= 5 capacity type= 2
+(4,1)->(1,5)->(2,9)->(0,14)->(1,19)->(2,23)->(4,28)->(1,32)->(3,37)->(4,1):1.0
+
+artificial: false set: [0, 337, 85, 249, 26, 235, 93, 542, 111] start node= 1 start time= 31 capacity type= 2
+(0,0)->(1,5)->(2,9)->(1,13)->(2,17)->(4,22)->(0,26)->(1,31)->(2,35)->(0,0):1.0
+
+artificial: false set: [48, 33, 3, 68, 23, 58, 13, 78] start node= 1 start time= 8 capacity type= 2
+(0,3)->(1,8)->(0,13)->(1,18)->(0,23)->(1,28)->(0,33)->(1,38)->(0,3):1.0
+
+artificial: false set: [16, 2, 514, 372, 149, 181, 585, 558, 127] start node= 1 start time= 21 capacity type= 2
+(0,2)->(1,7)->(3,12)->(0,16)->(1,21)->(4,25)->(1,29)->(3,34)->(4,38)->(0,2):1.0
+
+artificial: false set: [513, 1, 148, 135, 264, 411, 460, 557, 126] start node= 4 start time= 37 capacity type= 2
+(0,1)->(1,6)->(3,11)->(1,15)->(3,20)->(2,24)->(1,28)->(3,33)->(4,37)->(0,1):1.0
+
+artificial: false set: [115, 22, 294, 566, 359, 378, 90, 187, 764, 765, 591] start node= 4 start time= 6 capacity type= 2
+(4,4)->(4,5)->(4,6)->(1,10)->(2,14)->(3,18)->(0,22)->(1,27)->(4,31)->(1,35)->(2,39)->(4,4):1.0
+
+Total time= 36000876
 --------------------------------------------------------------------------------------------------------
 
 

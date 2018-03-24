@@ -63,7 +63,7 @@ public class SNDRCSolver {
 	      
 		//Create a Branch-and-Price instance
 //		BranchAndPrice bap=new BranchAndPrice(dataModel, master, pricingProblems, solvers, branchCreators,Double.MAX_VALUE,0.5,0.3,0.1);
-		BranchAndPrice bap=new BranchAndPrice(dataModel, master, pricingProblems, solvers, branchCreators,Double.MAX_VALUE,0.6,0.3,0.1,10);
+		BranchAndPrice bap=new BranchAndPrice(dataModel, master, pricingProblems, solvers, branchCreators,Double.MAX_VALUE,0.6,0.3,0.1,10,0.6,0.5,3);
 //		bap.setNodeOrdering(new BFSbapNodeComparator());
 		bap.setNodeOrdering(new NodeBoundbapNodeComparator());
 		
@@ -164,15 +164,6 @@ public class SNDRCSolver {
 	}
 	
 	public static void main(String[] args) throws IOException {
-
-//		SNDRC sndrc=new SNDRC("./data/test2_5_8.txt");
-//		SNDRC sndrc=new SNDRC("./data/test4_5_8_5.txt");
-//		SNDRC sndrc=new SNDRC("./data/test3_5_15.txt");
-//		SNDRC sndrc=new SNDRC("./data/test1_5_15_5.txt");
-//		SNDRC sndrc=new SNDRC("./data/change_fixedCost4.txt");
-//		SNDRC sndrc=new SNDRC("./data/change_fixedCost.txt");
-//		SNDRC sndrc=new SNDRC("./data/test5_25_10.txt");
-//		SNDRC sndrc=new SNDRC("./data/testset/test1_5_10_15_20.txt");
 		
 		SNDRC sndrc;
 		for(String arg:args) {
