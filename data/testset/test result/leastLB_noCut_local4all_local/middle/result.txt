@@ -178,8 +178,51 @@ artificial: false set: [115, 22, 294, 566, 359, 378, 90, 187, 764, 765, 591] sta
 
 Total time= 36000876
 --------------------------------------------------------------------------------------------------------
+test6_5_15_40_200E
+number of service arcs=600
+number of holding arcs=200
+
+javax.naming.TimeLimitExceededException
+	at cg.master.Master.solveMasterProblem(Master.java:395)
+	at org.jorlib.frameworks.columnGeneration.master.AbstractMaster.solve(AbstractMaster.java:152)
+	at org.jorlib.frameworks.columnGeneration.colgenMain.ColGen.invokeMaster(ColGen.java:271)
+	at org.jorlib.frameworks.columnGeneration.colgenMain.ColGen.solve(ColGen.java:224)
+	at org.jorlib.frameworks.columnGeneration.branchAndPrice.AbstractBranchAndPrice.solveBAPNode(AbstractBranchAndPrice.java:342)
+	at bap.BranchAndPrice.runBranchAndPrice(BranchAndPrice.java:177)
+	at SNDRCSolver.<init>(SNDRCSolver.java:78)
+	at SNDRCSolver.main(SNDRCSolver.java:188)
+================ Solution ================
+BAP terminated with objective : 25320
+Total Number of iterations: 708
+Total Number of processed nodes: 65
+Total Time spent on master problems: 13299246 Total time spent on pricing problems: 9037
+Best bound : 25133.0
+Solution is optimal: false
+Columns (only non-zero columns are returned):
+artificial: false set: [672, 356, 548, 420, 773, 774, 328, 521, 433, 659, 405, 343, 535] start node= 4 start time= 14 capacity type= 1
+(4,1)->(1,5)->(0,8)->(4,13)->(4,14)->(4,15)->(1,19)->(1,20)->(0,23)->(4,28)->(1,32)->(1,33)->(0,36)->(4,1):1.0
+
+artificial: false set: [273, 388, 358, 584, 456, 523, 299, 572, 287] start node= 1 start time= 7 capacity type= 2
+(4,3)->(1,7)->(2,12)->(3,16)->(1,19)->(2,24)->(3,28)->(4,33)->(0,38)->(4,3):1.0
+
+artificial: false set: [288, 561, 262, 552, 377, 347, 316, 445, 573] start node= 1 start time= 8 capacity type= 2
+(2,1)->(3,5)->(1,8)->(2,13)->(3,17)->(4,22)->(0,27)->(4,32)->(1,36)->(2,1):1.0
+
+artificial: false set: [466, 594, 243, 533, 309, 582, 328, 297, 398] start node= 1 start time= 29 capacity type= 2
+(4,3)->(0,8)->(4,13)->(1,17)->(2,22)->(3,26)->(1,29)->(2,34)->(3,38)->(4,3):1.0
+
+artificial: false set: [305, 643, 373, 664, 569, 778, 394, 779, 540, 284, 590, 559] start node= 1 start time= 25 capacity type= 2
+(1,3)->(1,4)->(2,9)->(3,13)->(4,18)->(4,19)->(4,20)->(1,24)->(1,25)->(2,30)->(3,34)->(4,39)->(1,3):1.0
+
+artificial: false set: [371, 389, 565, 679, 536, 280, 585, 729, 794, 730, 555, 300] start node= 1 start time= 0 capacity type= 2
+(1,0)->(2,5)->(3,9)->(3,10)->(3,11)->(4,16)->(1,20)->(2,25)->(3,29)->(4,34)->(4,35)->(1,39)->(1,0):1.0
+
+artificial: false set: [240, 355, 260, 325, 345, 250, 270, 335] start node= 4 start time= 0 capacity type= 2
+(4,0)->(0,5)->(4,10)->(0,15)->(4,20)->(0,25)->(4,30)->(0,35)->(4,0):1.0
 
 
+Total time= 36000762
+--------------------------------------------------------------------------------------------------------
 test11_10_40_30_200A
 
 number of service arcs=1200

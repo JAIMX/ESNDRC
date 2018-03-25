@@ -135,6 +135,12 @@ public class SNDRC implements ModelInterface {
         }
         
         
+        this.edgesForX=new ArrayList<Set<Integer>>();
+        for(int p=0;p<numDemand;p++) {
+            Set<Integer> set=new HashSet<>();
+            edgesForX.add(set);
+        }
+        
         // add x variables with edges only needed(dp process)
         for(int p=0;p<numDemand;p++) {
             boolean[] achieve=new boolean[abstractNumNode];

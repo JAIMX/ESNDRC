@@ -1,10 +1,12 @@
 package bap;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
@@ -20,6 +22,7 @@ import org.jorlib.frameworks.columnGeneration.io.TimeLimitExceededException;
 import org.jorlib.frameworks.columnGeneration.master.MasterData;
 import org.jorlib.frameworks.columnGeneration.master.OptimizationSense;
 import org.jorlib.frameworks.columnGeneration.master.cutGeneration.AbstractInequality;
+import org.jorlib.frameworks.columnGeneration.master.cutGeneration.CutHandler;
 import org.jorlib.frameworks.columnGeneration.pricing.AbstractPricingProblemSolver;
 import org.jorlib.frameworks.columnGeneration.util.MathProgrammingUtil;
 
@@ -27,11 +30,17 @@ import com.sun.media.jfxmedia.events.NewFrameEvent;
 
 import bap.bapNodeComparators.NodeBoundbapNodeComparator;
 import bap.bapNodeComparators.NodeBoundbapNodeComparatorForLB;
+import bap.branching.BranchOnLocalService;
+import bap.branching.BranchOnLocalServiceForAllPricingProblems;
+import bap.branching.BranchOnServiceEdge;
 import bap.branching.branchingDecisions.RoundServiceEdge;
 import cg.Cycle;
+import cg.ExactPricingProblemSolver;
 import cg.SNDRCPricingProblem;
 import cg.master.Master;
+import cg.master.SNDRCMasterData;
 import cg.master.cuts.StrongInequality;
+import cg.master.cuts.StrongInequalityGenerator;
 import ilog.concert.IloException;
 import ilog.concert.IloRange;
 import ilog.cplex.IloCplex.UnknownObjectException;
@@ -53,11 +62,12 @@ public class BranchAndPrice<V> extends AbstractBranchAndPrice<SNDRC, Cycle, SNDR
 //    private int helpOutPut;
     
     //For learning upper bound
-    private int[] edgeFrequency,cutFrequency;
-    private double[] accumulatedReducedCost;
+    private int[] cutFrequency;
+    private double[] edgeFrequency,accumulatedReducedCost;
     private int nodeFre;
-    private double betaForEdgeFre,alphaForEdgeFre;
+    private double alphaForEdgeFre;
     private int timeCompress;
+    private boolean ifUseLearningUB;
     
     
     /**
@@ -72,12 +82,13 @@ public class BranchAndPrice<V> extends AbstractBranchAndPrice<SNDRC, Cycle, SNDR
      * @param probLB  for AccelerationForUB()
      * @param c  for AccelerationForUB()
      * @param nodeFre for learningUB()
+     * @param alphaForEdgeFre  parameter for learningUB(), we use it to decide whether a service edge should be included to the subgraph
      */
 
     public BranchAndPrice(SNDRC modelData, Master master, List<SNDRCPricingProblem> pricingProblems,
             List<Class<? extends AbstractPricingProblemSolver<SNDRC, Cycle, SNDRCPricingProblem>>> solvers,
             List<? extends AbstractBranchCreator<SNDRC, Cycle, SNDRCPricingProblem>> branchCreators,
-            double objectiveInitialSolution, double thresholdValue, double probLB, double c,int nodeFre,double betaForEdgeFre,double alphaForEdgeFre,int timeCompress) {
+            double objectiveInitialSolution, double thresholdValue, double probLB, double c,int nodeFre,double alphaForEdgeFre,int timeCompress,boolean ifUseLearningUB) {
         super(modelData, master, pricingProblems, solvers, branchCreators, 0, objectiveInitialSolution);
         // this.warmStart(objectiveInitialSolution,initialSolution);
         this.thresholdValue = thresholdValue;
@@ -89,13 +100,13 @@ public class BranchAndPrice<V> extends AbstractBranchAndPrice<SNDRC, Cycle, SNDR
         nodeBoundRecord = new double[5000];
 //        helpOutPut=0;
         
-        edgeFrequency=new int[modelData.numServiceArc];
+        edgeFrequency=new double[modelData.numServiceArc];
         cutFrequency=new int[modelData.numServiceArc];
         accumulatedReducedCost=new double[modelData.numServiceArc];
         this.nodeFre=nodeFre;
-        this.betaForEdgeFre=betaForEdgeFre;
         this.alphaForEdgeFre=alphaForEdgeFre;
         this.timeCompress=timeCompress;
+        this.ifUseLearningUB=ifUseLearningUB;
         
         
     }
@@ -223,84 +234,85 @@ public class BranchAndPrice<V> extends AbstractBranchAndPrice<SNDRC, Cycle, SNDR
                 break;
             }
             
-            //Collect the information for learning upper bound
-            if((!this.nodeCanBePruned(bapNode))&&(!this.isInfeasibleNode(bapNode))){  //bapNode is integer or fractional
-                
-                //for edgeFrequency
-                double[] edgeCount=new double[dataModel.numServiceArc];
-                List<Cycle> solution=bapNode.getSolution();
-                for(Cycle cycle:solution){
-                    double value=cycle.value;
-                    for(int edgeIndex:cycle.edgeIndexSet){
-                        if(edgeIndex<dataModel.numServiceArc){
-                            edgeCount[edgeIndex]+=value;
-                        }
-                    }
-                }
-                
-                for(int edgeIndex=0;edgeIndex<dataModel.numServiceArc;edgeIndex++){
-                    if(edgeCount[edgeIndex]>betaForEdgeFre){
-                        edgeFrequency[edgeIndex]++;
-                    }
-                }
-                
-                
-                //for cutFrequence
-                List<AbstractInequality> initialCutSet=bapNode.getInitialInequalities();
-                List<AbstractInequality> cutSet=bapNode.getInequalities();
-                for(AbstractInequality cut:cutSet){
-                    if(!initialCutSet.contains(cut)){
-                        
-                        if(cut instanceof StrongInequality) {
-                            StrongInequality  strongInequality = (StrongInequality) cut;
-                            cutFrequency[strongInequality.edgeIndex]++;
-                        }
-                        
-                        
-                    }
-                }
-                
-                
-                //for accumulatedReducedCost
-                
-                //pick the most used pricing problem
-                Map<SNDRCPricingProblem,Double> temp=new HashMap<>();
-                for(Cycle cycle:solution){
-                    if(!temp.keySet().contains(cycle.associatedPricingProblem)){
-                        temp.put(cycle.associatedPricingProblem, cycle.value);
-                    }else{
-                        temp.put(cycle.associatedPricingProblem, temp.get(cycle.associatedPricingProblem)+cycle.value);
-                    }
-                }
-                
-                SNDRCPricingProblem mostUsedPricingProblem=null;
-                Double record=Double.MIN_VALUE;
-                
-                for(SNDRCPricingProblem pricingProblem:temp.keySet()){
-                    Double count=temp.get(pricingProblem);
-                    if(count>record){
-                        mostUsedPricingProblem=pricingProblem;
-                        record=count;
-                    }
-                }
-                
-                for(int edgeIndex=0;edgeIndex<dataModel.numService;edgeIndex++){
-                    double reducedCost=mostUsedPricingProblem.dualCost;
-                    double[] reducedCosts=mostUsedPricingProblem.dualCosts;
+            
+            
+            if(this.ifUseLearningUB==true){
+              //Collect the information for learning upper bound
+                if((!this.nodeCanBePruned(bapNode))&&(!this.isInfeasibleNode(bapNode))){  //bapNode is integer or fractional
                     
-                    accumulatedReducedCost[edgeIndex]+=reducedCost+reducedCosts[edgeIndex]-dataModel.fixedCost[mostUsedPricingProblem.capacityTypeS][mostUsedPricingProblem.originNodeO];
+                    //for edgeFrequency
+                    List<Cycle> solution=bapNode.getSolution();
+                    for(Cycle cycle:solution){
+                        double value=cycle.value;
+                        for(int edgeIndex:cycle.edgeIndexSet){
+                            if(edgeIndex<dataModel.numServiceArc){
+                                edgeFrequency[edgeIndex]+=value;
+                            }
+                        }
+                    }
+
+                    
+                    
+                    //for cutFrequence
+                    List<AbstractInequality> initialCutSet=bapNode.getInitialInequalities();
+                    List<AbstractInequality> cutSet=bapNode.getInequalities();
+                    for(AbstractInequality cut:cutSet){
+                        if(!initialCutSet.contains(cut)){
+                            
+                            if(cut instanceof StrongInequality) {
+                                StrongInequality  strongInequality = (StrongInequality) cut;
+                                cutFrequency[strongInequality.edgeIndex]++;
+                            }
+                            
+                            
+                        }
+                    }
+                    
+                    
+                    //for accumulatedReducedCost
+                    
+                    //pick the most used pricing problem
+                    Map<SNDRCPricingProblem,Double> temp=new HashMap<>();
+                    for(Cycle cycle:solution){
+                        if(!temp.keySet().contains(cycle.associatedPricingProblem)){
+                            temp.put(cycle.associatedPricingProblem, cycle.value);
+                        }else{
+                            temp.put(cycle.associatedPricingProblem, temp.get(cycle.associatedPricingProblem)+cycle.value);
+                        }
+                    }
+                    
+                    SNDRCPricingProblem mostUsedPricingProblem=null;
+                    Double record=Double.MIN_VALUE;
+                    
+                    for(SNDRCPricingProblem pricingProblem:temp.keySet()){
+                        Double count=temp.get(pricingProblem);
+                        if(count>record){
+                            mostUsedPricingProblem=pricingProblem;
+                            record=count;
+                        }
+                    }
+                    
+                    for(int edgeIndex=0;edgeIndex<dataModel.numService;edgeIndex++){
+                        double reducedCost=mostUsedPricingProblem.dualCost;
+                        double[] reducedCosts=mostUsedPricingProblem.dualCosts;
+                        
+
+                        accumulatedReducedCost[edgeIndex]+=reducedCost+reducedCosts[edgeIndex]-dataModel.fixedCost[mostUsedPricingProblem.originNodeO][mostUsedPricingProblem.capacityTypeS];
+                    }
+                    
                 }
                 
+                if(this.nodesProcessed % nodeFre==0&&this.nodesProcessed!=0){
+                    LearningUB();
+                    
+                    edgeFrequency=new double[dataModel.numServiceArc];
+                    cutFrequency=new int[dataModel.numServiceArc];
+                    accumulatedReducedCost=new double[dataModel.numServiceArc];
+                    
+                }
             }
             
-            if(this.nodesProcessed % nodeFre==0){
-                LearningUB();
-                
-                edgeFrequency=new int[dataModel.numServiceArc];
-                cutFrequency=new int[dataModel.numServiceArc];
-                accumulatedReducedCost=new double[dataModel.numServiceArc];
-                
-            }
+            
             
             
             
@@ -367,58 +379,18 @@ public class BranchAndPrice<V> extends AbstractBranchAndPrice<SNDRC, Cycle, SNDR
                 // ----------------------------------------------------------------------------------------------------------------------------------//
 
                 // An acceleration technique for ub
-                try {
-                    double prob = CalculateProb();
-                    double random = Math.random();
-                    if (random < prob) {
-                        this.AccelerationForUB(bapNode);
-                    }
-
-                } catch (IloException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-
-//                if(Math.abs(bapNode.getBound()-3636)<0.0001&&helpOutPut==0){
-//                    System.out.println("node ID="+bapNode.nodeID+" bound="+bapNode.getBound());
-//                    try {
-//                        bapNodeSolutionOutput(bapNode);
-//                        helpOutPut=1;
-//                    } catch (IloException e) {
-//                        // TODO Auto-generated catch block
-//                        e.printStackTrace();
+//                try {
+//                    double prob = CalculateProb();
+//                    double random = Math.random();
+//                    if (random < prob) {
+//                        this.AccelerationForUB(bapNode);
 //                    }
-//                    
+//
+//                } catch (IloException e) {
+//                    // TODO Auto-generated catch block
+//                    e.printStackTrace();
 //                }
-//                
-//                if(Math.abs(bapNode.getBound()-3661)<0.0001&&helpOutPut==1){
-//                    System.out.println("node ID="+bapNode.nodeID+" bound="+bapNode.getBound());
-//                    try {
-//                        bapNodeSolutionOutput(bapNode);
-//                    } catch (IloException e) {
-//                        // TODO Auto-generated catch block
-//                        e.printStackTrace();
-//                    }
-//                    helpOutPut=2;
-//                }
-                
 
-//                if (bapNode.getParentID() >= 0) {
-//                    if (Math.abs(bapNode.getBound() - nodeBoundRecord[bapNode.getParentID()]) < 0.000001
-//                            && Math.abs(bapNode.getBound() - 2326) < 0.000001){
-////                        try {
-////                            System.out.println(bapNode.getBranchingDecision().toString());
-////                            bapNodeSolutionOutput(bapNode);
-////                        } catch (IloException e) {
-////                            // TODO Auto-generated catch block
-////                            e.printStackTrace();
-////                        }
-//                        throw new RuntimeException(
-//                                "LB doesn't improve!!! " + "node:" + bapNode.nodeID + " " + bapNode.getParentID()
-//                                );
-//                        
-//                    }
-//                }
 
                 notifier.fireNodeIsFractionalEvent(bapNode, bapNode.getBound(), bapNode.getObjective());
                 List<BAPNode<SNDRC, Cycle>> newBranches = new ArrayList<>();
@@ -716,7 +688,7 @@ public class BranchAndPrice<V> extends AbstractBranchAndPrice<SNDRC, Cycle, SNDR
             for(int time=0;time<dataModel.timePeriod;time+=timeCompress){
                int time0=time;
                int timeLast;
-               int time1=time+timeCompress-1;
+               int time1=time0+timeCompress-1;
                if(time1>=dataModel.timePeriod){
                    time1=dataModel.timePeriod-1;
                }
@@ -734,7 +706,7 @@ public class BranchAndPrice<V> extends AbstractBranchAndPrice<SNDRC, Cycle, SNDR
                // edgeIndex=serviceIndex*timePeriod+t
                double sum=0;
                int maxEdgeIndex=-1;
-               int record=Integer.MIN_VALUE;
+               double record=Double.MIN_VALUE;
                for(int t:timeSet){
                    int tempEdgeIndex=serviceIndex*dataModel.timePeriod+t;
                    sum+=edgeFrequency[tempEdgeIndex];
@@ -753,12 +725,62 @@ public class BranchAndPrice<V> extends AbstractBranchAndPrice<SNDRC, Cycle, SNDR
         }
         
         
+//        System.out.println(Arrays.toString(edgeFrequency));
+//        System.out.println(serviceEdgeSet.size());
+        
+        
         
         
         // after the built of serviceEdgeSet, we set up a new sub problem and solve it by branch and price
+        SNDRC subGraph=new SNDRC(dataModel,serviceEdgeSet);
         
+        //Create the pricing problems
+        List<SNDRCPricingProblem> subPricingProblems=new LinkedList<SNDRCPricingProblem>();
+        for(int capacityType=0;capacityType<subGraph.numOfCapacity;capacityType++) {
+            for(int originNode=0;originNode<subGraph.numNode;originNode++) {
+                String name="capacity type: "+capacityType+" origin node: "+originNode;
+                SNDRCPricingProblem subPricingProblem=new SNDRCPricingProblem(subGraph,name,capacityType,originNode);
+                subPricingProblems.add(subPricingProblem);
+            }
+        }
         
+      //Create a cutHandler
+        CutHandler<SNDRC, SNDRCMasterData> subCutHandler=new CutHandler<>();
+        StrongInequalityGenerator subCutGen=new StrongInequalityGenerator(subGraph,subPricingProblems,0);
+//      subCutHandler.addCutGenerator(subCutGen);
+        
+      //Create the Master Problem
+        Master subMaster=new Master(subGraph,subPricingProblems,subCutHandler);
+        
+       //Define which solvers to use
+        List<Class<?extends AbstractPricingProblemSolver<SNDRC, Cycle, SNDRCPricingProblem>>> subSolvers=Collections.singletonList(ExactPricingProblemSolver.class);
+        
+        //Define one or more Branch creators
+        List<? extends AbstractBranchCreator<SNDRC, Cycle, SNDRCPricingProblem>> branchCreators=Arrays.asList( new BranchOnLocalServiceForAllPricingProblems(subGraph, subPricingProblems, 0.5),new BranchOnLocalService(subGraph, subPricingProblems, 0.5),new BranchOnServiceEdge(subGraph, subPricingProblems, 0.5));
+        
+      //Create a Branch-and-Price instance
+        BranchAndPrice subBap=new BranchAndPrice(subGraph, subMaster, subPricingProblems, subSolvers, branchCreators,Double.MAX_VALUE,0.6,0.3,0.1,10,0.5,3,false);
+//      bap.setNodeOrdering(new BFSbapNodeComparator());
+        subBap.setNodeOrdering(new NodeBoundbapNodeComparator());
+        
+        subBap.runBranchAndPrice(System.currentTimeMillis()+3600000L); // one hour
+        if(subBap.hasSolution()){
+            if(subBap.objectiveIncumbentSolution<this.objectiveIncumbentSolution){
+                
+                this.objectiveIncumbentSolution = subBap.objectiveIncumbentSolution;
+                this.upperBoundOnObjective = subBap.objectiveIncumbentSolution;
+                this.incumbentSolution = subBap.getSolution();
+
+                optSolutionValueMap = new HashMap<>();
+                optSolutionValueMap=subBap.optSolutionValueMap;
+                
+                optXValues=subBap.optXValues;
+                
+                
+            }
+        }
         
     }
+    
 
 }
