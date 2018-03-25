@@ -1042,23 +1042,7 @@ public final class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProbl
     }
 
     public List<Map<Integer, Double>> getXValues() throws UnknownObjectException, IloException {
-        // List<Map<Integer,Double>> xValues=new ArrayList<>();
-        // List<Map<Integer,IloNumVar>> x=masterData.x;
-        // List<Set<Integer>> edgesForX=dataModel.edgesForX;
-        //
-        // for(int p=0;p<dataModel.numDemand;p++){
-        // Map<Integer,Double> xValue=new HashMap<>();
-        //
-        // for(int edgeIndex:edgesForX.get(p)){
-        // xValue.put(edgeIndex,masterData.cplex.getValue(x.get(p).get(edgeIndex)));
-        // }
-        //
-        // xValues.add(xValue);
-        //
-        // }
-        //
-        //
-        // return xValues;
+
         return masterData.xValues;
     }
 

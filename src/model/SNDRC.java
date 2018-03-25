@@ -17,89 +17,85 @@ import model.SNDRC.Edge;
 
 public class SNDRC implements ModelInterface {
 
-	public class Service {
-		private int origin;
-		private int destination;
-		private int LB, UB;
-		private int capacity;
-		private int duration;
-	}
+    public class Service {
+        private int origin;
+        private int destination;
+        private int LB, UB;
+        private int capacity;
+        private int duration;
+    }
 
-	public class Demand {
-		public int origin;
-		public int destination;
-		public int timeAvailable;
-		public int timeDue;
-		public int volume;
-		public double valueOfTime;
-	}
+    public class Demand {
+        public int origin;
+        public int destination;
+        public int timeAvailable;
+        public int timeDue;
+        public int volume;
+        public double valueOfTime;
+    }
 
-	public class Edge implements Comparable<Edge>{
-		public int start, end;
-		public double duration;
-		public int u, v, t1, t2;
-		public int edgeType;// 0: service arc | 1: holding arc
-		public int serviceIndex;
-		
-		public int compareTo(Edge other) {
-			return this.t1-other.t1;
-		}
-		
-	}
+    public class Edge implements Comparable<Edge> {
+        public int start, end;
+        public double duration;
+        public int u, v, t1, t2;
+        public int edgeType;// 0: service arc | 1: holding arc
+        public int serviceIndex;
 
-	public final int fleetSize;
-	public final int numNode, abstractNumNode;
-	public final int timePeriod;
-	public final int numService, numDemand, numOfCapacity;
-	public final ArrayList<Service> serviceSet;
-	public final ArrayList<Demand> demandSet;
-	public final double[][] b;
+        public int compareTo(Edge other) {
+            return this.t1 - other.t1;
+        }
 
-	public final double alpha, speed, drivingTimePerDay, beta;
-	public final double[][] fixedCost;
-	public final int[] capacity;
-	public final int[][] vehicleLimit;
-	public final double distanceLimit;
-	public final int legLimit;
+    }
 
-	// graph parameter
-	public final ArrayList<Edge> edgeSet;
-	public final ArrayList<HashSet<Integer>> pointToEdgeSet, pointFromEdgeSet; // not
-																				// record
-																				// holding
-																				// arcs
-	public final int numServiceArc, numHoldingArc, numArc;
-	
-	public List<Set<Integer>> edgesForX;
-	
-	
+    public final int fleetSize;
+    public final int numNode, abstractNumNode;
+    public final int timePeriod;
+    public final int numService, numDemand, numOfCapacity;
+    public final ArrayList<Service> serviceSet;
+    public final ArrayList<Demand> demandSet;
+    public final double[][] b;
 
-	public SNDRC(SNDRC sndrcParent,Set<Integer> serviceEdgeSet){
-	    this.fleetSize=sndrcParent.fleetSize;
-	    this.numNode=sndrcParent.numNode;
-	    this.abstractNumNode=sndrcParent.abstractNumNode;
-	    this.timePeriod=sndrcParent.timePeriod;
-	    this.numService=sndrcParent.numService;
-	    this.numDemand=sndrcParent.numDemand;
-	    this.numOfCapacity=sndrcParent.numOfCapacity;
-	    this.serviceSet=sndrcParent.serviceSet;
-	    this.demandSet=sndrcParent.demandSet;
-	    this.b=sndrcParent.b;
-	    
-	    this.alpha=sndrcParent.alpha;
-	    this.speed=sndrcParent.speed;
-	    this.drivingTimePerDay=sndrcParent.drivingTimePerDay;
-	    this.beta=sndrcParent.beta;
-	    this.fixedCost=sndrcParent.fixedCost;
-	    this.capacity=sndrcParent.capacity;
-	    this.vehicleLimit=sndrcParent.vehicleLimit;
-	    this.distanceLimit=sndrcParent.distanceLimit;
-	    this.legLimit=sndrcParent.legLimit;
-	    
-	    
-	    
-	    
-	    edgeSet = new ArrayList<Edge>();
+    public final double alpha, speed, drivingTimePerDay, beta;
+    public final double[][] fixedCost;
+    public final int[] capacity;
+    public final int[][] vehicleLimit;
+    public final double distanceLimit;
+    public final int legLimit;
+
+    // graph parameter
+    public final ArrayList<Edge> edgeSet;
+    public final ArrayList<HashSet<Integer>> pointToEdgeSet, pointFromEdgeSet; // not
+                                                                               // record
+                                                                               // holding
+                                                                               // arcs
+    public final int numServiceArc, numHoldingArc, numArc;
+
+    public List<Set<Integer>> edgesForX;
+    public boolean isFeasibleForX;
+
+    public SNDRC(SNDRC sndrcParent, Set<Integer> serviceEdgeSet) {
+        this.fleetSize = sndrcParent.fleetSize;
+        this.numNode = sndrcParent.numNode;
+        this.abstractNumNode = sndrcParent.abstractNumNode;
+        this.timePeriod = sndrcParent.timePeriod;
+        this.numService = sndrcParent.numService;
+        this.numDemand = sndrcParent.numDemand;
+        this.numOfCapacity = sndrcParent.numOfCapacity;
+        this.serviceSet = sndrcParent.serviceSet;
+        this.demandSet = sndrcParent.demandSet;
+        this.b = sndrcParent.b;
+
+        this.alpha = sndrcParent.alpha;
+        this.speed = sndrcParent.speed;
+        this.drivingTimePerDay = sndrcParent.drivingTimePerDay;
+        this.beta = sndrcParent.beta;
+        this.fixedCost = sndrcParent.fixedCost;
+        this.capacity = sndrcParent.capacity;
+        this.vehicleLimit = sndrcParent.vehicleLimit;
+        this.distanceLimit = sndrcParent.distanceLimit;
+        this.legLimit = sndrcParent.legLimit;
+
+        edgeSet = new ArrayList<Edge>();
         pointToEdgeSet = new ArrayList<HashSet<Integer>>();
         pointFromEdgeSet = new ArrayList<HashSet<Integer>>();
 
@@ -109,485 +105,497 @@ public class SNDRC implements ModelInterface {
             pointToEdgeSet.add(templist1);
             pointFromEdgeSet.add(templist2);
         }
-        
-        //for service edge
-        for(int edgeIndex=0;edgeIndex<sndrcParent.numServiceArc;edgeIndex++){
-            if(serviceEdgeSet.contains(edgeIndex)){
-                Edge edge=sndrcParent.edgeSet.get(edgeIndex);
+
+        // for service edge
+        for (int edgeIndex = 0; edgeIndex < sndrcParent.numServiceArc; edgeIndex++) {
+            if (serviceEdgeSet.contains(edgeIndex)) {
+                Edge edge = sndrcParent.edgeSet.get(edgeIndex);
                 edgeSet.add(edge);
-                pointToEdgeSet.get(edge.start).add(edgeSet.size()-1);
-                pointFromEdgeSet.get(edge.end).add(edgeSet.size()-1);
+                pointToEdgeSet.get(edge.start).add(edgeSet.size() - 1);
+                pointFromEdgeSet.get(edge.end).add(edgeSet.size() - 1);
             }
         }
-        
-        numServiceArc=edgeSet.size();
-        numHoldingArc=sndrcParent.numHoldingArc;
-        numArc=numServiceArc+numHoldingArc;
-        
-        //for holding edge
-        for(int holdingEdgeIndex=0;holdingEdgeIndex<sndrcParent.numHoldingArc;holdingEdgeIndex++){
-            int tempIndex=sndrcParent.numServiceArc+holdingEdgeIndex;
-            Edge edge=sndrcParent.edgeSet.get(tempIndex);
+
+        numServiceArc = edgeSet.size();
+        numHoldingArc = sndrcParent.numHoldingArc;
+        numArc = numServiceArc + numHoldingArc;
+
+        // for holding edge
+        for (int holdingEdgeIndex = 0; holdingEdgeIndex < sndrcParent.numHoldingArc; holdingEdgeIndex++) {
+            int tempIndex = sndrcParent.numServiceArc + holdingEdgeIndex;
+            Edge edge = sndrcParent.edgeSet.get(tempIndex);
             edgeSet.add(edge);
-            
-            pointToEdgeSet.get(edge.start).add(edgeSet.size()-1);
-            pointFromEdgeSet.get(edge.end).add(edgeSet.size()-1);
+
+            pointToEdgeSet.get(edge.start).add(edgeSet.size() - 1);
+            pointFromEdgeSet.get(edge.end).add(edgeSet.size() - 1);
         }
-        
-        
-        this.edgesForX=new ArrayList<Set<Integer>>();
-        for(int p=0;p<numDemand;p++) {
-            Set<Integer> set=new HashSet<>();
+
+        this.edgesForX = new ArrayList<Set<Integer>>();
+        for (int p = 0; p < numDemand; p++) {
+            Set<Integer> set = new HashSet<>();
             edgesForX.add(set);
         }
-        
+
+        isFeasibleForX = true;
         // add x variables with edges only needed(dp process)
-        for(int p=0;p<numDemand;p++) {
-            boolean[] achieve=new boolean[abstractNumNode];
-            for(int i=0;i<achieve.length;i++) {
-                achieve[i]=false;
+        for (int p = 0; p < numDemand; p++) {
+
+            boolean ifDestinationAchievable = false;
+            boolean[] achieve = new boolean[abstractNumNode];
+            for (int i = 0; i < achieve.length; i++) {
+                achieve[i] = false;
             }
-            
-            Demand demand=demandSet.get(p);
-            int originNodeIndex=demand.origin*timePeriod+demand.timeAvailable;
-            int startTime=demand.timeAvailable;
-            int endTime=demand.timeDue;
+
+            Demand demand = demandSet.get(p);
+            int originNodeIndex = demand.origin * timePeriod + demand.timeAvailable;
+            int startTime = demand.timeAvailable;
+            int endTime = demand.timeDue;
             int durationLimit;
-            achieve[originNodeIndex]=true;
-            
-            
-            if(endTime>startTime) {
-                durationLimit=endTime-startTime;
-            }else {
-                durationLimit=endTime-startTime+timePeriod;
+            achieve[originNodeIndex] = true;
+
+            if (endTime > startTime) {
+                durationLimit = endTime - startTime;
+            } else {
+                durationLimit = endTime - startTime + timePeriod;
             }
-            
-            
-            int timeDuration=durationLimit;
-            
-            for(int t=0;t<timeDuration;t++) {
-                int currentTime=t+startTime;
-                currentTime=currentTime%timePeriod;
-                
-                for(int localNode=0;localNode<numNode;localNode++) {
-                    int currentNodeIndex=localNode*timePeriod+currentTime;
-                    
-                    if(achieve[currentNodeIndex]) {
-                        for(int edgeIndex:pointToEdgeSet.get(currentNodeIndex)) {
-                            Edge edge=edgeSet.get(edgeIndex);
-                            
-                            if(edge.duration<durationLimit||(edge.duration==durationLimit&&edge.end==demand.destination*timePeriod+endTime)) {
+
+            int timeDuration = durationLimit;
+
+            for (int t = 0; t < timeDuration; t++) {
+                int currentTime = t + startTime;
+                currentTime = currentTime % timePeriod;
+
+                for (int localNode = 0; localNode < numNode; localNode++) {
+                    int currentNodeIndex = localNode * timePeriod + currentTime;
+
+                    if (achieve[currentNodeIndex]) {
+                        for (int edgeIndex : pointToEdgeSet.get(currentNodeIndex)) {
+                            Edge edge = edgeSet.get(edgeIndex);
+
+                            // here we have some sort of bugs, the duration of holding arcs is 0. But that doesn't affact the correctness of the programs
+                            if (edge.duration < durationLimit || (edge.duration == durationLimit
+                                    && edge.end == demand.destination * timePeriod + endTime)) {
                                 edgesForX.get(p).add(edgeIndex);
-                                achieve[edge.end]=true;
+                                achieve[edge.end] = true;
+
+                                if (edge.end == demand.destination * timePeriod + endTime) {
+                                    ifDestinationAchievable = true;
+                                }
+
                             }
                         }
                     }
-                    
+
                 }
-                
+
                 durationLimit--;
-                
+
             }
+
+            if (!ifDestinationAchievable) {
+                isFeasibleForX = false;
+                break;
+            }
+
+//            System.out.println("p= "+p);
+//            Set<Integer> set = edgesForX.get(p);
+//            int destination = demand.destination * timePeriod + demand.timeDue;
+//            for (int edgeIndex : set) {
+//                Edge edge = edgeSet.get(edgeIndex);
+//                if (edge.end == destination) {
+//                    System.out.println(edge.u + "," + edge.t1 + " -> " + edge.v + "," + edge.t2);
+//                }
+//            }
             
+            
+            
+            
+
         }
-        
-	    
-	}
-	
-	public SNDRC(String filename) throws IOException {
-		// if (readType == 1) {
-		// readData1(filename);
-		// }
-		// if (readType == 2) {
-		// readData2(filename);
-		// }
 
-		// read data
-		Scanner in = new Scanner(Paths.get(filename));
+    }
 
-		in.nextLine();
-		fleetSize = in.nextInt();
-		in.nextLine();
-		in.nextLine();
-		numNode = in.nextInt();
-		in.nextLine();
-		in.nextLine();
-		timePeriod = in.nextInt();
-		in.nextLine();
-		in.nextLine();
-		numService = in.nextInt();
+    public SNDRC(String filename) throws IOException {
+        // if (readType == 1) {
+        // readData1(filename);
+        // }
+        // if (readType == 2) {
+        // readData2(filename);
+        // }
 
-		in.nextLine();
-		in.nextLine();
-		serviceSet = new ArrayList<>();
-		demandSet = new ArrayList<>();
-		for (int i = 0; i < numService; i++) {
-			Service service = new Service();
-			in.nextInt();
-			service.origin = in.nextInt() - 1;
-			service.destination = in.nextInt() - 1;
-			service.duration = in.nextInt();
-			serviceSet.add(service);
-		}
+        // read data
+        Scanner in = new Scanner(Paths.get(filename));
 
-		in.nextLine();
-		in.nextLine();
-		numDemand = in.nextInt();
-		in.nextLine();
-		in.nextLine();
-		for (int i = 0; i < numDemand; i++) {
-			Demand demand = new Demand();
-			in.nextInt();
-			demand.origin = in.nextInt() - 1;
-			demand.destination = in.nextInt() - 1;
-			demand.timeAvailable = in.nextInt() - 1;
-			demand.timeDue = in.nextInt() - 1;
-			demand.volume = in.nextInt();
-			demandSet.add(demand);
-		}
+        in.nextLine();
+        fleetSize = in.nextInt();
+        in.nextLine();
+        in.nextLine();
+        numNode = in.nextInt();
+        in.nextLine();
+        in.nextLine();
+        timePeriod = in.nextInt();
+        in.nextLine();
+        in.nextLine();
+        numService = in.nextInt();
 
-		// read parameter
-		in.nextLine();
-		in.nextLine();
-		alpha = in.nextDouble();
-		in.nextLine();
-		in.nextLine();
-		beta = in.nextDouble();
-		in.nextLine();
-		in.nextLine();
-		speed = in.nextDouble();
-		in.nextLine();
-		in.nextLine();
-		drivingTimePerDay = in.nextDouble();
-		in.nextLine();
-		in.nextLine();
+        in.nextLine();
+        in.nextLine();
+        serviceSet = new ArrayList<>();
+        demandSet = new ArrayList<>();
+        for (int i = 0; i < numService; i++) {
+            Service service = new Service();
+            in.nextInt();
+            service.origin = in.nextInt() - 1;
+            service.destination = in.nextInt() - 1;
+            service.duration = in.nextInt();
+            serviceSet.add(service);
+        }
 
-		numOfCapacity = in.nextInt();
-		in.nextLine();
-		in.nextLine();
-		capacity = new int[numOfCapacity];
-		fixedCost = new double[numNode][numOfCapacity];
-		for (int i = 0; i < numOfCapacity; i++) {
-			capacity[i] = in.nextInt();
-		}
+        in.nextLine();
+        in.nextLine();
+        numDemand = in.nextInt();
+        in.nextLine();
+        in.nextLine();
+        for (int i = 0; i < numDemand; i++) {
+            Demand demand = new Demand();
+            in.nextInt();
+            demand.origin = in.nextInt() - 1;
+            demand.destination = in.nextInt() - 1;
+            demand.timeAvailable = in.nextInt() - 1;
+            demand.timeDue = in.nextInt() - 1;
+            demand.volume = in.nextInt();
+            demandSet.add(demand);
+        }
 
-		in.nextLine();
-		in.nextLine();
-		
-		for(int city=0;city<numNode;city++) {
-			for (int i = 0; i < numOfCapacity; i++) {
-				fixedCost[city][i] = in.nextDouble();
-			}
-		}
+        // read parameter
+        in.nextLine();
+        in.nextLine();
+        alpha = in.nextDouble();
+        in.nextLine();
+        in.nextLine();
+        beta = in.nextDouble();
+        in.nextLine();
+        in.nextLine();
+        speed = in.nextDouble();
+        in.nextLine();
+        in.nextLine();
+        drivingTimePerDay = in.nextDouble();
+        in.nextLine();
+        in.nextLine();
 
-		abstractNumNode = numNode * timePeriod;
-		// set b[p][i]
-		// b = new double[abstractNumNode][numDemand];
-		b = new double[numDemand][abstractNumNode];
-		for (int i = 0; i < numDemand; i++) {
-			Demand demand = demandSet.get(i);
-			int start = demand.origin * timePeriod + demand.timeAvailable;
-			int end = demand.destination * timePeriod + demand.timeDue;
-			// b[start][i] = demand.volume;
-			// b[end][i] = -demand.volume;
-			b[i][start] = demand.volume;
-			b[i][end] = -demand.volume;
-		}
-		
-		//vehicle limit
-		in.nextLine();
-		in.nextLine();
-		vehicleLimit=new int[numOfCapacity][numNode];
-		for(int s=0;s<numOfCapacity;s++) {
-			for(int o=0;o<numNode;o++) {
-				vehicleLimit[s][o]=in.nextInt();
-			}
-		}
-		
-		//distance limit
-		in.nextLine();
-		in.nextLine();
-		distanceLimit=in.nextDouble();
-		//leg limit
-		in.nextLine();
-		in.nextLine();
-		legLimit=in.nextInt();
-		
-			
-		
+        numOfCapacity = in.nextInt();
+        in.nextLine();
+        in.nextLine();
+        capacity = new int[numOfCapacity];
+        fixedCost = new double[numNode][numOfCapacity];
+        for (int i = 0; i < numOfCapacity; i++) {
+            capacity[i] = in.nextInt();
+        }
 
-		in.close();
-		
-		
-		
-		
-		///----------------------------------------graph transfer-----------------------------------------///
+        in.nextLine();
+        in.nextLine();
 
-		// this.graphTransfer();
-		edgeSet = new ArrayList<Edge>();
-		pointToEdgeSet = new ArrayList<HashSet<Integer>>();
-		pointFromEdgeSet = new ArrayList<HashSet<Integer>>();
+        for (int city = 0; city < numNode; city++) {
+            for (int i = 0; i < numOfCapacity; i++) {
+                fixedCost[city][i] = in.nextDouble();
+            }
+        }
 
-		for (int i = 0; i < abstractNumNode; i++) {
-			HashSet<Integer> templist1 = new HashSet();
-			HashSet<Integer> templist2 = new HashSet();
-			pointToEdgeSet.add(templist1);
-			pointFromEdgeSet.add(templist2);
-		}
+        abstractNumNode = numNode * timePeriod;
+        // set b[p][i]
+        // b = new double[abstractNumNode][numDemand];
+        b = new double[numDemand][abstractNumNode];
+        for (int i = 0; i < numDemand; i++) {
+            Demand demand = demandSet.get(i);
+            int start = demand.origin * timePeriod + demand.timeAvailable;
+            int end = demand.destination * timePeriod + demand.timeDue;
+            // b[start][i] = demand.volume;
+            // b[end][i] = -demand.volume;
+            b[i][start] = demand.volume;
+            b[i][end] = -demand.volume;
+        }
 
-		// add hat A
-		for (int serviceIndex = 0; serviceIndex < numService; serviceIndex++) {
-			Service service = serviceSet.get(serviceIndex);
-			for (int time = 0; time < timePeriod; time++) {
-				int timeEnd = time + service.duration;
-				if (timeEnd > timePeriod - 1)
-					timeEnd = timeEnd % timePeriod;
-				Edge newEdge = new Edge();
-				int start = service.origin * timePeriod + time;
-				int end = service.destination * timePeriod + timeEnd;
-				newEdge.start = start;
-				newEdge.end = end;
-				newEdge.u = service.origin;
-				newEdge.v = service.destination;
-				newEdge.t1 = time;
-				newEdge.t2 = timeEnd;
-				newEdge.duration=service.duration;
-				newEdge.edgeType=0;
-				newEdge.serviceIndex=serviceIndex;
-				
-				edgeSet.add(newEdge);
-				pointToEdgeSet.get(start).add(edgeSet.size() - 1);
-				pointFromEdgeSet.get(end).add(edgeSet.size() - 1);
-				
-//				//reverse direction arc
-//				newEdge = new Edge();
-//				start = service.destination * timePeriod + time;
-//				end = service.origin * timePeriod + timeEnd;
-//				newEdge.start = start;
-//				newEdge.end = end;
-//				newEdge.u = service.destination;
-//				newEdge.v = service.origin;
-//				newEdge.t1 = time;
-//				newEdge.t2 = timeEnd;
-//				newEdge.duration=service.duration;
-//				edgeSet.add(newEdge);
-//				newEdge.edgeType=0;
-//				pointToEdgeSet.get(start).add(edgeSet.size() - 1);
-//				pointFromEdgeSet.get(end).add(edgeSet.size() - 1);
-				
-			}
+        // vehicle limit
+        in.nextLine();
+        in.nextLine();
+        vehicleLimit = new int[numOfCapacity][numNode];
+        for (int s = 0; s < numOfCapacity; s++) {
+            for (int o = 0; o < numNode; o++) {
+                vehicleLimit[s][o] = in.nextInt();
+            }
+        }
 
-		}
-		
-		numServiceArc = edgeSet.size();
-		
-		
-		
-		// add holding arcs
-		for(int localNode=0;localNode<numNode;localNode++) {
-			for(int time=0;time<timePeriod;time++) {
-				
-				Edge newEdge = new Edge();
-				int start = localNode*timePeriod+time;
-				int end;
-				if(time==timePeriod-1) {
-					end=localNode*timePeriod;
-				}else end=start+1;
-				
-				newEdge.start = start;
-				newEdge.end = end;
-				newEdge.u = localNode;
-				newEdge.v = localNode;
-				newEdge.t1 = time;
-				if(time==timePeriod-1) {
-					newEdge.t2=0;
-				}else newEdge.t2=time+1;
-				newEdge.duration=0;
-//				newEdge.duration=1;
-				newEdge.edgeType=1;
-				newEdge.serviceIndex=-1;
-				edgeSet.add(newEdge);
-				pointToEdgeSet.get(start).add(edgeSet.size() - 1);
-				pointFromEdgeSet.get(end).add(edgeSet.size() - 1);
-			}
-		}
-		
+        // distance limit
+        in.nextLine();
+        in.nextLine();
+        distanceLimit = in.nextDouble();
+        // leg limit
+        in.nextLine();
+        in.nextLine();
+        legLimit = in.nextInt();
 
-		
+        in.close();
 
-		numHoldingArc = abstractNumNode;
-		numArc = numServiceArc + numHoldingArc;
-		System.out.println("number of service arcs="+numServiceArc);
-		System.out.println("number of holding arcs="+numHoldingArc);
-		System.out.println();
-		
-		
-		this.edgesForX=new ArrayList<Set<Integer>>();
-		for(int p=0;p<numDemand;p++) {
-			Set<Integer> set=new HashSet<>();
-			edgesForX.add(set);
-		}
-		
-		// add x variables with edges only needed(dp process)
-		for(int p=0;p<numDemand;p++) {
-			boolean[] achieve=new boolean[abstractNumNode];
-			for(int i=0;i<achieve.length;i++) {
-				achieve[i]=false;
-			}
-			
-			Demand demand=demandSet.get(p);
-			int originNodeIndex=demand.origin*timePeriod+demand.timeAvailable;
-			int startTime=demand.timeAvailable;
-			int endTime=demand.timeDue;
-			int durationLimit;
-			achieve[originNodeIndex]=true;
-			
-			
-			if(endTime>startTime) {
-				durationLimit=endTime-startTime;
-			}else {
-				durationLimit=endTime-startTime+timePeriod;
-			}
-			
-			
-			int timeDuration=durationLimit;
-			
-			for(int t=0;t<timeDuration;t++) {
-				int currentTime=t+startTime;
-				currentTime=currentTime%timePeriod;
-				
-				for(int localNode=0;localNode<numNode;localNode++) {
-					int currentNodeIndex=localNode*timePeriod+currentTime;
-					
-					if(achieve[currentNodeIndex]) {
-						for(int edgeIndex:pointToEdgeSet.get(currentNodeIndex)) {
-							Edge edge=edgeSet.get(edgeIndex);
-							
-							if(edge.duration<durationLimit||(edge.duration==durationLimit&&edge.end==demand.destination*timePeriod+endTime)) {
-								edgesForX.get(p).add(edgeIndex);
-								achieve[edge.end]=true;
-							}
-						}
-					}
-					
-				}
-				
-				durationLimit--;
-				
-			}
-			
-		}
-		
-		
+        /// ----------------------------------------graph
+        /// transfer-----------------------------------------///
 
-		
+        // this.graphTransfer();
+        edgeSet = new ArrayList<Edge>();
+        pointToEdgeSet = new ArrayList<HashSet<Integer>>();
+        pointFromEdgeSet = new ArrayList<HashSet<Integer>>();
 
+        for (int i = 0; i < abstractNumNode; i++) {
+            HashSet<Integer> templist1 = new HashSet();
+            HashSet<Integer> templist2 = new HashSet();
+            pointToEdgeSet.add(templist1);
+            pointFromEdgeSet.add(templist2);
+        }
 
-	}
+        // add hat A
+        for (int serviceIndex = 0; serviceIndex < numService; serviceIndex++) {
+            Service service = serviceSet.get(serviceIndex);
+            for (int time = 0; time < timePeriod; time++) {
+                int timeEnd = time + service.duration;
+                if (timeEnd > timePeriod - 1)
+                    timeEnd = timeEnd % timePeriod;
+                Edge newEdge = new Edge();
+                int start = service.origin * timePeriod + time;
+                int end = service.destination * timePeriod + timeEnd;
+                newEdge.start = start;
+                newEdge.end = end;
+                newEdge.u = service.origin;
+                newEdge.v = service.destination;
+                newEdge.t1 = time;
+                newEdge.t2 = timeEnd;
+                newEdge.duration = service.duration;
+                newEdge.edgeType = 0;
+                newEdge.serviceIndex = serviceIndex;
 
-	/***
-	 * private void readData1(String filename) throws IOException {
-	 * 
-	 * alpha = 0; speed = 1; drivingTimePerDay = 1; numOfCapacity = 1; beta = 1;
-	 * fixedCost = new double[1]; fixedCost[0] = 5000; capacity = new int[1];
-	 * capacity[0] = 1;
-	 * 
-	 * Scanner in = new Scanner(Paths.get(filename));
-	 * 
-	 * in.nextLine(); fleetSize = in.nextInt(); in.nextLine(); in.nextLine();
-	 * numNode = in.nextInt(); in.nextLine(); in.nextLine(); timePeriod =
-	 * in.nextInt(); in.nextLine(); in.nextLine(); numService = in.nextInt();
-	 * 
-	 * in.nextLine(); in.nextLine(); serviceSet = new ArrayList<>(); demandSet = new
-	 * ArrayList<>(); for (int i = 0; i < numService; i++) { Service service = new
-	 * Service(); in.nextInt(); service.origin = in.nextInt() - 1;
-	 * service.destination = in.nextInt() - 1; service.LB = in.nextInt(); service.UB
-	 * = in.nextInt(); service.capacity = in.nextInt(); service.duration =
-	 * in.nextInt(); serviceSet.add(service); }
-	 * 
-	 * in.nextLine(); in.nextLine(); numDemand = in.nextInt(); in.nextLine();
-	 * in.nextLine(); for (int i = 0; i < numDemand; i++) { Demand demand = new
-	 * Demand(); in.nextInt(); demand.origin = in.nextInt() - 1; demand.destination
-	 * = in.nextInt() - 1; demand.timeAvailable = in.nextInt() - 1; demand.volume =
-	 * in.nextInt(); demand.valueOfTime = in.nextInt(); demandSet.add(demand); }
-	 * 
-	 * in.close();
-	 * 
-	 * }
-	 * 
-	 * private void readData2(String filename) throws IOException {
-	 * 
-	 * Scanner in = new Scanner(Paths.get(filename));
-	 * 
-	 * in.nextLine(); fleetSize = in.nextInt(); in.nextLine(); in.nextLine();
-	 * numNode = in.nextInt(); in.nextLine(); in.nextLine(); timePeriod =
-	 * in.nextInt(); in.nextLine(); in.nextLine(); numService = in.nextInt();
-	 * 
-	 * in.nextLine(); in.nextLine(); serviceSet = new ArrayList<>(); demandSet = new
-	 * ArrayList<>(); for (int i = 0; i < numService; i++) { Service service = new
-	 * Service(); in.nextInt(); service.origin = in.nextInt() - 1;
-	 * service.destination = in.nextInt() - 1; service.duration = in.nextInt();
-	 * serviceSet.add(service); }
-	 * 
-	 * in.nextLine(); in.nextLine(); numDemand = in.nextInt(); in.nextLine();
-	 * in.nextLine(); for (int i = 0; i < numDemand; i++) { Demand demand = new
-	 * Demand(); in.nextInt(); demand.origin = in.nextInt() - 1; demand.destination
-	 * = in.nextInt() - 1; demand.timeAvailable = in.nextInt() - 1; demand.timeDue =
-	 * in.nextInt() - 1; demand.volume = in.nextInt(); demandSet.add(demand); }
-	 * 
-	 * // read parameter in.nextLine(); in.nextLine(); alpha = in.nextDouble();
-	 * in.nextLine(); in.nextLine(); beta = in.nextDouble(); in.nextLine();
-	 * in.nextLine(); speed = in.nextDouble(); in.nextLine(); in.nextLine();
-	 * drivingTimePerDay = in.nextDouble(); in.nextLine(); in.nextLine();
-	 * 
-	 * numOfCapacity = in.nextInt(); in.nextLine(); in.nextLine(); capacity = new
-	 * int[numOfCapacity]; fixedCost = new double[numOfCapacity]; for (int i = 0; i
-	 * < numOfCapacity; i++) { capacity[i] = in.nextInt(); }
-	 * 
-	 * in.nextLine(); in.nextLine(); for (int i = 0; i < numOfCapacity; i++) {
-	 * fixedCost[i] = in.nextDouble(); }
-	 * 
-	 * in.close(); }
-	 * 
-	 * private void graphTransfer() {
-	 * 
-	 * edgeSet = new ArrayList<Edge>(); pointToEdgeSet = new
-	 * ArrayList<HashSet<Integer>>(); pointFromEdgeSet = new
-	 * ArrayList<HashSet<Integer>>();
-	 * 
-	 * for (int i = 0; i < abstractNumNode; i++) { HashSet<Integer> templist1 = new
-	 * HashSet(); HashSet<Integer> templist2 = new HashSet();
-	 * pointToEdgeSet.add(templist1); pointFromEdgeSet.add(templist2); }
-	 * 
-	 * // add hat A for (int serviceIndex = 0; serviceIndex < numService;
-	 * serviceIndex++) { Service service = serviceSet.get(serviceIndex); for (int
-	 * time = 0; time < timePeriod; time++) { int timeEnd = time + service.duration;
-	 * if (timeEnd > timePeriod - 1) timeEnd = timeEnd % timePeriod; Edge newEdge =
-	 * new Edge(); int start = service.origin * timePeriod + time; int end =
-	 * service.destination * timePeriod + timeEnd; newEdge.start = start;
-	 * newEdge.end = end; newEdge.u = service.origin; newEdge.v =
-	 * service.destination; newEdge.t1 = time; newEdge.t2 = timeEnd;
-	 * edgeSet.add(newEdge); pointToEdgeSet.get(start).add(edgeSet.size() - 1);
-	 * pointFromEdgeSet.get(end).add(edgeSet.size() - 1); }
-	 * 
-	 * } numServiceArc = edgeSet.size();
-	 * 
-	 * }
-	 ***/
-	@Override
-	public String getName() {
-		return "ServiceNetworkDesignModel";
-	}
-	
-	public void Output(){
-	    for(int edgeIndex=0;edgeIndex<numArc;edgeIndex++){
-	        Edge edge=edgeSet.get(edgeIndex);
-	        System.out.println("edgeIndex="+edgeIndex+" "+edge.start+"->"+edge.end+" "+edge.u+","+edge.t1+"->"+edge.v+","+edge.t2);
-	    }
-	}
+                edgeSet.add(newEdge);
+                pointToEdgeSet.get(start).add(edgeSet.size() - 1);
+                pointFromEdgeSet.get(end).add(edgeSet.size() - 1);
 
-	public static void main(String[] args) throws IOException {
-		SNDRC test = new SNDRC("./data/data0.txt");
-	}
+                // //reverse direction arc
+                // newEdge = new Edge();
+                // start = service.destination * timePeriod + time;
+                // end = service.origin * timePeriod + timeEnd;
+                // newEdge.start = start;
+                // newEdge.end = end;
+                // newEdge.u = service.destination;
+                // newEdge.v = service.origin;
+                // newEdge.t1 = time;
+                // newEdge.t2 = timeEnd;
+                // newEdge.duration=service.duration;
+                // edgeSet.add(newEdge);
+                // newEdge.edgeType=0;
+                // pointToEdgeSet.get(start).add(edgeSet.size() - 1);
+                // pointFromEdgeSet.get(end).add(edgeSet.size() - 1);
+
+            }
+
+        }
+
+        numServiceArc = edgeSet.size();
+
+        // add holding arcs
+        for (int localNode = 0; localNode < numNode; localNode++) {
+            for (int time = 0; time < timePeriod; time++) {
+
+                Edge newEdge = new Edge();
+                int start = localNode * timePeriod + time;
+                int end;
+                if (time == timePeriod - 1) {
+                    end = localNode * timePeriod;
+                } else
+                    end = start + 1;
+
+                newEdge.start = start;
+                newEdge.end = end;
+                newEdge.u = localNode;
+                newEdge.v = localNode;
+                newEdge.t1 = time;
+                if (time == timePeriod - 1) {
+                    newEdge.t2 = 0;
+                } else
+                    newEdge.t2 = time + 1;
+                newEdge.duration = 0;
+                // newEdge.duration=1;
+                newEdge.edgeType = 1;
+                newEdge.serviceIndex = -1;
+                edgeSet.add(newEdge);
+                pointToEdgeSet.get(start).add(edgeSet.size() - 1);
+                pointFromEdgeSet.get(end).add(edgeSet.size() - 1);
+            }
+        }
+
+        numHoldingArc = abstractNumNode;
+        numArc = numServiceArc + numHoldingArc;
+        System.out.println("number of service arcs=" + numServiceArc);
+        System.out.println("number of holding arcs=" + numHoldingArc);
+        System.out.println();
+
+        this.edgesForX = new ArrayList<Set<Integer>>();
+        for (int p = 0; p < numDemand; p++) {
+            Set<Integer> set = new HashSet<>();
+            edgesForX.add(set);
+        }
+
+        // add x variables with edges only needed(dp process)
+        for (int p = 0; p < numDemand; p++) {
+            boolean[] achieve = new boolean[abstractNumNode];
+            for (int i = 0; i < achieve.length; i++) {
+                achieve[i] = false;
+            }
+
+            Demand demand = demandSet.get(p);
+            int originNodeIndex = demand.origin * timePeriod + demand.timeAvailable;
+            int startTime = demand.timeAvailable;
+            int endTime = demand.timeDue;
+            int durationLimit;
+            achieve[originNodeIndex] = true;
+
+            if (endTime > startTime) {
+                durationLimit = endTime - startTime;
+            } else {
+                durationLimit = endTime - startTime + timePeriod;
+            }
+
+            int timeDuration = durationLimit;
+
+            for (int t = 0; t < timeDuration; t++) {
+                int currentTime = t + startTime;
+                currentTime = currentTime % timePeriod;
+
+                for (int localNode = 0; localNode < numNode; localNode++) {
+                    int currentNodeIndex = localNode * timePeriod + currentTime;
+
+                    if (achieve[currentNodeIndex]) {
+                        for (int edgeIndex : pointToEdgeSet.get(currentNodeIndex)) {
+                            Edge edge = edgeSet.get(edgeIndex);
+
+                            if (edge.duration < durationLimit || (edge.duration == durationLimit
+                                    && edge.end == demand.destination * timePeriod + endTime)) {
+                                edgesForX.get(p).add(edgeIndex);
+                                achieve[edge.end] = true;
+                            }
+                        }
+                    }
+
+                }
+
+                durationLimit--;
+
+            }
+
+        }
+
+    }
+
+    /***
+     * private void readData1(String filename) throws IOException {
+     * 
+     * alpha = 0; speed = 1; drivingTimePerDay = 1; numOfCapacity = 1; beta = 1;
+     * fixedCost = new double[1]; fixedCost[0] = 5000; capacity = new int[1];
+     * capacity[0] = 1;
+     * 
+     * Scanner in = new Scanner(Paths.get(filename));
+     * 
+     * in.nextLine(); fleetSize = in.nextInt(); in.nextLine(); in.nextLine();
+     * numNode = in.nextInt(); in.nextLine(); in.nextLine(); timePeriod =
+     * in.nextInt(); in.nextLine(); in.nextLine(); numService = in.nextInt();
+     * 
+     * in.nextLine(); in.nextLine(); serviceSet = new ArrayList<>(); demandSet =
+     * new ArrayList<>(); for (int i = 0; i < numService; i++) { Service service
+     * = new Service(); in.nextInt(); service.origin = in.nextInt() - 1;
+     * service.destination = in.nextInt() - 1; service.LB = in.nextInt();
+     * service.UB = in.nextInt(); service.capacity = in.nextInt();
+     * service.duration = in.nextInt(); serviceSet.add(service); }
+     * 
+     * in.nextLine(); in.nextLine(); numDemand = in.nextInt(); in.nextLine();
+     * in.nextLine(); for (int i = 0; i < numDemand; i++) { Demand demand = new
+     * Demand(); in.nextInt(); demand.origin = in.nextInt() - 1;
+     * demand.destination = in.nextInt() - 1; demand.timeAvailable =
+     * in.nextInt() - 1; demand.volume = in.nextInt(); demand.valueOfTime =
+     * in.nextInt(); demandSet.add(demand); }
+     * 
+     * in.close();
+     * 
+     * }
+     * 
+     * private void readData2(String filename) throws IOException {
+     * 
+     * Scanner in = new Scanner(Paths.get(filename));
+     * 
+     * in.nextLine(); fleetSize = in.nextInt(); in.nextLine(); in.nextLine();
+     * numNode = in.nextInt(); in.nextLine(); in.nextLine(); timePeriod =
+     * in.nextInt(); in.nextLine(); in.nextLine(); numService = in.nextInt();
+     * 
+     * in.nextLine(); in.nextLine(); serviceSet = new ArrayList<>(); demandSet =
+     * new ArrayList<>(); for (int i = 0; i < numService; i++) { Service service
+     * = new Service(); in.nextInt(); service.origin = in.nextInt() - 1;
+     * service.destination = in.nextInt() - 1; service.duration = in.nextInt();
+     * serviceSet.add(service); }
+     * 
+     * in.nextLine(); in.nextLine(); numDemand = in.nextInt(); in.nextLine();
+     * in.nextLine(); for (int i = 0; i < numDemand; i++) { Demand demand = new
+     * Demand(); in.nextInt(); demand.origin = in.nextInt() - 1;
+     * demand.destination = in.nextInt() - 1; demand.timeAvailable =
+     * in.nextInt() - 1; demand.timeDue = in.nextInt() - 1; demand.volume =
+     * in.nextInt(); demandSet.add(demand); }
+     * 
+     * // read parameter in.nextLine(); in.nextLine(); alpha = in.nextDouble();
+     * in.nextLine(); in.nextLine(); beta = in.nextDouble(); in.nextLine();
+     * in.nextLine(); speed = in.nextDouble(); in.nextLine(); in.nextLine();
+     * drivingTimePerDay = in.nextDouble(); in.nextLine(); in.nextLine();
+     * 
+     * numOfCapacity = in.nextInt(); in.nextLine(); in.nextLine(); capacity =
+     * new int[numOfCapacity]; fixedCost = new double[numOfCapacity]; for (int i
+     * = 0; i < numOfCapacity; i++) { capacity[i] = in.nextInt(); }
+     * 
+     * in.nextLine(); in.nextLine(); for (int i = 0; i < numOfCapacity; i++) {
+     * fixedCost[i] = in.nextDouble(); }
+     * 
+     * in.close(); }
+     * 
+     * private void graphTransfer() {
+     * 
+     * edgeSet = new ArrayList<Edge>(); pointToEdgeSet = new ArrayList<HashSet
+     * <Integer>>(); pointFromEdgeSet = new ArrayList<HashSet<Integer>>();
+     * 
+     * for (int i = 0; i < abstractNumNode; i++) { HashSet<Integer> templist1 =
+     * new HashSet(); HashSet<Integer> templist2 = new HashSet();
+     * pointToEdgeSet.add(templist1); pointFromEdgeSet.add(templist2); }
+     * 
+     * // add hat A for (int serviceIndex = 0; serviceIndex < numService;
+     * serviceIndex++) { Service service = serviceSet.get(serviceIndex); for
+     * (int time = 0; time < timePeriod; time++) { int timeEnd = time +
+     * service.duration; if (timeEnd > timePeriod - 1) timeEnd = timeEnd %
+     * timePeriod; Edge newEdge = new Edge(); int start = service.origin *
+     * timePeriod + time; int end = service.destination * timePeriod + timeEnd;
+     * newEdge.start = start; newEdge.end = end; newEdge.u = service.origin;
+     * newEdge.v = service.destination; newEdge.t1 = time; newEdge.t2 = timeEnd;
+     * edgeSet.add(newEdge); pointToEdgeSet.get(start).add(edgeSet.size() - 1);
+     * pointFromEdgeSet.get(end).add(edgeSet.size() - 1); }
+     * 
+     * } numServiceArc = edgeSet.size();
+     * 
+     * }
+     ***/
+    @Override
+    public String getName() {
+        return "ServiceNetworkDesignModel";
+    }
+
+    public void Output() {
+        for (int edgeIndex = 0; edgeIndex < numArc; edgeIndex++) {
+            Edge edge = edgeSet.get(edgeIndex);
+            System.out.println("edgeIndex=" + edgeIndex + " " + edge.start + "->" + edge.end + " " + edge.u + ","
+                    + edge.t1 + "->" + edge.v + "," + edge.t2);
+        }
+    }
+
+    public static void main(String[] args) throws IOException {
+        SNDRC test = new SNDRC("./data/data0.txt");
+    }
 
 }
