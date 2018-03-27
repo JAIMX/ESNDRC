@@ -4,7 +4,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -13,28 +12,22 @@ import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Set;
 
-import org.jorlib.demo.frameworks.columnGeneration.cuttingStockCG.cg.PricingProblem;
 import org.jorlib.frameworks.columnGeneration.branchAndPrice.AbstractBranchAndPrice;
 import org.jorlib.frameworks.columnGeneration.branchAndPrice.AbstractBranchCreator;
 import org.jorlib.frameworks.columnGeneration.branchAndPrice.BAPNode;
-import org.jorlib.frameworks.columnGeneration.branchAndPrice.EventHandling.CGListener;
 import org.jorlib.frameworks.columnGeneration.colgenMain.ColGen;
 import org.jorlib.frameworks.columnGeneration.io.TimeLimitExceededException;
-import org.jorlib.frameworks.columnGeneration.master.MasterData;
 import org.jorlib.frameworks.columnGeneration.master.OptimizationSense;
 import org.jorlib.frameworks.columnGeneration.master.cutGeneration.AbstractInequality;
 import org.jorlib.frameworks.columnGeneration.master.cutGeneration.CutHandler;
 import org.jorlib.frameworks.columnGeneration.pricing.AbstractPricingProblemSolver;
 import org.jorlib.frameworks.columnGeneration.util.MathProgrammingUtil;
 
-import com.sun.media.jfxmedia.events.NewFrameEvent;
-
 import bap.bapNodeComparators.NodeBoundbapNodeComparator;
 import bap.bapNodeComparators.NodeBoundbapNodeComparatorForLB;
 import bap.branching.BranchOnLocalService;
 import bap.branching.BranchOnLocalServiceForAllPricingProblems;
 import bap.branching.BranchOnServiceEdge;
-import bap.branching.branchingDecisions.RoundServiceEdge;
 import cg.Cycle;
 import cg.ExactPricingProblemSolver;
 import cg.SNDRCPricingProblem;
@@ -43,14 +36,14 @@ import cg.master.SNDRCMasterData;
 import cg.master.cuts.StrongInequality;
 import cg.master.cuts.StrongInequalityGenerator;
 import ilog.concert.IloException;
-import ilog.concert.IloRange;
 import ilog.cplex.IloCplex.UnknownObjectException;
 import logger.BapLogger;
+import logger.BapLoggerA;
 import model.SNDRC;
 import model.SNDRC.Edge;
 import model.SNDRC.Service;
 
-public class BranchAndPrice<V> extends AbstractBranchAndPrice<SNDRC, Cycle, SNDRCPricingProblem> {
+public class BranchAndPriceA <V> extends AbstractBranchAndPrice<SNDRC, Cycle, SNDRCPricingProblem>{
 
     private double thresholdValue;
     private PriorityQueue<BAPNode<SNDRC, Cycle>> lowBoundQueue;
@@ -87,7 +80,7 @@ public class BranchAndPrice<V> extends AbstractBranchAndPrice<SNDRC, Cycle, SNDR
      * @param alphaForEdgeFre  parameter for learningUB(), we use it to decide whether a service edge should be included to the subgraph
      */
 
-    public BranchAndPrice(SNDRC modelData, Master master, List<SNDRCPricingProblem> pricingProblems,
+    public BranchAndPriceA(SNDRC modelData, Master master, List<SNDRCPricingProblem> pricingProblems,
             List<Class<? extends AbstractPricingProblemSolver<SNDRC, Cycle, SNDRCPricingProblem>>> solvers,
             List<? extends AbstractBranchCreator<SNDRC, Cycle, SNDRCPricingProblem>> branchCreators,
             double objectiveInitialSolution, double thresholdValue, double probLB, double c,int nodeFre,double alphaForEdgeFre,int timeCompress,boolean ifUseLearningUB) {
@@ -492,6 +485,8 @@ public class BranchAndPrice<V> extends AbstractBranchAndPrice<SNDRC, Cycle, SNDR
                         ifFindOneToFix = true;
                         ifAllBelowThresholdValue = false;
                         ((Master) master).addFixVarConstraint(cycle);
+                        
+                        break;  //fix only one cycle each time
                     }
                 }
             }
@@ -768,11 +763,11 @@ public class BranchAndPrice<V> extends AbstractBranchAndPrice<SNDRC, Cycle, SNDR
             List<? extends AbstractBranchCreator<SNDRC, Cycle, SNDRCPricingProblem>> branchCreators=Arrays.asList( new BranchOnLocalServiceForAllPricingProblems(subGraph, subPricingProblems, 0.5),new BranchOnLocalService(subGraph, subPricingProblems, 0.5),new BranchOnServiceEdge(subGraph, subPricingProblems, 0.5));
             
           //Create a Branch-and-Price instance
-            BranchAndPrice subBap=new BranchAndPrice(subGraph, subMaster, subPricingProblems, subSolvers, branchCreators,this.objectiveIncumbentSolution,0.6,0.3,0.1,20,0.5,3,false);
+            BranchAndPriceA subBap=new BranchAndPriceA(subGraph, subMaster, subPricingProblems, subSolvers, branchCreators,this.objectiveIncumbentSolution,0.6,0.3,0.1,20,0.5,3,false);
 //          bap.setNodeOrdering(new BFSbapNodeComparator());
             subBap.setNodeOrdering(new NodeBoundbapNodeComparator());
             
-            BapLogger logger=new BapLogger(subBap, new File("./output/subBAPlogger.log"));
+            BapLoggerA logger=new BapLoggerA(subBap, new File("./output/subBAPlogger.log"));
             
             subBap.runBranchAndPrice(System.currentTimeMillis()+3600000L); // one hour
             if(subBap.hasSolution()){
@@ -798,6 +793,4 @@ public class BranchAndPrice<V> extends AbstractBranchAndPrice<SNDRC, Cycle, SNDR
 
         
     }
-    
-
 }

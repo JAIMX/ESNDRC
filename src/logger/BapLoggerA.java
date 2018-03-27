@@ -1,5 +1,9 @@
 package logger;
 
+
+
+
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -22,6 +26,7 @@ import org.jorlib.frameworks.columnGeneration.branchAndPrice.EventHandling.TimeL
 import org.jorlib.frameworks.columnGeneration.branchAndPrice.branchingDecisions.BranchingDecision;
 
 import bap.BranchAndPrice;
+import bap.BranchAndPriceA;
 import bap.branching.branchingDecisions.RoundHoldingEdge;
 import bap.branching.branchingDecisions.RoundLocalService;
 import bap.branching.branchingDecisions.RoundLocalServiceForAllPricingProblems;
@@ -31,7 +36,9 @@ import bap.branching.branchingDecisions.RoundServiceEdgeForAllPricingProblems;
 import cg.Cycle;
 import model.SNDRC;
 
-public class BapLogger implements BAPListener{
+
+
+public class BapLoggerA implements BAPListener{
 
     protected BufferedWriter writer;
     protected NumberFormat formatter;
@@ -67,7 +74,7 @@ public class BapLogger implements BAPListener{
     protected double LB;
     protected int nrInequalities;
     protected String branchType;
-    protected BranchAndPrice bap;
+    protected BranchAndPriceA bap;
     
     
     /**
@@ -75,7 +82,7 @@ public class BapLogger implements BAPListener{
      * @param branchAndPrice Branch-and-Price instance for which this logger is created.
      * @param outputFile file to redirect the output to.
      */
-    public BapLogger(BranchAndPrice branchAndPrice, File outputFile){
+    public BapLoggerA(BranchAndPriceA branchAndPrice, File outputFile){
         try {
             writer=new BufferedWriter(new FileWriter(outputFile));
         } catch (IOException e) {
@@ -131,8 +138,8 @@ public class BapLogger implements BAPListener{
      * Construct a single line in the log file, and write it to the output file
      */
     protected void constructAndWriteLine(){
-//    	this.writeLine(String.valueOf(bapNodeID) + "\t" + parentNodeID + "\t" + objectiveIncumbentSolution + "\t" + nodeBound  + "\t" + timeSolvingMaster + "\t" + timeSolvingPricing + "\t" + nodeStatus + "\t" + nodesInQueue + "\t" + LB+ "\t"+nrInequalities+"\t"+branchType);
-    	this.writeLine(String.valueOf(bapNodeID) + "\t" + parentNodeID + "\t" + objectiveIncumbentSolution + "\t" + nodeBound + "\t" + formatter.format(nodeValue) + "\t" + cgIterations + "\t" + timeSolvingMaster + "\t" + timeSolvingPricing + "\t" + nrGeneratedColumns + "\t" + nodeStatus + "\t" + nodesInQueue + "\t" + LB+ "\t"+nrInequalities+"\t"+branchType);
+//      this.writeLine(String.valueOf(bapNodeID) + "\t" + parentNodeID + "\t" + objectiveIncumbentSolution + "\t" + nodeBound  + "\t" + timeSolvingMaster + "\t" + timeSolvingPricing + "\t" + nodeStatus + "\t" + nodesInQueue + "\t" + LB+ "\t"+nrInequalities+"\t"+branchType);
+        this.writeLine(String.valueOf(bapNodeID) + "\t" + parentNodeID + "\t" + objectiveIncumbentSolution + "\t" + nodeBound + "\t" + formatter.format(nodeValue) + "\t" + cgIterations + "\t" + timeSolvingMaster + "\t" + timeSolvingPricing + "\t" + nrGeneratedColumns + "\t" + nodeStatus + "\t" + nodesInQueue + "\t" + LB+ "\t"+nrInequalities+"\t"+branchType);
     }
 
     @Override
@@ -216,15 +223,15 @@ public class BapLogger implements BAPListener{
         }
 
         if (bd instanceof RoundServiceEdgeForAllPricingProblems) {
-        	this.branchType="ServiceEdge4All";
+            this.branchType="ServiceEdge4All";
         }
 
         if (bd instanceof RoundLocalService) {
-        	this.branchType="localService";
+            this.branchType="localService";
         }
         
         if (bd instanceof RoundHoldingEdge) {
-        	this.branchType="holdingEdge";
+            this.branchType="holdingEdge";
         }
         
         if (bd instanceof RoundLocalServiceForAllPricingProblems) {

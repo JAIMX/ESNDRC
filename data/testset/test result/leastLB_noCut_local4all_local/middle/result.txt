@@ -284,6 +284,65 @@ Total time= 36001783
 
 --------------------------------------------------------------------------------------------------------
 test7_5_15_50_400B
+number of service arcs=750
+number of holding arcs=250
+
+javax.naming.TimeLimitExceededException
+	at cg.master.Master.solveMasterProblem(Master.java:395)
+	at org.jorlib.frameworks.columnGeneration.master.AbstractMaster.solve(AbstractMaster.java:152)
+	at org.jorlib.frameworks.columnGeneration.colgenMain.ColGen.invokeMaster(ColGen.java:271)
+	at org.jorlib.frameworks.columnGeneration.colgenMain.ColGen.solve(ColGen.java:224)
+	at org.jorlib.frameworks.columnGeneration.branchAndPrice.AbstractBranchAndPrice.solveBAPNode(AbstractBranchAndPrice.java:342)
+	at bap.BranchAndPrice.runBranchAndPrice(BranchAndPrice.java:177)
+	at SNDRCSolver.<init>(SNDRCSolver.java:78)
+	at SNDRCSolver.main(SNDRCSolver.java:188)
+================ Solution ================
+BAP terminated with objective : 57956
+Total Number of iterations: 41
+Total Number of processed nodes: 6
+Total Time spent on master problems: 3095389 Total time spent on pricing problems: 835
+Best bound : 57472.20000000005
+Solution is optimal: false
+Columns (only non-zero columns are returned):
+artificial: false set: [609, 421, 39, 330, 202, 685, 18, 946, 405, 597, 664, 442, 575] start node= 4 start time= 35 capacity type= 1
+(1,2)->(2,5)->(3,9)->(4,14)->(0,18)->(2,21)->(3,25)->(1,30)->(4,35)->(0,39)->(2,42)->(3,46)->(3,47)->(1,2):1.0
+
+artificial: false set: [81, 546, 51, 516, 71, 536, 506, 91, 61, 526] start node= 0 start time= 1 capacity type= 2
+(0,1)->(3,6)->(0,11)->(3,16)->(0,21)->(3,26)->(0,31)->(3,36)->(0,41)->(3,46)->(0,1):1.0
+
+artificial: false set: [592, 628, 614, 87, 600, 73, 297, 683, 59, 669, 655] start node= 1 start time= 47 capacity type= 2
+(3,0)->(4,5)->(0,9)->(3,14)->(4,19)->(0,23)->(3,28)->(4,33)->(0,37)->(3,42)->(1,47)->(3,0):1.0
+
+artificial: false set: [480, 561, 673, 498, 469, 743, 56, 216, 489, 27, 652, 734] start node= 1 start time= 16 capacity type= 2
+(4,2)->(0,6)->(3,11)->(1,16)->(2,19)->(4,23)->(0,27)->(2,30)->(4,34)->(2,39)->(4,43)->(2,48)->(4,2):1.0
+
+artificial: false set: [320, 129, 675, 389, 565, 262, 599, 557, 254, 94, 734] start node= 1 start time= 12 capacity type= 2
+(1,4)->(3,7)->(1,12)->(3,15)->(1,20)->(4,25)->(0,29)->(4,34)->(2,39)->(0,44)->(3,49)->(1,4):1.0
+
+artificial: false set: [97, 193, 307, 580, 116, 662, 552, 75, 588, 285, 671] start node= 1 start time= 35 capacity type= 2
+(3,2)->(1,7)->(4,12)->(0,16)->(4,21)->(0,25)->(3,30)->(1,35)->(3,38)->(1,43)->(0,47)->(3,2):1.0
+
+artificial: false set: [576, 800, 770, 166, 71, 331, 686, 561, 595, 755, 151, 56, 90] start node= 1 start time= 0 capacity type= 2
+(1,0)->(1,1)->(0,5)->(0,6)->(3,11)->(1,16)->(0,20)->(0,21)->(3,26)->(1,31)->(4,36)->(0,40)->(3,45)->(1,0):1.0
+
+artificial: false set: [704, 433, 242, 563, 421, 230, 649, 409, 218, 587, 445, 575] start node= 4 start time= 4 capacity type= 2
+(4,4)->(2,9)->(3,13)->(1,18)->(2,21)->(3,25)->(1,30)->(2,33)->(3,37)->(1,42)->(2,45)->(3,49)->(4,4):1.0
+
+artificial: false set: [417, 226, 403, 595, 583, 200, 712, 441, 571, 429, 238, 607] start node= 4 start time= 12 capacity type= 2
+(1,0)->(2,3)->(3,7)->(4,12)->(2,17)->(3,21)->(1,26)->(2,29)->(3,33)->(1,38)->(2,41)->(3,45)->(1,0):1.0
+
+artificial: false set: [448, 626, 564, 436, 245, 422, 552, 410, 219, 731, 590, 207] start node= 4 start time= 31 capacity type= 2
+(3,2)->(1,7)->(2,10)->(3,14)->(1,19)->(2,22)->(3,26)->(4,31)->(2,36)->(3,40)->(1,45)->(2,48)->(3,2):1.0
+
+artificial: false set: [416, 225, 644, 404, 213, 582, 440, 570, 428, 237, 749, 558] start node= 4 start time= 49 capacity type= 2
+(2,4)->(3,8)->(1,13)->(2,16)->(3,20)->(1,25)->(2,28)->(3,32)->(1,37)->(2,40)->(3,44)->(4,49)->(2,4):1.0
+
+artificial: false set: [129, 659, 21, 38, 374, 391, 104, 684, 13, 46, 366, 399] start node= 4 start time= 9 capacity type= 2
+(0,4)->(4,9)->(0,13)->(2,16)->(0,21)->(2,24)->(0,29)->(4,34)->(0,38)->(2,41)->(0,46)->(2,49)->(0,4):1.0
+
+Total time= 43496887
+--------------------------------------------------------------------------------------------------------
+test7_5_15_50_400C
 
 
 --------------------------------------------------------------------------------------------------------

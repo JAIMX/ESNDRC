@@ -10,6 +10,7 @@ import org.jorlib.frameworks.columnGeneration.pricing.AbstractPricingProblemSolv
 import org.jorlib.frameworks.columnGeneration.util.Configuration;
 
 import bap.BranchAndPrice;
+import bap.BranchAndPriceA;
 import bap.bapNodeComparators.NodeBoundbapNodeComparator;
 import bap.branching.BranchOnHoldingEdge;
 import bap.branching.BranchOnLocalService;
@@ -24,6 +25,7 @@ import cg.master.Master;
 import cg.master.SNDRCMasterData;
 import cg.master.cuts.StrongInequalityGenerator;
 import logger.BapLogger;
+import logger.BapLoggerA;
 import model.SNDRC;
 import model.SNDRC.Edge;
 
@@ -46,7 +48,7 @@ public class SNDRCSolver {
 		//Create a cutHandler
 		CutHandler<SNDRC, SNDRCMasterData> cutHandler=new CutHandler<>();
 		StrongInequalityGenerator cutGen=new StrongInequalityGenerator(dataModel,pricingProblems,0);
-//		cutHandler.addCutGenerator(cutGen);
+		cutHandler.addCutGenerator(cutGen);
 		
 		//Create the Master Problem
 		Master master=new Master(dataModel,pricingProblems,cutHandler);
@@ -55,15 +57,13 @@ public class SNDRCSolver {
 		List<Class<?extends AbstractPricingProblemSolver<SNDRC, Cycle, SNDRCPricingProblem>>> solvers=Collections.singletonList(ExactPricingProblemSolver.class);
 		
 		//Define one or more Branch creators
-//		List<? extends AbstractBranchCreator<SNDRC, Cycle, SNDRCPricingProblem>> branchCreators=new ArrayList<AbstractBranchCreator<SNDRC, Cycle, SNDRCPricingProblem>>();
 //		List<? extends AbstractBranchCreator<SNDRC, Cycle, SNDRCPricingProblem>> branchCreators=Arrays.asList(new BranchOnQVarible(dataModel, pricingProblems,0.5),new BranchOnServiceEdgeForAllPricingProblems(dataModel, pricingProblems, 0.5),new BranchOnServiceEdge(dataModel, pricingProblems, 0.5));
 		List<? extends AbstractBranchCreator<SNDRC, Cycle, SNDRCPricingProblem>> branchCreators=Arrays.asList( new BranchOnLocalServiceForAllPricingProblems(dataModel, pricingProblems, 0.5),new BranchOnLocalService(dataModel, pricingProblems, 0.5),new BranchOnServiceEdge(dataModel, pricingProblems, 0.5));
 //		List<? extends AbstractBranchCreator<SNDRC, Cycle, SNDRCPricingProblem>> branchCreators=Arrays.asList(new BranchOnLocalService(dataModel, pricingProblems, 0.5),new BranchOnServiceEdge(dataModel, pricingProblems, 0.5));
-//	    List<? extends AbstractBranchCreator<SNDRC, Cycle, SNDRCPricingProblem>> branchCreators=Arrays.asList(new BranchOnQVarible(dataModel, pricingProblems,0.5),new BranchOnServiceEdge(dataModel, pricingProblems, 0.5));
 	      
 		//Create a Branch-and-Price instance
-//		BranchAndPrice bap=new BranchAndPrice(dataModel, master, pricingProblems, solvers, branchCreators,Double.MAX_VALUE,0.5,0.3,0.1);
-		BranchAndPrice bap=new BranchAndPrice(dataModel, master, pricingProblems, solvers, branchCreators,Double.MAX_VALUE,0.6,0.3,0.1,3,0.001,3,true);
+//		BranchAndPriceA bap=new BranchAndPriceA(dataModel, master, pricingProblems, solvers, branchCreators,Double.MAX_VALUE,0.6,0.3,0.1,10,0.0001,3,true);
+		BranchAndPriceA bap=new BranchAndPriceA(dataModel, master, pricingProblems, solvers, branchCreators,Double.MAX_VALUE,0.7,0.1,0.1,10,0.0001,3,false);
 //		bap.setNodeOrdering(new BFSbapNodeComparator());
 		bap.setNodeOrdering(new NodeBoundbapNodeComparator());
 		
@@ -71,8 +71,7 @@ public class SNDRCSolver {
 //		SimpleDebugger debugger=new SimpleDebugger(bap, true);
 
 		//OPTIONAL: Attach a logger to the Branch-and-Price procedure.
-//		SimpleBAPLogger logger=new SimpleBAPLogger(bap, new File("./output/SNDRC.log"));
-		BapLogger logger=new BapLogger(bap, new File("./output/BAPlogger.log"));
+		BapLoggerA logger=new BapLoggerA(bap, new File("./output/BAPlogger.log"));
 
 		//Solve the TSP problem through Branch-and-Price
 		bap.runBranchAndPrice(System.currentTimeMillis()+36000000L);
