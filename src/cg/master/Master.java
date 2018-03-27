@@ -4,9 +4,11 @@ import java.util.*;
 
 import javax.naming.TimeLimitExceededException;
 
+import org.jorlib.frameworks.columnGeneration.branchAndPrice.AbstractBranchCreator;
 import org.jorlib.frameworks.columnGeneration.branchAndPrice.branchingDecisions.BranchingDecision;
 import org.jorlib.frameworks.columnGeneration.master.AbstractMaster;
 import org.jorlib.frameworks.columnGeneration.master.OptimizationSense;
+import org.jorlib.frameworks.columnGeneration.master.cutGeneration.AbstractInequality;
 import org.jorlib.frameworks.columnGeneration.master.cutGeneration.CutHandler;
 import org.jorlib.frameworks.columnGeneration.util.OrderedBiMap;
 
@@ -19,6 +21,7 @@ import bap.branching.branchingDecisions.RoundServiceEdgeForAllPricingProblems;
 import cg.Cycle;
 import cg.SNDRCPricingProblem;
 import cg.master.cuts.StrongInequality;
+import cg.master.cuts.StrongInequalityGenerator;
 import ilog.concert.*;
 import ilog.cplex.*;
 import ilog.cplex.IloCplex.UnknownObjectException;
@@ -58,9 +61,14 @@ public final class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProbl
     //branch on local service 4 all
     private Set<RoundLocalServiceForAllPricingProblems> localService4AllBranchingSet;
     private Map<RoundLocalServiceForAllPricingProblems, IloRange> localService4AllBranchingConstraints;
-
+    
+    //record the branches leading to a node which needs to be solved by cut
+    private Set<BranchingDecision> branchSetNodeSolvedByCut;
+    private StrongInequalityGenerator cutGen;
+    private boolean ifContainsCut;
+    
     public Master(SNDRC dataModel, List<SNDRCPricingProblem> pricingProblems,
-            CutHandler<SNDRC, SNDRCMasterData> cutHandler) {
+            CutHandler<SNDRC, SNDRCMasterData> cutHandler,StrongInequalityGenerator cutGen) {
         super(dataModel, pricingProblems, cutHandler, OptimizationSense.MINIMIZE);
         this.qBranchingSet = new HashSet<RoundQ>();
         qBranchingconstraints = new HashMap<>();
@@ -79,6 +87,11 @@ public final class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProbl
         
         this.localService4AllBranchingSet=new HashSet<>();
         this.localService4AllBranchingConstraints=new HashMap<>();
+        
+        this.branchSetNodeSolvedByCut=new HashSet<>();
+        this.cutGen=cutGen;
+        this.ifContainsCut=false;
+        
         // this.buildModel();
 
         // System.out.println("Master constructor. Columns: " +
@@ -890,6 +903,16 @@ public final class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProbl
             localService4AllBranchingSet.add((RoundLocalServiceForAllPricingProblems) bd);
         }
         
+        if(branchSetNodeSolvedByCut.contains(bd)){
+            cutHandler.addCutGenerator(cutGen);
+            ifContainsCut=true;
+        }else{
+            if(ifContainsCut){
+                cutHandler.removeCutGenerator(cutGen);
+                ifContainsCut=false;
+            }
+        }
+        
         // destroy the master and rebuild it
         this.close();
         masterData = this.buildModel();
@@ -992,6 +1015,15 @@ public final class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProbl
             }
         }
         
+        if(branchSetNodeSolvedByCut.contains(bd)){
+            if(ifContainsCut){
+                cutHandler.removeCutGenerator(cutGen);
+                ifContainsCut=false;
+            }
+
+            branchSetNodeSolvedByCut.remove(bd);
+        }
+        
 
     }
 
@@ -1044,6 +1076,13 @@ public final class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProbl
     public List<Map<Integer, Double>> getXValues() throws UnknownObjectException, IloException {
 
         return masterData.xValues;
+    }
+    
+    public void AddBranchDecisionForCut(BranchingDecision<SNDRC, Cycle> bd){
+        branchSetNodeSolvedByCut.add(bd);
+    }
+    public StrongInequalityGenerator getStrongInequalityGenerator(){
+        return cutGen;
     }
 
 }

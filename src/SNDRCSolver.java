@@ -48,10 +48,10 @@ public class SNDRCSolver {
 		//Create a cutHandler
 		CutHandler<SNDRC, SNDRCMasterData> cutHandler=new CutHandler<>();
 		StrongInequalityGenerator cutGen=new StrongInequalityGenerator(dataModel,pricingProblems,0);
-		cutHandler.addCutGenerator(cutGen);
+//		cutHandler.addCutGenerator(cutGen);
 		
 		//Create the Master Problem
-		Master master=new Master(dataModel,pricingProblems,cutHandler);
+		Master master=new Master(dataModel,pricingProblems,cutHandler,cutGen);
 		
 		//Define which solvers to use
 		List<Class<?extends AbstractPricingProblemSolver<SNDRC, Cycle, SNDRCPricingProblem>>> solvers=Collections.singletonList(ExactPricingProblemSolver.class);

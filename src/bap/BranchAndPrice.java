@@ -759,7 +759,7 @@ public class BranchAndPrice<V> extends AbstractBranchAndPrice<SNDRC, Cycle, SNDR
 //          subCutHandler.addCutGenerator(subCutGen);
             
           //Create the Master Problem
-            Master subMaster=new Master(subGraph,subPricingProblems,subCutHandler);
+            Master subMaster=new Master(subGraph,subPricingProblems,subCutHandler,subCutGen);
             
            //Define which solvers to use
             List<Class<?extends AbstractPricingProblemSolver<SNDRC, Cycle, SNDRCPricingProblem>>> subSolvers=Collections.singletonList(ExactPricingProblemSolver.class);

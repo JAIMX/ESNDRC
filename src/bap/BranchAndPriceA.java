@@ -37,7 +37,6 @@ import cg.master.cuts.StrongInequality;
 import cg.master.cuts.StrongInequalityGenerator;
 import ilog.concert.IloException;
 import ilog.cplex.IloCplex.UnknownObjectException;
-import logger.BapLogger;
 import logger.BapLoggerA;
 import model.SNDRC;
 import model.SNDRC.Edge;
@@ -212,8 +211,13 @@ public class BranchAndPriceA <V> extends AbstractBranchAndPrice<SNDRC, Cycle, SN
                 bapNode.addInitialColumns(this.generateInitialFeasibleSolution(bapNode));
             }
 
+            
+            Double parentBound=bapNode.getBound();
+            
             // Solve the next BAPNode
             try {
+                
+                
                 this.solveBAPNode(bapNode, timeLimit);
 
                 // output the model
@@ -405,6 +409,14 @@ public class BranchAndPriceA <V> extends AbstractBranchAndPrice<SNDRC, Cycle, SN
                 else {
                     queue.addAll(newBranches);
                     lowBoundQueue.addAll(newBranches);
+                    
+                    //if node bound doesn't improve, we record its two children by leading branch, add these branch to master
+                    if(Math.abs(parentBound-bapNode.getBound())<0.00001){
+                        for(BAPNode<SNDRC, Cycle> child:newBranches){
+                            ((Master) master).AddBranchDecisionForCut(child.getBranchingDecision());
+                        }
+                    }
+                    
                     notifier.fireBranchEvent(bapNode, Collections.unmodifiableList(newBranches));
                 }
             }
@@ -754,7 +766,7 @@ public class BranchAndPriceA <V> extends AbstractBranchAndPrice<SNDRC, Cycle, SN
 //          subCutHandler.addCutGenerator(subCutGen);
             
           //Create the Master Problem
-            Master subMaster=new Master(subGraph,subPricingProblems,subCutHandler);
+            Master subMaster=new Master(subGraph,subPricingProblems,subCutHandler,subCutGen);
             
            //Define which solvers to use
             List<Class<?extends AbstractPricingProblemSolver<SNDRC, Cycle, SNDRCPricingProblem>>> subSolvers=Collections.singletonList(ExactPricingProblemSolver.class);
