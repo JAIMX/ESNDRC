@@ -11,6 +11,7 @@ import org.jorlib.frameworks.columnGeneration.util.Configuration;
 
 import bap.BranchAndPrice;
 import bap.BranchAndPriceA;
+import bap.BranchAndPriceB;
 import bap.bapNodeComparators.NodeBoundbapNodeComparator;
 import bap.branching.BranchOnHoldingEdge;
 import bap.branching.BranchOnLocalService;
@@ -26,6 +27,7 @@ import cg.master.SNDRCMasterData;
 import cg.master.cuts.StrongInequalityGenerator;
 import logger.BapLogger;
 import logger.BapLoggerA;
+import logger.BapLoggerB;
 import model.SNDRC;
 import model.SNDRC.Edge;
 
@@ -63,7 +65,8 @@ public class SNDRCSolver {
 	      
 		//Create a Branch-and-Price instance
 //		BranchAndPriceA bap=new BranchAndPriceA(dataModel, master, pricingProblems, solvers, branchCreators,Double.MAX_VALUE,0.6,0.3,0.1,10,0.0001,3,true);
-		BranchAndPriceA bap=new BranchAndPriceA(dataModel, master, pricingProblems, solvers, branchCreators,Double.MAX_VALUE,0.7,0.1,0.1,10,0.0001,3,false);
+//		BranchAndPriceA bap=new BranchAndPriceA(dataModel, master, pricingProblems, solvers, branchCreators,Double.MAX_VALUE,0.6,0.2,0.1,10,0.0001,3,false);
+		BranchAndPriceB bap=new BranchAndPriceB(dataModel, master, pricingProblems, solvers, branchCreators,Double.MAX_VALUE,0.6,0.3,0.1,100,0.005,3,0.2,true);
 //		bap.setNodeOrdering(new BFSbapNodeComparator());
 		bap.setNodeOrdering(new NodeBoundbapNodeComparator());
 		
@@ -71,7 +74,8 @@ public class SNDRCSolver {
 //		SimpleDebugger debugger=new SimpleDebugger(bap, true);
 
 		//OPTIONAL: Attach a logger to the Branch-and-Price procedure.
-		BapLoggerA logger=new BapLoggerA(bap, new File("./output/BAPlogger.log"));
+//		BapLoggerA logger=new BapLoggerA(bap, new File("./output/BAPlogger.log"));
+		BapLoggerB logger=new BapLoggerB(bap, new File("./output/BAPlogger.log"));
 
 		//Solve the TSP problem through Branch-and-Price
 		bap.runBranchAndPrice(System.currentTimeMillis()+36000000L);
@@ -84,6 +88,25 @@ public class SNDRCSolver {
 		System.out.println("Total Number of processed nodes: "+bap.getNumberOfProcessedNodes());
 		System.out.println("Total Time spent on master problems: "+bap.getMasterSolveTime()+" Total time spent on pricing problems: "+bap.getPricingSolveTime());
 		System.out.println("Best bound : "+bap.getBound());
+		
+		//Count the number of key edges
+		Set<Integer> keyServiceEdgeIndexSet=new HashSet<>();
+		if(bap.hasSolution()){
+		    List<Cycle> solution = bap.getSolution();
+            for (Cycle column : solution) {
+                Set<Integer> tempEdgeSet=column.edgeIndexSet;
+                for(int edgeIndex:tempEdgeSet){
+                    if(dataModel.edgeSet.get(edgeIndex).edgeType==0){
+                        if(!keyServiceEdgeIndexSet.contains(edgeIndex)){
+                            keyServiceEdgeIndexSet.add(edgeIndex);
+                        }
+                    }
+                }
+            }
+		}
+		
+		System.out.println("The number of service edges used= "+keyServiceEdgeIndexSet.size());
+		
 		if(bap.hasSolution()) {
 			System.out.println("Solution is optimal: "+bap.isOptimal());
 			System.out.println("Columns (only non-zero columns are returned):");

@@ -37,12 +37,12 @@ import cg.master.cuts.StrongInequality;
 import cg.master.cuts.StrongInequalityGenerator;
 import ilog.concert.IloException;
 import ilog.cplex.IloCplex.UnknownObjectException;
-import logger.BapLoggerA;
+import logger.BapLoggerB;
 import model.SNDRC;
 import model.SNDRC.Edge;
 import model.SNDRC.Service;
 
-public class BranchAndPriceA <V> extends AbstractBranchAndPrice<SNDRC, Cycle, SNDRCPricingProblem>{
+public class BranchAndPriceB <V> extends AbstractBranchAndPrice<SNDRC, Cycle, SNDRCPricingProblem>{
 
     private double thresholdValue;
     private PriorityQueue<BAPNode<SNDRC, Cycle>> lowBoundQueue;
@@ -59,9 +59,10 @@ public class BranchAndPriceA <V> extends AbstractBranchAndPrice<SNDRC, Cycle, SN
     private int[] cutFrequency;
     private double[] edgeFrequency,accumulatedReducedCost;
     private int nodeFre;
-    private double alphaForEdgeFre;
+    private double alphaForEdgeFre,leanringCheckPercent;
     private int timeCompress;
     private boolean ifUseLearningUB;
+    private boolean[] subEdgeRecord;
     
     
     /**
@@ -77,12 +78,13 @@ public class BranchAndPriceA <V> extends AbstractBranchAndPrice<SNDRC, Cycle, SN
      * @param c  for AccelerationForUB()
      * @param nodeFre for learningUB()
      * @param alphaForEdgeFre  parameter for learningUB(), we use it to decide whether a service edge should be included to the subgraph
+     * @param leanringCheckPercent  when the new edge subset chosen has this percent of edges different from current subset, we decide to learnUB() 
      */
 
-    public BranchAndPriceA(SNDRC modelData, Master master, List<SNDRCPricingProblem> pricingProblems,
+    public BranchAndPriceB(SNDRC modelData, Master master, List<SNDRCPricingProblem> pricingProblems,
             List<Class<? extends AbstractPricingProblemSolver<SNDRC, Cycle, SNDRCPricingProblem>>> solvers,
             List<? extends AbstractBranchCreator<SNDRC, Cycle, SNDRCPricingProblem>> branchCreators,
-            double objectiveInitialSolution, double thresholdValue, double probLB, double c,int nodeFre,double alphaForEdgeFre,int timeCompress,boolean ifUseLearningUB) {
+            double objectiveInitialSolution, double thresholdValue, double probLB, double c,int nodeFre,double alphaForEdgeFre,int timeCompress,double leanringCheckPercent,boolean ifUseLearningUB) {
         super(modelData, master, pricingProblems, solvers, branchCreators, 0, objectiveInitialSolution);
         // this.warmStart(objectiveInitialSolution,initialSolution);
         this.thresholdValue = thresholdValue;
@@ -101,6 +103,12 @@ public class BranchAndPriceA <V> extends AbstractBranchAndPrice<SNDRC, Cycle, SN
         this.alphaForEdgeFre=alphaForEdgeFre;
         this.timeCompress=timeCompress;
         this.ifUseLearningUB=ifUseLearningUB;
+        
+        this.subEdgeRecord=new boolean[dataModel.numServiceArc];
+        for(int i=0;i<subEdgeRecord.length;i++){
+            subEdgeRecord[i]=false;
+        }
+        this.leanringCheckPercent=leanringCheckPercent;
         
         
     }
@@ -738,71 +746,102 @@ public class BranchAndPriceA <V> extends AbstractBranchAndPrice<SNDRC, Cycle, SN
         }
         
         
-//        System.out.println(Arrays.toString(edgeFrequency));
-//        System.out.println(serviceEdgeSet.size());
-        
-        
-        
-        // after the built of serviceEdgeSet, we set up a new sub problem and solve it by branch and price
-        SNDRC subGraph=new SNDRC(dataModel,serviceEdgeSet);
-        
-//        subGraph.isFeasibleForX=true;
-//        System.out.println(subGraph.isFeasibleForX);
-//        subGraph.isFeasibleForX=true;
-        if(subGraph.isFeasibleForX){
-            //Create the pricing problems
-            List<SNDRCPricingProblem> subPricingProblems=new LinkedList<SNDRCPricingProblem>();
-            for(int capacityType=0;capacityType<subGraph.numOfCapacity;capacityType++) {
-                for(int originNode=0;originNode<subGraph.numNode;originNode++) {
-                    String name="capacity type: "+capacityType+" origin node: "+originNode;
-                    SNDRCPricingProblem subPricingProblem=new SNDRCPricingProblem(subGraph,name,capacityType,originNode);
-                    subPricingProblems.add(subPricingProblem);
-                }
-            }
-            
-          //Create a cutHandler
-            CutHandler<SNDRC, SNDRCMasterData> subCutHandler=new CutHandler<>();
-            StrongInequalityGenerator subCutGen=new StrongInequalityGenerator(subGraph,subPricingProblems,0);
-//          subCutHandler.addCutGenerator(subCutGen);
-            
-          //Create the Master Problem
-            Master subMaster=new Master(subGraph,subPricingProblems,subCutHandler,subCutGen);
-            
-           //Define which solvers to use
-            List<Class<?extends AbstractPricingProblemSolver<SNDRC, Cycle, SNDRCPricingProblem>>> subSolvers=Collections.singletonList(ExactPricingProblemSolver.class);
-            
-            //Define one or more Branch creators
-            List<? extends AbstractBranchCreator<SNDRC, Cycle, SNDRCPricingProblem>> branchCreators=Arrays.asList( new BranchOnLocalServiceForAllPricingProblems(subGraph, subPricingProblems, 0.5),new BranchOnLocalService(subGraph, subPricingProblems, 0.5),new BranchOnServiceEdge(subGraph, subPricingProblems, 0.5));
-            
-          //Create a Branch-and-Price instance
-            BranchAndPriceA subBap=new BranchAndPriceA(subGraph, subMaster, subPricingProblems, subSolvers, branchCreators,this.objectiveIncumbentSolution,0.6,0.3,0.1,20,0.5,3,false);
-//          bap.setNodeOrdering(new BFSbapNodeComparator());
-            subBap.setNodeOrdering(new NodeBoundbapNodeComparator());
-            
-            BapLoggerA logger=new BapLoggerA(subBap, new File("./output/subBAPlogger.log"));
-            
-            subBap.runBranchAndPrice(System.currentTimeMillis()+3600000L); // one hour
-            if(subBap.hasSolution()){
-                if(subBap.objectiveIncumbentSolution<this.objectiveIncumbentSolution){
-                    
-                    this.objectiveIncumbentSolution = subBap.objectiveIncumbentSolution;
-                    this.upperBoundOnObjective = subBap.objectiveIncumbentSolution;
-                    this.incumbentSolution = subBap.getSolution();
 
-                    optSolutionValueMap = new HashMap<>();
-                    optSolutionValueMap=subBap.optSolutionValueMap;
-                    
-                    optXValues=subBap.optXValues;
-                    
-                    
-                }
+        
+        
+        //if the serviceEdgeSet has a percentage of over leanringCheckPercent different from last subgraph, we will solve the new sub problem
+        int count=0;
+        for(int edgeIndex=0;edgeIndex<dataModel.numServiceArc;edgeIndex++){
+            if(subEdgeRecord[edgeIndex]&&!serviceEdgeSet.contains(edgeIndex)){
+                count++;
+            }
+            if(!subEdgeRecord[edgeIndex]&&serviceEdgeSet.contains(edgeIndex)){
+                count++;
             }
             
-            subBap.close();
-            subCutHandler.close();
         }
         
+        if(count>=dataModel.numServiceArc*leanringCheckPercent){
+            
+            for(int edgeIndex=0;edgeIndex<dataModel.numServiceArc;edgeIndex++){
+                if(serviceEdgeSet.contains(edgeIndex)){
+                    subEdgeRecord[edgeIndex]=true;
+                }else{
+                    subEdgeRecord[edgeIndex]=false;
+                }
+            }
+            
+          System.out.println("Yes");
+          System.out.println(Arrays.toString(edgeFrequency));
+          System.out.println(serviceEdgeSet.size());
+            
+            // after the built of serviceEdgeSet, we set up a new sub problem and solve it by branch and price
+            SNDRC subGraph=new SNDRC(dataModel,serviceEdgeSet);
+            
+//            subGraph.isFeasibleForX=true;
+//            System.out.println(subGraph.isFeasibleForX);
+//            subGraph.isFeasibleForX=true;
+            if(subGraph.isFeasibleForX){
+                //Create the pricing problems
+                List<SNDRCPricingProblem> subPricingProblems=new LinkedList<SNDRCPricingProblem>();
+                for(int capacityType=0;capacityType<subGraph.numOfCapacity;capacityType++) {
+                    for(int originNode=0;originNode<subGraph.numNode;originNode++) {
+                        String name="capacity type: "+capacityType+" origin node: "+originNode;
+                        SNDRCPricingProblem subPricingProblem=new SNDRCPricingProblem(subGraph,name,capacityType,originNode);
+                        subPricingProblems.add(subPricingProblem);
+                    }
+                }
+                
+              //Create a cutHandler
+                CutHandler<SNDRC, SNDRCMasterData> subCutHandler=new CutHandler<>();
+                StrongInequalityGenerator subCutGen=new StrongInequalityGenerator(subGraph,subPricingProblems,0);
+//              subCutHandler.addCutGenerator(subCutGen);
+                
+              //Create the Master Problem
+                Master subMaster=new Master(subGraph,subPricingProblems,subCutHandler,subCutGen);
+                
+               //Define which solvers to use
+                List<Class<?extends AbstractPricingProblemSolver<SNDRC, Cycle, SNDRCPricingProblem>>> subSolvers=Collections.singletonList(ExactPricingProblemSolver.class);
+                
+                //Define one or more Branch creators
+                List<? extends AbstractBranchCreator<SNDRC, Cycle, SNDRCPricingProblem>> branchCreators=Arrays.asList( new BranchOnLocalServiceForAllPricingProblems(subGraph, subPricingProblems, 0.5),new BranchOnLocalService(subGraph, subPricingProblems, 0.5),new BranchOnServiceEdge(subGraph, subPricingProblems, 0.5));
+                
+              //Create a Branch-and-Price instance
+                BranchAndPriceB subBap=new BranchAndPriceB(subGraph, subMaster, subPricingProblems, subSolvers, branchCreators,this.objectiveIncumbentSolution,0.6,0.3,0.1,20,0.5,3,0.1,false);
+//              bap.setNodeOrdering(new BFSbapNodeComparator());
+                subBap.setNodeOrdering(new NodeBoundbapNodeComparator());
+                
+                BapLoggerB logger=new BapLoggerB(subBap, new File("./output/subBAPlogger.log"));
+                
+                subBap.runBranchAndPrice(System.currentTimeMillis()+1800000L); // half an hour
+                if(subBap.hasSolution()){
+                    if(subBap.objectiveIncumbentSolution<this.objectiveIncumbentSolution){
+                        
+                        this.objectiveIncumbentSolution = subBap.objectiveIncumbentSolution;
+                        this.upperBoundOnObjective = subBap.objectiveIncumbentSolution;
+                        this.incumbentSolution = subBap.getSolution();
 
+                        optSolutionValueMap = new HashMap<>();
+                        optSolutionValueMap=subBap.optSolutionValueMap;
+                        
+                        optXValues=subBap.optXValues;
+                        
+                        
+                    }
+                }
+                
+                subBap.close();
+                subCutHandler.close();
+            }
+            
+            
+        }else{
+            System.out.println("No");
+        }
         
     }
+    
+    
+    
 }
+
