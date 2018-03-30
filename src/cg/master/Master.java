@@ -68,7 +68,7 @@ public final class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProbl
     private boolean ifContainsCut;
     
     public Master(SNDRC dataModel, List<SNDRCPricingProblem> pricingProblems,
-            CutHandler<SNDRC, SNDRCMasterData> cutHandler,StrongInequalityGenerator cutGen) {
+            CutHandler<SNDRC, SNDRCMasterData> cutHandler,StrongInequalityGenerator cutGen,boolean ifContainsCutAtRootNode) {
         super(dataModel, pricingProblems, cutHandler, OptimizationSense.MINIMIZE);
         this.qBranchingSet = new HashSet<RoundQ>();
         qBranchingconstraints = new HashMap<>();
@@ -90,7 +90,8 @@ public final class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProbl
         
         this.branchSetNodeSolvedByCut=new HashSet<>();
         this.cutGen=cutGen;
-        this.ifContainsCut=false;
+        
+        this.ifContainsCut=ifContainsCutAtRootNode;
         
         // this.buildModel();
 

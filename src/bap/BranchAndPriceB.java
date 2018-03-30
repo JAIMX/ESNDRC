@@ -312,9 +312,11 @@ public class BranchAndPriceB <V> extends AbstractBranchAndPrice<SNDRC, Cycle, SN
                 if(this.nodesProcessed % nodeFre==0&&this.nodesProcessed!=0){
                     LearningUB();
                     
-                    edgeFrequency=new double[dataModel.numServiceArc];
-                    cutFrequency=new int[dataModel.numServiceArc];
-                    accumulatedReducedCost=new double[dataModel.numServiceArc];
+                    this.ifUseLearningUB=false;
+                    
+//                    edgeFrequency=new double[dataModel.numServiceArc];
+//                    cutFrequency=new int[dataModel.numServiceArc];
+//                    accumulatedReducedCost=new double[dataModel.numServiceArc];
                     
                 }
             }
@@ -798,7 +800,7 @@ public class BranchAndPriceB <V> extends AbstractBranchAndPrice<SNDRC, Cycle, SN
 //              subCutHandler.addCutGenerator(subCutGen);
                 
               //Create the Master Problem
-                Master subMaster=new Master(subGraph,subPricingProblems,subCutHandler,subCutGen);
+                Master subMaster=new Master(subGraph,subPricingProblems,subCutHandler,subCutGen,false);
                 
                //Define which solvers to use
                 List<Class<?extends AbstractPricingProblemSolver<SNDRC, Cycle, SNDRCPricingProblem>>> subSolvers=Collections.singletonList(ExactPricingProblemSolver.class);
