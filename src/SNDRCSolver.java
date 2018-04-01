@@ -13,6 +13,7 @@ import bap.BranchAndPrice;
 import bap.BranchAndPriceA;
 import bap.BranchAndPriceB;
 import bap.bapNodeComparators.NodeBoundbapNodeComparator;
+import bap.bapNodeComparators.NodeBoundbapNodeComparatorMaxBound;
 import bap.branching.BranchOnHoldingEdge;
 import bap.branching.BranchOnLocalService;
 import bap.branching.BranchOnLocalServiceForAllPricingProblems;
@@ -66,9 +67,9 @@ public class SNDRCSolver {
 		//Create a Branch-and-Price instance
 //		BranchAndPriceA bap=new BranchAndPriceA(dataModel, master, pricingProblems, solvers, branchCreators,Double.MAX_VALUE,0.6,0.3,0.1,10,0.0001,3,true);
 //		BranchAndPriceA bap=new BranchAndPriceA(dataModel, master, pricingProblems, solvers, branchCreators,Double.MAX_VALUE,0.6,0.2,0.1,10,0.0001,3,false);
-		BranchAndPriceB bap=new BranchAndPriceB(dataModel, master, pricingProblems, solvers, branchCreators,Double.MAX_VALUE,0.65,0.2,0.1,10,0.01,3,0.1,true);
+		BranchAndPriceB bap=new BranchAndPriceB(dataModel, master, pricingProblems, solvers, branchCreators,Double.MAX_VALUE,0.65,0.2,0.1,1,0.001,3,0.1,true);
 //		bap.setNodeOrdering(new BFSbapNodeComparator());
-		bap.setNodeOrdering(new NodeBoundbapNodeComparator());
+		bap.setNodeOrdering(new NodeBoundbapNodeComparatorMaxBound());
 		
 		//OPTIONAL: Attach a debugger
 //		SimpleDebugger debugger=new SimpleDebugger(bap, true);

@@ -312,7 +312,7 @@ public class BranchAndPriceB <V> extends AbstractBranchAndPrice<SNDRC, Cycle, SN
                 if(this.nodesProcessed % nodeFre==0&&this.nodesProcessed!=0){
                     LearningUB();
                     
-                    this.ifUseLearningUB=false;
+//                    this.ifUseLearningUB=false;
                     
 //                    edgeFrequency=new double[dataModel.numServiceArc];
 //                    cutFrequency=new int[dataModel.numServiceArc];
@@ -773,9 +773,42 @@ public class BranchAndPriceB <V> extends AbstractBranchAndPrice<SNDRC, Cycle, SN
                 }
             }
             
-          System.out.println("Yes");
-          System.out.println(Arrays.toString(edgeFrequency));
-          System.out.println(serviceEdgeSet.size());
+            
+//          // output learning information
+//          System.out.println("Yes");
+//          System.out.println(Arrays.toString(edgeFrequency));
+//          System.out.println(serviceEdgeSet.size());
+//          
+//          for(int edgeIndex=0;edgeIndex<dataModel.numServiceArc;edgeIndex=edgeIndex+3){
+//              System.out.println(edgeIndex+"-"+(edgeIndex+2)+": ");
+//              for(int i=0;i<3;i++){
+//                  int currentEdgeIndex=edgeIndex+i;
+//                  if(currentEdgeIndex<dataModel.numServiceArc){
+//                      System.out.print(edgeFrequency[currentEdgeIndex]+" ");
+//                  }
+//              }
+//              System.out.println();
+//              
+//              for(int i=0;i<3;i++){
+//                  int currentEdgeIndex=edgeIndex+i;
+//                  if(currentEdgeIndex<dataModel.numServiceArc){
+//                      System.out.print(cutFrequency[currentEdgeIndex]+" ");
+//                  }
+//              }
+//              System.out.println();
+//              
+//              for(int i=0;i<3;i++){
+//                  int currentEdgeIndex=edgeIndex+i;
+//                  if(currentEdgeIndex<dataModel.numServiceArc){
+//                      System.out.print(accumulatedReducedCost[currentEdgeIndex]+" ");
+//                  }
+//              }
+//              
+//              System.out.println();
+//              System.out.println();
+//          }
+          
+          
             
             // after the built of serviceEdgeSet, we set up a new sub problem and solve it by branch and price
             SNDRC subGraph=new SNDRC(dataModel,serviceEdgeSet);
@@ -784,6 +817,9 @@ public class BranchAndPriceB <V> extends AbstractBranchAndPrice<SNDRC, Cycle, SN
 //            System.out.println(subGraph.isFeasibleForX);
 //            subGraph.isFeasibleForX=true;
             if(subGraph.isFeasibleForX){
+                
+                this.ifUseLearningUB=false;
+                
                 //Create the pricing problems
                 List<SNDRCPricingProblem> subPricingProblems=new LinkedList<SNDRCPricingProblem>();
                 for(int capacityType=0;capacityType<subGraph.numOfCapacity;capacityType++) {
