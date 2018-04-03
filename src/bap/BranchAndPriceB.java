@@ -851,7 +851,7 @@ public class BranchAndPriceB <V> extends AbstractBranchAndPrice<SNDRC, Cycle, SN
                 
                 BapLoggerB logger=new BapLoggerB(subBap, new File("./output/subBAPlogger.log"));
                 
-                subBap.runBranchAndPrice(System.currentTimeMillis()+1800000L); // half an hour
+                subBap.runBranchAndPrice(System.currentTimeMillis()+3600000L); // an hour
                 if(subBap.hasSolution()){
                     if(subBap.objectiveIncumbentSolution<this.objectiveIncumbentSolution){
                         

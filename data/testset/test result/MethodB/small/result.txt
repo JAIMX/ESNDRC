@@ -75,8 +75,49 @@ Total time= 13247706
 ---------------------------------------------------------------------------------------------------------
 test3_5_15_25_25
 
+BranchAndPriceB bap=new BranchAndPriceB(dataModel, master, pricingProblems, solvers, branchCreators,Double.MAX_VALUE,0.65,0.2,0.1,1,0.001,3,0.1,true);
 
+number of service arcs=375
+number of holding arcs=125
 
+Repairing basis singularity.
+Markowitz threshold set to 0.2
+Repairing basis singularity.
+Added to 1 columns superbasic list.
+Markowitz threshold set to 0.2
+Repairing basis singularity.
+Added to 1 columns superbasic list.
+Markowitz threshold set to 0.2
+Repairing basis singularity.
+Markowitz threshold set to 0.2
+Repairing basis singularity.
+Added to 4 columns superbasic list.
+Markowitz threshold set to 0.2
+Repairing basis singularity.
+Added to 1 columns superbasic list.
+Markowitz threshold set to 0.2
+================ Solution ================
+BAP terminated with objective : 3661
+Total Number of iterations: 36643
+Total Number of processed nodes: 1288
+Total Time spent on master problems: 33000681 Total time spent on pricing problems: 125526
+Best bound : 3540.908222222223
+The number of service edges used= 33
+Solution is optimal: false
+Columns (only non-zero columns are returned):
+artificial: false set: [36, 199, 200, 201, 202, 203, 204, 205, 206, 207, 113, 114, 51, 220, 221, 222, 223] start node= 4 start time= 21 capacity type= 0
+(0,0)->(0,1)->(2,1)->(0,2)->(0,3)->(0,4)->(0,5)->(0,6)->(0,7)->(4,11)->(1,13)->(1,14)->(0,20)->(0,21)->(0,22)->(0,23)->(1,24)->(2,4):1.0
+
+artificial: false set: [65, 51, 89, 28, 13, 61] start node= 4 start time= 21 capacity type= 1
+(2,1)->(4,3)->(2,11)->(4,13)->(1,14)->(2,15)->(1,20):1.0
+
+artificial: false set: [32, 0, 65, 18, 20, 72] start node= 4 start time= 6 capacity type= 1
+(4,0)->(4,7)->(2,15)->(4,18)->(4,20)->(2,22)->(1,2):1.0
+
+artificial: false set: [97, 69, 40, 8, 57, 92] start node= 4 start time= 17 capacity type= 1
+(2,7)->(4,8)->(4,15)->(1,17)->(2,19)->(1,22)->(4,2):1.0
+
+Total time= 36000449
 ---------------------------------------------------------------------------------------------------------
 test4_5_15_15_100
 BranchAndPriceB bap=new BranchAndPriceB(dataModel, master, pricingProblems, solvers, branchCreators,Double.MAX_VALUE,0.65,0.2,0.1,1,0.001,3,0.1,true);

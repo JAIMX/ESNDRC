@@ -67,6 +67,10 @@ public class SNDRCMasterData extends MasterData<SNDRC, Cycle, SNDRCPricingProble
     // for strong cut
     public Map<Integer, Double> edgeValueMap;
     public final Map<StrongInequality, IloRange> strongInequalities;
+    
+    //for cut control
+    public double boundRecordForCutControl;
+    public long masterDataBuildTime;
 
     public SNDRCMasterData(IloCplex cplex, List<SNDRCPricingProblem> pricingProblems,
             Map<SNDRCPricingProblem, OrderedBiMap<Cycle, IloNumVar>> varMap,
@@ -74,7 +78,7 @@ public class SNDRCMasterData extends MasterData<SNDRC, Cycle, SNDRCPricingProble
             Map<RoundServiceEdge, IloRange> ServiceEdgeBranchingConstraints, List<Map<Integer, IloNumVar>> x,
             IloNumVar[][] q, Map<RoundServiceEdgeForAllPricingProblems, IloRange> serviceEdge4AllBranchingConstraints,
             Map<RoundLocalService, IloRange> localServiceBranchingConstraints,
-            Map<RoundHoldingEdge, IloRange> holdingEdgeBranchingConstraints, Map<RoundLocalServiceForAllPricingProblems, IloRange> localService4AllBranchingConstraints,SNDRC dataModel) {
+            Map<RoundHoldingEdge, IloRange> holdingEdgeBranchingConstraints, Map<RoundLocalServiceForAllPricingProblems, IloRange> localService4AllBranchingConstraints,SNDRC dataModel,long masterDataBuildTime) {
         super(varMap);
         this.cplex = cplex;
         this.x = x;
@@ -166,6 +170,9 @@ public class SNDRCMasterData extends MasterData<SNDRC, Cycle, SNDRCPricingProble
 
         edgeValueMap = new HashMap<Integer, Double>();
         strongInequalities = new HashMap<>();
+        
+        this.boundRecordForCutControl=-1;
+        this.masterDataBuildTime=masterDataBuildTime;
 
     }
 

@@ -352,13 +352,16 @@ public final class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProbl
             Map<SNDRCPricingProblem, OrderedBiMap<Cycle, IloNumVar>> varMap = new LinkedHashMap<>();
             for (SNDRCPricingProblem pricingProblem : pricingProblems)
                 varMap.put(pricingProblem, new OrderedBiMap<>());
+            
+            
+            long time=System.currentTimeMillis();
 
             // Create a new data object which will store information from the
             // master. This
             // object automatically be passed to the CutHandler class.
             return new SNDRCMasterData(cplex, pricingProblems, varMap, qBranchingconstraints,
                     ServiceEdgeBranchingConstraints, x, q, serviceEdge4AllBranchingConstraints,
-                    localServiceBranchingConstraints,holdingEdgeBranchingConstraints, localService4AllBranchingConstraints,dataModel);
+                    localServiceBranchingConstraints,holdingEdgeBranchingConstraints, localService4AllBranchingConstraints,dataModel,time);
 
         } catch (IloException e) {
             // TODO Auto-generated catch block
@@ -849,6 +852,21 @@ public final class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProbl
 
     @Override
     public boolean hasNewCuts() {
+        
+        if(masterData.boundRecordForCutControl>0){
+            if((masterData.boundRecordForCutControl-masterData.objectiveValue)/masterData.boundRecordForCutControl<0.001){
+                return false;
+            }
+            
+        }
+        
+        long time=System.currentTimeMillis();
+        if(time-masterData.masterDataBuildTime>3600000){
+            return false;
+        }
+        
+        
+        masterData.boundRecordForCutControl=masterData.objectiveValue;
         // For convenience, we will precompute values required by the
         // StrongInequalityGenerator class
         // and store it in the masterData object. For each edge, we need to know
