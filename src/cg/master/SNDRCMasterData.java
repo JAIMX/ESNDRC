@@ -71,6 +71,7 @@ public class SNDRCMasterData extends MasterData<SNDRC, Cycle, SNDRCPricingProble
     //for cut control
     public double boundRecordForCutControl;
     public long masterDataBuildTime;
+    public boolean ifBoundHasChangedByCut;
 
     public SNDRCMasterData(IloCplex cplex, List<SNDRCPricingProblem> pricingProblems,
             Map<SNDRCPricingProblem, OrderedBiMap<Cycle, IloNumVar>> varMap,
@@ -173,6 +174,7 @@ public class SNDRCMasterData extends MasterData<SNDRC, Cycle, SNDRCPricingProble
         
         this.boundRecordForCutControl=-1;
         this.masterDataBuildTime=masterDataBuildTime;
+        this.ifBoundHasChangedByCut=false;
 
     }
 
