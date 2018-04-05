@@ -858,24 +858,24 @@ public final class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProbl
 //            System.out.println("obj=" + masterData.objectiveValue);
 //            System.out.println();
 
-            if (masterData.ifBoundHasChangedByCut) {
-                if ((masterData.objectiveValue - masterData.boundRecordForCutControl)
-                        / masterData.boundRecordForCutControl < 0.001) {
-                    return false;
-                }
-            }
-
-            if ((masterData.objectiveValue - masterData.boundRecordForCutControl)
-                    / masterData.boundRecordForCutControl > 0.00001) {
-                masterData.ifBoundHasChangedByCut = true;
-            }
+//            if (masterData.ifBoundHasChangedByCut) {
+//                if ((masterData.objectiveValue - masterData.boundRecordForCutControl)
+//                        / masterData.boundRecordForCutControl < 0.001) {
+//                    return false;
+//                }
+//            }
+//
+//            if ((masterData.objectiveValue - masterData.boundRecordForCutControl)
+//                    / masterData.boundRecordForCutControl > 0.00001) {
+//                masterData.ifBoundHasChangedByCut = true;
+//            }
             
             
 
         }
 
         long time = System.currentTimeMillis();
-        if (time - masterData.masterDataBuildTime > 3600000) { //an hour
+        if (time - masterData.masterDataBuildTime > 1800000) { // half an hour
             return false;
         }
 

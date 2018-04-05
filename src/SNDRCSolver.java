@@ -53,10 +53,10 @@ public class SNDRCSolver {
 		//Create a cutHandler
 		CutHandler<SNDRC, SNDRCMasterData> cutHandler=new CutHandler<>();
 		StrongInequalityGenerator cutGen=new StrongInequalityGenerator(dataModel,pricingProblems,0);
-//		cutHandler.addCutGenerator(cutGen);
+		cutHandler.addCutGenerator(cutGen);
 		
 		//Create the Master Problem
-		Master master=new Master(dataModel,pricingProblems,cutHandler,cutGen,false);
+		Master master=new Master(dataModel,pricingProblems,cutHandler,cutGen,true);
 		
 		//Define which solvers to use
 		List<Class<?extends AbstractPricingProblemSolver<SNDRC, Cycle, SNDRCPricingProblem>>> solvers=Collections.singletonList(ExactPricingProblemSolver.class);
@@ -70,7 +70,7 @@ public class SNDRCSolver {
 //		BranchAndPriceA bap=new BranchAndPriceA(dataModel, master, pricingProblems, solvers, branchCreators,Double.MAX_VALUE,0.6,0.3,0.1,10,0.0001,3,true);
 //		BranchAndPriceA bap=new BranchAndPriceA(dataModel, master, pricingProblems, solvers, branchCreators,Double.MAX_VALUE,0.6,0.2,0.1,10,0.0001,3,false);
 //		BranchAndPriceB bap=new BranchAndPriceB(dataModel, master, pricingProblems, solvers, branchCreators,Double.MAX_VALUE,0.65,0.2,0.1,1,0.001,3,0.1,true);
-		BranchAndPriceB_M bap=new BranchAndPriceB_M(dataModel, master, pricingProblems, solvers, branchCreators,Double.MAX_VALUE,0.65,0.2,0.1,10,0.001,3,0.1,true,false);
+		BranchAndPriceB_M bap=new BranchAndPriceB_M(dataModel, master, pricingProblems, solvers, branchCreators,Double.MAX_VALUE,0.65,0.3,0.1,10,0.001,3,0.1,true,false);
 //		bap.setNodeOrdering(new BFSbapNodeComparator());
 //		bap.setNodeOrdering(new NodeBoundbapNodeComparatorMaxBound());
 		bap.setNodeOrdering(new NodeBoundbapNodeComparator());

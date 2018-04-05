@@ -709,65 +709,86 @@ public class BranchAndPriceB_M <V> extends AbstractBranchAndPrice<SNDRC, Cycle, 
         
         Set<Integer> serviceEdgeSet=new HashSet<>();
 //        int startTime=(int) (Math.random()*this.timeCompress);
-        int startTime=0;
         
-        for(int serviceIndex=0;serviceIndex<dataModel.numService;serviceIndex++){
-            Service service=dataModel.serviceSet.get(serviceIndex);
+        
+        Set<Integer> finalSet=new HashSet<>();
+        
+        for(int startTime=0;startTime<this.timeCompress;startTime+=100){
             
+            serviceEdgeSet=new HashSet<>();
             
-            for(int time=0;time<dataModel.timePeriod;time+=timeCompress){
-               int time0=time;
-               int timeLast;
-               int time1=time0+timeCompress-1;
-               if(time1>=dataModel.timePeriod){
-                   time1=dataModel.timePeriod-1;
-               }
-               timeLast=time1-time0+1;
-               
-               time0=(time0+startTime)%dataModel.timePeriod;
-               time1=(time1+startTime)%dataModel.timePeriod;
-               
-               Set<Integer> timeSet=new HashSet<>();
-               for(int t=0;t<timeLast;t++){
-                   int currentTime=(time0+t)%dataModel.timePeriod;
-                   timeSet.add(currentTime);
-               }
-               
-               // edgeIndex=serviceIndex*timePeriod+t
-               double sum=0;
-               int maxEdgeIndex=-1;
-               double record=Double.MIN_VALUE;
-               Set<Integer> edgeIndexSet=new HashSet<>();
-               
-               for(int t:timeSet){
-                   int tempEdgeIndex=serviceIndex*dataModel.timePeriod+t;
-                   edgeIndexSet.add(tempEdgeIndex);
-                   
-                   sum+=edgeFrequency[tempEdgeIndex];
-                   if(record<edgeFrequency[tempEdgeIndex]){
-                       record=edgeFrequency[tempEdgeIndex];
-                       maxEdgeIndex=tempEdgeIndex;
+            for(int serviceIndex=0;serviceIndex<dataModel.numService;serviceIndex++){
+                Service service=dataModel.serviceSet.get(serviceIndex);
+                
+                
+                for(int time=0;time<dataModel.timePeriod;time+=timeCompress){
+                   int time0=time;
+                   int timeLast;
+                   int time1=time0+timeCompress-1;
+                   if(time1>=dataModel.timePeriod){
+                       time1=dataModel.timePeriod-1;
                    }
-               }
-               
-               if(sum>alphaForEdgeFre*nodeFre*timeLast){
-                   serviceEdgeSet.add(maxEdgeIndex);
+                   timeLast=time1-time0+1;
+                   
+                   time0=(time0+startTime)%dataModel.timePeriod;
+                   time1=(time1+startTime)%dataModel.timePeriod;
+                   
+                   Set<Integer> timeSet=new HashSet<>();
+                   for(int t=0;t<timeLast;t++){
+                       int currentTime=(time0+t)%dataModel.timePeriod;
+                       timeSet.add(currentTime);
+                   }
+                   
+                   // edgeIndex=serviceIndex*timePeriod+t
+                   double sum=0;
+                   int maxEdgeIndex=-1;
+                   double record=Double.MIN_VALUE;
+                   Set<Integer> edgeIndexSet=new HashSet<>();
+                   
+                   for(int t:timeSet){
+                       int tempEdgeIndex=serviceIndex*dataModel.timePeriod+t;
+                       edgeIndexSet.add(tempEdgeIndex);
+                       
+                       sum+=edgeFrequency[tempEdgeIndex];
+                       if(record<edgeFrequency[tempEdgeIndex]){
+                           record=edgeFrequency[tempEdgeIndex];
+                           maxEdgeIndex=tempEdgeIndex;
+                       }
+                   }
+                   
+                   if(sum>alphaForEdgeFre*nodeFre*timeLast){
+                       serviceEdgeSet.add(maxEdgeIndex);
+                       
+                       
+                       
+                       edgeIndexSet.remove(maxEdgeIndex);
+                       for(int edgeIndex:edgeIndexSet){
+                           if((edgeFrequency[maxEdgeIndex]-edgeFrequency[edgeIndex])/edgeFrequency[maxEdgeIndex]<0.1){
+                               serviceEdgeSet.add(edgeIndex);
+                           }
+                       }
+                       
+                       
+                   }
                    
                    
-                   
-//                   edgeIndexSet.remove(maxEdgeIndex);
-//                   for(int edgeIndex:edgeIndexSet){
-//                       if((edgeFrequency[maxEdgeIndex]-edgeFrequency[edgeIndex])/edgeFrequency[maxEdgeIndex]<0.2){
-//                           serviceEdgeSet.add(edgeIndex);
-//                       }
-//                   }
-               }
-               
-               
-                   
+                       
+                }
+                
+            }
+            
+            
+            
+            for(int edgeIndex:serviceEdgeSet){
+                if(!finalSet.contains(edgeIndex)){
+                    finalSet.add(edgeIndex);
+                }
             }
             
         }
+        
+        serviceEdgeSet=finalSet;
+
         
 
         
@@ -800,8 +821,9 @@ public class BranchAndPriceB_M <V> extends AbstractBranchAndPrice<SNDRC, Cycle, 
             
           // output learning information
           System.out.println("Yes");
-          System.out.println(Arrays.toString(edgeFrequency));
+//          System.out.println(Arrays.toString(edgeFrequency));
           System.out.println(serviceEdgeSet.size());
+          System.out.println();
 //          
 //          for(int edgeIndex=0;edgeIndex<dataModel.numServiceArc;edgeIndex=edgeIndex+3){
 //              System.out.println(edgeIndex+"-"+(edgeIndex+2)+": ");
@@ -845,11 +867,11 @@ public class BranchAndPriceB_M <V> extends AbstractBranchAndPrice<SNDRC, Cycle, 
                 this.ifUseLearningUB=false;
                 
                 //output subEdgeSet
-                Set tempSet=new TreeSet<>();
-                for(int edgeIndex:serviceEdgeSet){
-                    tempSet.add(edgeIndex);
-                }
-                System.out.println(tempSet.toString());
+//                Set tempSet=new TreeSet<>();
+//                for(int edgeIndex:serviceEdgeSet){
+//                    tempSet.add(edgeIndex);
+//                }
+//                System.out.println(tempSet.toString());
                 
                 //Create the pricing problems
                 List<SNDRCPricingProblem> subPricingProblems=new LinkedList<SNDRCPricingProblem>();
@@ -882,7 +904,7 @@ public class BranchAndPriceB_M <V> extends AbstractBranchAndPrice<SNDRC, Cycle, 
                 
                 BapLoggerB_M logger=new BapLoggerB_M(subBap, new File("./output/subBAPlogger.log"));
                 
-                subBap.runBranchAndPrice(System.currentTimeMillis()+7200000L); // 2 hours
+                subBap.runBranchAndPrice(System.currentTimeMillis()+14400000L); // 4 hours
                 if(subBap.hasSolution()){
                     if(subBap.objectiveIncumbentSolution<this.objectiveIncumbentSolution){
                         
