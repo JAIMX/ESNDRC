@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Set;
+import java.util.TreeSet;
 
 import org.jorlib.frameworks.columnGeneration.branchAndPrice.AbstractBranchAndPrice;
 import org.jorlib.frameworks.columnGeneration.branchAndPrice.AbstractBranchCreator;
@@ -22,6 +23,8 @@ import org.jorlib.frameworks.columnGeneration.master.cutGeneration.AbstractInequ
 import org.jorlib.frameworks.columnGeneration.master.cutGeneration.CutHandler;
 import org.jorlib.frameworks.columnGeneration.pricing.AbstractPricingProblemSolver;
 import org.jorlib.frameworks.columnGeneration.util.MathProgrammingUtil;
+
+import com.sun.xml.internal.ws.api.server.ServiceDefinition;
 
 import bap.bapNodeComparators.NodeBoundbapNodeComparator;
 import bap.bapNodeComparators.NodeBoundbapNodeComparatorForLB;
@@ -38,11 +41,12 @@ import cg.master.cuts.StrongInequalityGenerator;
 import ilog.concert.IloException;
 import ilog.cplex.IloCplex.UnknownObjectException;
 import logger.BapLoggerB;
+import logger.BapLoggerB_M;
 import model.SNDRC;
 import model.SNDRC.Edge;
 import model.SNDRC.Service;
 
-public class BranchAndPriceB <V> extends AbstractBranchAndPrice<SNDRC, Cycle, SNDRCPricingProblem>{
+public class BranchAndPriceB_M <V> extends AbstractBranchAndPrice<SNDRC, Cycle, SNDRCPricingProblem>{
 
     private double thresholdValue;
     private PriorityQueue<BAPNode<SNDRC, Cycle>> lowBoundQueue;
@@ -81,7 +85,7 @@ public class BranchAndPriceB <V> extends AbstractBranchAndPrice<SNDRC, Cycle, SN
      * @param leanringCheckPercent  when the new edge subset chosen has this percent of edges different from current subset, we decide to learnUB() 
      */
 
-    public BranchAndPriceB(SNDRC modelData, Master master, List<SNDRCPricingProblem> pricingProblems,
+    public BranchAndPriceB_M(SNDRC modelData, Master master, List<SNDRCPricingProblem> pricingProblems,
             List<Class<? extends AbstractPricingProblemSolver<SNDRC, Cycle, SNDRCPricingProblem>>> solvers,
             List<? extends AbstractBranchCreator<SNDRC, Cycle, SNDRCPricingProblem>> branchCreators,
             double objectiveInitialSolution, double thresholdValue, double probLB, double c,int nodeFre,double alphaForEdgeFre,int timeCompress,double leanringCheckPercent,boolean ifUseLearningUB,boolean ifAccelerationForUB) {
@@ -311,7 +315,7 @@ public class BranchAndPriceB <V> extends AbstractBranchAndPrice<SNDRC, Cycle, SN
                     
                 }
                 
-                if(this.nodesProcessed % nodeFre==0&&this.nodesProcessed!=0&&this.ifUseLearningUB){
+                if(this.nodesProcessed % nodeFre==0&&this.nodesProcessed!=0&&ifUseLearningUB){
                     LearningUB();
                     
 //                    this.ifUseLearningUB=false;
@@ -704,7 +708,8 @@ public class BranchAndPriceB <V> extends AbstractBranchAndPrice<SNDRC, Cycle, SN
     public void LearningUB(){
         
         Set<Integer> serviceEdgeSet=new HashSet<>();
-        int startTime=(int) (Math.random()*this.timeCompress);
+//        int startTime=(int) (Math.random()*this.timeCompress);
+        int startTime=0;
         
         for(int serviceIndex=0;serviceIndex<dataModel.numService;serviceIndex++){
             Service service=dataModel.serviceSet.get(serviceIndex);
@@ -732,8 +737,12 @@ public class BranchAndPriceB <V> extends AbstractBranchAndPrice<SNDRC, Cycle, SN
                double sum=0;
                int maxEdgeIndex=-1;
                double record=Double.MIN_VALUE;
+               Set<Integer> edgeIndexSet=new HashSet<>();
+               
                for(int t:timeSet){
                    int tempEdgeIndex=serviceIndex*dataModel.timePeriod+t;
+                   edgeIndexSet.add(tempEdgeIndex);
+                   
                    sum+=edgeFrequency[tempEdgeIndex];
                    if(record<edgeFrequency[tempEdgeIndex]){
                        record=edgeFrequency[tempEdgeIndex];
@@ -743,11 +752,24 @@ public class BranchAndPriceB <V> extends AbstractBranchAndPrice<SNDRC, Cycle, SN
                
                if(sum>alphaForEdgeFre*nodeFre*timeLast){
                    serviceEdgeSet.add(maxEdgeIndex);
+                   
+                   
+                   
+//                   edgeIndexSet.remove(maxEdgeIndex);
+//                   for(int edgeIndex:edgeIndexSet){
+//                       if((edgeFrequency[maxEdgeIndex]-edgeFrequency[edgeIndex])/edgeFrequency[maxEdgeIndex]<0.2){
+//                           serviceEdgeSet.add(edgeIndex);
+//                       }
+//                   }
                }
+               
+               
                    
             }
             
         }
+        
+
         
         
 
@@ -776,10 +798,10 @@ public class BranchAndPriceB <V> extends AbstractBranchAndPrice<SNDRC, Cycle, SN
             }
             
             
-//          // output learning information
-//          System.out.println("Yes");
-//          System.out.println(Arrays.toString(edgeFrequency));
-//          System.out.println(serviceEdgeSet.size());
+          // output learning information
+          System.out.println("Yes");
+          System.out.println(Arrays.toString(edgeFrequency));
+          System.out.println(serviceEdgeSet.size());
 //          
 //          for(int edgeIndex=0;edgeIndex<dataModel.numServiceArc;edgeIndex=edgeIndex+3){
 //              System.out.println(edgeIndex+"-"+(edgeIndex+2)+": ");
@@ -822,6 +844,13 @@ public class BranchAndPriceB <V> extends AbstractBranchAndPrice<SNDRC, Cycle, SN
                 
                 this.ifUseLearningUB=false;
                 
+                //output subEdgeSet
+                Set tempSet=new TreeSet<>();
+                for(int edgeIndex:serviceEdgeSet){
+                    tempSet.add(edgeIndex);
+                }
+                System.out.println(tempSet.toString());
+                
                 //Create the pricing problems
                 List<SNDRCPricingProblem> subPricingProblems=new LinkedList<SNDRCPricingProblem>();
                 for(int capacityType=0;capacityType<subGraph.numOfCapacity;capacityType++) {
@@ -847,13 +876,13 @@ public class BranchAndPriceB <V> extends AbstractBranchAndPrice<SNDRC, Cycle, SN
                 List<? extends AbstractBranchCreator<SNDRC, Cycle, SNDRCPricingProblem>> branchCreators=Arrays.asList( new BranchOnLocalServiceForAllPricingProblems(subGraph, subPricingProblems, 0.5),new BranchOnLocalService(subGraph, subPricingProblems, 0.5),new BranchOnServiceEdge(subGraph, subPricingProblems, 0.5));
                 
               //Create a Branch-and-Price instance
-                BranchAndPriceB subBap=new BranchAndPriceB(subGraph, subMaster, subPricingProblems, subSolvers, branchCreators,this.objectiveIncumbentSolution,0.6,0.3,0.1,20,0.5,3,0.1,false,true);
+                BranchAndPriceB_M subBap=new BranchAndPriceB_M(subGraph, subMaster, subPricingProblems, subSolvers, branchCreators,this.objectiveIncumbentSolution,0.6,0.3,0.1,20,0.5,3,0.1,false,true);
 //              bap.setNodeOrdering(new BFSbapNodeComparator());
                 subBap.setNodeOrdering(new NodeBoundbapNodeComparator());
                 
-                BapLoggerB logger=new BapLoggerB(subBap, new File("./output/subBAPlogger.log"));
+                BapLoggerB_M logger=new BapLoggerB_M(subBap, new File("./output/subBAPlogger.log"));
                 
-                subBap.runBranchAndPrice(System.currentTimeMillis()+3600000L); // an hour
+                subBap.runBranchAndPrice(System.currentTimeMillis()+7200000L); // 2 hours
                 if(subBap.hasSolution()){
                     if(subBap.objectiveIncumbentSolution<this.objectiveIncumbentSolution){
                         
@@ -884,4 +913,5 @@ public class BranchAndPriceB <V> extends AbstractBranchAndPrice<SNDRC, Cycle, SN
     
     
 }
+
 

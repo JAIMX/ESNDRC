@@ -12,6 +12,7 @@ import org.jorlib.frameworks.columnGeneration.util.Configuration;
 import bap.BranchAndPrice;
 import bap.BranchAndPriceA;
 import bap.BranchAndPriceB;
+import bap.BranchAndPriceB_M;
 import bap.bapNodeComparators.NodeBoundbapNodeComparator;
 import bap.bapNodeComparators.NodeBoundbapNodeComparatorMaxBound;
 import bap.branching.BranchOnHoldingEdge;
@@ -29,6 +30,7 @@ import cg.master.cuts.StrongInequalityGenerator;
 import logger.BapLogger;
 import logger.BapLoggerA;
 import logger.BapLoggerB;
+import logger.BapLoggerB_M;
 import model.SNDRC;
 import model.SNDRC.Edge;
 
@@ -51,10 +53,10 @@ public class SNDRCSolver {
 		//Create a cutHandler
 		CutHandler<SNDRC, SNDRCMasterData> cutHandler=new CutHandler<>();
 		StrongInequalityGenerator cutGen=new StrongInequalityGenerator(dataModel,pricingProblems,0);
-		cutHandler.addCutGenerator(cutGen);
+//		cutHandler.addCutGenerator(cutGen);
 		
 		//Create the Master Problem
-		Master master=new Master(dataModel,pricingProblems,cutHandler,cutGen,true);
+		Master master=new Master(dataModel,pricingProblems,cutHandler,cutGen,false);
 		
 		//Define which solvers to use
 		List<Class<?extends AbstractPricingProblemSolver<SNDRC, Cycle, SNDRCPricingProblem>>> solvers=Collections.singletonList(ExactPricingProblemSolver.class);
@@ -67,20 +69,22 @@ public class SNDRCSolver {
 		//Create a Branch-and-Price instance
 //		BranchAndPriceA bap=new BranchAndPriceA(dataModel, master, pricingProblems, solvers, branchCreators,Double.MAX_VALUE,0.6,0.3,0.1,10,0.0001,3,true);
 //		BranchAndPriceA bap=new BranchAndPriceA(dataModel, master, pricingProblems, solvers, branchCreators,Double.MAX_VALUE,0.6,0.2,0.1,10,0.0001,3,false);
-		BranchAndPriceB bap=new BranchAndPriceB(dataModel, master, pricingProblems, solvers, branchCreators,Double.MAX_VALUE,0.65,0.2,0.1,1,0.001,3,0.1,true);
+//		BranchAndPriceB bap=new BranchAndPriceB(dataModel, master, pricingProblems, solvers, branchCreators,Double.MAX_VALUE,0.65,0.2,0.1,1,0.001,3,0.1,true);
+		BranchAndPriceB_M bap=new BranchAndPriceB_M(dataModel, master, pricingProblems, solvers, branchCreators,Double.MAX_VALUE,0.65,0.2,0.1,10,0.001,3,0.1,true,false);
 //		bap.setNodeOrdering(new BFSbapNodeComparator());
-		bap.setNodeOrdering(new NodeBoundbapNodeComparatorMaxBound());
-//		bap.setNodeOrdering(new NodeBoundbapNodeComparator());
+//		bap.setNodeOrdering(new NodeBoundbapNodeComparatorMaxBound());
+		bap.setNodeOrdering(new NodeBoundbapNodeComparator());
 		
 		//OPTIONAL: Attach a debugger
 //		SimpleDebugger debugger=new SimpleDebugger(bap, true);
 
 		//OPTIONAL: Attach a logger to the Branch-and-Price procedure.
 //		BapLoggerA logger=new BapLoggerA(bap, new File("./output/BAPlogger.log"));
-		BapLoggerB logger=new BapLoggerB(bap, new File("./output/BAPlogger.log"));
+//		BapLoggerB logger=new BapLoggerB(bap, new File("./output/BAPlogger.log"));
+		BapLoggerB_M logger=new BapLoggerB_M(bap, new File("./output/BAPlogger.log"));
 
 		//Solve the TSP problem through Branch-and-Price
-		bap.runBranchAndPrice(System.currentTimeMillis()+36000000L);
+		bap.runBranchAndPrice(System.currentTimeMillis()+18000000L);    //5 hours
 		
 		
 		//Print solution:
@@ -121,17 +125,17 @@ public class SNDRCSolver {
 				
 		}
 		
-		List<Map<Integer,Double>> optXValues=bap.GetOptXValues();
-		//output x variables
-		for(int demand=0;demand<dataModel.numDemand;demand++){
-		    for(int edgeIndex:optXValues.get(demand).keySet()){
-		        if(optXValues.get(demand).get(edgeIndex)>0.01){
-		            Edge edge=dataModel.edgeSet.get(edgeIndex);
-		            System.out.println("x[" + demand + "]:" + edge.start + "->" + edge.end + "= "+optXValues.get(demand).get(edgeIndex));
-		        }
-		    }
-		    System.out.println();
-		}
+//		List<Map<Integer,Double>> optXValues=bap.GetOptXValues();
+//		//output x variables
+//		for(int demand=0;demand<dataModel.numDemand;demand++){
+//		    for(int edgeIndex:optXValues.get(demand).keySet()){
+//		        if(optXValues.get(demand).get(edgeIndex)>0.01){
+//		            Edge edge=dataModel.edgeSet.get(edgeIndex);
+//		            System.out.println("x[" + demand + "]:" + edge.start + "->" + edge.end + "= "+optXValues.get(demand).get(edgeIndex));
+//		        }
+//		    }
+//		    System.out.println();
+//		}
 		
 		bap.close();
 		cutHandler.close();
