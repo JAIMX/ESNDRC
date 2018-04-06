@@ -1,0 +1,57 @@
+number of service arcs=750
+number of holding arcs=250
+
+Yes
+230
+
+javax.naming.TimeLimitExceededException
+	at cg.master.Master.solveMasterProblem(Master.java:414)
+	at org.jorlib.frameworks.columnGeneration.master.AbstractMaster.solve(AbstractMaster.java:152)
+	at org.jorlib.frameworks.columnGeneration.colgenMain.ColGen.invokeMaster(ColGen.java:271)
+	at org.jorlib.frameworks.columnGeneration.colgenMain.ColGen.solve(ColGen.java:224)
+	at org.jorlib.frameworks.columnGeneration.branchAndPrice.AbstractBranchAndPrice.solveBAPNode(AbstractBranchAndPrice.java:342)
+	at bap.BranchAndPriceB_M.runBranchAndPrice(BranchAndPriceB_M.java:235)
+	at bap.BranchAndPriceB_M.LearningUB(BranchAndPriceB_M.java:907)
+	at bap.BranchAndPriceB_M.runBranchAndPrice(BranchAndPriceB_M.java:319)
+	at SNDRCSolver.<init>(SNDRCSolver.java:87)
+	at SNDRCSolver.main(SNDRCSolver.java:207)
+javax.naming.TimeLimitExceededException
+	at cg.master.Master.solveMasterProblem(Master.java:414)
+	at org.jorlib.frameworks.columnGeneration.master.AbstractMaster.solve(AbstractMaster.java:152)
+	at org.jorlib.frameworks.columnGeneration.colgenMain.ColGen.invokeMaster(ColGen.java:271)
+	at org.jorlib.frameworks.columnGeneration.colgenMain.ColGen.solve(ColGen.java:224)
+	at org.jorlib.frameworks.columnGeneration.branchAndPrice.AbstractBranchAndPrice.solveBAPNode(AbstractBranchAndPrice.java:342)
+	at bap.BranchAndPriceB_M.runBranchAndPrice(BranchAndPriceB_M.java:235)
+	at SNDRCSolver.<init>(SNDRCSolver.java:87)
+	at SNDRCSolver.main(SNDRCSolver.java:207)
+================ Solution ================
+BAP terminated with objective : 46038
+Total Number of iterations: 82
+Total Number of processed nodes: 11
+Total Time spent on master problems: 7706411 Total time spent on pricing problems: 1519
+Best bound : 45358.07000000002
+The number of service edges used= 70
+Solution is optimal: false
+Columns (only non-zero columns are returned):
+artificial: false set: [66, 131, 164, 8, 137, 73, 11, 145, 147, 85, 155, 62, 127] start node= 1 start time= 31 capacity type= 2
+(1,5)->(0,8)->(0,11)->(0,12)->(1,14)->(0,16)->(0,23)->(0,27)->(0,31)->(0,35)->(0,37)->(0,45)->(0,47)->(4,1):3.0
+
+artificial: false set: [98, 226, 455, 168, 9, 41, 45, 112, 17, 146, 181, 150, 55, 221] start node= 1 start time= 35 capacity type= 2
+(1,0)->(3,5)->(0,5)->(0,9)->(0,12)->(0,17)->(1,18)->(1,21)->(1,26)->(1,31)->(0,41)->(0,45)->(0,46)->(0,48)->(3,3):1.0
+
+artificial: false set: [32, 194, 354, 67, 5, 69, 102, 363, 45, 114, 181, 184, 472, 120, 473] start node= 1 start time= 20 capacity type= 2
+(0,2)->(2,4)->(0,5)->(2,13)->(0,14)->(0,17)->(0,19)->(0,20)->(3,22)->(3,23)->(1,31)->(0,32)->(1,34)->(1,44)->(0,45)->(1,48):1.0
+
+artificial: false set: [290, 131, 8, 200, 73, 107, 11, 145, 147, 85, 374, 214, 153, 123, 95] start node= 4 start time= 3 capacity type= 2
+(1,0)->(1,3)->(0,7)->(0,8)->(0,11)->(1,14)->(0,23)->(0,23)->(2,24)->(0,31)->(0,35)->(1,40)->(0,45)->(0,45)->(0,47)->(4,1):1.0
+
+artificial: false set: [226, 98, 455, 168, 41, 203, 45, 112, 17, 181, 150, 55, 119] start node= 4 start time= 3 capacity type= 2
+(1,0)->(1,3)->(3,5)->(0,5)->(0,12)->(0,17)->(1,18)->(0,19)->(1,26)->(1,31)->(0,41)->(0,45)->(0,48)->(3,3):2.0
+
+artificial: false set: [32, 98, 226, 455, 199, 41, 9, 45, 112, 146, 181, 150, 55, 221] start node= 4 start time= 43 capacity type= 2
+(1,0)->(3,5)->(0,5)->(0,9)->(0,12)->(1,21)->(1,26)->(1,31)->(0,32)->(0,41)->(0,45)->(0,46)->(0,48)->(1,49)->(0,3):1.0
+
+artificial: false set: [320, 97, 386, 387, 388, 453, 454, 167, 455, 424, 298, 363, 173, 78, 111, 178, 343, 88, 120, 125, 221, 318, 319] start node= 4 start time= 23 capacity type= 2
+(3,3)->(3,4)->(3,5)->(0,11)->(2,13)->(1,17)->(1,18)->(1,19)->(0,20)->(1,20)->(1,21)->(1,23)->(2,24)->(0,25)->(1,28)->(0,28)->(2,36)->(2,37)->(2,38)->(0,38)->(1,43)->(0,47)->(1,48)->(3,1):1.0
+
+Total time= 22695410
