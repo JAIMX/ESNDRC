@@ -427,11 +427,11 @@ public class BranchAndPriceB_M <V> extends AbstractBranchAndPrice<SNDRC, Cycle, 
                     lowBoundQueue.addAll(newBranches);
                     
                     //if node bound doesn't improve, we record its two children by leading branch, add these branch to master
-                    if(Math.abs(parentBound-bapNode.getBound())<0.00001){
-                        for(BAPNode<SNDRC, Cycle> child:newBranches){
-                            ((Master) master).AddBranchDecisionForCut(child.getBranchingDecision());
-                        }
-                    }
+//                    if(Math.abs(parentBound-bapNode.getBound())<0.00001){
+//                        for(BAPNode<SNDRC, Cycle> child:newBranches){
+//                            ((Master) master).AddBranchDecisionForCut(child.getBranchingDecision());
+//                        }
+//                    }
                     
                     notifier.fireBranchEvent(bapNode, Collections.unmodifiableList(newBranches));
                 }
@@ -898,7 +898,7 @@ public class BranchAndPriceB_M <V> extends AbstractBranchAndPrice<SNDRC, Cycle, 
                 List<? extends AbstractBranchCreator<SNDRC, Cycle, SNDRCPricingProblem>> branchCreators=Arrays.asList( new BranchOnLocalServiceForAllPricingProblems(subGraph, subPricingProblems, 0.5),new BranchOnLocalService(subGraph, subPricingProblems, 0.5),new BranchOnServiceEdge(subGraph, subPricingProblems, 0.5));
                 
               //Create a Branch-and-Price instance
-                BranchAndPriceB_M subBap=new BranchAndPriceB_M(subGraph, subMaster, subPricingProblems, subSolvers, branchCreators,this.objectiveIncumbentSolution,0.6,0.3,0.1,20,0.5,3,0.1,false,true);
+                BranchAndPriceB_M subBap=new BranchAndPriceB_M(subGraph, subMaster, subPricingProblems, subSolvers, branchCreators,this.objectiveIncumbentSolution,0.6,0.3,0.1,20,0.5,5,0.1,false,true);
 //              bap.setNodeOrdering(new BFSbapNodeComparator());
                 subBap.setNodeOrdering(new NodeBoundbapNodeComparator());
                 

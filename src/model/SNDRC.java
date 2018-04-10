@@ -321,7 +321,9 @@ public class SNDRC implements ModelInterface {
         vehicleLimit = new int[numOfCapacity][numNode];
         for (int s = 0; s < numOfCapacity; s++) {
             for (int o = 0; o < numNode; o++) {
+//                System.out.println(s+" "+o);
                 vehicleLimit[s][o] = in.nextInt();
+//                System.out.println(vehicleLimit[s][o]);
             }
         }
 

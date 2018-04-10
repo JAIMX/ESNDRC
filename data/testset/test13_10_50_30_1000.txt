@@ -1069,7 +1069,7 @@ speed
 drivingtimeperday
 10
 number of type of capacities
-2
+3
 capcity
 20 50 100
 fixed cost of different trucks
