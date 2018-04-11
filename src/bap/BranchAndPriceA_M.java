@@ -69,6 +69,8 @@ public class BranchAndPriceA_M <V> extends AbstractBranchAndPrice<SNDRC, Cycle, 
     private boolean ifUseLearningUB,ifAccelerationForUB;
     private boolean[] subEdgeRecord;
     
+    private boolean ifOptGetFromSubGraph;
+    
     
     /**
      * 
@@ -116,6 +118,8 @@ public class BranchAndPriceA_M <V> extends AbstractBranchAndPrice<SNDRC, Cycle, 
         this.leanringCheckPercent=leanringCheckPercent;
         
         this.ifAccelerationForUB=ifAccelerationForUB;
+        
+        this.ifOptGetFromSubGraph=false;
         
         
     }
@@ -428,11 +432,11 @@ public class BranchAndPriceA_M <V> extends AbstractBranchAndPrice<SNDRC, Cycle, 
                     lowBoundQueue.addAll(newBranches);
                     
                     //if node bound doesn't improve, we record its two children by leading branch, add these branch to master
-//                    if(Math.abs(parentBound-bapNode.getBound())<0.00001){
-//                        for(BAPNode<SNDRC, Cycle> child:newBranches){
-//                            ((Master) master).AddBranchDecisionForCut(child.getBranchingDecision());
-//                        }
-//                    }
+                    if(Math.abs(parentBound-bapNode.getBound())<0.00001){
+                        for(BAPNode<SNDRC, Cycle> child:newBranches){
+                            ((Master) master).AddBranchDecisionForCut(child.getBranchingDecision());
+                        }
+                    }
                     
                     notifier.fireBranchEvent(bapNode, Collections.unmodifiableList(newBranches));
                 }
@@ -941,6 +945,11 @@ public class BranchAndPriceA_M <V> extends AbstractBranchAndPrice<SNDRC, Cycle, 
         }
         
     }
+    
+    
+    public boolean GetIfOptGetFromSubGraph(){
+   	   return ifOptGetFromSubGraph;
+      }
     
     
     

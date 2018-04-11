@@ -2,6 +2,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
+import org.jorlib.frameworks.columnGeneration.branchAndPrice.AbstractBranchAndPrice;
 import org.jorlib.frameworks.columnGeneration.branchAndPrice.AbstractBranchCreator;
 import org.jorlib.frameworks.columnGeneration.branchAndPrice.bapNodeComparators.BFSbapNodeComparator;
 import org.jorlib.frameworks.columnGeneration.io.SimpleDebugger;
@@ -38,6 +39,8 @@ import model.SNDRC.Edge;
 
 public class SNDRCSolver {
 	SNDRC dataModel;
+	boolean ifOptGetFromSubGraph;
+	
 	public SNDRCSolver(SNDRC dataModel) {
 		this.dataModel=dataModel;
 		
@@ -71,7 +74,7 @@ public class SNDRCSolver {
 		//Create a Branch-and-Price instance
 //		BranchAndPriceA bap=new BranchAndPriceA(dataModel, master, pricingProblems, solvers, branchCreators,Double.MAX_VALUE,0.6,0.2,0.1,10,0.0001,3,false);
 //		BranchAndPriceB bap=new BranchAndPriceB(dataModel, master, pricingProblems, solvers, branchCreators,Double.MAX_VALUE,0.65,0.2,0.1,1,0.001,3,0.1,true);
-//		BranchAndPriceB_M bap=new BranchAndPriceB_M(dataModel, master, pricingProblems, solvers, branchCreators,Double.MAX_VALUE,0.65,0.3,0.1,10,0.001,10,0.1,true,false);
+//		BranchAndPriceB_M bap=new BranchAndPriceB_M(dataModel, master, pricingProblems, solvers, branchCreators,Double.MAX_VALUE,0.65,0.3,0.1,10,0.001,3,0.1,true,false);
 		BranchAndPriceA_M bap=new BranchAndPriceA_M(dataModel, master, pricingProblems, solvers, branchCreators,Double.MAX_VALUE,0.65,1,0.1,10,0.001,10,0.1,false,true);
 //		bap.setNodeOrdering(new BFSbapNodeComparator());
 //		bap.setNodeOrdering(new NodeBoundbapNodeComparatorMaxBound());
@@ -89,6 +92,10 @@ public class SNDRCSolver {
 		//Solve the TSP problem through Branch-and-Price
 		bap.runBranchAndPrice(System.currentTimeMillis()+18000000L);    //5 hours
 		
+		this.ifOptGetFromSubGraph=bap.GetIfOptGetFromSubGraph();
+		
+		
+		
 		
 		//Print solution:
 		System.out.println("================ Solution ================");
@@ -99,13 +106,13 @@ public class SNDRCSolver {
 		System.out.println("Best bound : "+bap.getBound());
 		
 		//Count the number of key edges
-		Set<Integer> keyServiceEdgeIndexSet=new HashSet<>();
+		Set<Integer> keyServiceEdgeIndexSet=new TreeSet<>();
 		if(bap.hasSolution()){
 		    List<Cycle> solution = bap.getSolution();
             for (Cycle column : solution) {
                 Set<Integer> tempEdgeSet=column.edgeIndexSet;
                 for(int edgeIndex:tempEdgeSet){
-                    if(dataModel.edgeSet.get(edgeIndex).edgeType==0){
+                    if(((ifOptGetFromSubGraph)&&(dataModel.subEdgeSet.get(edgeIndex).edgeType==0))||((!ifOptGetFromSubGraph)&&(dataModel.edgeSet.get(edgeIndex).edgeType==0))){
                         if(!keyServiceEdgeIndexSet.contains(edgeIndex)){
                             keyServiceEdgeIndexSet.add(edgeIndex);
                         }
@@ -114,6 +121,7 @@ public class SNDRCSolver {
             }
 		}
 		
+//		System.out.println(keyServiceEdgeIndexSet.toString());
 		System.out.println("The number of service edges used= "+keyServiceEdgeIndexSet.size());
 		
 		if(bap.hasSolution()) {
@@ -150,9 +158,18 @@ public class SNDRCSolver {
 	public String out(Cycle column) {
 		
 		Queue<Edge> path=new PriorityQueue<>();
-		for(int edgeIndex:column.edgeIndexSet) {
-			path.add(dataModel.edgeSet.get(edgeIndex));
+		
+		if(!ifOptGetFromSubGraph){
+			for(int edgeIndex:column.edgeIndexSet) {
+				path.add(dataModel.edgeSet.get(edgeIndex));
+			}
+		}else{
+			for(int edgeIndex:column.edgeIndexSet) {
+				path.add(dataModel.subEdgeSet.get(edgeIndex));
+			}
 		}
+		
+
 		
 		StringBuilder pathRecord=new StringBuilder();
 		

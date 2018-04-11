@@ -67,6 +67,8 @@ public class BranchAndPriceB_M <V> extends AbstractBranchAndPrice<SNDRC, Cycle, 
     private int timeCompress;
     private boolean ifUseLearningUB,ifAccelerationForUB;
     private boolean[] subEdgeRecord;
+    private boolean ifOptGetFromSubGraph;
+    
     
     
     /**
@@ -115,6 +117,8 @@ public class BranchAndPriceB_M <V> extends AbstractBranchAndPrice<SNDRC, Cycle, 
         this.leanringCheckPercent=leanringCheckPercent;
         
         this.ifAccelerationForUB=ifAccelerationForUB;
+        
+        this.ifOptGetFromSubGraph=false;
         
         
     }
@@ -372,6 +376,9 @@ public class BranchAndPriceB_M <V> extends AbstractBranchAndPrice<SNDRC, Cycle, 
                         // TODO Auto-generated catch block
                         e.printStackTrace();
                     }
+                    
+                    this.ifOptGetFromSubGraph=false;
+                    
                 } else if (optimizationSenseMaster == OptimizationSense.MAXIMIZE
                         && integerObjective > this.lowerBoundOnObjective) {
                     this.objectiveIncumbentSolution = integerObjective;
@@ -613,6 +620,7 @@ public class BranchAndPriceB_M <V> extends AbstractBranchAndPrice<SNDRC, Cycle, 
                         // TODO Auto-generated catch block
                         e.printStackTrace();
                     }
+                    this.ifOptGetFromSubGraph=false;
 
                     // deal with nrNonImproForAcce
                     nrNonImproForAcce = 0;
@@ -707,7 +715,7 @@ public class BranchAndPriceB_M <V> extends AbstractBranchAndPrice<SNDRC, Cycle, 
      */
     public void LearningUB(){
         
-        Set<Integer> serviceEdgeSet=new HashSet<>();
+        Set<Integer> serviceEdgeSet=new TreeSet<>();
 //        int startTime=(int) (Math.random()*this.timeCompress);
         
         
@@ -822,6 +830,7 @@ public class BranchAndPriceB_M <V> extends AbstractBranchAndPrice<SNDRC, Cycle, 
           // output learning information
           System.out.println("Yes");
 //          System.out.println(Arrays.toString(edgeFrequency));
+//          System.out.println(serviceEdgeSet.toString());
           System.out.println(serviceEdgeSet.size());
           System.out.println();
 //          
@@ -926,7 +935,7 @@ public class BranchAndPriceB_M <V> extends AbstractBranchAndPrice<SNDRC, Cycle, 
                         
                         optXValues=subBap.optXValues;
                         
-                        
+                        this.ifOptGetFromSubGraph=true;
                     }
                 }
                 
@@ -941,7 +950,10 @@ public class BranchAndPriceB_M <V> extends AbstractBranchAndPrice<SNDRC, Cycle, 
         
     }
     
-    
+ 
+   public boolean GetIfOptGetFromSubGraph(){
+	   return ifOptGetFromSubGraph;
+   }
     
 }
 

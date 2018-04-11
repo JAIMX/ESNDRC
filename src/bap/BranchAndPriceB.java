@@ -64,6 +64,8 @@ public class BranchAndPriceB <V> extends AbstractBranchAndPrice<SNDRC, Cycle, SN
     private boolean ifUseLearningUB,ifAccelerationForUB;
     private boolean[] subEdgeRecord;
     
+    private boolean ifOptGetFromSubGraph;
+    
     
     /**
      * 
@@ -111,6 +113,8 @@ public class BranchAndPriceB <V> extends AbstractBranchAndPrice<SNDRC, Cycle, SN
         this.leanringCheckPercent=leanringCheckPercent;
         
         this.ifAccelerationForUB=ifAccelerationForUB;
+        
+        this.ifOptGetFromSubGraph=false;
         
         
     }
@@ -368,6 +372,9 @@ public class BranchAndPriceB <V> extends AbstractBranchAndPrice<SNDRC, Cycle, SN
                         // TODO Auto-generated catch block
                         e.printStackTrace();
                     }
+                    
+                    this.ifOptGetFromSubGraph=false;
+                    
                 } else if (optimizationSenseMaster == OptimizationSense.MAXIMIZE
                         && integerObjective > this.lowerBoundOnObjective) {
                     this.objectiveIncumbentSolution = integerObjective;
@@ -610,6 +617,8 @@ public class BranchAndPriceB <V> extends AbstractBranchAndPrice<SNDRC, Cycle, SN
                         e.printStackTrace();
                     }
 
+                    this.ifOptGetFromSubGraph=false;
+                    
                     // deal with nrNonImproForAcce
                     nrNonImproForAcce = 0;
                     ifFindBetterUB = true;
@@ -866,6 +875,8 @@ public class BranchAndPriceB <V> extends AbstractBranchAndPrice<SNDRC, Cycle, SN
                         
                         optXValues=subBap.optXValues;
                         
+                        this.ifOptGetFromSubGraph=true;
+                        
                         
                     }
                 }
@@ -881,7 +892,9 @@ public class BranchAndPriceB <V> extends AbstractBranchAndPrice<SNDRC, Cycle, SN
         
     }
     
-    
+    public boolean GetIfOptGetFromSubGraph(){
+  	   return ifOptGetFromSubGraph;
+     }   
     
 }
 

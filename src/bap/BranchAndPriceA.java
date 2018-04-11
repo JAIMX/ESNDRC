@@ -62,6 +62,7 @@ public class BranchAndPriceA <V> extends AbstractBranchAndPrice<SNDRC, Cycle, SN
     private double alphaForEdgeFre;
     private int timeCompress;
     private boolean ifUseLearningUB;
+    private final boolean ifOptGetFromSubGraph;
     
     
     /**
@@ -101,6 +102,8 @@ public class BranchAndPriceA <V> extends AbstractBranchAndPrice<SNDRC, Cycle, SN
         this.alphaForEdgeFre=alphaForEdgeFre;
         this.timeCompress=timeCompress;
         this.ifUseLearningUB=ifUseLearningUB;
+        
+        this.ifOptGetFromSubGraph=false;
         
         
     }
@@ -804,5 +807,11 @@ public class BranchAndPriceA <V> extends AbstractBranchAndPrice<SNDRC, Cycle, SN
         
 
         
+    }
+    
+    
+    
+    public boolean GetIfOptGetFromSubGraph(){
+ 	   return ifOptGetFromSubGraph;
     }
 }

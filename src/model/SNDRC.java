@@ -72,8 +72,12 @@ public class SNDRC implements ModelInterface {
 
     public List<Set<Integer>> edgesForX;
     public boolean isFeasibleForX;
+    
+    public ArrayList<Edge> subEdgeSet;
+
 
     public SNDRC(SNDRC sndrcParent, Set<Integer> serviceEdgeSet) {
+    	
         this.fleetSize = sndrcParent.fleetSize;
         this.numNode = sndrcParent.numNode;
         this.abstractNumNode = sndrcParent.abstractNumNode;
@@ -135,6 +139,8 @@ public class SNDRC implements ModelInterface {
             Set<Integer> set = new HashSet<>();
             edgesForX.add(set);
         }
+        
+        sndrcParent.subEdgeSet=edgeSet;
 
         isFeasibleForX = true;
         // add x variables with edges only needed(dp process)
