@@ -1,0 +1,4 @@
+BAPNodeID 	 parentNodeID 	 objectiveIncumbentSolution 	 nodeBound 	 nodeValue 	 cgIterations 	 t_master 	 t_pricing 	 nrGenColumns 	 solutionStatus 	 nodesInQueue 	 LB 	 nrInequalities 	 branchType
+0	-1	2147483647	19117.926666666666	19117.93	33	1985003	705	5988	FRACTIONAL	0	0.0	3750	null
+2	0	24480	19131.197142857134	19131.20	13	236767	1016	2746	FRACTIONAL	1	19117.926666666666	0	localService4All
+1	0	24480	19117.926666666666	19257.74	7	174434	131	2592	INCONCLUSIVE	2	19117.926666666666	-1	localService4All
