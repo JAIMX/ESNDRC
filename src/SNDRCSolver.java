@@ -58,10 +58,10 @@ public class SNDRCSolver {
 		//Create a cutHandler
 		CutHandler<SNDRC, SNDRCMasterData> cutHandler=new CutHandler<>();
 		StrongInequalityGenerator cutGen=new StrongInequalityGenerator(dataModel,pricingProblems,0);
-		cutHandler.addCutGenerator(cutGen);
+//		cutHandler.addCutGenerator(cutGen);
 		
 		//Create the Master Problem
-		Master master=new Master(dataModel,pricingProblems,cutHandler,cutGen,true);
+		Master master=new Master(dataModel,pricingProblems,cutHandler,cutGen,false);
 		
 		//Define which solvers to use
 		List<Class<?extends AbstractPricingProblemSolver<SNDRC, Cycle, SNDRCPricingProblem>>> solvers=Collections.singletonList(ExactPricingProblemSolver.class);
@@ -121,8 +121,9 @@ public class SNDRCSolver {
             }
 		}
 		
-//		System.out.println(keyServiceEdgeIndexSet.toString());
+		System.out.println(keyServiceEdgeIndexSet.toString());
 		System.out.println("The number of service edges used= "+keyServiceEdgeIndexSet.size());
+		System.out.println();
 		
 		if(bap.hasSolution()) {
 			System.out.println("Solution is optimal: "+bap.isOptimal());
