@@ -1,4 +1,4 @@
-number of service arcs=1200
+number of service arcs=1500
 number of holding arcs=300
 
 javax.naming.TimeLimitExceededException
@@ -11,104 +11,59 @@ javax.naming.TimeLimitExceededException
 	at SNDRCSolver.<init>(SNDRCSolver.java:93)
 	at SNDRCSolver.main(SNDRCSolver.java:228)
 ================ Solution ================
-BAP terminated with objective : 32219
-Total Number of iterations: 133
-Total Number of processed nodes: 9
-Total Time spent on master problems: 1381233 Total time spent on pricing problems: 3944
-Best bound : 26749.18
-[6, 36, 44, 59, 71, 77, 84, 118, 123, 143, 151, 156, 171, 182, 186, 197, 205, 213, 250, 256, 262, 280, 293, 298, 309, 339, 365, 371, 379, 390, 402, 407, 412, 413, 423, 428, 429, 434, 436, 438, 446, 449, 465, 466, 494, 498, 505, 517, 520, 535, 548, 555, 563, 566, 574, 581, 595, 601, 621, 645, 653, 655, 671, 684, 711, 714, 719, 720, 726, 736, 739, 750, 755, 765, 781, 784, 804, 814, 826, 842, 850, 899, 900, 915, 918, 921, 923, 938, 948, 961, 1015, 1029, 1049, 1050, 1054, 1057, 1072, 1085, 1096, 1107, 1122, 1126, 1132, 1136, 1152]
-The number of service edges used= 105
+BAP terminated with objective : 12653
+Total Number of iterations: 115
+Total Number of processed nodes: 5
+Total Time spent on master problems: 3231619 Total time spent on pricing problems: 3924
+Best bound : 8764.36989898989
+[0, 5, 14, 19, 23, 54, 60, 78, 85, 86, 94, 113, 131, 146, 168, 177, 207, 219, 228, 289, 296, 369, 399, 439, 478, 489, 499, 529, 540, 579, 598, 602, 610, 612, 648, 664, 679, 696, 700, 728, 738, 748, 755, 764, 773, 784, 792, 823, 833, 842, 872, 892, 922, 933, 1020, 1038, 1078, 1084, 1139, 1154, 1155, 1162, 1175, 1184, 1185, 1204, 1214, 1239, 1254, 1268, 1269, 1276, 1290, 1305, 1309, 1313, 1330, 1339, 1414, 1433, 1437, 1440, 1475]
+The number of service edges used= 83
 
 Solution is optimal: false
 Columns (only non-zero columns are returned):
-artificial: false set: [449, 434, 171, 156] start node= 1 start time= 6 capacity type= 1
-(1,6)->(3,14)->(1,21)->(3,29)->(1,6):1.0
+artificial: false set: [833, 369, 1078, 823, 1175, 1038] start node= 7 start time= 5 capacity type= 1
+(7,5)->(2,9)->(5,13)->(6,18)->(5,23)->(6,28)->(7,5):1.0
 
-artificial: false set: [1252, 548, 1253, 1254, 826, 1323, 1324, 205, 1325, 1326, 1327] start node= 4 start time= 4 capacity type= 1
-(4,3)->(4,4)->(4,5)->(4,6)->(4,7)->(4,8)->(7,16)->(1,22)->(1,23)->(1,24)->(1,25)->(4,3):1.0
+artificial: false set: [610, 1731, 755, 86, 1162, 1276, 1020] start node= 7 start time= 22 capacity type= 1
+(6,0)->(5,5)->(3,10)->(8,16)->(7,21)->(7,22)->(0,26)->(6,0):1.0
 
-artificial: false set: [736, 1392, 720, 1344, 1393, 1394, 1395, 517, 535, 1343] start node= 4 start time= 23 capacity type= 1
-(6,0)->(4,7)->(6,12)->(6,13)->(6,14)->(6,15)->(6,16)->(4,23)->(4,24)->(4,25)->(6,0):1.0
+artificial: false set: [1523, 54, 1239, 1305, 842, 1339, 748] start node= 7 start time= 9 capacity type= 1
+(5,2)->(7,9)->(8,15)->(9,19)->(0,23)->(0,24)->(4,28)->(5,2):1.0
 
-artificial: false set: [1328, 1329, 1330, 1331, 804, 1332, 1333, 1334, 1433, 59, 555, 1327] start node= 4 start time= 7 capacity type= 1
-(4,7)->(4,8)->(4,9)->(4,10)->(4,11)->(4,12)->(4,13)->(4,14)->(4,15)->(7,23)->(7,24)->(0,29)->(4,7):1.0
+artificial: false set: [1440, 738, 1204, 792, 728, 892] start node= 7 start time= 4 capacity type= 1
+(9,0)->(7,4)->(4,8)->(5,12)->(4,18)->(5,22)->(9,0):1.0
 
-artificial: false set: [1072, 1057, 915, 900] start node= 7 start time= 0 capacity type= 1
-(7,0)->(8,7)->(7,15)->(8,22)->(7,0):1.0
+artificial: false set: [1154, 1269, 922, 1084, 60, 78] start node= 7 start time= 14 capacity type= 1
+(0,0)->(6,4)->(8,9)->(7,14)->(0,18)->(6,22)->(0,0):1.0
 
-artificial: false set: [465, 1410, 36, 1334, 412, 781, 1438, 1439] start node= 7 start time= 28 capacity type= 1
-(7,0)->(7,1)->(0,6)->(4,14)->(4,15)->(2,22)->(7,28)->(7,29)->(7,0):1.0
+artificial: false set: [1184, 289, 1475, 1139, 1523, 1524, 85, 1269, 1578] start node= 8 start time= 9 capacity type= 1
+(9,5)->(8,9)->(7,14)->(2,18)->(2,19)->(0,23)->(0,24)->(0,25)->(6,29)->(9,5):1.0
 
-artificial: false set: [498, 339, 1411, 1337, 842, 684] start node= 7 start time= 1 capacity type= 1
-(7,1)->(7,2)->(2,9)->(4,17)->(4,18)->(5,24)->(7,1):1.0
+artificial: false set: [1618, 1619, 612, 696, 1433, 540, 1309, 1758] start node= 8 start time= 18 capacity type= 1
+(3,0)->(4,6)->(3,12)->(8,18)->(8,19)->(9,23)->(3,28)->(3,29)->(3,0):1.0
 
-artificial: false set: [739, 566, 1398, 250, 814] start node= 7 start time= 4 capacity type= 1
-(7,4)->(1,10)->(6,18)->(6,19)->(4,26)->(7,4):1.0
+artificial: false set: [228, 1414, 1254, 489, 1290, 1547] start node= 1 start time= 17 capacity type= 2
+(8,0)->(9,4)->(3,9)->(1,17)->(1,18)->(7,24)->(8,0):1.0
 
-artificial: false set: [784, 563, 1411, 1412, 1413, 1209, 1210, 1211, 44, 1212, 1213, 1342] start node= 7 start time= 1 capacity type= 1
-(7,1)->(7,2)->(7,3)->(7,4)->(0,9)->(0,10)->(0,11)->(0,12)->(0,13)->(0,14)->(4,22)->(4,23)->(7,1):1.0
+artificial: false set: [933, 23, 648, 1214, 399, 207] start node= 1 start time= 27 capacity type= 2
+(6,3)->(2,9)->(7,14)->(4,18)->(0,23)->(1,27)->(6,3):1.0
 
-artificial: false set: [850, 407, 1418, 1050, 923, 1419] start node= 8 start time= 0 capacity type= 1
-(8,0)->(7,8)->(7,9)->(7,10)->(2,17)->(7,23)->(8,0):1.0
+artificial: false set: [1330, 773, 598, 872, 168, 14] start node= 1 start time= 18 capacity type= 2
+(5,2)->(9,10)->(0,14)->(1,18)->(5,23)->(3,28)->(5,2):1.0
 
-artificial: false set: [1458, 1459, 1460, 1461, 1462, 423, 1015, 1463, 280, 1464] start node= 8 start time= 18 capacity type= 1
-(3,3)->(1,10)->(8,18)->(8,19)->(8,20)->(8,21)->(8,22)->(8,23)->(8,24)->(8,25)->(3,3):1.0
+artificial: false set: [0, 529, 579, 296, 764, 94, 1663] start node= 1 start time= 4 capacity type= 2
+(0,0)->(1,4)->(3,9)->(5,13)->(5,14)->(3,19)->(2,26)->(0,0):1.0
 
-artificial: false set: [1364, 645, 1029, 1446, 711, 1447, 1400, 1448, 298] start node= 8 start time= 6 capacity type= 1
-(8,6)->(8,7)->(8,8)->(8,9)->(5,14)->(5,15)->(6,20)->(6,21)->(1,28)->(8,6):1.0
+artificial: false set: [113, 19, 1155, 5, 219, 478] start node= 1 start time= 23 capacity type= 2
+(0,5)->(1,9)->(7,15)->(0,19)->(1,23)->(3,28)->(0,5):1.0
 
-artificial: false set: [402, 1428, 1429, 1430, 921, 1049, 1468, 574] start node= 8 start time= 28 capacity type= 1
-(5,4)->(2,12)->(7,18)->(7,19)->(7,20)->(7,21)->(8,28)->(8,29)->(5,4):1.0
+artificial: false set: [146, 131, 679, 664] start node= 4 start time= 4 capacity type= 2
+(4,4)->(1,11)->(4,19)->(1,26)->(4,4):1.0
 
-artificial: false set: [1440, 1441, 1442, 1443, 1422, 1423, 1424, 1425, 1426, 1427, 918, 1465, 1466, 1467, 1468, 1469, 1054] start node= 8 start time= 25 capacity type= 1
-(8,0)->(8,1)->(8,2)->(8,3)->(8,4)->(7,12)->(7,13)->(7,14)->(7,15)->(7,16)->(7,17)->(7,18)->(8,25)->(8,26)->(8,27)->(8,28)->(8,29)->(8,0):1.0
+artificial: false set: [784, 177, 499, 1652, 1653, 1606, 1607, 1608, 700] start node= 5 start time= 2 capacity type= 2
+(5,2)->(5,3)->(5,4)->(4,10)->(3,16)->(3,17)->(3,18)->(3,19)->(1,27)->(5,2):1.0
 
-artificial: false set: [1152, 1477, 1478, 1479, 1480, 1481, 750, 655, 1370, 1371, 1372, 1373, 1374] start node= 9 start time= 11 capacity type= 1
-(6,0)->(9,7)->(9,8)->(9,9)->(9,10)->(9,11)->(9,12)->(5,20)->(5,21)->(5,22)->(5,23)->(5,24)->(5,25)->(6,0):1.0
+artificial: false set: [1313, 1185, 1268, 439, 602, 1723, 1724, 1437] start node= 9 start time= 27 capacity type= 2
+(3,2)->(8,8)->(7,13)->(7,14)->(7,15)->(2,19)->(8,23)->(9,27)->(3,2):1.0
 
-artificial: false set: [1249, 1250, 1122, 755, 1251, 1380, 1381, 1382, 262, 1383, 1384] start node= 9 start time= 12 capacity type= 1
-(6,0)->(6,1)->(6,2)->(6,3)->(6,4)->(6,5)->(9,12)->(1,19)->(1,20)->(1,21)->(1,22)->(6,0):1.0
-
-artificial: false set: [71, 1489, 1490, 1107, 1491, 1492, 1205, 1493, 1206, 1494, 1207, 1495, 1208, 1496, 1209, 1210] start node= 9 start time= 19 capacity type= 1
-(0,5)->(0,6)->(0,7)->(0,8)->(0,9)->(0,10)->(0,11)->(9,19)->(9,20)->(9,21)->(9,22)->(9,23)->(9,24)->(9,25)->(9,26)->(9,27)->(0,5):1.0
-
-artificial: false set: [1472, 1473, 1474, 1475, 1476, 1477, 1478, 1479, 1096, 1480, 1481, 1482, 1483, 1484, 1485, 84] start node= 9 start time= 3 capacity type= 1
-(9,2)->(9,3)->(9,4)->(9,5)->(9,6)->(9,7)->(9,8)->(9,9)->(9,10)->(9,11)->(9,12)->(9,13)->(9,14)->(9,15)->(9,16)->(0,24)->(9,2):1.0
-
-artificial: false set: [1216, 1472, 1473, 1474, 77, 1495, 1496, 1497, 1498, 1499, 1213, 1085, 1214, 1470, 1215, 1471] start node= 9 start time= 25 capacity type= 1
-(9,0)->(9,1)->(9,2)->(9,3)->(9,4)->(9,5)->(0,13)->(0,14)->(0,15)->(0,16)->(0,17)->(9,25)->(9,26)->(9,27)->(9,28)->(9,29)->(9,0):1.0
-
-artificial: false set: [438, 6, 118, 1255, 1304, 1256, 1305, 1257, 1306, 1307] start node= 1 start time= 25 capacity type= 2
-(0,6)->(3,14)->(3,15)->(3,16)->(3,17)->(3,18)->(1,25)->(1,26)->(1,27)->(1,28)->(0,6):1.0
-
-artificial: false set: [256, 151, 714, 429] start node= 1 start time= 1 capacity type= 2
-(1,1)->(3,9)->(1,16)->(6,24)->(1,1):1.0
-
-artificial: false set: [1296, 1297, 197, 601, 505, 428, 1245, 1246] start node= 1 start time= 17 capacity type= 2
-(5,1)->(3,6)->(3,7)->(3,8)->(1,15)->(1,16)->(1,17)->(4,25)->(5,1):1.0
-
-artificial: false set: [1126, 390, 1416, 1417, 938, 143] start node= 1 start time= 23 capacity type= 2
-(2,0)->(7,6)->(7,7)->(7,8)->(9,16)->(1,23)->(2,0):1.0
-
-artificial: false set: [961, 436, 309, 293] start node= 1 start time= 23 capacity type= 2
-(8,1)->(2,9)->(3,16)->(1,23)->(8,1):1.0
-
-artificial: false set: [466, 899, 1333, 726, 1334, 1335, 413] start node= 4 start time= 13 capacity type= 2
-(6,6)->(4,13)->(4,14)->(4,15)->(4,16)->(2,23)->(7,29)->(6,6):1.0
-
-artificial: false set: [1136, 948, 213, 671] start node= 5 start time= 11 capacity type= 2
-(1,3)->(5,11)->(7,18)->(9,26)->(1,3):1.0
-
-artificial: false set: [371, 1270, 1367, 1368, 1369, 1370, 123, 621, 446] start node= 5 start time= 18 capacity type= 2
-(1,3)->(2,10)->(2,11)->(5,17)->(5,18)->(5,19)->(5,20)->(5,21)->(3,26)->(1,3):1.0
-
-artificial: false set: [1408, 186, 1370, 1371, 1372, 653, 494, 719] start node= 5 start time= 20 capacity type= 2
-(1,6)->(4,14)->(5,20)->(5,21)->(5,22)->(5,23)->(6,28)->(6,29)->(1,6):1.0
-
-artificial: false set: [1264, 595, 581, 379, 365, 1263] start node= 5 start time= 25 capacity type= 2
-(2,3)->(2,4)->(2,5)->(5,11)->(2,19)->(5,25)->(2,3):1.0
-
-artificial: false set: [182, 520, 1259, 1132, 765, 1230, 1231] start node= 9 start time= 22 capacity type= 2
-(1,0)->(1,1)->(1,2)->(4,10)->(6,15)->(9,22)->(1,29)->(1,0):1.0
-
-Total time= 18528912
+Total time= 19819691
