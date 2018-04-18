@@ -29,6 +29,11 @@ $\sum_{k\in K}x_{ij}^{k} \leqslant \sum_{p\in P}\sum_{\tau\in \theta _{p}} C_{p}
    $z_{\tau}\in Z\qquad \forall \tau\in \theta\qquad(5)$
 <br/>
 $z_{\tau}\geqslant 0\qquad \forall \tau\in \theta\qquad(5b)$
+
 $\sum_{\tau\in \theta}g_{s}^{\tau}z_{\tau} \leqslant /\geqslant constant \qquad \forall(s)\in Service4AllBranchSet1\qquad(6)$
+
 $\sum_{\tau\in \theta_{pl}}g_{s}^{\tau}z_{\tau} \leqslant /\geqslant constant \qquad \forall(s,p,l)\in ServiceBranchSet2\qquad(7)$
+
 $\sum_{\tau\in \theta_{pl}}r_{ij}^{\tau}z_{\tau} \leqslant /\geqslant constant \qquad \forall((i,j),p,l)\in ServiceArcBranchSet3\qquad(8)$
+
+$x_{ij}^{k} \leqslant w^{k}\sum_{\tau\in \theta}r_{ij}^{\tau}z_{\tau} \qquad \forall(i,j)\in E, \forall k\in K\qquad(9)$
