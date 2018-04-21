@@ -232,6 +232,101 @@ artificial: false set: [113, 71, 327, 328, 329, 330, 234, 331, 428, 349, 429, 43
 Total time= 18062174
 
 -------------------------------------------------------------------------------------------------------------------------------------------------------
+test9_7_30_30_400B
+
+BranchAndPriceB_M bap=new BranchAndPriceB_M(dataModel, master, pricingProblems, solvers, branchCreators,Double.MAX_VALUE,0.65,0.3,0.1,10,0.001,5,0.1,true,false);
+number of service arcs=900
+number of holding arcs=210
+
+Yes
+207
+
+javax.naming.TimeLimitExceededException
+	at cg.master.Master.solveMasterProblem(Master.java:414)
+	at org.jorlib.frameworks.columnGeneration.master.AbstractMaster.solve(AbstractMaster.java:152)
+	at org.jorlib.frameworks.columnGeneration.colgenMain.ColGen.invokeMaster(ColGen.java:271)
+	at org.jorlib.frameworks.columnGeneration.colgenMain.ColGen.solve(ColGen.java:224)
+	at org.jorlib.frameworks.columnGeneration.branchAndPrice.AbstractBranchAndPrice.solveBAPNode(AbstractBranchAndPrice.java:342)
+	at bap.BranchAndPriceB_M.runBranchAndPrice(BranchAndPriceB_M.java:239)
+	at SNDRCSolver.<init>(SNDRCSolver.java:93)
+	at SNDRCSolver.main(SNDRCSolver.java:228)
+================ Solution ================
+BAP terminated with objective : 37347
+Total Number of iterations: 199
+Total Number of processed nodes: 11
+Total Time spent on master problems: 4934827 Total time spent on pricing problems: 3097
+Best bound : 34356.46999999999
+[0, 3, 4, 6, 7, 8, 9, 10, 14, 16, 17, 18, 19, 22, 24, 25, 27, 31, 39, 46, 47, 50, 55, 58, 60, 63, 64, 72, 76, 86, 89, 92, 100, 101, 104, 108, 110, 115, 117, 124, 125, 126, 127, 128, 130, 131, 132, 133, 134, 137, 139, 140, 144, 146, 150, 156, 159, 161, 164, 167, 169, 171, 178, 179, 182, 184, 185, 186, 190, 193, 194, 195, 196, 197, 199, 202, 204]
+The number of service edges used= 77
+
+Solution is optimal: false
+Columns (only non-zero columns are returned):
+artificial: false set: [144, 195, 25, 266, 76, 237, 349, 222, 238, 350, 223] start node= 4 start time= 22 capacity type= 0
+(1,0)->(1,1)->(1,2)->(6,10)->(0,15)->(0,16)->(0,17)->(4,22)->(4,23)->(4,24)->(1,29)->(1,0):1.0
+
+artificial: false set: [262, 46, 16, 211, 212, 213, 214, 215, 312, 216, 313, 314, 315, 125] start node= 1 start time= 25 capacity type= 1
+(0,4)->(0,5)->(0,6)->(0,7)->(0,8)->(0,9)->(0,10)->(3,15)->(3,16)->(3,17)->(3,18)->(3,19)->(1,25)->(1,26)->(0,4):1.0
+
+artificial: false set: [50, 86, 10, 108, 140] start node= 4 start time= 4 capacity type= 1
+(4,4)->(1,9)->(2,14)->(0,21)->(2,26)->(4,4):1.0
+
+artificial: false set: [209, 130, 210, 211, 291, 308, 212, 150, 89, 14] start node= 4 start time= 17 capacity type= 1
+(0,2)->(0,3)->(0,4)->(0,5)->(0,6)->(3,11)->(3,12)->(4,17)->(2,24)->(2,25)->(0,2):1.0
+
+artificial: false set: [193, 131, 22, 171, 156] start node= 4 start time= 10 capacity type= 1
+(6,0)->(0,5)->(4,10)->(3,17)->(4,22)->(6,0):1.0
+
+artificial: false set: [128, 196, 101, 167, 9] start node= 4 start time= 5 capacity type= 1
+(3,0)->(4,5)->(6,13)->(0,18)->(2,23)->(3,0):1.0
+
+artificial: false set: [321, 100, 133, 134, 327, 8, 328, 329, 218, 330] start node= 4 start time= 0 capacity type= 1
+(4,0)->(4,1)->(4,2)->(4,3)->(4,4)->(0,11)->(0,12)->(2,17)->(3,24)->(3,25)->(4,0):1.0
+
+artificial: false set: [304, 305, 306, 354, 355, 132, 60, 124, 303, 159] start node= 4 start time= 27 capacity type= 1
+(3,6)->(3,7)->(3,8)->(3,9)->(3,10)->(1,16)->(3,22)->(4,27)->(4,28)->(4,29)->(3,6):1.0
+
+artificial: false set: [0, 131, 313, 58, 139, 349, 350, 351] start node= 1 start time= 10 capacity type= 2
+(0,2)->(1,10)->(3,16)->(3,17)->(4,22)->(4,23)->(4,24)->(4,25)->(0,2):1.0
+
+artificial: false set: [64, 337, 19, 197, 169, 127] start node= 1 start time= 5 capacity type= 2
+(1,5)->(4,10)->(4,11)->(6,19)->(0,24)->(3,29)->(1,5):1.0
+
+artificial: false set: [4, 229, 104, 137, 238, 47] start node= 1 start time= 1 capacity type= 2
+(1,1)->(1,2)->(2,7)->(4,15)->(0,22)->(0,23)->(1,1):1.0
+
+artificial: false set: [320, 17, 195, 76, 237, 126, 318, 222, 238, 319] start node= 1 start time= 0 capacity type= 2
+(1,0)->(1,1)->(1,2)->(6,10)->(0,15)->(0,16)->(3,21)->(3,22)->(3,23)->(3,24)->(1,0):1.0
+
+artificial: false set: [3, 115, 196, 263, 55, 396, 397, 269, 398, 399] start node= 1 start time= 27 capacity type= 2
+(2,2)->(2,3)->(6,9)->(6,10)->(6,11)->(6,12)->(6,13)->(0,18)->(1,26)->(1,27)->(2,2):1.0
+
+artificial: false set: [384, 385, 194, 386, 164, 357, 24, 346, 186, 383] start node= 5 start time= 28 capacity type= 2
+(5,0)->(5,1)->(6,9)->(0,14)->(4,19)->(4,20)->(5,26)->(5,27)->(5,28)->(5,29)->(5,0):1.0
+
+artificial: false set: [128, 19, 326, 182, 167, 202] start node= 5 start time= 18 capacity type= 2
+(3,0)->(4,5)->(6,13)->(5,18)->(0,24)->(3,29)->(3,0):1.0
+
+artificial: false set: [416, 193, 179, 212, 213, 39, 31, 415] start node= 5 start time= 14 capacity type= 2
+(6,0)->(0,5)->(0,6)->(0,7)->(5,14)->(0,20)->(6,28)->(6,29)->(6,0):1.0
+
+artificial: false set: [146, 72, 184, 27, 92] start node= 5 start time= 21 capacity type= 2
+(4,2)->(2,9)->(1,16)->(5,21)->(0,27)->(4,2):1.0
+
+artificial: false set: [128, 224, 161, 178, 101, 9] start node= 5 start time= 11 capacity type= 2
+(3,0)->(4,5)->(5,11)->(0,17)->(0,18)->(2,23)->(3,0):1.0
+
+artificial: false set: [208, 274, 371, 372, 373, 6, 199, 110, 190, 207] start node= 5 start time= 14 capacity type= 2
+(0,0)->(0,1)->(0,2)->(2,7)->(2,8)->(5,14)->(5,15)->(5,16)->(5,17)->(6,25)->(0,0):1.0
+
+artificial: false set: [210, 211, 212, 117, 278, 279, 7, 280, 185, 204, 382, 383] start node= 5 start time= 25 capacity type= 2
+(0,3)->(0,4)->(0,5)->(0,6)->(2,11)->(2,12)->(2,13)->(2,14)->(6,20)->(5,25)->(5,26)->(5,27)->(0,3):1.0
+
+artificial: false set: [224, 161, 225, 18, 178, 126, 63] start node= 5 start time= 11 capacity type= 2
+(1,0)->(4,5)->(5,11)->(0,17)->(0,18)->(0,19)->(3,24)->(1,0):1.0
+
+Total time= 18005062
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------
 test10_7_30_50_300A
 
 BranchAndPriceB_M bap=new BranchAndPriceB_M(dataModel, master, pricingProblems, solvers, branchCreators,Double.MAX_VALUE,0.65,0.3,0.1,1,0.001,8,0.1,true,false);
