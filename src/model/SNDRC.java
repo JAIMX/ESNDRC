@@ -142,22 +142,104 @@ public class SNDRC implements ModelInterface {
         
         sndrcParent.subEdgeSet=edgeSet;
 
-        isFeasibleForX = true;
+
+//        // add x variables with edges only needed(dp process)
+//        isFeasibleForX = true;
+//        for (int p = 0; p < numDemand; p++) {
+//
+//            boolean ifDestinationAchievable = false;
+//            boolean[] achieve = new boolean[abstractNumNode];
+//            for (int i = 0; i < achieve.length; i++) {
+//                achieve[i] = false;
+//            }
+//
+//            Demand demand = demandSet.get(p);
+//            int originNodeIndex = demand.origin * timePeriod + demand.timeAvailable;
+//            int startTime = demand.timeAvailable;
+//            int endTime = demand.timeDue;
+//            int durationLimit;
+//            achieve[originNodeIndex] = true;
+//
+//            if (endTime > startTime) {
+//                durationLimit = endTime - startTime;
+//            } else {
+//                durationLimit = endTime - startTime + timePeriod;
+//            }
+//
+//            int timeDuration = durationLimit;
+//
+//            for (int t = 0; t < timeDuration; t++) {
+//                int currentTime = t + startTime;
+//                currentTime = currentTime % timePeriod;
+//
+//                for (int localNode = 0; localNode < numNode; localNode++) {
+//                    int currentNodeIndex = localNode * timePeriod + currentTime;
+//
+//                    if (achieve[currentNodeIndex]) {
+//                        for (int edgeIndex : pointToEdgeSet.get(currentNodeIndex)) {
+//                            Edge edge = edgeSet.get(edgeIndex);
+//
+//                            // here we have some sort of bugs, the duration of holding arcs is 0. But that doesn't affact the correctness of the programs
+//                            if (edge.duration < durationLimit || (edge.duration == durationLimit
+//                                    && edge.end == demand.destination * timePeriod + endTime)) {
+//                                edgesForX.get(p).add(edgeIndex);
+//                                achieve[edge.end] = true;
+//
+//                                if (edge.end == demand.destination * timePeriod + endTime) {
+//                                    ifDestinationAchievable = true;
+//                                }
+//
+//                            }
+//                        }
+//                    }
+//
+//                }
+//
+//                durationLimit--;
+//
+//            }
+//
+//            if (!ifDestinationAchievable) {
+//                isFeasibleForX = false;
+//                break;
+//            }
+//
+////            System.out.println("p= "+p);
+////            Set<Integer> set = edgesForX.get(p);
+////            int destination = demand.destination * timePeriod + demand.timeDue;
+////            for (int edgeIndex : set) {
+////                Edge edge = edgeSet.get(edgeIndex);
+////                if (edge.end == destination) {
+////                    System.out.println(edge.u + "," + edge.t1 + " -> " + edge.v + "," + edge.t2);
+////                }
+////            }
+//            
+//        }
+        
+  
+///----------------------------------------------reduce size of x variables--------------------------------------------/// 
+        
         // add x variables with edges only needed(dp process)
+        isFeasibleForX = true;
         for (int p = 0; p < numDemand; p++) {
 
             boolean ifDestinationAchievable = false;
-            boolean[] achieve = new boolean[abstractNumNode];
-            for (int i = 0; i < achieve.length; i++) {
-                achieve[i] = false;
+            boolean[] achieveForward = new boolean[abstractNumNode];
+            for (int i = 0; i < achieveForward.length; i++) {
+                achieveForward[i] = false;
             }
 
+
             Demand demand = demandSet.get(p);
+            
+            //1st step: forward
             int originNodeIndex = demand.origin * timePeriod + demand.timeAvailable;
+            int destinationNodeIndex=demand.destination*timePeriod+demand.timeDue;
             int startTime = demand.timeAvailable;
             int endTime = demand.timeDue;
+
             int durationLimit;
-            achieve[originNodeIndex] = true;
+            achieveForward[originNodeIndex] = true;
 
             if (endTime > startTime) {
                 durationLimit = endTime - startTime;
@@ -174,17 +256,16 @@ public class SNDRC implements ModelInterface {
                 for (int localNode = 0; localNode < numNode; localNode++) {
                     int currentNodeIndex = localNode * timePeriod + currentTime;
 
-                    if (achieve[currentNodeIndex]) {
+                    if (achieveForward[currentNodeIndex]) {
                         for (int edgeIndex : pointToEdgeSet.get(currentNodeIndex)) {
                             Edge edge = edgeSet.get(edgeIndex);
 
                             // here we have some sort of bugs, the duration of holding arcs is 0. But that doesn't affact the correctness of the programs
                             if (edge.duration < durationLimit || (edge.duration == durationLimit
-                                    && edge.end == demand.destination * timePeriod + endTime)) {
-                                edgesForX.get(p).add(edgeIndex);
-                                achieve[edge.end] = true;
+                                    && edge.end == destinationNodeIndex)) {
+                                achieveForward[edge.end] = true;
 
-                                if (edge.end == demand.destination * timePeriod + endTime) {
+                                if (edge.end == destinationNodeIndex) {
                                     ifDestinationAchievable = true;
                                 }
 
@@ -202,22 +283,42 @@ public class SNDRC implements ModelInterface {
                 isFeasibleForX = false;
                 break;
             }
+            
+            
+            //2st step: backward
+            boolean[] achieveBackward = new boolean[abstractNumNode];
+            for (int i = 0; i < achieveBackward.length; i++) {
+                achieveBackward[i] = false;
+            }
+            
+            achieveBackward[destinationNodeIndex]=true;
+            durationLimit=timeDuration;
+            
+            for(int t=0;t<timeDuration;t++){
+                int currentTime=endTime-t;
+                if(currentTime<0){
+                    currentTime+=timePeriod;
+                }
+                
+                for(int localNode=0;localNode<numNode;localNode++){
+                    
+                }
+            }
 
-//            System.out.println("p= "+p);
-//            Set<Integer> set = edgesForX.get(p);
-//            int destination = demand.destination * timePeriod + demand.timeDue;
-//            for (int edgeIndex : set) {
-//                Edge edge = edgeSet.get(edgeIndex);
-//                if (edge.end == destination) {
-//                    System.out.println(edge.u + "," + edge.t1 + " -> " + edge.v + "," + edge.t2);
-//                }
-//            }
             
-            
-            
-            
-
         }
+        
+        
+        
+        
+        
+        
+        
+        
+ ///----------------------------------------------reduce size of x variables--------------------------------------------///      
+        
+        
+        
 
     }
 
