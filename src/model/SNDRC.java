@@ -715,6 +715,13 @@ public class SNDRC implements ModelInterface {
                 break;
             }
             
+            for(int nodeIndex=0;nodeIndex<abstractNumNode;nodeIndex++){
+                if(achieveForward[nodeIndex]){
+                    System.out.print(nodeIndex+" ");
+                }
+            }
+            System.out.println();
+            
             
             //2st step: backward
             boolean[] achieveBackward = new boolean[abstractNumNode];
@@ -745,10 +752,17 @@ public class SNDRC implements ModelInterface {
                         }
                     }
                 }
+                
+                durationLimit--;
             }
             
             
-            
+            for(int nodeIndex=0;nodeIndex<abstractNumNode;nodeIndex++){
+                if(achieveBackward[nodeIndex]){
+                    System.out.print(nodeIndex+" ");
+                }
+            }
+            System.out.println();
             
             //step3:merge the common points
             Set<Integer> commonPointSet=new HashSet<>();
