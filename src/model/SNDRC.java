@@ -3,6 +3,7 @@ package model;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Currency;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Scanner;
@@ -10,6 +11,7 @@ import java.util.Set;
 
 import org.jorlib.frameworks.columnGeneration.model.ModelInterface;
 
+import com.google.common.util.concurrent.Service.State;
 import com.sun.org.apache.bcel.internal.generic.AASTORE;
 
 import model.SNDRC.Demand;
@@ -143,7 +145,7 @@ public class SNDRC implements ModelInterface {
         sndrcParent.subEdgeSet=edgeSet;
 
 
-//        // add x variables with edges only needed(dp process)
+        // add x variables with edges only needed(dp process)
 //        isFeasibleForX = true;
 //        for (int p = 0; p < numDemand; p++) {
 //
@@ -203,16 +205,8 @@ public class SNDRC implements ModelInterface {
 //                isFeasibleForX = false;
 //                break;
 //            }
-//
-////            System.out.println("p= "+p);
-////            Set<Integer> set = edgesForX.get(p);
-////            int destination = demand.destination * timePeriod + demand.timeDue;
-////            for (int edgeIndex : set) {
-////                Edge edge = edgeSet.get(edgeIndex);
-////                if (edge.end == destination) {
-////                    System.out.println(edge.u + "," + edge.t1 + " -> " + edge.v + "," + edge.t2);
-////                }
-////            }
+//            
+//            System.out.println("Size of commodity "+p+"= "+edgesForX.get(p).size());
 //            
 //        }
         
@@ -301,9 +295,61 @@ public class SNDRC implements ModelInterface {
                 }
                 
                 for(int localNode=0;localNode<numNode;localNode++){
+                    int currentNodeIndex=localNode*timePeriod+currentTime;
                     
+                    if(achieveBackward[currentNodeIndex]){
+                        for(int edgeIndex:pointFromEdgeSet.get(currentNodeIndex)){
+                            Edge edge=edgeSet.get(edgeIndex);
+                            
+                            // here we have some sort of bugs, the duration of holding arcs is 0. But that doesn't affact the correctness of the programs
+                            if(edge.duration<durationLimit||(edge.duration==durationLimit&&edge.start==originNodeIndex)){
+                                achieveBackward[edge.start]=true;
+                            }
+                        }
+                    }
                 }
             }
+            
+            
+            
+            
+            //step3:merge the common points
+            Set<Integer> commonPointSet=new HashSet<>();
+            durationLimit=timeDuration;
+            
+            for(int t=0;t<timeDuration;t++){
+                int currentTime=t+startTime;
+                currentTime=currentTime%timePeriod;
+                
+                if(currentTime!=startTime&&currentTime!=endTime){
+                    for(int localNode=0;localNode<numNode;localNode++){
+                        int currentNodeIndex=localNode*timePeriod+currentTime;
+                        
+                        
+                        if(achieveForward[currentNodeIndex]&&achieveBackward[currentNodeIndex]){
+                            commonPointSet.add(currentNodeIndex);
+                        }
+                    }
+                }
+            }
+            
+            
+            commonPointSet.add(originNodeIndex);
+            commonPointSet.add(destinationNodeIndex);
+            
+            
+            
+            
+            for(int edgeIndex=0;edgeIndex<numArc;edgeIndex++){
+                Edge edge=edgeSet.get(edgeIndex);
+                
+                if(commonPointSet.contains(edge.start)&&commonPointSet.contains(edge.end)){
+                    edgesForX.get(p).add(edgeIndex);
+                }
+            }
+            
+//            System.out.println("Size of commodity "+p+"= "+edgesForX.get(p).size());
+            
 
             
         }
@@ -550,18 +596,81 @@ public class SNDRC implements ModelInterface {
         }
 
         // add x variables with edges only needed(dp process)
+//        for (int p = 0; p < numDemand; p++) {
+//            boolean[] achieve = new boolean[abstractNumNode];
+//            for (int i = 0; i < achieve.length; i++) {
+//                achieve[i] = false;
+//            }
+//
+//            Demand demand = demandSet.get(p);
+//            int originNodeIndex = demand.origin * timePeriod + demand.timeAvailable;
+//            int startTime = demand.timeAvailable;
+//            int endTime = demand.timeDue;
+//            int durationLimit;
+//            achieve[originNodeIndex] = true;
+//
+//            if (endTime > startTime) {
+//                durationLimit = endTime - startTime;
+//            } else {
+//                durationLimit = endTime - startTime + timePeriod;
+//            }
+//
+//            int timeDuration = durationLimit;
+//
+//            for (int t = 0; t < timeDuration; t++) {
+//                int currentTime = t + startTime;
+//                currentTime = currentTime % timePeriod;
+//
+//                for (int localNode = 0; localNode < numNode; localNode++) {
+//                    int currentNodeIndex = localNode * timePeriod + currentTime;
+//
+//                    if (achieve[currentNodeIndex]) {
+//                        for (int edgeIndex : pointToEdgeSet.get(currentNodeIndex)) {
+//                            Edge edge = edgeSet.get(edgeIndex);
+//
+//                            if (edge.duration < durationLimit || (edge.duration == durationLimit
+//                                    && edge.end == demand.destination * timePeriod + endTime)) {
+//                                edgesForX.get(p).add(edgeIndex);
+//                                achieve[edge.end] = true;
+//                            }
+//                        }
+//                    }
+//
+//                }
+//
+//                durationLimit--;
+//
+//            }
+//            
+//            
+//            System.out.println("Size of commodity "+p+"= "+edgesForX.get(p).size());
+//
+//        }
+        
+        
+///----------------------------------------------reduce size of x variables--------------------------------------------/// 
+        
+        // add x variables with edges only needed(dp process)
+        isFeasibleForX = true;
         for (int p = 0; p < numDemand; p++) {
-            boolean[] achieve = new boolean[abstractNumNode];
-            for (int i = 0; i < achieve.length; i++) {
-                achieve[i] = false;
+
+            boolean ifDestinationAchievable = false;
+            boolean[] achieveForward = new boolean[abstractNumNode];
+            for (int i = 0; i < achieveForward.length; i++) {
+                achieveForward[i] = false;
             }
 
+
             Demand demand = demandSet.get(p);
+            
+            //1st step: forward
             int originNodeIndex = demand.origin * timePeriod + demand.timeAvailable;
+            int destinationNodeIndex=demand.destination*timePeriod+demand.timeDue;
             int startTime = demand.timeAvailable;
             int endTime = demand.timeDue;
+
             int durationLimit;
-            achieve[originNodeIndex] = true;
+            achieveForward[originNodeIndex] = true;
 
             if (endTime > startTime) {
                 durationLimit = endTime - startTime;
@@ -578,14 +687,19 @@ public class SNDRC implements ModelInterface {
                 for (int localNode = 0; localNode < numNode; localNode++) {
                     int currentNodeIndex = localNode * timePeriod + currentTime;
 
-                    if (achieve[currentNodeIndex]) {
+                    if (achieveForward[currentNodeIndex]) {
                         for (int edgeIndex : pointToEdgeSet.get(currentNodeIndex)) {
                             Edge edge = edgeSet.get(edgeIndex);
 
+                            // here we have some sort of bugs, the duration of holding arcs is 0. But that doesn't affact the correctness of the programs
                             if (edge.duration < durationLimit || (edge.duration == durationLimit
-                                    && edge.end == demand.destination * timePeriod + endTime)) {
-                                edgesForX.get(p).add(edgeIndex);
-                                achieve[edge.end] = true;
+                                    && edge.end == destinationNodeIndex)) {
+                                achieveForward[edge.end] = true;
+
+                                if (edge.end == destinationNodeIndex) {
+                                    ifDestinationAchievable = true;
+                                }
+
                             }
                         }
                     }
@@ -596,7 +710,96 @@ public class SNDRC implements ModelInterface {
 
             }
 
+            if (!ifDestinationAchievable) {
+                isFeasibleForX = false;
+                break;
+            }
+            
+            
+            //2st step: backward
+            boolean[] achieveBackward = new boolean[abstractNumNode];
+            for (int i = 0; i < achieveBackward.length; i++) {
+                achieveBackward[i] = false;
+            }
+            
+            achieveBackward[destinationNodeIndex]=true;
+            durationLimit=timeDuration;
+            
+            for(int t=0;t<timeDuration;t++){
+                int currentTime=endTime-t;
+                if(currentTime<0){
+                    currentTime+=timePeriod;
+                }
+                
+                for(int localNode=0;localNode<numNode;localNode++){
+                    int currentNodeIndex=localNode*timePeriod+currentTime;
+                    
+                    if(achieveBackward[currentNodeIndex]){
+                        for(int edgeIndex:pointFromEdgeSet.get(currentNodeIndex)){
+                            Edge edge=edgeSet.get(edgeIndex);
+                            
+                            // here we have some sort of bugs, the duration of holding arcs is 0. But that doesn't affact the correctness of the programs
+                            if(edge.duration<durationLimit||(edge.duration==durationLimit&&edge.start==originNodeIndex)){
+                                achieveBackward[edge.start]=true;
+                            }
+                        }
+                    }
+                }
+            }
+            
+            
+            
+            
+            //step3:merge the common points
+            Set<Integer> commonPointSet=new HashSet<>();
+            durationLimit=timeDuration;
+            
+            for(int t=0;t<timeDuration;t++){
+                int currentTime=t+startTime;
+                currentTime=currentTime%timePeriod;
+                
+                if(currentTime!=startTime&&currentTime!=endTime){
+                    for(int localNode=0;localNode<numNode;localNode++){
+                        int currentNodeIndex=localNode*timePeriod+currentTime;
+                        
+                        
+                        if(achieveForward[currentNodeIndex]&&achieveBackward[currentNodeIndex]){
+                            commonPointSet.add(currentNodeIndex);
+                        }
+                    }
+                }
+            }
+            
+            
+            commonPointSet.add(originNodeIndex);
+            commonPointSet.add(destinationNodeIndex);
+            
+            
+            
+            
+            for(int edgeIndex=0;edgeIndex<numArc;edgeIndex++){
+                Edge edge=edgeSet.get(edgeIndex);
+                
+                if(commonPointSet.contains(edge.start)&&commonPointSet.contains(edge.end)){
+                    edgesForX.get(p).add(edgeIndex);
+                }
+            }
+            
+//            System.out.println("Size of commodity "+p+"= "+edgesForX.get(p).size());
+            
+
+            
         }
+        
+        
+        
+        
+        
+        
+        
+        
+ ///----------------------------------------------reduce size of x variables--------------------------------------------/// 
+        
 
     }
 

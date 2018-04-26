@@ -241,15 +241,6 @@ number of holding arcs=210
 Yes
 207
 
-javax.naming.TimeLimitExceededException
-	at cg.master.Master.solveMasterProblem(Master.java:414)
-	at org.jorlib.frameworks.columnGeneration.master.AbstractMaster.solve(AbstractMaster.java:152)
-	at org.jorlib.frameworks.columnGeneration.colgenMain.ColGen.invokeMaster(ColGen.java:271)
-	at org.jorlib.frameworks.columnGeneration.colgenMain.ColGen.solve(ColGen.java:224)
-	at org.jorlib.frameworks.columnGeneration.branchAndPrice.AbstractBranchAndPrice.solveBAPNode(AbstractBranchAndPrice.java:342)
-	at bap.BranchAndPriceB_M.runBranchAndPrice(BranchAndPriceB_M.java:239)
-	at SNDRCSolver.<init>(SNDRCSolver.java:93)
-	at SNDRCSolver.main(SNDRCSolver.java:228)
 ================ Solution ================
 BAP terminated with objective : 37347
 Total Number of iterations: 199
@@ -470,26 +461,6 @@ number of holding arcs=210
 Yes
 218
 
-javax.naming.TimeLimitExceededException
-	at cg.master.Master.solveMasterProblem(Master.java:414)
-	at org.jorlib.frameworks.columnGeneration.master.AbstractMaster.solve(AbstractMaster.java:152)
-	at org.jorlib.frameworks.columnGeneration.colgenMain.ColGen.invokeMaster(ColGen.java:271)
-	at org.jorlib.frameworks.columnGeneration.colgenMain.ColGen.solve(ColGen.java:224)
-	at org.jorlib.frameworks.columnGeneration.branchAndPrice.AbstractBranchAndPrice.solveBAPNode(AbstractBranchAndPrice.java:342)
-	at bap.BranchAndPriceB_M.runBranchAndPrice(BranchAndPriceB_M.java:239)
-	at bap.BranchAndPriceB_M.LearningUB(BranchAndPriceB_M.java:924)
-	at bap.BranchAndPriceB_M.runBranchAndPrice(BranchAndPriceB_M.java:323)
-	at SNDRCSolver.<init>(SNDRCSolver.java:93)
-	at SNDRCSolver.main(SNDRCSolver.java:228)
-javax.naming.TimeLimitExceededException
-	at cg.master.Master.solveMasterProblem(Master.java:414)
-	at org.jorlib.frameworks.columnGeneration.master.AbstractMaster.solve(AbstractMaster.java:152)
-	at org.jorlib.frameworks.columnGeneration.colgenMain.ColGen.invokeMaster(ColGen.java:271)
-	at org.jorlib.frameworks.columnGeneration.colgenMain.ColGen.solve(ColGen.java:224)
-	at org.jorlib.frameworks.columnGeneration.branchAndPrice.AbstractBranchAndPrice.solveBAPNode(AbstractBranchAndPrice.java:342)
-	at bap.BranchAndPriceB_M.runBranchAndPrice(BranchAndPriceB_M.java:239)
-	at SNDRCSolver.<init>(SNDRCSolver.java:93)
-	at SNDRCSolver.main(SNDRCSolver.java:228)
 ================ Solution ================
 BAP terminated with objective : 84833
 Total Number of iterations: 56
