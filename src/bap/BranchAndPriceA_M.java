@@ -437,6 +437,20 @@ public class BranchAndPriceA_M <V> extends AbstractBranchAndPrice<SNDRC, Cycle, 
 //                            ((Master) master).AddBranchDecisionForCut(child.getBranchingDecision());
 //                        }
 //                    }
+
+                    
+///------------------------------------------------------------------------check 3792----------------------------------///
+                    if(Math.abs(parentBound-bapNode.getBound())<0.00001&&Math.abs(3792-bapNode.getBound())<0.00001){
+                        try {
+                            bapNodeSolutionOutput(bapNode);
+                            throw new RuntimeException("We should check this solution!!! ");
+                        } catch (IloException e) {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
+                        }
+                    }
+                        
+///------------------------------------------------------------------------check 3792----------------------------------///
                     
                     notifier.fireBranchEvent(bapNode, Collections.unmodifiableList(newBranches));
                 }
@@ -693,17 +707,17 @@ public class BranchAndPriceA_M <V> extends AbstractBranchAndPrice<SNDRC, Cycle, 
         }
         System.out.println();
         
-//        List<Map<Integer,Double>> optXValues=((Master) master).getXValues();
-//        //output x variables
-//        for(int demand=0;demand<dataModel.numDemand;demand++){
-//            for(int edgeIndex:optXValues.get(demand).keySet()){
-//                if(optXValues.get(demand).get(edgeIndex)>0.01){
-//                    Edge edge=dataModel.edgeSet.get(edgeIndex);
-//                    System.out.println("x[" + demand + "]:" + edge.start + "->" + edge.end +" "+edge.u+","+edge.t1+"->"+edge.v+","+edge.t2+" = "+optXValues.get(demand).get(edgeIndex));
-//                }
-//            }
-//            System.out.println();
-//        }
+        List<Map<Integer,Double>> optXValues=((Master) master).getXValues();
+        //output x variables
+        for(int demand=0;demand<dataModel.numDemand;demand++){
+            for(int edgeIndex:optXValues.get(demand).keySet()){
+                if(optXValues.get(demand).get(edgeIndex)>0.01){
+                    Edge edge=dataModel.edgeSet.get(edgeIndex);
+                    System.out.println("x[" + demand + "]:" + edge.start + "->" + edge.end +" "+edge.u+","+edge.t1+"->"+edge.v+","+edge.t2+" = "+optXValues.get(demand).get(edgeIndex));
+                }
+            }
+            System.out.println();
+        }
     }
     
     /**
