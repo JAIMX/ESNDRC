@@ -244,6 +244,21 @@ public class BranchAndPriceA_M <V> extends AbstractBranchAndPrice<SNDRC, Cycle, 
 //                nodeBoundRecord[bapNode.nodeID] = bapNode.getBound();
 
                 
+                
+                
+                
+///------------------------------------------------------------------------check 2284----------------------------------///
+//                if(Math.abs(parentBound-bapNode.getBound())<0.00001&&Math.abs(2284-bapNode.getBound())<0.000001){
+//                    try {
+//                        bapNodeSolutionOutput(bapNode);
+//                        throw new RuntimeException("We should check this solution!!! ");
+//                    } catch (IloException e) {
+//                        // TODO Auto-generated catch block
+//                        e.printStackTrace();
+//                    }
+//                }
+                    
+///------------------------------------------------------------------------check 2284----------------------------------///
 
             } catch (TimeLimitExceededException e) {
                 queue.add(bapNode);
@@ -432,25 +447,14 @@ public class BranchAndPriceA_M <V> extends AbstractBranchAndPrice<SNDRC, Cycle, 
                     lowBoundQueue.addAll(newBranches);
                     
                     //if node bound doesn't improve, we record its two children by leading branch, add these branch to master
-//                    if(Math.abs(parentBound-bapNode.getBound())<0.00001){
-//                        for(BAPNode<SNDRC, Cycle> child:newBranches){
-//                            ((Master) master).AddBranchDecisionForCut(child.getBranchingDecision());
-//                        }
-//                    }
-
-                    
-///------------------------------------------------------------------------check 3792----------------------------------///
-                    if(Math.abs(parentBound-bapNode.getBound())<0.00001&&Math.abs(3792-bapNode.getBound())<0.00001){
-                        try {
-                            bapNodeSolutionOutput(bapNode);
-                            throw new RuntimeException("We should check this solution!!! ");
-                        } catch (IloException e) {
-                            // TODO Auto-generated catch block
-                            e.printStackTrace();
+                    if(Math.abs(parentBound-bapNode.getBound())<0.00001){
+                        for(BAPNode<SNDRC, Cycle> child:newBranches){
+                            ((Master) master).AddBranchDecisionForCut(child.getBranchingDecision());
                         }
                     }
-                        
-///------------------------------------------------------------------------check 3792----------------------------------///
+
+                    
+
                     
                     notifier.fireBranchEvent(bapNode, Collections.unmodifiableList(newBranches));
                 }
@@ -703,6 +707,7 @@ public class BranchAndPriceA_M <V> extends AbstractBranchAndPrice<SNDRC, Cycle, 
                     System.out.print("(" + edge.u + "," + edge.t1 + ")->(" + edge.v + "," + edge.t2 + ") ");
                 }
             }
+            System.out.println();
             System.out.println();
         }
         System.out.println();
