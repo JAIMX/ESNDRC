@@ -14,6 +14,8 @@ import bap.branching.branchingDecisions.RoundLocalServiceForAllPricingProblems;
 import bap.branching.branchingDecisions.RoundQ;
 import bap.branching.branchingDecisions.RoundServiceEdge;
 import bap.branching.branchingDecisions.RoundServiceEdgeForAllPricingProblems;
+import bap.branching.branchingDecisions.RoundTimeService;
+import bap.branching.branchingDecisions.RoundTimeServiceForAllPricingProblems;
 import cg.Cycle;
 import cg.SNDRCPricingProblem;
 import cg.master.cuts.StrongInequality;
@@ -60,6 +62,14 @@ public class SNDRCMasterData extends MasterData<SNDRC, Cycle, SNDRCPricingProble
     // branch on local service 4 all
     public Set<RoundLocalServiceForAllPricingProblems> localService4AllBranchingSet;
     public Map<RoundLocalServiceForAllPricingProblems, IloRange> localService4AllBranchingConstraints;
+    
+    //branch on time service
+    public Set<RoundTimeService> timeServiceBranchingSet;
+    public Map<RoundTimeService, IloRange> timeServiceBranchingConstraints;
+    
+    //branch on time service 4 all
+    public Set<RoundTimeServiceForAllPricingProblems> timeService4AllBranchingSet;
+    public Map<RoundTimeServiceForAllPricingProblems, IloRange> timeService4AllBranchingConstraints;
 
     // for acceleration:
     public Map<Cycle, IloRange> fixVarConstraints;

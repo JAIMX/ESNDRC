@@ -18,6 +18,8 @@ import bap.branching.branchingDecisions.RoundLocalServiceForAllPricingProblems;
 import bap.branching.branchingDecisions.RoundQ;
 import bap.branching.branchingDecisions.RoundServiceEdge;
 import bap.branching.branchingDecisions.RoundServiceEdgeForAllPricingProblems;
+import bap.branching.branchingDecisions.RoundTimeService;
+import bap.branching.branchingDecisions.RoundTimeServiceForAllPricingProblems;
 import cg.Cycle;
 import cg.SNDRCPricingProblem;
 import cg.master.cuts.StrongInequality;
@@ -62,6 +64,14 @@ public final class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProbl
     // branch on local service 4 all
     private Set<RoundLocalServiceForAllPricingProblems> localService4AllBranchingSet;
     private Map<RoundLocalServiceForAllPricingProblems, IloRange> localService4AllBranchingConstraints;
+    
+    //branch on time service
+    private Set<RoundTimeService> timeServiceBranchingSet;
+    private Map<RoundTimeService, IloRange> timeServiceBranchingConstraints;
+    
+    //branch on time service 4 all
+    private Set<RoundTimeServiceForAllPricingProblems> timeService4AllBranchingSet;
+    private Map<RoundTimeServiceForAllPricingProblems, IloRange> timeService4AllBranchingConstraints;
 
     // record the branches leading to a node which needs to be solved by cut
     private Set<BranchingDecision> branchSetNodeSolvedByCut;
@@ -89,6 +99,12 @@ public final class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProbl
 
         this.localService4AllBranchingSet = new HashSet<>();
         this.localService4AllBranchingConstraints = new HashMap<>();
+        
+        this.timeServiceBranchingSet=new HashSet<>();
+        this.timeServiceBranchingConstraints=new HashMap<>();
+        
+        this.timeService4AllBranchingSet=new HashSet<>();
+        this.timeService4AllBranchingConstraints=new HashMap<>();
 
         this.branchSetNodeSolvedByCut = new HashSet<>();
         this.cutGen = cutGen;
@@ -347,6 +363,41 @@ public final class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProbl
                         IloRange serviceBranching = cplex.addLe(Math.ceil(localServiceBranch4All.branchValue), expr,
                                 "round up local service: " + localServiceBranch4All.localServiceIndex);
                         localService4AllBranchingConstraints.put(localServiceBranch4All, serviceBranching);
+                    }
+                }
+            }
+            
+            // time serivice branching constraints
+            if(timeServiceBranchingSet!=null){
+                for(RoundTimeService timeServiceBranch:timeServiceBranchingSet){
+                    if(timeServiceBranch.roundUpOrDown==0){ 
+                        // round down
+                        expr=cplex.linearNumExpr();
+                        IloRange branch=cplex.addGe(Math.floor(timeServiceBranch.branchValue), expr,"round down time service: "+timeServiceBranch.localServiceIndex);
+                        timeServiceBranchingConstraints.put(timeServiceBranch, branch);
+                    }else{
+                        // round up
+                        expr=cplex.linearNumExpr();
+                        IloRange branch=cplex.addLe(Math.ceil(timeServiceBranch.branchValue), expr,"round up time service: "+timeServiceBranch.localServiceIndex);
+                        timeServiceBranchingConstraints.put(timeServiceBranch, branch);
+                    }
+                }
+            }
+            
+            
+            // time serivice 4 all branching constraints
+            if(timeService4AllBranchingSet!=null){
+                for(RoundTimeServiceForAllPricingProblems timeService4AllBranch:timeService4AllBranchingSet){
+                    if(timeService4AllBranch.roundUpOrDown==0){ 
+                        // round down
+                        expr=cplex.linearNumExpr();
+                        IloRange branch=cplex.addGe(Math.floor(timeService4AllBranch.branchValue), expr,"round down time service 4 all: "+timeService4AllBranch.localServiceIndex);
+                        timeService4AllBranchingConstraints.put(timeService4AllBranch, branch);
+                    }else{
+                        // round up
+                        expr=cplex.linearNumExpr();
+                        IloRange branch=cplex.addLe(Math.ceil(timeService4AllBranch.branchValue), expr,"round up time service: "+timeService4AllBranch.localServiceIndex);
+                        timeService4AllBranchingConstraints.put(timeService4AllBranch, branch);
                     }
                 }
             }
@@ -643,6 +694,42 @@ public final class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProbl
 
                 }
             }
+            
+            //time service branching constraints(we use third kind of artifical variable)
+            if(column.isArtificialColumn&&column.ifForResourceBoundConstraints==2){
+                for(RoundTimeService timeServiceBranching:masterData.timeServiceBranchingSet){
+                    if(timeServiceBranching.roundUpOrDown==1){
+                        IloRange constraint=masterData.timeServiceBranchingConstraints.get(timeServiceBranching);
+                        iloColumn=iloColumn.and(masterData.cplex.column(constraint,1));
+                    }
+                }
+            }else{
+                if(!column.isArtificialColumn){
+                    
+                    for(RoundTimeService timeServiceBranching:masterData.timeServiceBranchingSet){
+                        if(column.associatedPricingProblem==timeServiceBranching.associatedPricingProblem){
+                            IloRange constraint=masterData.timeServiceBranchingConstraints.get(timeServiceBranching);
+                            
+                            int count=0;
+                            for(int edgeIndex:column.edgeIndexSet){
+                                Edge edge=dataModel.edgeSet.get(edgeIndex);
+                                
+                                if(edge.serviceIndex==timeServiceBranching.localServiceIndex&&timeServiceBranching.timeSet.contains(edge.t1)){
+                                    count++;
+                                }
+                            }
+                            
+                            iloColumn=iloColumn.and(masterData.cplex.column(constraint,count));
+                        }
+                    }
+                }
+            }
+            
+            
+            //time service 4 All branching constraints(we use third kind of artifical variable)
+            
+            
+            
 
             // for strong cuts , including artificial and non-artificial
             // variables(we use
