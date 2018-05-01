@@ -34,6 +34,8 @@ import bap.branching.branchingDecisions.RoundLocalServiceForAllPricingProblems;
 import bap.branching.branchingDecisions.RoundQ;
 import bap.branching.branchingDecisions.RoundServiceEdge;
 import bap.branching.branchingDecisions.RoundServiceEdgeForAllPricingProblems;
+import bap.branching.branchingDecisions.RoundTimeService;
+import bap.branching.branchingDecisions.RoundTimeServiceForAllPricingProblems;
 import cg.Cycle;
 import model.SNDRC;
 
@@ -237,6 +239,14 @@ public class BapLoggerA_M implements BAPListener{
         
         if (bd instanceof RoundLocalServiceForAllPricingProblems) {
             this.branchType="localService4All";
+        }
+        
+        if(bd instanceof RoundTimeService) {
+        	this.branchType="TimeService";
+        }
+        
+        if(bd instanceof RoundTimeServiceForAllPricingProblems) {
+        	this.branchType="TimeService4All";
         }
 
 

@@ -89,7 +89,7 @@ public class SNDRCMasterData extends MasterData<SNDRC, Cycle, SNDRCPricingProble
             Map<RoundServiceEdge, IloRange> ServiceEdgeBranchingConstraints, List<Map<Integer, IloNumVar>> x,
             IloNumVar[][] q, Map<RoundServiceEdgeForAllPricingProblems, IloRange> serviceEdge4AllBranchingConstraints,
             Map<RoundLocalService, IloRange> localServiceBranchingConstraints,
-            Map<RoundHoldingEdge, IloRange> holdingEdgeBranchingConstraints, Map<RoundLocalServiceForAllPricingProblems, IloRange> localService4AllBranchingConstraints,SNDRC dataModel,long masterDataBuildTime) {
+            Map<RoundHoldingEdge, IloRange> holdingEdgeBranchingConstraints, Map<RoundLocalServiceForAllPricingProblems, IloRange> localService4AllBranchingConstraints,Map<RoundTimeService,IloRange> timeServiceBranchingConstraints,Map<RoundTimeServiceForAllPricingProblems,IloRange> timeService4AllBranchingConstraints,SNDRC dataModel,long masterDataBuildTime) {
         super(varMap);
         this.cplex = cplex;
         this.x = x;
@@ -175,6 +175,24 @@ public class SNDRCMasterData extends MasterData<SNDRC, Cycle, SNDRCPricingProble
                 this.localService4AllBranchingConstraints.put(roundLocalService,
                         localService4AllBranchingConstraints.get(roundLocalService));
             }
+        }
+        
+        this.timeServiceBranchingSet=new HashSet<>();
+        this.timeServiceBranchingConstraints=new HashMap<>();
+        if(timeServiceBranchingConstraints!=null) {
+        	for(RoundTimeService roundTimeService:timeServiceBranchingConstraints.keySet()) {
+        		this.timeServiceBranchingSet.add(roundTimeService);
+        		this.timeServiceBranchingConstraints.put(roundTimeService, timeServiceBranchingConstraints.get(roundTimeService));
+        	}
+        }
+        
+        this.timeService4AllBranchingSet=new HashSet<>();
+        this.timeService4AllBranchingConstraints=new HashMap<>();
+        if(timeService4AllBranchingConstraints!=null) {
+        	for(RoundTimeServiceForAllPricingProblems roundTimeService4All:timeService4AllBranchingConstraints.keySet()) {
+        		this.timeService4AllBranchingSet.add(roundTimeService4All);
+        		this.timeService4AllBranchingConstraints.put(roundTimeService4All, timeService4AllBranchingConstraints.get(roundTimeService4All));
+        	}
         }
 
         fixVarConstraints = new HashMap<>();

@@ -414,7 +414,7 @@ public final class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProbl
             return new SNDRCMasterData(cplex, pricingProblems, varMap, qBranchingconstraints,
                     ServiceEdgeBranchingConstraints, x, q, serviceEdge4AllBranchingConstraints,
                     localServiceBranchingConstraints, holdingEdgeBranchingConstraints,
-                    localService4AllBranchingConstraints, dataModel, time);
+                    localService4AllBranchingConstraints,timeServiceBranchingConstraints,timeService4AllBranchingConstraints, dataModel, time);
 
         } catch (IloException e) {
             // TODO Auto-generated catch block
@@ -695,7 +695,7 @@ public final class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProbl
                 }
             }
             
-            //time service branching constraints(we use third kind of artifical variable)
+            //time service branching constraints(we use third kind of artificial variable)
             if(column.isArtificialColumn&&column.ifForResourceBoundConstraints==2){
                 for(RoundTimeService timeServiceBranching:masterData.timeServiceBranchingSet){
                     if(timeServiceBranching.roundUpOrDown==1){
@@ -726,8 +726,34 @@ public final class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProbl
             }
             
             
-            //time service 4 All branching constraints(we use third kind of artifical variable)
-            
+            //time service for all pricing problems branching constraints(we use third kind of artificial variable)
+            if(column.isArtificialColumn&&column.ifForResourceBoundConstraints==2){
+                for(RoundTimeServiceForAllPricingProblems timeService4AllBranching:masterData.timeService4AllBranchingSet){
+                    if(timeService4AllBranching.roundUpOrDown==1){
+                        IloRange constraint=masterData.timeService4AllBranchingConstraints.get(timeService4AllBranching);
+                        iloColumn=iloColumn.and(masterData.cplex.column(constraint,1));
+                    }
+                }
+            }else{
+                if(!column.isArtificialColumn){
+                    
+                    for(RoundTimeServiceForAllPricingProblems timeService4AllBranching:masterData.timeService4AllBranchingSet){
+                            IloRange constraint=masterData.timeService4AllBranchingConstraints.get(timeService4AllBranching);
+                            
+                            int count=0;
+                            for(int edgeIndex:column.edgeIndexSet){
+                                Edge edge=dataModel.edgeSet.get(edgeIndex);
+                                
+                                if(edge.serviceIndex==timeService4AllBranching.localServiceIndex&&timeService4AllBranching.timeSet.contains(edge.t1)){
+                                    count++;
+                                }
+                            }
+                            
+                            iloColumn=iloColumn.and(masterData.cplex.column(constraint,count));
+                        
+                    }
+                }
+            }
             
             
 
@@ -829,6 +855,8 @@ public final class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProbl
             /**
              * Here the index of holding arcs are calculated as :
              * localNode*T+t+numServiceArc
+             * 
+             * note that this calculation can't be applied to learningUB algorithm
              */
             // holding edges branching constraints
             for (RoundHoldingEdge branch : masterData.holdingEdgeBranchingSet) {
@@ -859,6 +887,41 @@ public final class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProbl
                 }
 
             }
+            
+            
+            // time service branching constraints
+            for(RoundTimeService timeServiceBranch:masterData.timeServiceBranchingSet) {
+            	
+            	if(timeServiceBranch.associatedPricingProblem==pricingProblem) {
+            		IloRange constraint=masterData.timeServiceBranchingConstraints.get(timeServiceBranch);
+            		double dualValue=masterData.cplex.getDual(constraint);
+            		
+            		for(int edgeIndex=0;edgeIndex<dataModel.numServiceArc;edgeIndex++) {
+            			Edge edge=dataModel.edgeSet.get(edgeIndex);
+            			if(edge.serviceIndex==timeServiceBranch.localServiceIndex&&timeServiceBranch.timeSet.contains(edge.t1)) {
+            				modifiedCosts[edgeIndex]-=dualValue;
+            			}
+            		}
+            	}
+            }
+            
+            // time service 4 all branching constraints
+            for(RoundTimeServiceForAllPricingProblems timeService4AllBranch:masterData.timeService4AllBranchingSet) {
+            	
+            		IloRange constraint=masterData.timeService4AllBranchingConstraints.get(timeService4AllBranch);
+            		double dualValue=masterData.cplex.getDual(constraint);
+            		
+            		for(int edgeIndex=0;edgeIndex<dataModel.numServiceArc;edgeIndex++) {
+            			Edge edge=dataModel.edgeSet.get(edgeIndex);
+            			if(edge.serviceIndex==timeService4AllBranch.localServiceIndex&&timeService4AllBranch.timeSet.contains(edge.t1)) {
+            				modifiedCosts[edgeIndex]-=dualValue;
+            			}
+            		}
+            	
+            }
+            
+            
+            
 
             // strong cuts
             for (StrongInequality inequality : masterData.strongInequalities.keySet()) {
@@ -1021,6 +1084,14 @@ public final class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProbl
         if (bd instanceof RoundLocalServiceForAllPricingProblems) {
             localService4AllBranchingSet.add((RoundLocalServiceForAllPricingProblems) bd);
         }
+        
+        if (bd instanceof RoundTimeService) {
+            timeServiceBranchingSet.add( (RoundTimeService) bd);
+        }
+        
+        if (bd instanceof RoundTimeServiceForAllPricingProblems) {
+            timeService4AllBranchingSet.add( (RoundTimeServiceForAllPricingProblems) bd);
+        }
 
         if (branchSetNodeSolvedByCut.contains(bd)) {
             cutHandler.addCutGenerator(cutGen);
@@ -1126,6 +1197,34 @@ public final class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProbl
                 masterData.localService4AllBranchingConstraints.remove(bd);
                 this.localService4AllBranchingConstraints.remove(bd);
                 this.localService4AllBranchingSet.remove(bd);
+
+            } catch (IloException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+        
+        if (bd instanceof RoundTimeService) {
+            try {
+                masterData.cplex.remove(masterData.timeServiceBranchingConstraints.get(bd));
+                masterData.timeServiceBranchingSet.remove(bd);
+                masterData.timeServiceBranchingConstraints.remove(bd);
+                this.timeServiceBranchingConstraints.remove(bd);
+                this.timeServiceBranchingSet.remove(bd);
+
+            } catch (IloException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+        
+        if (bd instanceof RoundTimeServiceForAllPricingProblems) {
+            try {
+                masterData.cplex.remove(masterData.timeService4AllBranchingConstraints.get(bd));
+                masterData.timeService4AllBranchingSet.remove(bd);
+                masterData.timeService4AllBranchingConstraints.remove(bd);
+                this.timeService4AllBranchingConstraints.remove(bd);
+                this.timeService4AllBranchingSet.remove(bd);
 
             } catch (IloException e) {
                 // TODO Auto-generated catch block
