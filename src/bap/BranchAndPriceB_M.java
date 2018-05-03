@@ -10,6 +10,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
+import java.util.Properties;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -22,6 +23,7 @@ import org.jorlib.frameworks.columnGeneration.master.OptimizationSense;
 import org.jorlib.frameworks.columnGeneration.master.cutGeneration.AbstractInequality;
 import org.jorlib.frameworks.columnGeneration.master.cutGeneration.CutHandler;
 import org.jorlib.frameworks.columnGeneration.pricing.AbstractPricingProblemSolver;
+import org.jorlib.frameworks.columnGeneration.util.Configuration;
 import org.jorlib.frameworks.columnGeneration.util.MathProgrammingUtil;
 
 import com.sun.xml.internal.ws.api.server.ServiceDefinition;
@@ -320,7 +322,12 @@ public class BranchAndPriceB_M <V> extends AbstractBranchAndPrice<SNDRC, Cycle, 
                 }
                 
                 if(this.nodesProcessed % nodeFre==0&&this.nodesProcessed!=0&&ifUseLearningUB){
-                    LearningUB();
+                    try {
+                        LearningUB();
+                    } catch (TimeLimitExceededException | IloException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
                     
 //                    this.ifUseLearningUB=false;
                     
@@ -712,8 +719,10 @@ public class BranchAndPriceB_M <V> extends AbstractBranchAndPrice<SNDRC, Cycle, 
     /**
      * According to the statistic information from edgeFrequency,cutFrequency and accumulatedReducedCost, 
      * we pick up some important edges to build a subgraph. If the problem is infeasible, we adjust some parameters to enlarge the edge set.
+     * @throws IloException 
+     * @throws TimeLimitExceededException 
      */
-    public void LearningUB(){
+    public void LearningUB() throws TimeLimitExceededException, IloException{
         
         Set<Integer> serviceEdgeSet=new TreeSet<>();
 //        int startTime=(int) (Math.random()*this.timeCompress);
@@ -872,6 +881,16 @@ public class BranchAndPriceB_M <V> extends AbstractBranchAndPrice<SNDRC, Cycle, 
 //            System.out.println(subGraph.isFeasibleForX);
 //            subGraph.isFeasibleForX=true;
             if(subGraph.isFeasibleForX){
+                
+                
+//--------------------------------------------------------------------------------------------------------------------------------------                
+//                long time0 = System.currentTimeMillis();
+//                ColumnGenerationBasedHeuristic solver = new ColumnGenerationBasedHeuristic(subGraph, 0.65, true);
+//                solver.Solve();
+//                long time1 = System.currentTimeMillis();
+//                System.out.println("Total time= " + (time1 - time0));
+//--------------------------------------------------------------------------------------------------------------------------------------     
+                
                 
                 this.ifUseLearningUB=false;
                 
