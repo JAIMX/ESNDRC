@@ -41,6 +41,8 @@ public class ColumnGenerationBasedHeuristic {
     List<Cycle> incumbentSolution =new ArrayList<>();
     Map<Cycle, Double> optSolutionValueMap;
     
+    long runTime=0;
+    
 
     public ColumnGenerationBasedHeuristic(SNDRC dataModel,Double thresholdValue,boolean ifAccelerationForUB) {
         this.dataModel = dataModel;
@@ -49,6 +51,8 @@ public class ColumnGenerationBasedHeuristic {
     }
 
     public void Solve() throws TimeLimitExceededException, IloException {
+        
+        runTime=System.currentTimeMillis();
 
         /// -----------------------------------------------------step1: solve
         /// the root node
@@ -109,8 +113,10 @@ public class ColumnGenerationBasedHeuristic {
 
 //        SimpleCGLogger logger = new SimpleCGLogger(cg, new File("./output/cgLogger.log"));
 
-        cg.solve(System.currentTimeMillis() + 3600000L); // one hour limit
+        cg.solve(System.currentTimeMillis() + 18000000L); // 5 hour limit
         
+   
+        System.out.println("Time of first LP solve= "+(System.currentTimeMillis()-runTime));
         
         if(ifAccelerationForUB){
           ///-------------------------------AccelerationForUB------------------------------------///
@@ -164,7 +170,7 @@ public class ColumnGenerationBasedHeuristic {
                 
                 List<Cycle> nullList = new ArrayList<>();
                 cg = new ColGen<>(dataModel, master, pricingProblems, solvers, nullList,Integer.MAX_VALUE, Double.MIN_VALUE);
-                cg.solve(System.currentTimeMillis() + 3600000L); //one hour
+                cg.solve(System.currentTimeMillis() + 18000000L); //5 hour
                 
                 if(isInfeasibleNode(cg.getSolution())){
                     break;
@@ -193,7 +199,10 @@ public class ColumnGenerationBasedHeuristic {
             
             
             ///-------------------------------AccelerationForUB------------------------------------///
+            System.out.println("Time of acceleration LP solve= "+(System.currentTimeMillis()-runTime));
         }
+        
+        
         
 
         // pick up all the cycles in master problem
@@ -213,7 +222,7 @@ public class ColumnGenerationBasedHeuristic {
         // cplex.setOut(null);
         cplex.setParam(IloCplex.IntParam.Threads, 4);
         cplex.setParam(IloCplex.Param.Simplex.Tolerances.Markowitz, 0.1);
-        cplex.setParam(IloCplex.DoubleParam.TiLim, 36000);
+
         List<Map<Integer, IloNumVar>> x; // map:edgeIndex, x variable
 
         // Define variables x
@@ -341,6 +350,12 @@ public class ColumnGenerationBasedHeuristic {
         System.out.println("There are "+amount+" columns added to the model.");
         System.out.println();
         
+        
+        
+        runTime=System.currentTimeMillis()-runTime;
+        long timeLeft=18000000-runTime;
+        cplex.setParam(IloCplex.DoubleParam.TiLim, timeLeft/1000);
+//        cplex.setParam(IloCplex.DoubleParam.TiLim, 36000);
         cplex.solve();
         System.out.println("optimal objective= "+cplex.getObjValue());
     }
