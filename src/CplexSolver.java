@@ -1,5 +1,8 @@
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -52,10 +55,13 @@ public class CplexSolver {
 	public void Solve() throws IloException, IOException {
 		 
 		IloCplex cplex=new IloCplex();
-//		cplex.setOut(null);
+		
+		FileOutputStream outputStream=new FileOutputStream(new File("./output/cplexOut.txt"));
+		
+		cplex.setOut(outputStream);
 		cplex.setParam(IloCplex.IntParam.Threads, 4);
 		cplex.setParam(IloCplex.Param.Simplex.Tolerances.Markowitz, 0.1);
-		cplex.setParam(IloCplex.DoubleParam.TiLim, 3600);
+		cplex.setParam(IloCplex.DoubleParam.TiLim, 36000); //10 hours
 		List<Map<Integer,IloNumVar>> x; //map:edgeIndex, x variable
 		Map<Path,IloNumVar> pathVarMap=new HashMap<>();
 		

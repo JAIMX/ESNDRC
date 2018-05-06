@@ -124,18 +124,19 @@ public class BranchOnServiceEdge extends AbstractBranchCreator<SNDRC, Cycle, SND
 //	        System.out.println("capacity type: "+branchPricingProblem.capacityTypeS);
 //	        System.out.println("edge index: "+branchEdgeIndex+" "+dataModel.edgeSet.get(branchEdgeIndex).start+"->"+dataModel.edgeSet.get(branchEdgeIndex).end);
 //	    }
-		//Branch 1:round q down to the nearest integer
+		//Branch 1:round  down to the nearest integer
 //		RoundServiceEdge branchingDecision1=new RoundServiceEdge(0,branchEdgeIndex,branchEdgeValue);
 		RoundServiceEdge branchingDecision1=new RoundServiceEdge(0,branchEdgeIndex,branchEdgeValue,branchPricingProblem);
 		BAPNode<SNDRC,Cycle> node1=this.createBranch(parentNode, branchingDecision1, parentNode.getSolution(), parentNode.getInequalities());
 		
 		
-		//Branch 1:round q down to the nearest integer
+		//Branch 1:round up to the nearest integer
 //		RoundServiceEdge branchingDecision2=new RoundServiceEdge(1,branchEdgeIndex,branchEdgeValue);
 		RoundServiceEdge branchingDecision2=new RoundServiceEdge(1,branchEdgeIndex,branchEdgeValue,branchPricingProblem);
 		BAPNode<SNDRC,Cycle> node2=this.createBranch(parentNode, branchingDecision2, parentNode.getSolution(), parentNode.getInequalities());
 		
-		return Arrays.asList(node2,node1);
+//		return Arrays.asList(node2,node1);
+		return Arrays.asList(node1,node2);
 	}
 	
 	

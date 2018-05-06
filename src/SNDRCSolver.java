@@ -70,17 +70,17 @@ public class SNDRCSolver {
 		
 		//Define one or more Branch creators
 //		List<? extends AbstractBranchCreator<SNDRC, Cycle, SNDRCPricingProblem>> branchCreators=Arrays.asList(new BranchOnQVarible(dataModel, pricingProblems,0.5),new BranchOnServiceEdgeForAllPricingProblems(dataModel, pricingProblems, 0.5),new BranchOnServiceEdge(dataModel, pricingProblems, 0.5));
-		List<? extends AbstractBranchCreator<SNDRC, Cycle, SNDRCPricingProblem>> branchCreators=Arrays.asList( new BranchOnLocalServiceForAllPricingProblems(dataModel, pricingProblems, 0.5),new BranchOnLocalService(dataModel, pricingProblems, 0.5),new BranchOnTimeService(dataModel, pricingProblems, 0.5, 12),new BranchOnServiceEdge(dataModel, pricingProblems, 0.5));
+		List<? extends AbstractBranchCreator<SNDRC, Cycle, SNDRCPricingProblem>> branchCreators=Arrays.asList( new BranchOnLocalServiceForAllPricingProblems(dataModel, pricingProblems, 0.5),new BranchOnLocalService(dataModel, pricingProblems, 0.5),new BranchOnServiceEdge(dataModel, pricingProblems, 0.5));
 //		List<? extends AbstractBranchCreator<SNDRC, Cycle, SNDRCPricingProblem>> branchCreators=Arrays.asList(new BranchOnTimeServiceForAllPricingProblems(dataModel, pricingProblems, 0.5, 5),new BranchOnServiceEdge(dataModel, pricingProblems, 0.5));
 	      
 		//Create a Branch-and-Price instance
 //		BranchAndPriceA bap=new BranchAndPriceA(dataModel, master, pricingProblems, solvers, branchCreators,Double.MAX_VALUE,0.6,0.2,0.1,10,0.0001,3,false);
 //		BranchAndPriceB bap=new BranchAndPriceB(dataModel, master, pricingProblems, solvers, branchCreators,Double.MAX_VALUE,0.65,0.2,0.1,1,0.001,3,0.1,true);
-		BranchAndPriceB_M bap=new BranchAndPriceB_M(dataModel, master, pricingProblems, solvers, branchCreators,Double.MAX_VALUE,0.65,0.3,0.1,10,0.001,3,0,true,false);
+		BranchAndPriceB_M bap=new BranchAndPriceB_M(dataModel, master, pricingProblems, solvers, branchCreators,Double.MAX_VALUE,0.65,0.3,0.1,1,-0.001,3,0,true,false);
 //		BranchAndPriceA_M bap=new BranchAndPriceA_M(dataModel, master, pricingProblems, solvers, branchCreators,Double.MAX_VALUE,0.6,0.3,0.1,10,0.001,10,0.1,false,true);
 //		bap.setNodeOrdering(new BFSbapNodeComparator());
 //		bap.setNodeOrdering(new NodeBoundbapNodeComparatorMaxBound());
-		bap.setNodeOrdering(new NodeBoundbapNodeComparator());
+//		bap.setNodeOrdering(new NodeBoundbapNodeComparator());
 		
 		//OPTIONAL: Attach a debugger
 //		SimpleDebugger debugger=new SimpleDebugger(bap, true);
@@ -92,8 +92,8 @@ public class SNDRCSolver {
 //		BapLoggerA_M logger=new BapLoggerA_M(bap, new File("./output/BAPlogger.log"));
 
 		//Solve the TSP problem through Branch-and-Price
-		bap.runBranchAndPrice(System.currentTimeMillis()+18000000L);    //5 hours
-//		bap.runBranchAndPrice(System.currentTimeMillis()+36000000L);    //10 hours
+//		bap.runBranchAndPrice(System.currentTimeMillis()+18000000L);    //5 hours
+		bap.runBranchAndPrice(System.currentTimeMillis()+36000000L);    //10 hours
 		
 		this.ifOptGetFromSubGraph=bap.GetIfOptGetFromSubGraph();
 		

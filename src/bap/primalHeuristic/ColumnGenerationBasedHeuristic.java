@@ -40,17 +40,20 @@ public class ColumnGenerationBasedHeuristic {
     SNDRC dataModel;
     double thresholdValue;
     boolean ifAccelerationForUB;
-    int objectiveIncumbentSolution;
-    List<Cycle> incumbentSolution = new ArrayList<>();
-    Map<Cycle, Double> optSolutionValueMap;
+    public int objectiveIncumbentSolution;
+    public List<Cycle> incumbentSolution = new ArrayList<>();
+    public Map<Cycle, Double> optSolutionValueMap;
+    public List<Map<Integer, Double>> optXValues;
 
     Map<Cycle, IloIntVar> cycleVar;
+    List<Map<Integer, IloNumVar>> x; // map:edgeIndex, x variable
     long runTime = 0;
 
     public ColumnGenerationBasedHeuristic(SNDRC dataModel, Double thresholdValue, boolean ifAccelerationForUB) {
         this.dataModel = dataModel;
         this.thresholdValue = thresholdValue;
         this.ifAccelerationForUB = ifAccelerationForUB;
+        this.objectiveIncumbentSolution = Integer.MAX_VALUE;
     }
 
     public void Solve() throws TimeLimitExceededException, IloException {
@@ -114,7 +117,7 @@ public class ColumnGenerationBasedHeuristic {
         // SimpleCGLogger logger = new SimpleCGLogger(cg, new
         // File("./output/cgLogger.log"));
 
-        cg.solve(System.currentTimeMillis() + 18000000L); // 5 hour limit
+        cg.solve(System.currentTimeMillis() + 3600000L); // 1 hour limit
 
         System.out.println("Time of first LP solve= " + (System.currentTimeMillis() - runTime));
 
@@ -187,6 +190,7 @@ public class ColumnGenerationBasedHeuristic {
                     for (Cycle cycle : incumbentSolution) {
                         optSolutionValueMap.put(cycle, cycle.value);
                     }
+                    optXValues = master.getXValues();
 
                     break;
                 }
@@ -210,11 +214,9 @@ public class ColumnGenerationBasedHeuristic {
         /// construct a cplex
         /// model------------------------------------------------------------------///
         IloCplex cplex = new IloCplex();
-        // cplex.setOut(null);
+//        cplex.setOut(null);
         cplex.setParam(IloCplex.IntParam.Threads, 4);
         cplex.setParam(IloCplex.Param.Simplex.Tolerances.Markowitz, 0.1);
-
-        List<Map<Integer, IloNumVar>> x; // map:edgeIndex, x variable
 
         // Define variables x
         x = new ArrayList<Map<Integer, IloNumVar>>();
@@ -346,12 +348,46 @@ public class ColumnGenerationBasedHeuristic {
         System.out.println();
 
         runTime = System.currentTimeMillis() - runTime;
-        long timeLeft = 36000000 - runTime;
+        long timeLeft = 3600000 - runTime;
         cplex.setParam(IloCplex.DoubleParam.TiLim, timeLeft / 1000);
         // cplex.setParam(IloCplex.DoubleParam.TiLim, 36000);
         cplex.solve();
         System.out.println("optimal objective= " + cplex.getObjValue());
         System.out.println();
+
+        // record the solution
+        if (cplex.getObjValue() < this.objectiveIncumbentSolution) {
+
+            int integerObjective = MathProgrammingUtil.doubleToInt(cplex.getObjValue());
+
+            this.objectiveIncumbentSolution = integerObjective;
+            this.incumbentSolution = new ArrayList<>();
+            for (Cycle cycle : cycleVar.keySet()) {
+                IloIntVar var = cycleVar.get(cycle);
+                int value = (int) cplex.getValue(var);
+
+                if (value > 0.1) {
+                    this.incumbentSolution.add(cycle);
+                }
+
+            }
+
+            optSolutionValueMap = new HashMap<>();
+            for (Cycle cycle : incumbentSolution) {
+                optSolutionValueMap.put(cycle, cycle.value);
+            }
+
+            optXValues = new ArrayList<>();
+            for (int commodity = 0; commodity < dataModel.numDemand; commodity++) {
+                Map tempMap = new HashMap<>();
+                for (int edgeIndex : x.get(commodity).keySet()) {
+                    tempMap.put(edgeIndex, cplex.getValue(x.get(commodity).get(edgeIndex)));
+                }
+
+                optXValues.add(tempMap);
+            }
+
+        }
 
         // output solution
         for (Cycle cycle : cycleVar.keySet()) {
@@ -363,9 +399,6 @@ public class ColumnGenerationBasedHeuristic {
                 System.out.println();
             }
         }
-        
-        
-        
 
     }
 
