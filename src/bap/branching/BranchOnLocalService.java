@@ -96,8 +96,8 @@ public class BranchOnLocalService extends AbstractBranchCreator<SNDRC, Cycle, SN
         RoundLocalService branchingDecision2=new RoundLocalService(1,branchServiceIndex,bestServiceValue,associatedPricingProblem);
         BAPNode<SNDRC,Cycle> node2=this.createBranch(parentNode, branchingDecision2, parentNode.getSolution(), parentNode.getInequalities());
         
-//        return Arrays.asList(node2,node1);
-        return Arrays.asList(node1,node2);
+        return Arrays.asList(node2,node1);
+//        return Arrays.asList(node1,node2);
     }
     
     
