@@ -13,6 +13,8 @@ public class ExactPricingProblemSolver extends AbstractPricingProblemSolver<SNDR
 
     private double[] modifiedCosts;
     private double modifiedCost;
+    
+    
 
     /**
      * Creates a new solver instance for a particular pricing problem
@@ -39,6 +41,7 @@ public class ExactPricingProblemSolver extends AbstractPricingProblemSolver<SNDR
     @Override
     protected List<Cycle> generateNewColumns() throws TimeLimitExceededException {
         List<Cycle> newRoutes = new ArrayList<>();
+        this.objective=Double.MAX_VALUE;
 
         // explore routes starting from different time
         for (int startTime = 0; startTime < dataModel.timePeriod; startTime++) {
@@ -143,6 +146,8 @@ public class ExactPricingProblemSolver extends AbstractPricingProblemSolver<SNDR
             if (dpFunction[originNodeIndex] < Double.MAX_VALUE - 1) {
                 // if(dpFunction[originNodeIndex]+modifiedCost<-config.PRECISION)
                 // {
+            	
+            	this.objective=Math.min(this.objective, dpFunction[originNodeIndex] + modifiedCost);
                 if (dpFunction[originNodeIndex] + modifiedCost < -0.001) {
                     Set<Integer> edgeIndexSet = new HashSet<>();
                     double cost = 0;
@@ -212,5 +217,14 @@ public class ExactPricingProblemSolver extends AbstractPricingProblemSolver<SNDR
     public void close() {
         // cplex.end();
     }
+    
+	/**
+	 * Returns a bound on the objective of the pricing problem. If the pricing problem is solved to optimality, this function would typically return the objective value.
+	 * Alternatively, the objective value of a relaxation of the Pricing Problem may be returned, e.g. the LP relaxation when the Pricing Problem is implemented as a MIP, or the value of a Lagrangian Relaxation.
+	 * @return a bound on the objective of the pricing problem)
+	 */
+	public double getBound(){
+		return this.objective;
+	}
 
 }

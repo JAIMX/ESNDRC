@@ -1301,5 +1301,15 @@ public final class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProbl
     public StrongInequalityGenerator getStrongInequalityGenerator() {
         return cutGen;
     }
+    
+	/**
+	 * To compute a bound on the optimal solution of the relaxed master problem, multiple components
+	 * are required, including information from the master problem. This function returns that information.
+	 * @return value originating from the master problem which is required to calculate a bound on the optimal objective of the master problem
+	 */
+    @Override
+	public double getBoundComponent(){
+		return masterData.objectiveValue;
+	}
 
 }

@@ -13,7 +13,7 @@ import org.jorlib.frameworks.columnGeneration.pricing.PricingProblemManager;
 import cg.master.SNDRCMasterData;
 import model.SNDRC;
 
-public class ColGenPlus extends ColGen{
+public class ColGenPlus extends ColGen<SNDRC, Cycle, SNDRCPricingProblem>{
 
 	/**
 	 * Create a new column generation instance
@@ -133,6 +133,19 @@ public class ColGenPlus extends ColGen{
 		this.boundOnMasterObjective = (optimizationSenseMaster == OptimizationSense.MINIMIZE ? Math.max(this.boundOnMasterObjective, this.objectiveMasterProblem) : Math.min(this.boundOnMasterObjective, this.objectiveMasterProblem)); //When solved to optimality, the bound on the master problem objective equals the objective value.
 		colGenSolveTime=System.currentTimeMillis()-colGenSolveTime;
 		notifier.fireFinishCGEvent();
+	}
+	
+	
+	
+	@Override
+	protected double calculateBoundOnMasterObjective(Class<? extends AbstractPricingProblemSolver<SNDRC, Cycle, SNDRCPricingProblem>> solver) {
+		double[] bounds=pricingProblemManager.getBoundsOnPricingProblems(solver);
+		double bound=master.getBoundComponent();
+		for(double ele:bounds) {
+			bound+=ele;
+		}
+		
+		return Math.max(bound, this.boundOnMasterObjective);
 	}
 	
 	
