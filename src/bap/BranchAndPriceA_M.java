@@ -16,8 +16,10 @@ import java.util.TreeSet;
 import org.jorlib.frameworks.columnGeneration.branchAndPrice.AbstractBranchAndPrice;
 import org.jorlib.frameworks.columnGeneration.branchAndPrice.AbstractBranchCreator;
 import org.jorlib.frameworks.columnGeneration.branchAndPrice.BAPNode;
+import org.jorlib.frameworks.columnGeneration.branchAndPrice.EventHandling.CGListener;
 import org.jorlib.frameworks.columnGeneration.colgenMain.ColGen;
 import org.jorlib.frameworks.columnGeneration.io.TimeLimitExceededException;
+import org.jorlib.frameworks.columnGeneration.master.AbstractMaster;
 import org.jorlib.frameworks.columnGeneration.master.OptimizationSense;
 import org.jorlib.frameworks.columnGeneration.master.cutGeneration.AbstractInequality;
 import org.jorlib.frameworks.columnGeneration.master.cutGeneration.CutHandler;
@@ -31,6 +33,7 @@ import bap.bapNodeComparators.NodeBoundbapNodeComparatorForLB;
 import bap.branching.BranchOnLocalService;
 import bap.branching.BranchOnLocalServiceForAllPricingProblems;
 import bap.branching.BranchOnServiceEdge;
+import cg.ColGenPlus;
 import cg.Cycle;
 import cg.ExactPricingProblemSolver;
 import cg.SNDRCPricingProblem;
@@ -447,11 +450,11 @@ public class BranchAndPriceA_M <V> extends AbstractBranchAndPrice<SNDRC, Cycle, 
                     lowBoundQueue.addAll(newBranches);
                     
                     //if node bound doesn't improve, we record its two children by leading branch, add these branch to master
-                    if(Math.abs(parentBound-bapNode.getBound())<0.00001){
-                        for(BAPNode<SNDRC, Cycle> child:newBranches){
-                            ((Master) master).AddBranchDecisionForCut(child.getBranchingDecision());
-                        }
-                    }
+//                    if(Math.abs(parentBound-bapNode.getBound())<0.00001){
+//                        for(BAPNode<SNDRC, Cycle> child:newBranches){
+//                            ((Master) master).AddBranchDecisionForCut(child.getBranchingDecision());
+//                        }
+//                    }
 
                     
 
@@ -969,6 +972,33 @@ public class BranchAndPriceA_M <V> extends AbstractBranchAndPrice<SNDRC, Cycle, 
     public boolean GetIfOptGetFromSubGraph(){
    	   return ifOptGetFromSubGraph;
       }
+    
+    
+	/**
+	 * Solve a given Branch-and-Price node
+	 * @param bapNode node in Branch-and-Price tree
+	 * @param timeLimit future point in time by which the method must be finished
+	 * @throws TimeLimitExceededException TimeLimitExceededException
+	 */
+    @Override
+	protected void solveBAPNode(BAPNode<SNDRC,Cycle> bapNode, long timeLimit) throws TimeLimitExceededException {
+		ColGen<SNDRC, Cycle, SNDRCPricingProblem> cg=null;
+		try {
+			cg = new ColGenPlus(dataModel, (AbstractMaster<SNDRC, Cycle, SNDRCPricingProblem, SNDRCMasterData>) master, pricingProblems, solvers, pricingProblemManager, bapNode.getInitialColumns(), objectiveIncumbentSolution, bapNode.getBound(),0.1); //Solve the node
+			for(CGListener listener : columnGenerationEventListeners) cg.addCGEventListener(listener);
+			cg.solve(timeLimit);
+		}finally{
+			//Update statistics
+			if(cg != null) {
+				timeSolvingMaster += cg.getMasterSolveTime();
+				timeSolvingPricing += cg.getPricingSolveTime();
+				totalNrIterations += cg.getNumberOfIterations();
+				totalGeneratedColumns += cg.getNrGeneratedColumns();
+				notifier.fireFinishCGEvent(bapNode, cg.getBound(), cg.getObjective(), cg.getNumberOfIterations(), cg.getMasterSolveTime(), cg.getPricingSolveTime(), cg.getNrGeneratedColumns());
+			}
+		}
+		bapNode.storeSolution(cg.getObjective(), cg.getBound(), cg.getSolution(), cg.getCuts());
+	}
     
     
     
