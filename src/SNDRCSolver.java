@@ -77,13 +77,14 @@ public class SNDRCSolver {
 //		BranchAndPriceA bap=new BranchAndPriceA(dataModel, master, pricingProblems, solvers, branchCreators,Double.MAX_VALUE,0.6,0.2,0.1,10,0.0001,3,false);
 //		BranchAndPriceB bap=new BranchAndPriceB(dataModel, master, pricingProblems, solvers, branchCreators,Double.MAX_VALUE,0.65,0.2,0.1,1,0.001,3,0.1,true);
 //		BranchAndPriceB_M bap=new BranchAndPriceB_M(dataModel, master, pricingProblems, solvers, branchCreators,Double.MAX_VALUE,0.65,0.3,0.1,1,-0.001,1,0,true,false);
-		BranchAndPriceA_M bap=new BranchAndPriceA_M(dataModel, master, pricingProblems, solvers, branchCreators,Double.MAX_VALUE,0.6,0.3,0.1,10,0.001,10,0.1,false,true);
+//		BranchAndPriceA_M bap=new BranchAndPriceA_M(dataModel, master, pricingProblems, solvers, branchCreators,Double.MAX_VALUE,0.6,0.3,0.1,10,0.001,10,0.1,false,true);
+		BranchAndPriceA_M bap=new BranchAndPriceA_M(dataModel, master, pricingProblems, solvers, branchCreators,100000000,0.6,0.3,0.1,10,0.001,10,0.1,false,true);
 //		bap.setNodeOrdering(new BFSbapNodeComparator());
 //		bap.setNodeOrdering(new NodeBoundbapNodeComparatorMaxBound());
 //		bap.setNodeOrdering(new NodeBoundbapNodeComparator());
 		
 		//OPTIONAL: Attach a debugger
-//		SimpleDebugger debugger=new SimpleDebugger(bap, true);
+		SimpleDebugger debugger=new SimpleDebugger(bap, true);
 
 		//OPTIONAL: Attach a logger to the Branch-and-Price procedure.
 //		BapLoggerA logger=new BapLoggerA(bap, new File("./output/BAPlogger.log"));
@@ -223,7 +224,7 @@ public class SNDRCSolver {
 			sndrc=new SNDRC(arg);
 //			sndrc.Output();
 			Properties properties=new Properties();
-//			properties.setProperty("EXPORT_MODEL", "True");
+			properties.setProperty("EXPORT_MODEL", "True");
 //			properties.setProperty("MAXTHREADS", "10");
 //			properties.setProperty("PRECISION", "0.001");
 //			properties.setProperty("CUTSENABLED", "false");
