@@ -226,6 +226,7 @@ public class SNDRCSolver {
 //			properties.setProperty("EXPORT_MODEL", "True");
 //			properties.setProperty("MAXTHREADS", "10");
 //			properties.setProperty("PRECISION", "0.001");
+//			properties.setProperty("CUTSENABLED", "false");
 			Configuration.readFromFile(properties);
 			
 			new SNDRCSolver(sndrc);
