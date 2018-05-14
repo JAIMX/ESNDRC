@@ -84,7 +84,7 @@ public class SNDRCSolver {
 //		bap.setNodeOrdering(new NodeBoundbapNodeComparator());
 		
 		//OPTIONAL: Attach a debugger
-		SimpleDebugger debugger=new SimpleDebugger(bap, true);
+//		SimpleDebugger debugger=new SimpleDebugger(bap, true);
 
 		//OPTIONAL: Attach a logger to the Branch-and-Price procedure.
 //		BapLoggerA logger=new BapLoggerA(bap, new File("./output/BAPlogger.log"));
@@ -224,7 +224,7 @@ public class SNDRCSolver {
 			sndrc=new SNDRC(arg);
 //			sndrc.Output();
 			Properties properties=new Properties();
-			properties.setProperty("EXPORT_MODEL", "True");
+//			properties.setProperty("EXPORT_MODEL", "True");
 //			properties.setProperty("MAXTHREADS", "10");
 //			properties.setProperty("PRECISION", "0.001");
 //			properties.setProperty("CUTSENABLED", "false");

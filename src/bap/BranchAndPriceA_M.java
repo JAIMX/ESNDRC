@@ -105,6 +105,8 @@ public class BranchAndPriceA_M <V> extends AbstractBranchAndPrice<SNDRC, Cycle, 
         optSolutionValueMap = new HashMap<>();
 //        nodeBoundRecord = new double[10000];
 //        helpOutPut=0;
+        this.objectiveIncumbentSolution=(int) objectiveInitialSolution;
+        
         
         edgeFrequency=new double[modelData.numServiceArc];
         cutFrequency=new int[modelData.numServiceArc];

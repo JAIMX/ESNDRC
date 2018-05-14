@@ -954,7 +954,11 @@ public final class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProbl
                         .getKeysAsArray(new Cycle[masterData.getNrColumnsForPricingProblem(pricingProblem)]);
                 IloNumVar[] vars = masterData.getVarMapForPricingProblem(pricingProblem)
                         .getValuesAsArray(new IloNumVar[masterData.getNrColumnsForPricingProblem(pricingProblem)]);
+                
+
+                
                 double[] values = masterData.cplex.getValues(vars);
+                
   
 
                 // Iterate over each column and add it to the solution if it has
