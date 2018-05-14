@@ -60,6 +60,7 @@ public class BranchAndPriceA_M <V> extends AbstractBranchAndPrice<SNDRC, Cycle, 
     private int nrNonImproForAcce;
     private Map<Cycle, Double> optSolutionValueMap;
     private List<Map<Integer, Double>> optXValues;
+    private Map<Integer,Double> objNodeRecord;
 //    private double[] nodeBoundRecord;
 //    private int helpOutPut;
     
@@ -125,6 +126,8 @@ public class BranchAndPriceA_M <V> extends AbstractBranchAndPrice<SNDRC, Cycle, 
         this.ifAccelerationForUB=ifAccelerationForUB;
         
         this.ifOptGetFromSubGraph=false;
+        
+        this.objNodeRecord=new HashMap<>();
         
         
     }
@@ -236,34 +239,20 @@ public class BranchAndPriceA_M <V> extends AbstractBranchAndPrice<SNDRC, Cycle, 
             }
 
             
-            Double parentBound=bapNode.getBound();
+//            Double parentBound=bapNode.getBound();
             
             // Solve the next BAPNode
             try {
                 
                 
                 this.solveBAPNode(bapNode, timeLimit);
+                objNodeRecord.put(bapNode.nodeID, bapNode.getObjective());
 
                 // output the model
 //                ((Master) master).Output(bapNode.nodeID);
 //                nodeBoundRecord[bapNode.nodeID] = bapNode.getBound();
 
                 
-                
-                
-                
-///------------------------------------------------------------------------check 2284----------------------------------///
-//                if(Math.abs(parentBound-bapNode.getBound())<0.00001&&Math.abs(2284-bapNode.getBound())<0.000001){
-//                    try {
-//                        bapNodeSolutionOutput(bapNode);
-//                        throw new RuntimeException("We should check this solution!!! ");
-//                    } catch (IloException e) {
-//                        // TODO Auto-generated catch block
-//                        e.printStackTrace();
-//                    }
-//                }
-                    
-///------------------------------------------------------------------------check 2284----------------------------------///
 
             } catch (TimeLimitExceededException e) {
                 queue.add(bapNode);
@@ -452,11 +441,19 @@ public class BranchAndPriceA_M <V> extends AbstractBranchAndPrice<SNDRC, Cycle, 
                     lowBoundQueue.addAll(newBranches);
                     
                     //if node bound doesn't improve, we record its two children by leading branch, add these branch to master
-                    if(Math.abs(parentBound-bapNode.getBound())<0.00001){
-                        for(BAPNode<SNDRC, Cycle> child:newBranches){
-                            ((Master) master).AddBranchDecisionForCut(child.getBranchingDecision());
-                        }
+//                    if(Math.abs(parentBound-bapNode.getBound())<0.00001){
+//                        for(BAPNode<SNDRC, Cycle> child:newBranches){
+//                            ((Master) master).AddBranchDecisionForCut(child.getBranchingDecision());
+//                        }
+//                    }
+                    if(objNodeRecord.containsKey(bapNode.getParentID())){
+                    	if(Math.abs(objNodeRecord.get(bapNode.getParentID())-bapNode.getObjective())<config.PRECISION){
+							for (BAPNode<SNDRC, Cycle> child : newBranches) {
+								((Master) master).AddBranchDecisionForCut(child.getBranchingDecision());
+							}
+                    	}
                     }
+                    
 
                     
 
@@ -986,7 +983,7 @@ public class BranchAndPriceA_M <V> extends AbstractBranchAndPrice<SNDRC, Cycle, 
 	protected void solveBAPNode(BAPNode<SNDRC,Cycle> bapNode, long timeLimit) throws TimeLimitExceededException {
 		ColGen<SNDRC, Cycle, SNDRCPricingProblem> cg=null;
 		try {
-			cg = new ColGenPlus(dataModel, (AbstractMaster<SNDRC, Cycle, SNDRCPricingProblem, SNDRCMasterData>) master, pricingProblems, solvers, pricingProblemManager, bapNode.getInitialColumns(), objectiveIncumbentSolution, bapNode.getBound(),0.1); //Solve the node
+			cg = new ColGenPlus(dataModel, (AbstractMaster<SNDRC, Cycle, SNDRCPricingProblem, SNDRCMasterData>) master, pricingProblems, solvers, pricingProblemManager, bapNode.getInitialColumns(), objectiveIncumbentSolution, bapNode.getBound(),0.01); //Solve the node
 			for(CGListener listener : columnGenerationEventListeners) cg.addCGEventListener(listener);
 			cg.solve(timeLimit);
 		}finally{
@@ -1000,6 +997,7 @@ public class BranchAndPriceA_M <V> extends AbstractBranchAndPrice<SNDRC, Cycle, 
 			}
 		}
 		bapNode.storeSolution(cg.getObjective(), cg.getBound(), cg.getSolution(), cg.getCuts());
+		
 	}
     
     
