@@ -973,32 +973,32 @@ public class BranchAndPriceA_M <V> extends AbstractBranchAndPrice<SNDRC, Cycle, 
       }
     
     
-	/**
-	 * Solve a given Branch-and-Price node
-	 * @param bapNode node in Branch-and-Price tree
-	 * @param timeLimit future point in time by which the method must be finished
-	 * @throws TimeLimitExceededException TimeLimitExceededException
-	 */
-    @Override
-	protected void solveBAPNode(BAPNode<SNDRC,Cycle> bapNode, long timeLimit) throws TimeLimitExceededException {
-		ColGen<SNDRC, Cycle, SNDRCPricingProblem> cg=null;
-		try {
-			cg = new ColGenPlus(dataModel, (AbstractMaster<SNDRC, Cycle, SNDRCPricingProblem, SNDRCMasterData>) master, pricingProblems, solvers, pricingProblemManager, bapNode.getInitialColumns(), objectiveIncumbentSolution, bapNode.getBound(),0.01); //Solve the node
-			for(CGListener listener : columnGenerationEventListeners) cg.addCGEventListener(listener);
-			cg.solve(timeLimit);
-		}finally{
-			//Update statistics
-			if(cg != null) {
-				timeSolvingMaster += cg.getMasterSolveTime();
-				timeSolvingPricing += cg.getPricingSolveTime();
-				totalNrIterations += cg.getNumberOfIterations();
-				totalGeneratedColumns += cg.getNrGeneratedColumns();
-				notifier.fireFinishCGEvent(bapNode, cg.getBound(), cg.getObjective(), cg.getNumberOfIterations(), cg.getMasterSolveTime(), cg.getPricingSolveTime(), cg.getNrGeneratedColumns());
-			}
-		}
-		bapNode.storeSolution(cg.getObjective(), cg.getBound(), cg.getSolution(), cg.getCuts());
-		
-	}
+//	/**
+//	 * Solve a given Branch-and-Price node
+//	 * @param bapNode node in Branch-and-Price tree
+//	 * @param timeLimit future point in time by which the method must be finished
+//	 * @throws TimeLimitExceededException TimeLimitExceededException
+//	 */
+//    @Override
+//	protected void solveBAPNode(BAPNode<SNDRC,Cycle> bapNode, long timeLimit) throws TimeLimitExceededException {
+//		ColGen<SNDRC, Cycle, SNDRCPricingProblem> cg=null;
+//		try {
+//			cg = new ColGenPlus(dataModel, (AbstractMaster<SNDRC, Cycle, SNDRCPricingProblem, SNDRCMasterData>) master, pricingProblems, solvers, pricingProblemManager, bapNode.getInitialColumns(), objectiveIncumbentSolution, bapNode.getBound(),0.01); //Solve the node
+//			for(CGListener listener : columnGenerationEventListeners) cg.addCGEventListener(listener);
+//			cg.solve(timeLimit);
+//		}finally{
+//			//Update statistics
+//			if(cg != null) {
+//				timeSolvingMaster += cg.getMasterSolveTime();
+//				timeSolvingPricing += cg.getPricingSolveTime();
+//				totalNrIterations += cg.getNumberOfIterations();
+//				totalGeneratedColumns += cg.getNrGeneratedColumns();
+//				notifier.fireFinishCGEvent(bapNode, cg.getBound(), cg.getObjective(), cg.getNumberOfIterations(), cg.getMasterSolveTime(), cg.getPricingSolveTime(), cg.getNrGeneratedColumns());
+//			}
+//		}
+//		bapNode.storeSolution(cg.getObjective(), cg.getBound(), cg.getSolution(), cg.getCuts());
+//		
+//	}
     
     
     

@@ -188,7 +188,7 @@ public class BranchAndPriceB_M<V> extends AbstractBranchAndPrice<SNDRC, Cycle, S
                 break;
             }
         }
-
+        
         return out;
     }
 
