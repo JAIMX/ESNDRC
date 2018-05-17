@@ -224,6 +224,7 @@ public class ExactPricingProblemSolver extends AbstractPricingProblemSolver<SNDR
 	 * @return a bound on the objective of the pricing problem)
 	 */
 	public double getBound(){
+	    
 		return this.objective;
 	}
 
