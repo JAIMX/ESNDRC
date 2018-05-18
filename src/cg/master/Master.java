@@ -479,6 +479,14 @@ public final class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProbl
                     }
                     masterData.xValues.add(tempMap);
                 }
+                
+                double[][] temp=new double[dataModel.numOfCapacity][dataModel.numNode];
+                for (int s = 0; s < dataModel.numOfCapacity; s++) {
+                    for (int o = 0; o < dataModel.numNode; o++) {
+                        temp[s][o] = masterData.cplex.getDual(resourceBoundConstraints[s][o]);
+                    }
+                }
+                masterData.resourceBoundConstraintsDual=temp;
 
                 // System.out.println("||-----------------------temp solution
                 // out---------------------||");
@@ -1316,5 +1324,9 @@ public final class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProbl
 	public double getBoundComponent(){
 		return masterData.objectiveValue;
 	}
+    
+    public double[][] getResourceBoundConstraintsDual(){
+        return masterData.resourceBoundConstraintsDual;
+    }
 
 }

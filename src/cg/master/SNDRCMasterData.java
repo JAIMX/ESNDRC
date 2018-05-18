@@ -82,6 +82,9 @@ public class SNDRCMasterData extends MasterData<SNDRC, Cycle, SNDRCPricingProble
     public double boundRecordForCutControl;
     public long masterDataBuildTime;
     public boolean ifBoundHasChangedByCut;
+    
+    //for bound calculation
+    public double[][] resourceBoundConstraintsDual;
 
     public SNDRCMasterData(IloCplex cplex, List<SNDRCPricingProblem> pricingProblems,
             Map<SNDRCPricingProblem, OrderedBiMap<Cycle, IloNumVar>> varMap,

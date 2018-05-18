@@ -11,6 +11,7 @@ import org.jorlib.frameworks.columnGeneration.pricing.AbstractPricingProblemSolv
 import org.jorlib.frameworks.columnGeneration.pricing.PricingProblemManager;
 import org.jorlib.frameworks.columnGeneration.util.MathProgrammingUtil;
 
+import cg.master.Master;
 import cg.master.SNDRCMasterData;
 import model.SNDRC;
 
@@ -137,12 +138,17 @@ public class ColGenPlus extends ColGen<SNDRC, Cycle, SNDRCPricingProblem> {
 
         double gap0 = -1;
         double gap1 = -1;
+
+        int outReason = 0; // !foundNewColumns && !hasNewCuts
         do {
             nrOfColGenIterations++;
             hasNewCuts = false;
 
             // Solve the master
+            System.out.println();
             this.invokeMaster(timeLimit);
+
+            System.out.println("obj= " + objectiveMasterProblem);
 
             // check if the solution is integral
             boolean isIntegral = true;
@@ -155,11 +161,14 @@ public class ColGenPlus extends ColGen<SNDRC, Cycle, SNDRCPricingProblem> {
                 }
             }
             for (Cycle cycle : result) {
-                if(cycle.isArtificialColumn){
-                    isFeasible=false;
+                if (cycle.isArtificialColumn) {
+                    isFeasible = false;
                     break;
                 }
             }
+
+            System.out.println("isIntegeral= " + isIntegral);
+            System.out.println("isFeasible= " + isFeasible);
 
             // update gap0 and gap1
             gap0 = gap1;
@@ -169,18 +178,25 @@ public class ColGenPlus extends ColGen<SNDRC, Cycle, SNDRCPricingProblem> {
                 gap1 = (objectiveMasterProblem - boundOnMasterObjective) / boundOnMasterObjective;
             }
 
+            System.out.println("gap0= " + gap0);
+            System.out.println("gap1= " + gap1);
+
             // after the update of objectiveMasterProblem £¬we check if stop
             // column generation process
 
             // Case1: boundOnMasterObjective exceeds cutoff value
             if (boundOnMasterExceedsCutoffValue()) {
+                System.out.println("boundOnMasterExceedsCutoffValue out!");
+                outReason = 1;
                 break;
             }
 
             // Case2: objectiveMasterProblem is smaller than cutoff value(here
             // we should note infeasible case,set the objective value of
             // artificial variables big enough compared to cutoff value)
-            if (objectiveMasterProblem < cutoffValue - config.PRECISION && gap1 < 0.3 && !isIntegral&&isFeasible) {
+            if (objectiveMasterProblem < cutoffValue - config.PRECISION && gap1 < 0.3 && gap1 > 0 && !isIntegral
+                    && isFeasible) {
+                System.out.println("enter case2");
                 if (config.CUTSENABLED) {
                     long time = System.currentTimeMillis();
                     hasNewCuts = master.hasNewCuts();
@@ -198,9 +214,11 @@ public class ColGenPlus extends ColGen<SNDRC, Cycle, SNDRCPricingProblem> {
                         gap1 = -1;
                         continue;
                     } else {
+                        outReason = 2;
                         break;
                     }
                 } else {
+                    outReason = 2;
                     break;
                 }
             }
@@ -208,7 +226,10 @@ public class ColGenPlus extends ColGen<SNDRC, Cycle, SNDRCPricingProblem> {
             // Case3:objectiveMasterProblem is over cutoff value and
             // boundOnMasterObjective below cutoff value
             if (objectiveMasterProblem > cutoffValue + config.PRECISION && !boundOnMasterExceedsCutoffValue()) {
-                if (gap0 > 0 && gap0 - gap1 < gapTolerance - config.PRECISION && gap1 < 0.3 && !isIntegral&&isFeasible) {
+                if (gap0 > 0 && gap0 - gap1 < gapTolerance - config.PRECISION && gap1 < 0.3 && gap1 > 0 && !isIntegral
+                        && isFeasible) {
+
+                    System.out.println("enter case3");
 
                     if (config.CUTSENABLED) {
                         long time = System.currentTimeMillis();
@@ -227,9 +248,11 @@ public class ColGenPlus extends ColGen<SNDRC, Cycle, SNDRCPricingProblem> {
                             gap1 = -1;
                             continue;
                         } else {
+                            outReason = 3;
                             break;
                         }
                     } else {
+                        outReason = 3;
                         break;
                     }
 
@@ -238,6 +261,8 @@ public class ColGenPlus extends ColGen<SNDRC, Cycle, SNDRCPricingProblem> {
 
             // Case4:solve to optimal
             if (Math.abs(objectiveMasterProblem - boundOnMasterObjective) < config.PRECISION) {
+
+                System.out.println("enter case4");
                 // Check whether there are inequalities. Otherwise potentially
                 // an infeasible integer solution (e.g. TSP solution with
                 // subtours) might be returned.
@@ -255,10 +280,15 @@ public class ColGenPlus extends ColGen<SNDRC, Cycle, SNDRCPricingProblem> {
                                                                             // problem
                     if (hasNewCuts)
                         continue;
-                    else
+                    else {
+                        outReason = 4;
                         break;
-                } else
+                    }
+                } else {
+                    outReason = 4;
                     break;
+                }
+
             }
 
             // Solve the pricing problem and possibly update the bound on the
@@ -273,6 +303,9 @@ public class ColGenPlus extends ColGen<SNDRC, Cycle, SNDRCPricingProblem> {
                                                                             // pricing
                                                                             // problem
             foundNewColumns = !newColumns.isEmpty();
+            System.out.println("boundOnMasterObjective= " + boundOnMasterObjective);
+            System.out.println("foundNewColumns= " + foundNewColumns);
+            System.out.println("hasNewCuts= " + hasNewCuts);
 
             if (System.currentTimeMillis() >= timeLimit) { // Check whether we
                                                            // are still within
@@ -287,11 +320,27 @@ public class ColGenPlus extends ColGen<SNDRC, Cycle, SNDRCPricingProblem> {
             // }
 
         } while (foundNewColumns || hasNewCuts);
-        // this.boundOnMasterObjective = (optimizationSenseMaster ==
-        // OptimizationSense.MINIMIZE ? Math.max(this.boundOnMasterObjective,
-        // this.objectiveMasterProblem) : Math.min(this.boundOnMasterObjective,
-        // this.objectiveMasterProblem)); //When solved to optimality, the bound
-        // on the master problem objective equals the objective value.
+        
+        if(outReason==0){
+            this.boundOnMasterObjective = (optimizationSenseMaster == OptimizationSense.MINIMIZE
+                    ? Math.max(this.boundOnMasterObjective, this.objectiveMasterProblem)
+                    : Math.min(this.boundOnMasterObjective, this.objectiveMasterProblem)); // When
+                                                                                           // solved
+                                                                                           // to
+                                                                                           // optimality,
+                                                                                           // the
+                                                                                           // bound
+                                                                                           // on
+                                                                                           // the
+                                                                                           // master
+                                                                                           // problem
+                                                                                           // objective
+                                                                                           // equals
+                                                                                           // the
+                                                                                           // objective
+                                                                                           // value.
+        }
+
         colGenSolveTime = System.currentTimeMillis() - colGenSolveTime;
         notifier.fireFinishCGEvent();
     }
@@ -301,9 +350,29 @@ public class ColGenPlus extends ColGen<SNDRC, Cycle, SNDRCPricingProblem> {
             Class<? extends AbstractPricingProblemSolver<SNDRC, Cycle, SNDRCPricingProblem>> solver) {
         double[] bounds = pricingProblemManager.getBoundsOnPricingProblems(solver);
         double bound = master.getBoundComponent();
-        for (double ele : bounds) {
-            bound += ele;
+
+        double[][] resourceBoundConstraintsDual = ((Master) master).getResourceBoundConstraintsDual();
+        double[][] sigma = new double[dataModel.numOfCapacity][dataModel.numNode];
+
+        int count = -1;
+        for (int s = 0; s < dataModel.numOfCapacity; s++) {
+            for (int o = 0; o < dataModel.numNode; o++) {
+                count++;
+                sigma[s][o] = Math.min(bounds[count] + resourceBoundConstraintsDual[s][o], 0);
+            }
         }
+
+        for (int s = 0; s < dataModel.numOfCapacity; s++) {
+            for (int o = 0; o < dataModel.numNode; o++) {
+                bound += dataModel.vehicleLimit[s][o] * (sigma[s][o] - resourceBoundConstraintsDual[s][o]);
+            }
+        }
+
+        // for (double ele : bounds) {
+        //
+        //
+        // bound += ele;
+        // }
 
         bound = Math.max(bound, this.boundOnMasterObjective);
         if (bound > master.getBoundComponent() + config.PRECISION) {
