@@ -245,8 +245,8 @@ public class BranchAndPriceA_M <V> extends AbstractBranchAndPrice<SNDRC, Cycle, 
             // Solve the next BAPNode
             try {
                 
-                System.out.println();
-                System.out.println("Solve node "+bapNode.nodeID);
+//                System.out.println();
+//                System.out.println("Solve node "+bapNode.nodeID);
                 
                 this.solveBAPNode(bapNode, timeLimit);
                 objNodeRecord.put(bapNode.nodeID, bapNode.getObjective());

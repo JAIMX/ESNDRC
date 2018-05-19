@@ -1,5 +1,6 @@
 package cg;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.jorlib.frameworks.columnGeneration.colgenMain.ColGen;
@@ -140,15 +141,17 @@ public class ColGenPlus extends ColGen<SNDRC, Cycle, SNDRCPricingProblem> {
         double gap1 = -1;
 
         int outReason = 0; // !foundNewColumns && !hasNewCuts
+        double bound0=boundOnMasterObjective;
+        
         do {
             nrOfColGenIterations++;
             hasNewCuts = false;
 
             // Solve the master
-            System.out.println();
+//            System.out.println();
             this.invokeMaster(timeLimit);
 
-            System.out.println("obj= " + objectiveMasterProblem);
+//            System.out.println("obj= " + objectiveMasterProblem);
 
             // check if the solution is integral
             boolean isIntegral = true;
@@ -167,8 +170,8 @@ public class ColGenPlus extends ColGen<SNDRC, Cycle, SNDRCPricingProblem> {
                 }
             }
 
-            System.out.println("isIntegeral= " + isIntegral);
-            System.out.println("isFeasible= " + isFeasible);
+//            System.out.println("isIntegeral= " + isIntegral);
+//            System.out.println("isFeasible= " + isFeasible);
 
             // update gap0 and gap1
             gap0 = gap1;
@@ -178,15 +181,15 @@ public class ColGenPlus extends ColGen<SNDRC, Cycle, SNDRCPricingProblem> {
                 gap1 = (objectiveMasterProblem - boundOnMasterObjective) / boundOnMasterObjective;
             }
 
-            System.out.println("gap0= " + gap0);
-            System.out.println("gap1= " + gap1);
+//            System.out.println("gap0= " + gap0);
+//            System.out.println("gap1= " + gap1);
 
             // after the update of objectiveMasterProblem £¬we check if stop
             // column generation process
 
             // Case1: boundOnMasterObjective exceeds cutoff value
             if (boundOnMasterExceedsCutoffValue()) {
-                System.out.println("boundOnMasterExceedsCutoffValue out!");
+//                System.out.println("boundOnMasterExceedsCutoffValue out!");
                 outReason = 1;
                 break;
             }
@@ -195,8 +198,8 @@ public class ColGenPlus extends ColGen<SNDRC, Cycle, SNDRCPricingProblem> {
             // we should note infeasible case,set the objective value of
             // artificial variables big enough compared to cutoff value)
             if (objectiveMasterProblem < cutoffValue - config.PRECISION && gap1 < 0.3 && gap1 > 0 && !isIntegral
-                    && isFeasible) {
-                System.out.println("enter case2");
+                    && isFeasible&&boundOnMasterObjective>bound0+config.PRECISION) {
+//                System.out.println("enter case2");
                 if (config.CUTSENABLED) {
                     long time = System.currentTimeMillis();
                     hasNewCuts = master.hasNewCuts();
@@ -227,9 +230,9 @@ public class ColGenPlus extends ColGen<SNDRC, Cycle, SNDRCPricingProblem> {
             // boundOnMasterObjective below cutoff value
             if (objectiveMasterProblem > cutoffValue + config.PRECISION && !boundOnMasterExceedsCutoffValue()) {
                 if (gap0 > 0 && gap0 - gap1 < gapTolerance - config.PRECISION && gap1 < 0.3 && gap1 > 0 && !isIntegral
-                        && isFeasible) {
+                        && isFeasible&&boundOnMasterObjective>bound0+config.PRECISION) {
 
-                    System.out.println("enter case3");
+//                    System.out.println("enter case3");
 
                     if (config.CUTSENABLED) {
                         long time = System.currentTimeMillis();
@@ -262,7 +265,7 @@ public class ColGenPlus extends ColGen<SNDRC, Cycle, SNDRCPricingProblem> {
             // Case4:solve to optimal
             if (Math.abs(objectiveMasterProblem - boundOnMasterObjective) < config.PRECISION) {
 
-                System.out.println("enter case4");
+//                System.out.println("enter case4");
                 // Check whether there are inequalities. Otherwise potentially
                 // an infeasible integer solution (e.g. TSP solution with
                 // subtours) might be returned.
@@ -303,9 +306,9 @@ public class ColGenPlus extends ColGen<SNDRC, Cycle, SNDRCPricingProblem> {
                                                                             // pricing
                                                                             // problem
             foundNewColumns = !newColumns.isEmpty();
-            System.out.println("boundOnMasterObjective= " + boundOnMasterObjective);
-            System.out.println("foundNewColumns= " + foundNewColumns);
-            System.out.println("hasNewCuts= " + hasNewCuts);
+//            System.out.println("boundOnMasterObjective= " + boundOnMasterObjective);
+//            System.out.println("foundNewColumns= " + foundNewColumns);
+//            System.out.println("hasNewCuts= " + hasNewCuts);
 
             if (System.currentTimeMillis() >= timeLimit) { // Check whether we
                                                            // are still within
@@ -354,6 +357,7 @@ public class ColGenPlus extends ColGen<SNDRC, Cycle, SNDRCPricingProblem> {
         double[][] resourceBoundConstraintsDual = ((Master) master).getResourceBoundConstraintsDual();
         double[][] sigma = new double[dataModel.numOfCapacity][dataModel.numNode];
 
+        
         int count = -1;
         for (int s = 0; s < dataModel.numOfCapacity; s++) {
             for (int o = 0; o < dataModel.numNode; o++) {
@@ -361,12 +365,26 @@ public class ColGenPlus extends ColGen<SNDRC, Cycle, SNDRCPricingProblem> {
                 sigma[s][o] = Math.min(bounds[count] + resourceBoundConstraintsDual[s][o], 0);
             }
         }
+        
+//        System.out.println("bounds: "+Arrays.toString(bounds));
+//        System.out.println("resourceBoundConstraintsDual");
+//        for(int s=0;s<dataModel.numOfCapacity;s++){
+//           System.out.println(Arrays.toString(resourceBoundConstraintsDual[s]));
+//        }
+//        System.out.println("sigma");
+//        for(int s=0;s<dataModel.numOfCapacity;s++){
+//           System.out.println(Arrays.toString(sigma[s]));
+//        }
+        
+
 
         for (int s = 0; s < dataModel.numOfCapacity; s++) {
             for (int o = 0; o < dataModel.numNode; o++) {
                 bound += dataModel.vehicleLimit[s][o] * (sigma[s][o] - resourceBoundConstraintsDual[s][o]);
             }
         }
+        
+//        System.out.println("bound= "+bound);
 
         // for (double ele : bounds) {
         //

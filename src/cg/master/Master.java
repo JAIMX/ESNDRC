@@ -233,9 +233,23 @@ public final class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProbl
                 for (int o = 0; o < dataModel.numNode; o++) {
                     expr.clear();
                     expr.addTerm(1, q[s][o]);
-                    resourceBoundConstraints[s][o] = cplex.addEq(dataModel.vehicleLimit[s][o], expr);
+//                    resourceBoundConstraints[s][o] = cplex.addEq(dataModel.vehicleLimit[s][o], expr);
+                    resourceBoundConstraints[s][o] = cplex.addGe(dataModel.vehicleLimit[s][o], expr);
                 }
             }
+            
+            
+  //----------------------------------------------modify resource bound constraints------------------------------------------------//
+//            resourceBoundConstraints = new IloRange[dataModel.numOfCapacity][dataModel.numNode];
+//            
+//            for (int s = 0; s < dataModel.numOfCapacity; s++) {
+//                for (int o = 0; o < dataModel.numNode; o++) {
+//                    expr.clear();
+//                    resourceBoundConstraints[s][o] = cplex.addGe(dataModel.vehicleLimit[s][o], expr);
+//                }
+//            }
+            
+  //----------------------------------------------modify resource bound constraints------------------------------------------------//
 
             // q branching constraints
             if (qBranchingSet != null) {
