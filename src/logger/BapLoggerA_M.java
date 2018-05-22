@@ -58,6 +58,7 @@ public class BapLoggerA_M implements BAPListener{
     protected NodeResultStatus nodeStatus;
     /** Number of nodes currently in the queue **/
     protected int nodesInQueue;
+    protected int nodeDepth;
 
     //Colgen stats
     /** Number of column generation iterations **/
@@ -133,6 +134,7 @@ public class BapLoggerA_M implements BAPListener{
         LB=0;
         nrInequalities=-1;
         branchType=null;
+        nodeDepth=-1;
     }
     
     
@@ -142,13 +144,13 @@ public class BapLoggerA_M implements BAPListener{
      */
     protected void constructAndWriteLine(){
 //      this.writeLine(String.valueOf(bapNodeID) + "\t" + parentNodeID + "\t" + objectiveIncumbentSolution + "\t" + nodeBound  + "\t" + timeSolvingMaster + "\t" + timeSolvingPricing + "\t" + nodeStatus + "\t" + nodesInQueue + "\t" + LB+ "\t"+nrInequalities+"\t"+branchType);
-        this.writeLine(String.valueOf(bapNodeID) + "\t" + parentNodeID + "\t" + objectiveIncumbentSolution + "\t" + nodeBound + "\t" + formatter.format(nodeValue) + "\t" + cgIterations + "\t" + timeSolvingMaster + "\t" + timeSolvingPricing + "\t" + nrGeneratedColumns + "\t" + nodeStatus + "\t" + nodesInQueue + "\t" + LB+ "\t"+nrInequalities+"\t"+branchType);
+        this.writeLine(String.valueOf(bapNodeID) + "\t" + parentNodeID + "\t" + objectiveIncumbentSolution + "\t" + nodeBound + "\t" + formatter.format(nodeValue) + "\t" + cgIterations + "\t" + timeSolvingMaster + "\t" + timeSolvingPricing + "\t" + nrGeneratedColumns + "\t" + nodeStatus + "\t" + nodesInQueue + "\t" + LB+ "\t"+nrInequalities+"\t"+branchType+"\t"+nodeDepth);
     }
 
     @Override
     public void startBAP(StartEvent startEvent) {
 //        this.writeLine("BAPNodeID \t parentNodeID \t objectiveIncumbentSolution \t nodeBound \t t_master \t t_pricing  \t solutionStatus \t nodesInQueue \t LB \t nrInequalities \t branchType");
-        this.writeLine("BAPNodeID \t parentNodeID \t objectiveIncumbentSolution \t nodeBound \t nodeValue \t cgIterations \t t_master \t t_pricing \t nrGenColumns \t solutionStatus \t nodesInQueue \t LB \t nrInequalities \t branchType");
+        this.writeLine("BAPNodeID \t parentNodeID \t objectiveIncumbentSolution \t nodeBound \t nodeValue \t cgIterations \t t_master \t t_pricing \t nrGenColumns \t solutionStatus \t nodesInQueue \t LB \t nrInequalities \t branchType \t nodeDepth");
     }
 
     @Override
@@ -199,6 +201,7 @@ public class BapLoggerA_M implements BAPListener{
         this.parentNodeID=processingNextNodeEvent.node.getParentID();
         this.objectiveIncumbentSolution =processingNextNodeEvent.objectiveIncumbentSolution;
         this.nodesInQueue=processingNextNodeEvent.nodesInQueue;
+        this.nodeDepth=processingNextNodeEvent.node.getNodeDepth();
         
         if(bap.getLowBoundQueue().size()>0) {
             BAPNode<SNDRC, Cycle> bapNode=(BAPNode<SNDRC, Cycle>) bap.getLowBoundQueue().peek();

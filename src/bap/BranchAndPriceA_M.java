@@ -986,7 +986,7 @@ public class BranchAndPriceA_M <V> extends AbstractBranchAndPrice<SNDRC, Cycle, 
 	protected void solveBAPNode(BAPNode<SNDRC,Cycle> bapNode, long timeLimit) throws TimeLimitExceededException {
 		ColGen<SNDRC, Cycle, SNDRCPricingProblem> cg=null;
 		try {
-			cg = new ColGenPlus(dataModel, (AbstractMaster<SNDRC, Cycle, SNDRCPricingProblem, SNDRCMasterData>) master, pricingProblems, solvers, pricingProblemManager, bapNode.getInitialColumns(), objectiveIncumbentSolution, bapNode.getBound(),0.01); //Solve the node
+			cg = new ColGenPlus(dataModel, (AbstractMaster<SNDRC, Cycle, SNDRCPricingProblem, SNDRCMasterData>) master, pricingProblems, solvers, pricingProblemManager, bapNode.getInitialColumns(), objectiveIncumbentSolution, bapNode.getBound(),0.01,bapNode.getNodeDepth()); //Solve the node
 			for(CGListener listener : columnGenerationEventListeners) cg.addCGEventListener(listener);
 			cg.solve(timeLimit);
 		}finally{

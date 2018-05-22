@@ -17,8 +17,10 @@ import java.util.TreeSet;
 import org.jorlib.frameworks.columnGeneration.branchAndPrice.AbstractBranchAndPrice;
 import org.jorlib.frameworks.columnGeneration.branchAndPrice.AbstractBranchCreator;
 import org.jorlib.frameworks.columnGeneration.branchAndPrice.BAPNode;
+import org.jorlib.frameworks.columnGeneration.branchAndPrice.EventHandling.CGListener;
 import org.jorlib.frameworks.columnGeneration.colgenMain.ColGen;
 import org.jorlib.frameworks.columnGeneration.io.TimeLimitExceededException;
+import org.jorlib.frameworks.columnGeneration.master.AbstractMaster;
 import org.jorlib.frameworks.columnGeneration.master.OptimizationSense;
 import org.jorlib.frameworks.columnGeneration.master.cutGeneration.AbstractInequality;
 import org.jorlib.frameworks.columnGeneration.master.cutGeneration.CutHandler;
@@ -35,6 +37,7 @@ import bap.branching.BranchOnLocalService;
 import bap.branching.BranchOnLocalServiceForAllPricingProblems;
 import bap.branching.BranchOnServiceEdge;
 import bap.primalHeuristic.ColumnGenerationBasedHeuristic;
+import cg.ColGenPlus;
 import cg.Cycle;
 import cg.ExactPricingProblemSolver;
 import cg.SNDRCPricingProblem;
@@ -325,7 +328,8 @@ public class BranchAndPriceB_M<V> extends AbstractBranchAndPrice<SNDRC, Cycle, S
 
                 }
 
-                if (this.nodesProcessed % nodeFre == 0 && this.nodesProcessed != 0 && ifUseLearningUB) {
+//                if (this.nodesProcessed % nodeFre == 0 && this.nodesProcessed != 0 && ifUseLearningUB) {
+                if (this.nodesProcessed == 0 && ifUseLearningUB) {
                     try {
                         LearningUB();
                     } catch (TimeLimitExceededException | IloException e) {
@@ -1011,5 +1015,32 @@ public class BranchAndPriceB_M<V> extends AbstractBranchAndPrice<SNDRC, Cycle, S
     public boolean GetIfOptGetFromSubGraph() {
         return ifOptGetFromSubGraph;
     }
+    
+//    /**
+//     * Solve a given Branch-and-Price node
+//     * @param bapNode node in Branch-and-Price tree
+//     * @param timeLimit future point in time by which the method must be finished
+//     * @throws TimeLimitExceededException TimeLimitExceededException
+//     */
+//    @Override
+//    protected void solveBAPNode(BAPNode<SNDRC,Cycle> bapNode, long timeLimit) throws TimeLimitExceededException {
+//        ColGen<SNDRC, Cycle, SNDRCPricingProblem> cg=null;
+//        try {
+//            cg = new ColGenPlus(dataModel, (AbstractMaster<SNDRC, Cycle, SNDRCPricingProblem, SNDRCMasterData>) master, pricingProblems, solvers, pricingProblemManager, bapNode.getInitialColumns(), objectiveIncumbentSolution, bapNode.getBound(),0.01,bapNode.getNodeDepth()); //Solve the node
+//            for(CGListener listener : columnGenerationEventListeners) cg.addCGEventListener(listener);
+//            cg.solve(timeLimit);
+//        }finally{
+//            //Update statistics
+//            if(cg != null) {
+//                timeSolvingMaster += cg.getMasterSolveTime();
+//                timeSolvingPricing += cg.getPricingSolveTime();
+//                totalNrIterations += cg.getNumberOfIterations();
+//                totalGeneratedColumns += cg.getNrGeneratedColumns();
+//                notifier.fireFinishCGEvent(bapNode, cg.getBound(), cg.getObjective(), cg.getNumberOfIterations(), cg.getMasterSolveTime(), cg.getPricingSolveTime(), cg.getNrGeneratedColumns());
+//            }
+//        }
+//        bapNode.storeSolution(cg.getObjective(), cg.getBound(), cg.getSolution(), cg.getCuts());
+//        
+//    }
 
 }

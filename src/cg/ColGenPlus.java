@@ -18,6 +18,8 @@ import model.SNDRC;
 
 public class ColGenPlus extends ColGen<SNDRC, Cycle, SNDRCPricingProblem> {
     private double gapTolerance;
+    private final int depthLimit=85;
+    private int nodeDepth;
 
     /**
      * Create a new column generation instance
@@ -48,9 +50,10 @@ public class ColGenPlus extends ColGen<SNDRC, Cycle, SNDRCPricingProblem> {
     public ColGenPlus(SNDRC dataModel, AbstractMaster<SNDRC, Cycle, SNDRCPricingProblem, SNDRCMasterData> master,
             List<SNDRCPricingProblem> pricingProblems,
             List<Class<? extends AbstractPricingProblemSolver<SNDRC, Cycle, SNDRCPricingProblem>>> solvers,
-            List<Cycle> initSolution, int cutoffValue, double boundOnMasterObjective, double gapTolerance) {
+            List<Cycle> initSolution, int cutoffValue, double boundOnMasterObjective, double gapTolerance,int nodeDepth) {
         super(dataModel, master, pricingProblems, solvers, initSolution, cutoffValue, boundOnMasterObjective);
         this.gapTolerance = gapTolerance;
+        this.nodeDepth=nodeDepth;
 
     }
 
@@ -83,10 +86,10 @@ public class ColGenPlus extends ColGen<SNDRC, Cycle, SNDRCPricingProblem> {
     public ColGenPlus(SNDRC dataModel, AbstractMaster<SNDRC, Cycle, SNDRCPricingProblem, SNDRCMasterData> master,
             SNDRCPricingProblem pricingProblem,
             List<Class<? extends AbstractPricingProblemSolver<SNDRC, Cycle, SNDRCPricingProblem>>> solvers,
-            List<Cycle> initSolution, int cutoffValue, double boundOnMasterObjective, double gapTolerance) {
+            List<Cycle> initSolution, int cutoffValue, double boundOnMasterObjective, double gapTolerance,int  nodeDepth) {
         super(dataModel, master, pricingProblem, solvers, initSolution, cutoffValue, boundOnMasterObjective);
         this.gapTolerance = gapTolerance;
-
+        this.nodeDepth=nodeDepth;
     }
 
     /**
@@ -119,10 +122,11 @@ public class ColGenPlus extends ColGen<SNDRC, Cycle, SNDRCPricingProblem> {
             List<SNDRCPricingProblem> pricingProblems,
             List<Class<? extends AbstractPricingProblemSolver<SNDRC, Cycle, SNDRCPricingProblem>>> solvers,
             PricingProblemManager<SNDRC, Cycle, SNDRCPricingProblem> pricingProblemManager, List<Cycle> initSolution,
-            int cutoffValue, double boundOnMasterObjective, double gapTolerance) {
+            int cutoffValue, double boundOnMasterObjective, double gapTolerance,int nodeDepth) {
         super(dataModel, master, pricingProblems, solvers, pricingProblemManager, initSolution, cutoffValue,
                 boundOnMasterObjective);
         this.gapTolerance = gapTolerance;
+        this.nodeDepth=nodeDepth;
     }
 
     @Override
@@ -141,7 +145,6 @@ public class ColGenPlus extends ColGen<SNDRC, Cycle, SNDRCPricingProblem> {
         double gap1 = -1;
 
         int outReason = 0; // !foundNewColumns && !hasNewCuts
-        double bound0=boundOnMasterObjective;
         
         do {
             nrOfColGenIterations++;
@@ -197,8 +200,8 @@ public class ColGenPlus extends ColGen<SNDRC, Cycle, SNDRCPricingProblem> {
             // Case2: objectiveMasterProblem is smaller than cutoff value(here
             // we should note infeasible case,set the objective value of
             // artificial variables big enough compared to cutoff value)
-            if (objectiveMasterProblem < cutoffValue - config.PRECISION && gap1 < 0.3 && gap1 > 0 && !isIntegral
-                    && isFeasible&&boundOnMasterObjective>bound0+config.PRECISION) {
+            if (objectiveMasterProblem < cutoffValue - config.PRECISION &&gap0 > 0 && gap0 - gap1 < gapTolerance - config.PRECISION && gap1 < 0.3 && gap1 > 0 && !isIntegral
+                    && isFeasible&&nodeDepth<depthLimit&&nodeDepth!=1) {
 //                System.out.println("enter case2");
                 if (config.CUTSENABLED) {
                     long time = System.currentTimeMillis();
@@ -228,39 +231,39 @@ public class ColGenPlus extends ColGen<SNDRC, Cycle, SNDRCPricingProblem> {
 
             // Case3:objectiveMasterProblem is over cutoff value and
             // boundOnMasterObjective below cutoff value
-            if (objectiveMasterProblem > cutoffValue + config.PRECISION && !boundOnMasterExceedsCutoffValue()) {
-                if (gap0 > 0 && gap0 - gap1 < gapTolerance - config.PRECISION && gap1 < 0.3 && gap1 > 0 && !isIntegral
-                        && isFeasible&&boundOnMasterObjective>bound0+config.PRECISION) {
-
-//                    System.out.println("enter case3");
-
-                    if (config.CUTSENABLED) {
-                        long time = System.currentTimeMillis();
-                        hasNewCuts = master.hasNewCuts();
-                        masterSolveTime += (System.currentTimeMillis() - time); // Generating
-                                                                                // inequalities
-                                                                                // is
-                                                                                // considered
-                                                                                // part
-                                                                                // of
-                                                                                // the
-                                                                                // master
-                                                                                // problem
-                        if (hasNewCuts) {
-                            gap0 = -1;
-                            gap1 = -1;
-                            continue;
-                        } else {
-                            outReason = 3;
-                            break;
-                        }
-                    } else {
-                        outReason = 3;
-                        break;
-                    }
-
-                }
-            }
+//            if (objectiveMasterProblem > cutoffValue + config.PRECISION && !boundOnMasterExceedsCutoffValue()) {
+//                if (gap0 > 0 && gap0 - gap1 < gapTolerance - config.PRECISION && gap1 < 0.3 && gap1 > 0 && !isIntegral
+//                        && isFeasible&&nodeDepth<depthLimit&&nodeDepth!=1) {
+//
+////                    System.out.println("enter case3");
+//
+//                    if (config.CUTSENABLED) {
+//                        long time = System.currentTimeMillis();
+//                        hasNewCuts = master.hasNewCuts();
+//                        masterSolveTime += (System.currentTimeMillis() - time); // Generating
+//                                                                                // inequalities
+//                                                                                // is
+//                                                                                // considered
+//                                                                                // part
+//                                                                                // of
+//                                                                                // the
+//                                                                                // master
+//                                                                                // problem
+//                        if (hasNewCuts) {
+//                            gap0 = -1;
+//                            gap1 = -1;
+//                            continue;
+//                        } else {
+//                            outReason = 3;
+//                            break;
+//                        }
+//                    } else {
+//                        outReason = 3;
+//                        break;
+//                    }
+//
+//                }
+//            }
 
             // Case4:solve to optimal
             if (Math.abs(objectiveMasterProblem - boundOnMasterObjective) < config.PRECISION) {
