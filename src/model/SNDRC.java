@@ -646,7 +646,7 @@ public class SNDRC implements ModelInterface {
 //            }
 //            
 //            
-//            System.out.println("Size of commodity "+p+"= "+edgesForX.get(p).size());
+////            System.out.println("Size of commodity "+p+"= "+edgesForX.get(p).size());
 //
 //        }
         

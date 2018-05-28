@@ -117,7 +117,7 @@ public class ColumnGenerationBasedHeuristic {
         // SimpleCGLogger logger = new SimpleCGLogger(cg, new
         // File("./output/cgLogger.log"));
 
-        cg.solve(System.currentTimeMillis() + 3600000L); // 1 hour limit
+        cg.solve(System.currentTimeMillis() + 1800000L); // 0.5 hour limit
 
         System.out.println("Time of first LP solve= " + (System.currentTimeMillis() - runTime));
 

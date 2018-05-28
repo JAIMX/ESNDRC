@@ -1,0 +1,132 @@
+number of service arcs=150
+number of holding arcs=75
+
+Yes
+81
+
+Time of first LP solve= 39
+
+There are 319 columns added to the model.
+
+Tried aggregator 2 times.
+MIP Presolve eliminated 964 rows and 31 columns.
+MIP Presolve modified 67 coefficients.
+Aggregator did 344 substitutions.
+Reduced MIP has 283 rows, 732 columns, and 2154 nonzeros.
+Reduced MIP has 1 binaries, 305 generals, 0 SOSs, and 0 indicators.
+Presolve time = 0.00 sec. (1.93 ticks)
+Found incumbent of value 2.0000474e+09 after 0.00 sec. (3.39 ticks)
+Probing time = 0.00 sec. (0.01 ticks)
+Tried aggregator 1 time.
+Reduced MIP has 283 rows, 732 columns, and 2154 nonzeros.
+Reduced MIP has 1 binaries, 305 generals, 0 SOSs, and 0 indicators.
+Presolve time = 0.00 sec. (0.86 ticks)
+Probing time = 0.00 sec. (0.01 ticks)
+MIP emphasis: balance optimality and feasibility.
+MIP search method: dynamic search.
+Parallel mode: deterministic, using up to 4 threads.
+Root relaxation solution time = 0.00 sec. (3.49 ticks)
+
+        Nodes                                         Cuts/
+   Node  Left     Objective  IInf  Best Integer    Best Bound    ItCnt     Gap
+
+*     0+    0                       2.00005e+09      -10.0000           100.00%
+*     0+    0                         5408.0000      -10.0000           100.18%
+*     0+    0                         4914.0000      -10.0000           100.20%
+      0     0     3654.3600    16     4914.0000     3654.3600      317   25.63%
+*     0+    0                         4142.0000     3654.3600            11.77%
+      0     0     3654.6933    20     4142.0000      Cuts: 95      417   11.77%
+*     0+    0                         3995.0000     3654.6933             8.52%
+      0     0     3654.8003    19     3995.0000     Cuts: 115      518    8.52%
+      0     0     3686.5293    20     3995.0000      Cuts: 78      610    7.72%
+      0     0     3718.2324     7     3995.0000     Cuts: 111      661    6.93%
+*     0+    0                         3956.0000     3718.2324             6.01%
+      0     0     3718.2660     9     3956.0000   MIRcuts: 56      707    6.01%
+      0     0     3720.5388    18     3956.0000   MIRcuts: 84      763    5.95%
+      0     0     3722.2834    17     3956.0000   MIRcuts: 59      798    5.91%
+      0     0     3727.5608    18     3956.0000      Cuts: 59      847    5.77%
+      0     0     3729.8744    16     3956.0000      Cuts: 79      887    5.72%
+      0     0     3731.1473    15     3956.0000   MIRcuts: 18      902    5.68%
+      0     0     3731.1473    20     3956.0000   MIRcuts: 56      922    5.68%
+*     0+    0                         3838.0000     3731.1473             2.78%
+      0     2     3731.1473    20     3838.0000     3731.6684      922    2.77%
+Elapsed time = 0.28 sec. (93.75 ticks, tree = 0.00 MB, solutions = 7)
+   1762   498     3835.5857     2     3838.0000     3813.3000    25124    0.64%
+   4956   477        cutoff           3838.0000     3835.9000    50316    0.05%
+  10054   186     3836.3000     1     3838.0000     3836.3000    66651    0.04%
+
+Mixed integer rounding cuts applied:  212
+Lift and project cuts applied:  1
+Gomory fractional cuts applied:  6
+
+Root node processing (before b&c):
+  Real time             =    0.28 sec. (93.48 ticks)
+Parallel b&c, 4 threads:
+  Real time             =    1.56 sec. (867.69 ticks)
+  Sync time (average)   =    0.13 sec.
+  Wait time (average)   =    0.20 sec.
+                          ------------
+Total (root+branch&cut) =    1.83 sec. (961.16 ticks)
+optimal objective= 3838.0
+
+artificial: false set: [144, 134, 154, 75, 155, 61, 141, 142, 143] start node= 4 start time= 13 capacity type= 1
+(4,0)->(4,1)->(4,2)->(4,3)->(4,4)->(3,8)->(3,9)->(4,13)->(4,14)->(4,0):1
+
+artificial: false set: [100, 101, 102, 103, 8, 104, 28, 95] start node= 1 start time= 5 capacity type= 1
+(0,0)->(1,4)->(1,5)->(1,6)->(1,7)->(1,8)->(1,9)->(0,14)->(0,0):1
+
+artificial: false set: [151, 152, 153, 74, 154, 59, 155, 141, 142] start node= 4 start time= 10 capacity type= 0
+(4,0)->(4,1)->(4,2)->(3,6)->(4,10)->(4,11)->(4,12)->(4,13)->(4,14)->(4,0):1
+
+artificial: false set: [149, 150, 151, 152, 73, 153, 58, 154, 155] start node= 4 start time= 8 capacity type= 0
+(4,0)->(3,4)->(4,8)->(4,9)->(4,10)->(4,11)->(4,12)->(4,13)->(4,14)->(4,0):1
+
+artificial: false set: [66, 118, 7, 44, 93, 94] start node= 4 start time= 2 capacity type= 1
+(4,2)->(2,7)->(2,8)->(0,12)->(0,13)->(0,14)->(4,2):1
+
+artificial: false set: [112, 33, 51, 131, 22, 107] start node= 1 start time= 11 capacity type= 1
+(2,1)->(2,2)->(3,5)->(3,6)->(1,11)->(1,12)->(2,1):1
+
+artificial: false set: [0, 81, 145, 146, 68, 45] start node= 4 start time= 4 capacity type= 1
+(0,0)->(0,1)->(4,4)->(4,5)->(4,6)->(2,11)->(0,0):1
+
+artificial: false set: [18, 37, 55, 119, 120, 139] start node= 2 start time= 8 capacity type= 0
+(1,4)->(2,8)->(2,9)->(2,10)->(3,13)->(3,14)->(1,4):1
+
+Column Generation Based Heuristic Time= 1904
+We get a integer node: node index= 170 depth= 28
+obj= 3836
+
+================ Solution ================
+BAP terminated with objective : 3836
+Total Number of iterations: 2183
+Total Number of processed nodes: 313
+Total Time spent on master problems: 12402 Total time spent on pricing problems: 2743
+Best bound : 3836.0
+[1, 14, 29, 37, 44, 54, 64, 72, 84, 85, 90, 98, 110, 116, 124, 125, 135, 139]
+The number of service edges used= 18
+
+Solution is optimal: true
+Columns (only non-zero columns are returned):
+artificial: false set: [37, 72, 170, 90, 171, 191] start node= 2 start time= 11 capacity type= 0
+(3,0)->(1,5)->(1,6)->(1,7)->(2,11)->(2,12)->(3,0):1.0
+
+artificial: false set: [210, 211, 116, 212, 213, 203, 139, 204, 205] start node= 4 start time= 0 capacity type= 0
+(4,0)->(4,1)->(4,2)->(4,3)->(4,4)->(3,8)->(3,9)->(3,10)->(3,11)->(4,0):3.0
+
+artificial: false set: [224, 199, 135, 219, 220, 221, 110, 222, 223] start node= 4 start time= 9 capacity type= 0
+(4,0)->(3,4)->(3,5)->(4,9)->(4,10)->(4,11)->(4,12)->(4,13)->(4,14)->(4,0):1.0
+
+artificial: false set: [54, 168, 169, 170, 171, 172, 29, 173] start node= 1 start time= 3 capacity type= 1
+(1,3)->(1,4)->(1,5)->(1,6)->(1,7)->(1,8)->(1,9)->(0,14)->(1,3):1.0
+
+artificial: false set: [64, 98, 178, 183, 202, 44] start node= 1 start time= 13 capacity type= 1
+(2,3)->(2,4)->(3,7)->(3,8)->(1,13)->(1,14)->(2,3):1.0
+
+artificial: false set: [1, 163, 164, 84, 150, 124] start node= 4 start time= 4 capacity type= 1
+(0,0)->(0,1)->(4,4)->(2,9)->(0,13)->(0,14)->(0,0):1.0
+
+artificial: false set: [212, 85, 213, 214, 125, 14] start node= 4 start time= 2 capacity type= 1
+(4,2)->(4,3)->(4,4)->(4,5)->(2,10)->(0,14)->(4,2):1.0
+
+Total time= 20564

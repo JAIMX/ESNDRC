@@ -58,7 +58,8 @@ public class CplexSolver {
 		
 		FileOutputStream outputStream=new FileOutputStream(new File("./output/cplexOut.txt"));
 		
-		cplex.setOut(outputStream);
+//		cplex.setOut(outputStream);
+		
 		cplex.setParam(IloCplex.IntParam.Threads, 4);
 		cplex.setParam(IloCplex.Param.Simplex.Tolerances.Markowitz, 0.1);
 		cplex.setParam(IloCplex.DoubleParam.TiLim, 36000); //10 hours
