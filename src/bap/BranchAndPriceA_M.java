@@ -238,7 +238,7 @@ public class BranchAndPriceA_M<V> extends AbstractBranchAndPrice<SNDRC, Cycle, S
 
         lowBoundQueue.add(rootNode);
 
-        boolean tempCheck = false;
+//        boolean tempCheck = false;
         // Start processing nodes until the queue is empty
         while (!queue.isEmpty()) {
 
@@ -282,25 +282,25 @@ public class BranchAndPriceA_M<V> extends AbstractBranchAndPrice<SNDRC, Cycle, S
                 // ((Master) master).Output(bapNode.nodeID);
                 // nodeBoundRecord[bapNode.nodeID] = bapNode.getBound();
 
-                /// ------------------------------------------------check
-                /// 3639(test3)------------------------------------------///
-                if (bapNode.getBranchingDecision() instanceof RoundServiceEdge) {
-                    if (Math.abs(bapNode.getBound() - 3639) < config.PRECISION && !tempCheck) {
-                        try {
-                            bapNodeSolutionOutput(bapNode);
-                            tempCheck = true;
-                        } catch (UnknownObjectException e) {
-                            // TODO Auto-generated catch block
-                            e.printStackTrace();
-                        } catch (IloException e) {
-                            // TODO Auto-generated catch block
-                            e.printStackTrace();
-                        }
-                    }
-                }
-
-                /// ------------------------------------------------check
-                /// 3639------------------------------------------///
+//                /// ------------------------------------------------check
+//                /// 3639(test3)------------------------------------------///
+//                if (bapNode.getBranchingDecision() instanceof RoundServiceEdge) {
+//                    if (Math.abs(bapNode.getBound() - 3639) < config.PRECISION && !tempCheck) {
+//                        try {
+//                            bapNodeSolutionOutput(bapNode);
+//                            tempCheck = true;
+//                        } catch (UnknownObjectException e) {
+//                            // TODO Auto-generated catch block
+//                            e.printStackTrace();
+//                        } catch (IloException e) {
+//                            // TODO Auto-generated catch block
+//                            e.printStackTrace();
+//                        }
+//                    }
+//                }
+//
+//                /// ------------------------------------------------check
+//                /// 3639------------------------------------------///
 
             } catch (TimeLimitExceededException e) {
                 queue.add(bapNode);
