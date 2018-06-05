@@ -384,6 +384,7 @@ public class BranchAndPriceB_M<V> extends AbstractBranchAndPrice<SNDRC, Cycle, S
                     for (Cycle cycle : incumbentSolution) {
                         optSolutionValueMap.put(cycle, cycle.value);
                     }
+                    
                     try {
                         optXValues = ((Master) master).getXValues();
                         // bapNodeSolutionOutput(bapNode);
@@ -628,6 +629,8 @@ public class BranchAndPriceB_M<V> extends AbstractBranchAndPrice<SNDRC, Cycle, S
                     for (Cycle cycle : incumbentSolution) {
                         optSolutionValueMap.put(cycle, cycle.value);
                     }
+                    
+                    
                     try {
                         optXValues = ((Master) master).getXValues();
                         // bapNodeSolutionOutput(bapNode);
@@ -881,7 +884,7 @@ public class BranchAndPriceB_M<V> extends AbstractBranchAndPrice<SNDRC, Cycle, S
             // subGraph.isFeasibleForX=true;
             if (subGraph.isFeasibleForX) {
 
-                // --------------------------------------------------------------------------------------------------------------------------------------
+                // ---------------------------------------ColumnGenerationBasedHeuristic----------------------------------------------------------------
                 long time0 = System.currentTimeMillis();
                 ColumnGenerationBasedHeuristic solver = new ColumnGenerationBasedHeuristic(subGraph, 0.65, false);
 //                ColumnGenerationBasedHeuristic solver = new ColumnGenerationBasedHeuristic(subGraph, 0.65, true);
@@ -904,15 +907,29 @@ public class BranchAndPriceB_M<V> extends AbstractBranchAndPrice<SNDRC, Cycle, S
 //                        optSolutionValueMap.put(cycle, cycle.value);
 //                    }
                     
-                    this.optSolutionValueMap=solver.optSolutionValueMap;
                     
-                    optXValues=solver.optXValues;
+                    Map<Cycle,Double> temp=solver.optSolutionValueMap;
+                    this.optSolutionValueMap=new HashMap<>();
+                    for(Cycle cycle:temp.keySet()){
+                        optSolutionValueMap.put(cycle, temp.get(cycle));
+                    }
+                    
+                    
+//                    this.optSolutionValueMap=solver.optSolutionValueMap;
+                    
+                    this.optXValues=new ArrayList<>();
+                    for(int commodity=0;commodity<dataModel.numDemand;commodity++){
+                        Map<Integer,Double> tempOptXValues=new HashMap<Integer,Double>();
+                        tempOptXValues.putAll(solver.optXValues.get(commodity));
+                        optXValues.add(tempOptXValues);
+                    }
+//                    optXValues=solver.optXValues;
                     
                     this.ifOptGetFromSubGraph=true;
 
                 }
 
-                // --------------------------------------------------------------------------------------------------------------------------------------
+                // -------------------------------------------ColumnGenerationBasedHeuristic----------------------------------------------------------
 
                 this.ifUseLearningUB = false;
                 //

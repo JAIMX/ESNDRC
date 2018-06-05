@@ -117,7 +117,7 @@ public class ColumnGenerationBasedHeuristic {
         // SimpleCGLogger logger = new SimpleCGLogger(cg, new
         // File("./output/cgLogger.log"));
 
-        cg.solve(System.currentTimeMillis() + 1800000L); // 0.5 hour limit
+        cg.solve(System.currentTimeMillis() + 3600000L); // 0.5 hour limit
 
         System.out.println("Time of first LP solve= " + (System.currentTimeMillis() - runTime));
 
@@ -340,6 +340,7 @@ public class ColumnGenerationBasedHeuristic {
         /// solve and
         /// output------------------------------------------------------------------///
 
+        
         cg.close();
         cutHandler.close();
 
@@ -349,8 +350,10 @@ public class ColumnGenerationBasedHeuristic {
 
         runTime = System.currentTimeMillis() - runTime;
         long timeLeft = 3600000 - runTime;
+//        long timeLeft = 20000 - runTime;
         cplex.setParam(IloCplex.DoubleParam.TiLim, timeLeft / 1000);
-        // cplex.setParam(IloCplex.DoubleParam.TiLim, 36000);
+        
+//        cplex.exportModel("./output/masterLP/" + "check"  + ".lp");
         cplex.solve();
         System.out.println("optimal objective= " + cplex.getObjValue());
         System.out.println();
@@ -362,12 +365,15 @@ public class ColumnGenerationBasedHeuristic {
 
             this.objectiveIncumbentSolution = integerObjective;
             this.incumbentSolution = new ArrayList<>();
+            
             for (Cycle cycle : cycleVar.keySet()) {
                 IloIntVar var = cycleVar.get(cycle);
-                int value = (int) cplex.getValue(var);
+//                int value = (int) cplex.getValue(var);
+                int value = MathProgrammingUtil.doubleToInt(cplex.getValue(var));
 
-                if (value > 0.1) {
+                if (value > 0.01) {
                     this.incumbentSolution.add(cycle);
+                    cycle.value=value;
                 }
 
             }
