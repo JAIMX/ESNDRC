@@ -117,7 +117,7 @@ public class ColumnGenerationBasedHeuristic {
         // SimpleCGLogger logger = new SimpleCGLogger(cg, new
         // File("./output/cgLogger.log"));
 
-        cg.solve(System.currentTimeMillis() + 3600000L); // 0.5 hour limit
+        cg.solve(System.currentTimeMillis() + 3600000L); // 1 hour limit
 
         System.out.println("Time of first LP solve= " + (System.currentTimeMillis() - runTime));
 
@@ -349,7 +349,7 @@ public class ColumnGenerationBasedHeuristic {
         System.out.println();
 
         runTime = System.currentTimeMillis() - runTime;
-        long timeLeft = 3600000 - runTime;
+        long timeLeft = 3600000 - runTime;  //1 hour
 //        long timeLeft = 20000 - runTime;
         cplex.setParam(IloCplex.DoubleParam.TiLim, timeLeft / 1000);
         
