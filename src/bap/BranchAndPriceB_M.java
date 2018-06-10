@@ -332,6 +332,9 @@ public class BranchAndPriceB_M<V> extends AbstractBranchAndPrice<SNDRC, Cycle, S
                 if (this.nodesProcessed == 0 && ifUseLearningUB) {
                     try {
                         LearningUB();
+                        if(!ifUseLearningUB){
+                            break;
+                        }
                     } catch (TimeLimitExceededException | IloException e) {
                         // TODO Auto-generated catch block
                         e.printStackTrace();
