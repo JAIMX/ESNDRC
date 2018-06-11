@@ -1,0 +1,22 @@
+number of service arcs=900
+number of holding arcs=210
+
+javax.naming.TimeLimitExceededException
+	at cg.master.Master.solveMasterProblem(Master.java:479)
+	at org.jorlib.frameworks.columnGeneration.master.AbstractMaster.solve(AbstractMaster.java:152)
+	at org.jorlib.frameworks.columnGeneration.colgenMain.ColGen.invokeMaster(ColGen.java:271)
+	at org.jorlib.frameworks.columnGeneration.colgenMain.ColGen.solve(ColGen.java:224)
+	at org.jorlib.frameworks.columnGeneration.branchAndPrice.AbstractBranchAndPrice.solveBAPNode(AbstractBranchAndPrice.java:342)
+	at bap.BranchAndPriceA_M.runBranchAndPrice(BranchAndPriceA_M.java:278)
+	at SNDRCSolver.<init>(SNDRCSolver.java:117)
+	at SNDRCSolver.main(SNDRCSolver.java:302)
+Exception in thread "main" java.lang.RuntimeException: Duplicate column has been generated for pricing problem: capacity type: 0 origin node: 4! This column already exists and by definition should not have negative reduced cost: artificial: false set: [546, 980, 660, 823, 1049, 441] start node= 4 start time= 0 capacity type= 0
+	at org.jorlib.frameworks.columnGeneration.master.MasterData.addColumn(MasterData.java:76)
+	at cg.master.Master.addColumn(Master.java:806)
+	at cg.master.Master.addColumn(Master.java:1)
+	at org.jorlib.frameworks.columnGeneration.colgenMain.ColGen.invokePricingProblems(ColGen.java:315)
+	at org.jorlib.frameworks.columnGeneration.colgenMain.ColGen.solve(ColGen.java:242)
+	at org.jorlib.frameworks.columnGeneration.branchAndPrice.AbstractBranchAndPrice.solveBAPNode(AbstractBranchAndPrice.java:342)
+	at bap.BranchAndPriceA_M.runBranchAndPrice(BranchAndPriceA_M.java:278)
+	at SNDRCSolver.<init>(SNDRCSolver.java:117)
+	at SNDRCSolver.main(SNDRCSolver.java:302)
