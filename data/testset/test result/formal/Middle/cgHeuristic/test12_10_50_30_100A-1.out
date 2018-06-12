@@ -1,0 +1,240 @@
+number of service arcs=1500
+number of holding arcs=300
+
+Yes
+1500
+
+Time of first LP solve= 1101024
+
+There are 11609 columns added to the model.
+
+Tried aggregator 2 times.
+MIP Presolve eliminated 12689 rows and 61 columns.
+Aggregator did 1180 substitutions.
+Reduced MIP has 17661 rows, 85180 columns, and 277418 nonzeros.
+Reduced MIP has 1673 binaries, 9905 generals, 0 SOSs, and 0 indicators.
+Presolve time = 0.18 sec. (161.46 ticks)
+Found incumbent of value 1.0012979e+08 after 0.43 sec. (319.46 ticks)
+Probing time = 0.12 sec. (31.54 ticks)
+Tried aggregator 1 time.
+Reduced MIP has 17661 rows, 85180 columns, and 277418 nonzeros.
+Reduced MIP has 1673 binaries, 9905 generals, 0 SOSs, and 0 indicators.
+Presolve time = 0.17 sec. (106.97 ticks)
+Probing time = 0.16 sec. (31.54 ticks)
+Clique table members: 1.
+MIP emphasis: balance optimality and feasibility.
+MIP search method: dynamic search.
+Parallel mode: deterministic, using up to 4 threads.
+Root relaxation solution time = 37.85 sec. (27446.22 ticks)
+
+        Nodes                                         Cuts/
+   Node  Left     Objective  IInf  Best Integer    Best Bound    ItCnt     Gap
+
+*     0+    0                       1.00130e+08    -6281.0000           100.01%
+*     0+    0                        18512.0000    -6281.0000           133.93%
+*     0+    0                        16528.0000    -6281.0000           138.00%
+*     0+    0                        16130.0000    -6281.0000           138.94%
+*     0+    0                        15286.0000    -6281.0000           141.09%
+*     0+    0                        15142.0000    -6281.0000           141.48%
+*     0+    0                        15100.0000    -6281.0000           141.60%
+*     0+    0                        15088.0000    -6281.0000           141.63%
+*     0+    0                        14868.0000    -6281.0000           142.25%
+      0     0     8743.6087   170    14868.0000     8743.6087       31   41.19%
+*     0+    0                        14187.0000     8743.6087            38.37%
+      0     0     8743.6685    93    14187.0000  MIRcuts: 685    23323   38.37%
+      0     0     8743.6685   107    14187.0000     Cuts: 547    39521   38.37%
+      0     0     8743.7493    86    14187.0000  MIRcuts: 721    78852   38.37%
+*     0+    0                        11876.0000     8743.7493            26.37%
+      0     0     8744.0600    90    11876.0000  MIRcuts: 689   117234   26.37%
+Heuristic still looking.
+Heuristic still looking.
+Heuristic still looking.
+      0     2     8744.0600    90    11876.0000     8744.0600   117234   26.37%
+Elapsed time = 656.00 sec. (460329.58 ticks, tree = 0.00 MB, solutions = 11)
+      1     3     8744.0600    92    11876.0000     8744.0600   121412   26.37%
+      2     4     9081.6245    91    11876.0000     8744.0600   204546   26.37%
+      3     5     8744.0600    93    11876.0000     8744.0600   204678   26.37%
+      4     6     9392.4356    87    11876.0000     8744.0600   257444   26.37%
+      6     8     9042.1997    88    11876.0000     8744.0600   350058   26.37%
+      9    11     9710.2562    61    11876.0000     8744.0600   400001   26.37%
+     10    12     8744.1492    99    11876.0000     8744.0600   418414   26.37%
+     12    14     9081.8643    90    11876.0000     8744.0600   466136   26.37%
+     13    15     9394.3352    69    11876.0000     8744.0600   570749   26.37%
+     21    23     8744.1492   100    11876.0000     8744.1492   817138   26.37%
+Elapsed time = 1513.96 sec. (935559.29 ticks, tree = 0.00 MB, solutions = 11)
+     23    25     9394.3352    70    11876.0000     8744.1492   822748   26.37%
+     25    27     9164.8850    89    11876.0000     8744.1492   850435   26.37%
+     26    28     9710.2600    53    11876.0000     8744.1492   852728   26.37%
+     28    30     9754.1968    64    11876.0000     8744.1492   917121   26.37%
+     32    34     9394.3352    75    11876.0000     8744.1492  1006298   26.37%
+     34    36    10003.5905    61    11876.0000     8744.1492  1065877   26.37%
+     36    38     9526.8067    61    11876.0000     8744.1492  1126587   26.37%
+     40    42     8744.2134    89    11876.0000     8744.2134  1235458   26.37%
+     42    44     9640.7383    57    11876.0000     8744.2134  1299404   26.37%
+     44    46     9042.1997    82    11876.0000     8744.2134  1497766   26.37%
+Elapsed time = 2700.51 sec. (1379255.87 ticks, tree = 0.00 MB, solutions = 11)
+     51    53     9833.9129    53    11876.0000     8744.2134  1878113   26.37%
+     57    59     8744.2134    91    11876.0000     8744.2134  1995608   26.37%
+     61    63     8805.6649    88    11876.0000     8744.2134  2078228   26.37%
+     62    64    10007.0066    51    11876.0000     8744.2134  2185058   26.37%
+     66    68     9716.6192    54    11876.0000     8744.2134  2255284   26.37%
+     70    72     9716.6192    59    11876.0000     8744.2134  2351635   26.37%
+     73    75     9042.1997    92    11876.0000     8744.2134  2435463   26.37%
+     77    79     8744.2134    87    11876.0000     8744.2134  2601765   26.37%
+     81    83     9832.1539    57    11876.0000     8744.2134  2675331   26.37%
+     83    85     8805.1834    80    11876.0000     8744.2134  2757852   26.37%
+Elapsed time = 3911.04 sec. (1828299.13 ticks, tree = 0.00 MB, solutions = 11)
+     87    89     8744.2134    85    11876.0000     8744.2134  2818099   26.37%
+     91    93     8744.2134    84    11876.0000     8744.2134  2861051   26.37%
+     95    97     8744.2134    92    11876.0000     8744.2134  2909699   26.37%
+     99   101     8972.5092    83    11876.0000     8744.2134  3075128   26.37%
+    103   105     8744.2134    88    11876.0000     8744.2134  3095921   26.37%
+    104   106     9853.3238    67    11876.0000     8744.2134  3122918   26.37%
+    113   115     9042.1997    74    11876.0000     8744.2134  3348750   26.37%
+    132   134     8744.2134    90    11876.0000     8744.2134  3537250   26.37%
+    133   135    10127.7411    48    11876.0000     8744.2134  3582792   26.37%
+    136   138     9042.1997    90    11876.0000     8744.2134  3655540   26.37%
+Elapsed time = 5942.37 sec. (2584962.45 ticks, tree = 2.93 MB, solutions = 11)
+    140   142     8744.2134    85    11876.0000     8744.2134  3701263   26.37%
+    144   146     8744.2134    99    11876.0000     8744.2134  3744933   26.37%
+    148   150     9042.4466    86    11876.0000     8744.2134  3852175   26.37%
+    438   245     8744.2134    88    11876.0000     8744.2134  4538807   26.37%
+    442   249     8744.2134    84    11876.0000     8744.2134  4559475   26.37%
+    446   251     8744.2134    86    11876.0000     8744.2134  4586282   26.37%
+    450   255     8999.6595    83    11876.0000     8744.2134  4676011   26.37%
+    454   257     8744.2134    78    11876.0000     8744.2134  4693195   26.37%
+    458   261     8744.2134    99    11876.0000     8744.2134  4741651   26.37%
+    462   265     9008.0129    80    11876.0000     8744.2134  4815824   26.37%
+Elapsed time = 7007.40 sec. (3014544.66 ticks, tree = 4.33 MB, solutions = 11)
+*   578+  285                        10986.0000     8744.2134            20.41%
+*   578+  285                        10953.0000     8744.2134            20.17%
+*   578+  285                        10935.0000     8744.2134            20.03%
+*   578+  285                        10916.0000     8744.2134            19.90%
+    579   211     8744.2134    92    10916.0000     8744.2134  5111453   19.90%
+    582   214     8744.2134    96    10916.0000     8744.2134  5145574   19.90%
+
+Mixed integer rounding cuts applied:  1261
+Gomory fractional cuts applied:  1
+
+Root node processing (before b&c):
+  Real time             =  655.93 sec. (460303.61 ticks)
+Parallel b&c, 4 threads:
+  Real time             = 6544.12 sec. (2626969.11 ticks)
+  Sync time (average)   =  479.05 sec.
+  Wait time (average)   =  479.10 sec.
+                          ------------
+Total (root+branch&cut) = 7200.06 sec. (3087272.72 ticks)
+optimal objective= 10916.0
+
+artificial: false set: [944, 290, 453, 70, 118, 24] start node= 6 start time= 14 capacity type= 0
+(3,3)->(0,10)->(6,14)->(2,20)->(0,24)->(1,28)->(3,3):1
+
+artificial: false set: [227, 1223, 489, 94, 687] start node= 7 start time= 23 capacity type= 0
+(1,4)->(3,9)->(1,17)->(7,23)->(4,27)->(1,4):1
+
+artificial: false set: [817, 1219, 1062, 152, 28, 653] start node= 4 start time= 23 capacity type= 0
+(1,2)->(5,7)->(6,12)->(7,19)->(4,23)->(0,28)->(1,2):1
+
+artificial: false set: [758, 89, 410, 523, 1165, 1023] start node= 7 start time= 25 capacity type= 1
+(6,3)->(5,8)->(3,13)->(2,20)->(7,25)->(0,29)->(6,3):1
+
+artificial: false set: [0, 1346, 214, 888, 1210, 734] start node= 4 start time= 14 capacity type= 1
+(0,0)->(1,4)->(7,10)->(4,14)->(5,18)->(9,26)->(0,0):1
+
+artificial: false set: [372, 180, 936, 1642, 683, 796] start node= 4 start time= 22 capacity type= 0
+(1,0)->(6,6)->(2,12)->(5,16)->(4,22)->(4,23)->(1,0):1
+
+artificial: false set: [294, 1190, 1239, 88, 1275, 1052] start node= 7 start time= 9 capacity type= 1
+(6,2)->(7,9)->(8,15)->(7,20)->(2,24)->(0,28)->(6,2):1
+
+artificial: false set: [1152, 1130, 571, 1436, 76, 845] start node= 7 start time= 12 capacity type= 1
+(3,1)->(5,5)->(7,12)->(0,16)->(6,20)->(9,26)->(3,1):1
+
+artificial: false set: [1153, 835, 741, 1080, 1449, 47, 1295] start node= 4 start time= 21 capacity type= 0
+(6,0)->(8,5)->(9,9)->(7,13)->(0,17)->(4,21)->(5,25)->(6,0):1
+
+artificial: false set: [626, 611, 1431, 1416, 1307, 1292] start node= 8 start time= 2 capacity type= 0
+(8,2)->(9,6)->(3,11)->(8,17)->(9,21)->(3,26)->(8,2):1
+
+artificial: false set: [1744, 113, 1265, 19, 628, 1720, 285, 1181] start node= 8 start time= 4 capacity type= 0
+(8,4)->(8,5)->(7,10)->(7,11)->(2,15)->(0,19)->(1,23)->(3,28)->(8,4):1
+
+artificial: false set: [1520, 1521, 82, 724, 1016, 1336, 878] start node= 9 start time= 16 capacity type= 0
+(4,4)->(5,8)->(9,16)->(0,20)->(0,21)->(0,22)->(6,26)->(4,4):1
+
+artificial: false set: [417, 1300, 1172, 1193, 426, 1484, 1278] start node= 7 start time= 2 capacity type= 1
+(7,2)->(2,6)->(8,10)->(9,14)->(8,18)->(7,23)->(2,27)->(7,2):1
+
+artificial: false set: [882, 724, 357, 1400, 1658, 1659, 1660, 1661] start node= 5 start time= 8 capacity type= 0
+(4,4)->(5,8)->(5,9)->(5,10)->(5,11)->(5,12)->(9,20)->(2,27)->(4,4):1
+
+Column Generation Based Heuristic Time= 8301444
+================ Solution ================
+BAP terminated with objective : 10916
+Total Number of iterations: 37
+Total Number of processed nodes: 0
+Total Time spent on master problems: 1099157 Total time spent on pricing problems: 1250
+Best bound : 10916.0
+[0, 19, 24, 28, 47, 70, 76, 82, 88, 89, 94, 113, 118, 152, 180, 214, 227, 285, 290, 294, 357, 372, 410, 417, 426, 453, 489, 523, 571, 611, 626, 628, 653, 683, 687, 724, 734, 741, 758, 796, 817, 835, 845, 878, 882, 888, 936, 944, 1016, 1023, 1052, 1062, 1080, 1130, 1152, 1153, 1165, 1172, 1181, 1190, 1193, 1210, 1219, 1223, 1239, 1265, 1275, 1278, 1292, 1295, 1300, 1307, 1336, 1346, 1400, 1416, 1431, 1436, 1449, 1484]
+The number of service edges used= 80
+
+Solution is optimal: true
+Columns (only non-zero columns are returned):
+artificial: false set: [944, 290, 453, 70, 118, 24] start node= 6 start time= 14 capacity type= 0
+(3,3)->(0,10)->(6,14)->(2,20)->(0,24)->(1,28)->(3,3):1.0
+Fix cost= 100 variable cost= 120
+
+artificial: false set: [227, 1223, 489, 94, 687] start node= 7 start time= 23 capacity type= 0
+(1,4)->(3,9)->(1,17)->(7,23)->(4,27)->(1,4):1.0
+Fix cost= 80 variable cost= 120
+
+artificial: false set: [817, 1219, 1062, 152, 28, 653] start node= 4 start time= 23 capacity type= 0
+(1,2)->(5,7)->(6,12)->(7,19)->(4,23)->(0,28)->(1,2):1.0
+Fix cost= 50 variable cost= 120
+
+artificial: false set: [758, 89, 410, 523, 1165, 1023] start node= 7 start time= 25 capacity type= 1
+(6,3)->(5,8)->(3,13)->(2,20)->(7,25)->(0,29)->(6,3):1.0
+Fix cost= 110 variable cost= 120
+
+artificial: false set: [0, 1346, 214, 888, 1210, 734] start node= 4 start time= 14 capacity type= 1
+(0,0)->(1,4)->(7,10)->(4,14)->(5,18)->(9,26)->(0,0):1.0
+Fix cost= 150 variable cost= 120
+
+artificial: false set: [372, 180, 936, 1642, 683, 796] start node= 4 start time= 22 capacity type= 0
+(1,0)->(6,6)->(2,12)->(5,16)->(4,22)->(4,23)->(1,0):1.0
+Fix cost= 50 variable cost= 116
+
+artificial: false set: [294, 1190, 1239, 88, 1275, 1052] start node= 7 start time= 9 capacity type= 1
+(6,2)->(7,9)->(8,15)->(7,20)->(2,24)->(0,28)->(6,2):1.0
+Fix cost= 110 variable cost= 120
+
+artificial: false set: [1152, 1130, 571, 1436, 76, 845] start node= 7 start time= 12 capacity type= 1
+(3,1)->(5,5)->(7,12)->(0,16)->(6,20)->(9,26)->(3,1):1.0
+Fix cost= 110 variable cost= 120
+
+artificial: false set: [1153, 835, 741, 1080, 1449, 47, 1295] start node= 4 start time= 21 capacity type= 0
+(6,0)->(8,5)->(9,9)->(7,13)->(0,17)->(4,21)->(5,25)->(6,0):1.0
+Fix cost= 50 variable cost= 120
+
+artificial: false set: [626, 611, 1431, 1416, 1307, 1292] start node= 8 start time= 2 capacity type= 0
+(8,2)->(9,6)->(3,11)->(8,17)->(9,21)->(3,26)->(8,2):1.0
+Fix cost= 80 variable cost= 120
+
+artificial: false set: [1744, 113, 1265, 19, 628, 1720, 285, 1181] start node= 8 start time= 4 capacity type= 0
+(8,4)->(8,5)->(7,10)->(7,11)->(2,15)->(0,19)->(1,23)->(3,28)->(8,4):1.0
+Fix cost= 80 variable cost= 112
+
+artificial: false set: [1520, 1521, 82, 724, 1016, 1336, 878] start node= 9 start time= 16 capacity type= 0
+(4,4)->(5,8)->(9,16)->(0,20)->(0,21)->(0,22)->(6,26)->(4,4):1.0
+Fix cost= 80 variable cost= 112
+
+artificial: false set: [417, 1300, 1172, 1193, 426, 1484, 1278] start node= 7 start time= 2 capacity type= 1
+(7,2)->(2,6)->(8,10)->(9,14)->(8,18)->(7,23)->(2,27)->(7,2):1.0
+Fix cost= 110 variable cost= 120
+
+artificial: false set: [882, 724, 357, 1400, 1658, 1659, 1660, 1661] start node= 5 start time= 8 capacity type= 0
+(4,4)->(5,8)->(5,9)->(5,10)->(5,11)->(5,12)->(9,20)->(2,27)->(4,4):1.0
+Fix cost= 75 variable cost= 104
+
+fix cost+variable cost+commodity cost= 1235+1644+8037.0=10916.0
+Total time= 9402789
