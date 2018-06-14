@@ -249,6 +249,11 @@ public class BranchAndPriceB_M<V> extends AbstractBranchAndPrice<SNDRC, Cycle, S
             try {
 
                 this.solveBAPNode(bapNode, timeLimit);
+                
+                if(bapNode.nodeID==0){
+                    System.out.println();
+                    System.out.println("root node bound= "+bapNode.getBound());
+                }
 
                 // output the model
                 // ((Master) master).Output(bapNode.nodeID);

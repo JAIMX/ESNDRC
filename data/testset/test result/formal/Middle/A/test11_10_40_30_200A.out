@@ -1,0 +1,129 @@
+number of service arcs=1200
+number of holding arcs=300
+
+javax.naming.TimeLimitExceededException
+	at cg.master.Master.solveMasterProblem(Master.java:479)
+	at org.jorlib.frameworks.columnGeneration.master.AbstractMaster.solve(AbstractMaster.java:152)
+	at org.jorlib.frameworks.columnGeneration.colgenMain.ColGen.invokeMaster(ColGen.java:271)
+	at org.jorlib.frameworks.columnGeneration.colgenMain.ColGen.solve(ColGen.java:224)
+	at org.jorlib.frameworks.columnGeneration.branchAndPrice.AbstractBranchAndPrice.solveBAPNode(AbstractBranchAndPrice.java:342)
+	at bap.BranchAndPriceA_M.runBranchAndPrice(BranchAndPriceA_M.java:278)
+	at SNDRCSolver.<init>(SNDRCSolver.java:117)
+	at SNDRCSolver.main(SNDRCSolver.java:302)
+================ Solution ================
+BAP terminated with objective : 31506
+Total Number of iterations: 646
+Total Number of processed nodes: 37
+Total Time spent on master problems: 3506677 Total time spent on pricing problems: 14074
+Best bound : 26796.88000000001
+[12, 30, 35, 47, 60, 65, 119, 124, 142, 157, 182, 191, 196, 201, 227, 231, 249, 262, 279, 284, 290, 298, 306, 336, 368, 384, 397, 402, 403, 413, 419, 422, 427, 430, 433, 435, 441, 465, 500, 506, 509, 518, 523, 535, 553, 561, 566, 570, 586, 599, 600, 605, 643, 655, 656, 664, 683, 690, 692, 711, 721, 726, 733, 750, 753, 763, 767, 768, 780, 792, 806, 814, 823, 846, 869, 899, 900, 915, 919, 935, 949, 988, 1014, 1028, 1043, 1057, 1072, 1077, 1101, 1102, 1118, 1120, 1123, 1135, 1137, 1155, 1194]
+The number of service edges used= 97
+
+Solution is optimal: false
+Columns (only non-zero columns are returned):
+artificial: false set: [1207, 119, 1208, 441, 1209, 1210, 1258, 1211, 12, 1310] start node= 1 start time= 28 capacity type= 1
+(0,7)->(0,8)->(0,9)->(0,10)->(0,11)->(0,12)->(3,20)->(3,21)->(1,28)->(1,29)->(0,7):1.0
+Fix cost= 200 variable cost= 92
+
+artificial: false set: [1344, 1345, 566, 1240, 1339, 1340, 1341, 814, 1342, 191, 1343] start node= 4 start time= 19 capacity type= 1
+(7,4)->(1,10)->(1,11)->(4,19)->(4,20)->(4,21)->(4,22)->(4,23)->(4,24)->(4,25)->(4,26)->(7,4):1.0
+Fix cost= 150 variable cost= 88
+
+artificial: false set: [561, 899, 1333, 1334, 726, 1335, 1336, 1337, 1338, 1339, 1340] start node= 4 start time= 15 capacity type= 1
+(6,6)->(4,13)->(4,14)->(4,15)->(4,16)->(4,17)->(4,18)->(4,19)->(4,20)->(4,21)->(7,29)->(6,6):1.0
+Fix cost= 150 variable cost= 88
+
+artificial: false set: [1345, 664, 1352, 792, 1353, 506, 1421, 47] start node= 7 start time= 12 capacity type= 1
+(5,2)->(5,3)->(5,4)->(7,11)->(7,12)->(0,17)->(4,25)->(4,26)->(5,2):1.0
+Fix cost= 110 variable cost= 104
+
+artificial: false set: [336, 465, 1282, 869, 1334, 413] start node= 7 start time= 29 capacity type= 1
+(2,6)->(4,14)->(4,15)->(2,22)->(2,23)->(7,29)->(2,6):1.0
+Fix cost= 110 variable cost= 112
+
+artificial: false set: [1137, 402, 1428, 949, 1271, 124] start node= 7 start time= 18 capacity type= 1
+(1,4)->(2,11)->(2,12)->(7,18)->(7,19)->(9,27)->(1,4):1.0
+Fix cost= 110 variable cost= 112
+
+artificial: false set: [1072, 1057, 915, 900] start node= 7 start time= 0 capacity type= 1
+(7,0)->(8,7)->(7,15)->(8,22)->(7,0):1.0
+Fix cost= 110 variable cost= 120
+
+artificial: false set: [1201, 1202, 35, 1203, 1204, 806, 1431, 1432, 553, 1433, 1434, 1435] start node= 7 start time= 21 capacity type= 1
+(0,1)->(0,2)->(0,3)->(0,4)->(0,5)->(4,13)->(7,21)->(7,22)->(7,23)->(7,24)->(7,25)->(7,26)->(0,1):1.0
+Fix cost= 110 variable cost= 84
+
+artificial: false set: [643, 1028, 1446, 1398, 711, 1399, 1447, 1400, 298] start node= 8 start time= 7 capacity type= 1
+(8,6)->(8,7)->(8,8)->(5,13)->(6,18)->(6,19)->(6,20)->(6,21)->(1,28)->(8,6):1.0
+Fix cost= 120 variable cost= 100
+
+artificial: false set: [1457, 1458, 1459, 1460, 1461, 422, 1014, 1462, 279, 1463] start node= 8 start time= 17 capacity type= 1
+(3,2)->(1,9)->(8,17)->(8,18)->(8,19)->(8,20)->(8,21)->(8,22)->(8,23)->(8,24)->(3,2):1.0
+Fix cost= 120 variable cost= 92
+
+artificial: false set: [1296, 1378, 1379, 1043, 1462, 600, 427, 284, 1295] start node= 8 start time= 22 capacity type= 1
+(5,0)->(3,5)->(3,6)->(3,7)->(1,14)->(8,22)->(8,23)->(5,28)->(5,29)->(5,0):1.0
+Fix cost= 120 variable cost= 100
+
+artificial: false set: [403, 1077, 919, 1415, 1466, 846] start node= 8 start time= 26 capacity type= 1
+(7,5)->(7,6)->(2,13)->(7,19)->(8,26)->(8,27)->(7,5):1.0
+Fix cost= 120 variable cost= 112
+
+artificial: false set: [692, 249, 1194, 767] start node= 9 start time= 24 capacity type= 1
+(6,2)->(1,9)->(6,17)->(9,24)->(6,2):1.0
+Fix cost= 130 variable cost= 120
+
+artificial: false set: [1478, 1479, 1480, 1481, 1482, 1483, 1484, 1485, 1229, 1101, 1486, 1487, 1488, 1489, 1490, 60] start node= 9 start time= 19 capacity type= 1
+(0,0)->(9,8)->(9,9)->(9,10)->(9,11)->(9,12)->(9,13)->(9,14)->(9,15)->(9,16)->(9,17)->(9,18)->(9,19)->(9,20)->(9,21)->(0,29)->(0,0):1.0
+Fix cost= 130 variable cost= 64
+
+artificial: false set: [1250, 1123, 419, 1251, 935, 142] start node= 1 start time= 20 capacity type= 2
+(7,5)->(9,13)->(1,20)->(1,21)->(1,22)->(2,29)->(7,5):1.0
+Fix cost= 300 variable cost= 112
+
+artificial: false set: [1248, 1249, 1250, 201, 605, 509, 430, 1247] start node= 1 start time= 18 capacity type= 2
+(5,5)->(3,10)->(1,17)->(1,18)->(1,19)->(1,20)->(1,21)->(4,29)->(5,5):1.0
+Fix cost= 300 variable cost= 104
+
+artificial: false set: [1344, 196, 1477, 535, 1245, 1118, 750] start node= 1 start time= 16 capacity type= 2
+(6,0)->(9,7)->(9,8)->(1,15)->(1,16)->(4,24)->(4,25)->(6,0):1.0
+Fix cost= 300 variable cost= 108
+
+artificial: false set: [433, 306, 290, 988] start node= 1 start time= 20 capacity type= 2
+(2,6)->(3,13)->(1,20)->(8,28)->(2,6):1.0
+Fix cost= 300 variable cost= 120
+
+artificial: false set: [690, 435, 262, 157] start node= 1 start time= 22 capacity type= 2
+(6,0)->(1,7)->(3,15)->(1,22)->(6,0):1.0
+Fix cost= 300 variable cost= 120
+
+artificial: false set: [656, 721, 500, 518, 733] start node= 5 start time= 26 capacity type= 2
+(6,1)->(4,8)->(6,13)->(4,20)->(5,26)->(6,1):1.0
+Fix cost= 350 variable cost= 120
+
+artificial: false set: [384, 368, 1364, 1365, 586, 570] start node= 5 start time= 0 capacity type= 2
+(5,0)->(2,8)->(5,14)->(5,15)->(5,16)->(2,24)->(5,0):1.0
+Fix cost= 350 variable cost= 112
+
+artificial: false set: [1249, 1250, 231, 823, 599, 397] start node= 5 start time= 29 capacity type= 2
+(2,7)->(7,13)->(1,19)->(1,20)->(1,21)->(5,29)->(2,7):1.0
+Fix cost= 350 variable cost= 112
+
+artificial: false set: [1490, 1491, 518, 763, 30, 1102] start node= 9 start time= 20 capacity type= 2
+(0,0)->(4,8)->(6,13)->(9,20)->(9,21)->(9,22)->(0,0):1.0
+Fix cost= 350 variable cost= 112
+
+artificial: false set: [65, 1155, 1483, 683, 1484, 780] start node= 9 start time= 15 capacity type= 2
+(7,0)->(0,5)->(9,13)->(9,14)->(9,15)->(5,23)->(7,0):1.0
+Fix cost= 350 variable cost= 112
+
+artificial: false set: [1120, 753, 227, 1380, 1381, 1382, 655] start node= 9 start time= 10 capacity type= 2
+(6,0)->(6,1)->(6,2)->(6,3)->(9,10)->(1,17)->(5,25)->(6,0):1.0
+Fix cost= 350 variable cost= 108
+
+artificial: false set: [768, 1330, 1331, 1332, 182, 523, 1135] start node= 9 start time= 25 capacity type= 2
+(1,2)->(4,10)->(4,11)->(4,12)->(4,13)->(6,18)->(9,25)->(1,2):1.0
+Fix cost= 350 variable cost= 108
+
+fix cost+variable cost+commodity cost= 5740+2736+23030.0=31506.0
+Total time= 36000898
