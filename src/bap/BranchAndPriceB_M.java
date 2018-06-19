@@ -890,7 +890,7 @@ public class BranchAndPriceB_M<V> extends AbstractBranchAndPrice<SNDRC, Cycle, S
             // subGraph.isFeasibleForX=true;
             // System.out.println(subGraph.isFeasibleForX);
             // subGraph.isFeasibleForX=true;
-            if (subGraph.isFeasibleForX) {
+//            if (subGraph.isFeasibleForX) {
 
                 // ---------------------------------------ColumnGenerationBasedHeuristic----------------------------------------------------------------
                 long time0 = System.currentTimeMillis();
@@ -1029,7 +1029,7 @@ public class BranchAndPriceB_M<V> extends AbstractBranchAndPrice<SNDRC, Cycle, S
                 //
                 // subBap.close();
                 // subCutHandler.close();
-            }
+//            }
 
         } else {
             System.out.println("No");

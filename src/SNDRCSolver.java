@@ -90,7 +90,7 @@ public class SNDRCSolver {
         // BranchAndPriceB bap=new BranchAndPriceB(dataModel, master,
         // pricingProblems, solvers,
         // branchCreators,Double.MAX_VALUE,0.65,0.2,0.1,1,0.001,3,0.1,true);
-        BranchAndPriceB_M bap = new BranchAndPriceB_M(dataModel, master, pricingProblems, solvers, branchCreators,Double.MAX_VALUE, 0.65, 0.3, 0.1, 1, -0.001, 5, 0, true, false);
+        BranchAndPriceB_M bap = new BranchAndPriceB_M(dataModel, master, pricingProblems, solvers, branchCreators,Double.MAX_VALUE, 0.65, 0.3, 0.1, 1, -0.001, 6, 0, true, false);
         // BranchAndPriceA_M bap=new BranchAndPriceA_M(dataModel, master,
         // pricingProblems, solvers,
         // branchCreators,Double.MAX_VALUE,0.6,0.3,0.1,10,0.001,10,0.1,false,true);
