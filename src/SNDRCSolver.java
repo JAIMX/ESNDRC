@@ -9,6 +9,7 @@ import org.jorlib.frameworks.columnGeneration.io.SimpleDebugger;
 import org.jorlib.frameworks.columnGeneration.master.cutGeneration.CutHandler;
 import org.jorlib.frameworks.columnGeneration.pricing.AbstractPricingProblemSolver;
 import org.jorlib.frameworks.columnGeneration.util.Configuration;
+import org.jorlib.frameworks.columnGeneration.util.MathProgrammingUtil;
 
 import bap.BranchAndPrice;
 import bap.BranchAndPriceA;
@@ -136,8 +137,16 @@ public class SNDRCSolver {
                 for (int edgeIndex : tempEdgeSet) {
                     if (((ifOptGetFromSubGraph) && (dataModel.subEdgeSet.get(edgeIndex).edgeType == 0))
                             || ((!ifOptGetFromSubGraph) && (dataModel.edgeSet.get(edgeIndex).edgeType == 0))) {
-                        if (!keyServiceEdgeIndexSet.contains(edgeIndex)) {
-                            keyServiceEdgeIndexSet.add(edgeIndex);
+                        
+                        int index;
+                        if(ifOptGetFromSubGraph){
+                            index=dataModel.edgeSetIndexMap.get(edgeIndex);
+                        }else{
+                            index=edgeIndex;
+                        }
+                        
+                        if (!keyServiceEdgeIndexSet.contains(index)) {
+                            keyServiceEdgeIndexSet.add(index);
                         }
                     }
                 }
@@ -148,12 +157,18 @@ public class SNDRCSolver {
         System.out.println("The number of service edges used= " + keyServiceEdgeIndexSet.size());
         System.out.println();
 
-        // record the information of costs on vehicle and commodity
+        // record the information of costs on vehicle and commodity and calculate "no load ratio"
         int vehicleFixTotalCost = 0;
         Map<Cycle, Integer> vehicleVarCost = new HashMap<>();
         int vehicleVarTotalCost = 0;
         List<Double> commodityCost = new ArrayList<>();
         Double commodityTotalCost = (double) 0;
+        
+        long vehicleDowork=0;
+        double commodityDowork=0;
+        
+        int totalNumVehicle=0;
+        Map<Integer,Integer> vehicleCoverServiceEdgeRecord=new HashMap<>();
 
         if (bap.hasSolution()) {
             System.out.println("Solution is optimal: " + bap.isOptimal());
@@ -162,6 +177,7 @@ public class SNDRCSolver {
             for (Cycle column : solution) {
                 System.out.println(column);
                 System.out.println(out(column) + ":" + bap.GetOptSolutionValueMap().get(column));
+                totalNumVehicle+=MathProgrammingUtil.doubleToInt((double) bap.GetOptSolutionValueMap().get(column));
 
                 int fixCost = (int) dataModel.fixedCost[column.associatedPricingProblem.originNodeO][column.associatedPricingProblem.capacityTypeS];
                 int varCost = (int) (column.cost - fixCost);
@@ -173,6 +189,20 @@ public class SNDRCSolver {
                 System.out.println("Fix cost= " + fixCost + " variable cost= " + varCost);
 
                 System.out.println();
+                
+                
+                for(int edgeIndex:column.edgeIndexSet){
+                    
+                    Edge edge;
+                    if(!ifOptGetFromSubGraph){
+                        edge=dataModel.edgeSet.get(edgeIndex);
+                    }else edge=dataModel.subEdgeSet.get(edgeIndex);
+                    if(edge.edgeType==0){
+                        vehicleDowork+=dataModel.capacity[column.associatedPricingProblem.capacityTypeS]*edge.duration; 
+                    }
+                    
+                    ready to insert
+                }
             }
 
         }
@@ -192,6 +222,8 @@ public class SNDRCSolver {
 
                 if (edge.edgeType == 0) {
                     cost += dataModel.beta * edge.duration * xValues.get(edgeIndex);
+                    
+                    commodityDowork+=edge.duration*xValues.get(edgeIndex);
                 }
             }
 
@@ -201,31 +233,37 @@ public class SNDRCSolver {
 
         System.out.println("fix cost+variable cost+commodity cost= " + vehicleFixTotalCost + "+" + vehicleVarTotalCost
                 + "+" + commodityTotalCost + "=" + (vehicleFixTotalCost + vehicleVarTotalCost + commodityTotalCost));
+        
+        System.out.println("vehicle dowork= "+vehicleDowork+" commodity dowork= "+commodityDowork);
+        System.out.println("no load ratio= "+(vehicleDowork-commodityDowork)/vehicleDowork);
+        System.out.println("Total vehicles used= "+totalNumVehicle);
+        
+        
+        
 
-        // List<Map<Integer,Double>> optXValues=bap.GetOptXValues();
-        // output x variables
-        for (int demand = 0; demand < dataModel.numDemand; demand++) {
-            for (int edgeIndex : optXValues.get(demand).keySet()) {
-                if (optXValues.get(demand).get(edgeIndex) > 0.01) {
-                    Edge edge;
-
-                    if (!ifOptGetFromSubGraph) {
-                        edge = dataModel.edgeSet.get(edgeIndex);
-                    } else {
-                        edge = dataModel.subEdgeSet.get(edgeIndex);
-                    }
-
-                    
-//                    if(edge.edgeType==0){
-//                        System.out.println("x[" + demand + "]:" + edge.u + "," + edge.t1 + "->" + edge.v + "," + edge.t2
-//                                + "= " + optXValues.get(demand).get(edgeIndex) + " " + edge.duration);
+//        // output x variables
+//        for (int demand = 0; demand < dataModel.numDemand; demand++) {
+//            for (int edgeIndex : optXValues.get(demand).keySet()) {
+//                if (optXValues.get(demand).get(edgeIndex) > 0.01) {
+//                    Edge edge;
+//
+//                    if (!ifOptGetFromSubGraph) {
+//                        edge = dataModel.edgeSet.get(edgeIndex);
+//                    } else {
+//                        edge = dataModel.subEdgeSet.get(edgeIndex);
 //                    }
-
-                }
-            }
-//            System.out.println("total cost= " + commodityCost.get(demand));
-//            System.out.println();
-        }
+//
+//                    
+////                    if(edge.edgeType==0){
+////                        System.out.println("x[" + demand + "]:" + edge.u + "," + edge.t1 + "->" + edge.v + "," + edge.t2
+////                                + "= " + optXValues.get(demand).get(edgeIndex) + " " + edge.duration);
+////                    }
+//
+//                }
+//            }
+////            System.out.println("total cost= " + commodityCost.get(demand));
+////            System.out.println();
+//        }
 
         bap.close();
         cutHandler.close();
