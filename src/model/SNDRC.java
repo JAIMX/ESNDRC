@@ -5,8 +5,10 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Currency;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
 
@@ -23,8 +25,8 @@ public class SNDRC implements ModelInterface {
     public class Service {
         private int origin;
         private int destination;
-        private int LB, UB;
-        private int capacity;
+//        private int LB, UB;
+//        private int capacity;
         private int duration;
     }
 
@@ -77,6 +79,7 @@ public class SNDRC implements ModelInterface {
     public boolean isFeasibleForX;
     
     public ArrayList<Edge> subEdgeSet;
+    public Map<Integer,Integer> edgeSetIndexMap; //edge index of subEdgeSet to edge index of edgeSet
 
 
     public SNDRC(SNDRC sndrcParent, Set<Integer> serviceEdgeSet) {
@@ -118,6 +121,8 @@ public class SNDRC implements ModelInterface {
             if (serviceEdgeSet.contains(edgeIndex)) {
                 Edge edge = sndrcParent.edgeSet.get(edgeIndex);
                 edgeSet.add(edge);
+                sndrcParent.edgeSetIndexMap.put(edgeSet.size()-1, edgeIndex);
+                
                 pointToEdgeSet.get(edge.start).add(edgeSet.size() - 1);
                 pointFromEdgeSet.get(edge.end).add(edgeSet.size() - 1);
             }
@@ -132,6 +137,7 @@ public class SNDRC implements ModelInterface {
             int tempIndex = sndrcParent.numServiceArc + holdingEdgeIndex;
             Edge edge = sndrcParent.edgeSet.get(tempIndex);
             edgeSet.add(edge);
+            sndrcParent.edgeSetIndexMap.put(edgeSet.size()-1, tempIndex);
 
             pointToEdgeSet.get(edge.start).add(edgeSet.size() - 1);
             pointFromEdgeSet.get(edge.end).add(edgeSet.size() - 1);
@@ -804,7 +810,7 @@ public class SNDRC implements ModelInterface {
         
         
  ///----------------------------------------------reduce size of x variables--------------------------------------------/// 
-        
+        this.edgeSetIndexMap=new HashMap<>();
 
     }
 

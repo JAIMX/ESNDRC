@@ -14,14 +14,18 @@ public final class Cycle  extends AbstractColumn<SNDRC, SNDRCPricingProblem>{
 	public final int startTime;
 	public final double cost;// parameter in the objective expression
 	public final int ifForResourceBoundConstraints;//0: no; 1:yes; 2:for holding branch constraints
+	public final int[] pattern; //record the using numbers of each service
 	
 	
-	public Cycle(SNDRCPricingProblem associatedPricingProblem, boolean isArtificial, String creator, Set<Integer> edgeIndexSet,double cost,int startTime,int ifForResourceBoundConstraints) {
+	public Cycle(SNDRCPricingProblem associatedPricingProblem, boolean isArtificial, String creator, Set<Integer> edgeIndexSet,double cost,int startTime,int ifForResourceBoundConstraints,int[] pattern) {
 		super(associatedPricingProblem,isArtificial,creator);
 		this.edgeIndexSet=edgeIndexSet;
 		this.cost=cost;
 		this.startTime=startTime;
 		this.ifForResourceBoundConstraints=ifForResourceBoundConstraints;
+		
+		this.pattern=new int[pattern.length];
+		System.arraycopy(pattern,0, this.pattern, 0, pattern.length);
 	}
 	
 

@@ -9,6 +9,7 @@ import org.jorlib.frameworks.columnGeneration.io.SimpleDebugger;
 import org.jorlib.frameworks.columnGeneration.master.cutGeneration.CutHandler;
 import org.jorlib.frameworks.columnGeneration.pricing.AbstractPricingProblemSolver;
 import org.jorlib.frameworks.columnGeneration.util.Configuration;
+import org.jorlib.frameworks.columnGeneration.util.MathProgrammingUtil;
 
 import bap.BranchAndPrice;
 import bap.BranchAndPriceA;
@@ -90,7 +91,8 @@ public class SNDRCSolver {
         // BranchAndPriceB bap=new BranchAndPriceB(dataModel, master,
         // pricingProblems, solvers,
         // branchCreators,Double.MAX_VALUE,0.65,0.2,0.1,1,0.001,3,0.1,true);
-        BranchAndPriceB_M bap = new BranchAndPriceB_M(dataModel, master, pricingProblems, solvers, branchCreators,Double.MAX_VALUE, 0.65, 0.3, 0.1, 1, -0.001, 1, 0, true, false);
+        BranchAndPriceB_M bap = new BranchAndPriceB_M(dataModel, master, pricingProblems, solvers, branchCreators,
+                Double.MAX_VALUE, 0.65, 0.3, 0.1, 1, -0.001, 4, 0, true, false);
         // BranchAndPriceA_M bap=new BranchAndPriceA_M(dataModel, master,
         // pricingProblems, solvers,
         // branchCreators,Double.MAX_VALUE,0.6,0.3,0.1,10,0.001,10,0.1,false,true);
@@ -99,7 +101,7 @@ public class SNDRCSolver {
         // 0.001, 10, 0.1, false, true);
         // bap.setNodeOrdering(new BFSbapNodeComparator());
         // bap.setNodeOrdering(new NodeBoundbapNodeComparatorMaxBound());
-//        bap.setNodeOrdering(new NodeBoundbapNodeComparator());
+        // bap.setNodeOrdering(new NodeBoundbapNodeComparator());
 
         // OPTIONAL: Attach a debugger
         // SimpleDebugger debugger=new SimpleDebugger(bap, true);
@@ -109,8 +111,9 @@ public class SNDRCSolver {
         // File("./output/BAPlogger.log"));
         // BapLoggerB logger=new BapLoggerB(bap, new
         // File("./output/BAPlogger.log"));
-         BapLoggerB_M logger = new BapLoggerB_M(bap, new File("./output/BAPlogger.log"));
-//        BapLoggerA_M logger = new BapLoggerA_M(bap, new File("./output/BAPlogger.log"));
+        BapLoggerB_M logger = new BapLoggerB_M(bap, new File("./output/BAPlogger.log"));
+        // BapLoggerA_M logger = new BapLoggerA_M(bap, new
+        // File("./output/BAPlogger.log"));
 
         // Solve the TSP problem through Branch-and-Price
         // bap.runBranchAndPrice(System.currentTimeMillis()+18000000L); //5
@@ -138,9 +141,18 @@ public class SNDRCSolver {
                 for (int edgeIndex : tempEdgeSet) {
                     if (((ifOptGetFromSubGraph) && (dataModel.subEdgeSet.get(edgeIndex).edgeType == 0))
                             || ((!ifOptGetFromSubGraph) && (dataModel.edgeSet.get(edgeIndex).edgeType == 0))) {
-                        if (!keyServiceEdgeIndexSet.contains(edgeIndex)) {
-                            keyServiceEdgeIndexSet.add(edgeIndex);
+
+                        int index;
+                        if (ifOptGetFromSubGraph) {
+                            index = dataModel.edgeSetIndexMap.get(edgeIndex);
+                        } else {
+                            index = edgeIndex;
                         }
+
+                        if (!keyServiceEdgeIndexSet.contains(index)) {
+                            keyServiceEdgeIndexSet.add(index);
+                        }
+
                     }
                 }
             }
@@ -150,31 +162,67 @@ public class SNDRCSolver {
         System.out.println("The number of service edges used= " + keyServiceEdgeIndexSet.size());
         System.out.println();
 
-        // record the information of costs on vehicle and commodity
+        // record the information of costs on vehicle and commodity and
+        // calculate "no load ratio"
         int vehicleFixTotalCost = 0;
         Map<Cycle, Integer> vehicleVarCost = new HashMap<>();
         int vehicleVarTotalCost = 0;
         List<Double> commodityCost = new ArrayList<>();
         Double commodityTotalCost = (double) 0;
 
+        long vehicleDowork = 0;
+        double commodityDowork = 0;
+
+        int totalNumVehicle = 0;
+        Map<Integer, Integer> vehicleCoverServiceEdgeRecord = new HashMap<>();
+        int[][] commodityFlowIntoTerminal = new int[dataModel.numNode][dataModel.timePeriod];
+
         if (bap.hasSolution()) {
             System.out.println("Solution is optimal: " + bap.isOptimal());
             System.out.println("Columns (only non-zero columns are returned):");
+
             List<Cycle> solution = bap.getSolution();
             for (Cycle column : solution) {
                 System.out.println(column);
                 System.out.println(out(column) + ":" + bap.GetOptSolutionValueMap().get(column));
+                totalNumVehicle += MathProgrammingUtil.doubleToInt((double) bap.GetOptSolutionValueMap().get(column));
 
                 int fixCost = (int) dataModel.fixedCost[column.associatedPricingProblem.originNodeO][column.associatedPricingProblem.capacityTypeS];
                 int varCost = (int) (column.cost - fixCost);
 
                 double columnValue = (double) bap.GetOptSolutionValueMap().get(column);
+                int value = MathProgrammingUtil.doubleToInt(columnValue);
+
                 vehicleFixTotalCost += fixCost * columnValue;
                 vehicleVarTotalCost += varCost * columnValue;
                 vehicleVarCost.put(column, varCost);
                 System.out.println("Fix cost= " + fixCost + " variable cost= " + varCost);
 
                 System.out.println();
+
+                for (int edgeIndex : column.edgeIndexSet) {
+
+                    int index = edgeIndex;
+                    Edge edge;
+                    if (!ifOptGetFromSubGraph) {
+                        edge = dataModel.edgeSet.get(edgeIndex);
+                    } else {
+                        edge = dataModel.subEdgeSet.get(edgeIndex);
+                        index = dataModel.edgeSetIndexMap.get(edgeIndex);
+                    }
+
+                    if (edge.edgeType == 0) {
+                        vehicleDowork += dataModel.capacity[column.associatedPricingProblem.capacityTypeS]
+                                * edge.duration;
+
+                        if (!vehicleCoverServiceEdgeRecord.containsKey(index)) {
+                            vehicleCoverServiceEdgeRecord.put(index, value);
+                        } else {
+                            vehicleCoverServiceEdgeRecord.put(index, vehicleCoverServiceEdgeRecord.get(index) + value);
+                        }
+                    }
+
+                }
             }
 
         }
@@ -194,6 +242,11 @@ public class SNDRCSolver {
 
                 if (edge.edgeType == 0) {
                     cost += dataModel.beta * edge.duration * xValues.get(edgeIndex);
+
+                    commodityDowork += edge.duration * xValues.get(edgeIndex);
+
+                    commodityFlowIntoTerminal[edge.v][edge.t2] += MathProgrammingUtil
+                            .doubleToInt(xValues.get(edgeIndex));
                 }
             }
 
@@ -204,31 +257,67 @@ public class SNDRCSolver {
         System.out.println("fix cost+variable cost+commodity cost= " + vehicleFixTotalCost + "+" + vehicleVarTotalCost
                 + "+" + commodityTotalCost + "=" + (vehicleFixTotalCost + vehicleVarTotalCost + commodityTotalCost));
 
-        // List<Map<Integer,Double>> optXValues=bap.GetOptXValues();
-        // output x variables
-        for (int demand = 0; demand < dataModel.numDemand; demand++) {
-            for (int edgeIndex : optXValues.get(demand).keySet()) {
-                if (optXValues.get(demand).get(edgeIndex) > 0.01) {
-                    Edge edge;
+        System.out.println();
+        System.out.println("vehicle dowork= " + vehicleDowork + " commodity dowork= " + commodityDowork);
+        System.out.println("no load ratio= " + (vehicleDowork - commodityDowork) / vehicleDowork);
+        System.out.println();
+        System.out.println("Total vehicles used= " + totalNumVehicle);
+        System.out.println();
+        System.out.println("vehicleCoverServiceEdge information:");
+        System.out.println(vehicleCoverServiceEdgeRecord.toString());
+        System.out.println();
+        System.out.println("commodityFlowIntoTerminal information:");
+        for (int terminal = 0; terminal < dataModel.numNode; terminal++) {
+            for (int i = 0; i < dataModel.timePeriod; i++) {
+                System.out.print(commodityFlowIntoTerminal[terminal][i] + " ");
+            }
+            System.out.println();
+            // System.out.println(Arrays.toString(commodityFlowIntoTerminal[terminal]));
+        }
 
-                    if (!ifOptGetFromSubGraph) {
-                        edge = dataModel.edgeSet.get(edgeIndex);
-                    } else {
-                        edge = dataModel.subEdgeSet.get(edgeIndex);
-                    }
-
-                    // if(edge.edgeType==0){
-                    // System.out.println("x[" + demand + "]:" + edge.u + "," +
-                    // edge.t1 + "->" + edge.v + "," + edge.t2
-                    // + "= " + optXValues.get(demand).get(edgeIndex) + " " +
-                    // edge.duration);
-                    // }
-
+        System.out.println();
+        System.out.println("vehicle pattern information:");
+        Set<int[]> avoidRepeatPattern = new HashSet<>();
+        List<Cycle> solution = bap.getSolution();
+        for (Cycle column : solution) {
+            boolean check = true;
+            for (int[] recordPattern : avoidRepeatPattern) {
+                if (Arrays.equals(recordPattern, column.pattern)) {
+                    check = false;
+                    break;
                 }
             }
-            // System.out.println("total cost= " + commodityCost.get(demand));
-            // System.out.println();
+
+            if (check) {
+                System.out.println(Arrays.toString(column.pattern));
+                avoidRepeatPattern.add(column.pattern);
+            }
         }
+
+        // output x variables
+//        for (int demand = 0; demand < dataModel.numDemand; demand++) {
+//            for (int edgeIndex : optXValues.get(demand).keySet()) {
+//                if (optXValues.get(demand).get(edgeIndex) > 0.01) {
+//                    Edge edge;
+//
+//                    if (!ifOptGetFromSubGraph) {
+//                        edge = dataModel.edgeSet.get(edgeIndex);
+//                    } else {
+//                        edge = dataModel.subEdgeSet.get(edgeIndex);
+//                    }
+//
+//                    // if(edge.edgeType==0){
+//                    // System.out.println("x[" + demand + "]:" + edge.u + "," +
+//                    // edge.t1 + "->" + edge.v + "," + edge.t2
+//                    // + "= " + optXValues.get(demand).get(edgeIndex) + " " +
+//                    // edge.duration);
+//                    // }
+//
+//                }
+//            }
+//            // System.out.println("total cost= " + commodityCost.get(demand));
+//            // System.out.println();
+//        }
 
         bap.close();
         cutHandler.close();
@@ -297,13 +386,14 @@ public class SNDRCSolver {
             Properties properties = new Properties();
             // properties.setProperty("EXPORT_MODEL", "True");
             // properties.setProperty("MAXTHREADS", "10");
-//             properties.setProperty("PRECISION", "0.00001");
+            // properties.setProperty("PRECISION", "0.00001");
             // properties.setProperty("CUTSENABLED", "false");
             Configuration.readFromFile(properties);
 
             new SNDRCSolver(sndrc);
 
             long time1 = System.currentTimeMillis();
+            System.out.println();
             System.out.println("Total time= " + (time1 - time0));
 
         }
