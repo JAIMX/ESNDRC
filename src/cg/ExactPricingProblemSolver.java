@@ -182,10 +182,18 @@ public class ExactPricingProblemSolver extends AbstractPricingProblemSolver<SNDR
                             break;
                         }
                     }
+                    
+                    //calculate pattern
+                    int[] pattern=new int[dataModel.numService];
+                    for(int edgeIndex:edgeIndexSet) {
+                    	Edge edge=dataModel.edgeSet.get(edgeIndex);
+                    	if(edge.edgeType==0) {
+                        	pattern[edge.serviceIndex]++;
+                    	}
+                    }
 
                     if (!repeat) {
-                        Cycle cycle = new Cycle(pricingProblem, false, "exactPricing", edgeIndexSet, cost, startTime,
-                                0);
+                        Cycle cycle = new Cycle(pricingProblem, false, "exactPricing", edgeIndexSet, cost, startTime,0,pattern);
                         if (!pricingProblem.fixCycleSet.contains(cycle)) {
                             newRoutes.add(cycle);
                         }

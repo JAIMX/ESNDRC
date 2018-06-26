@@ -86,25 +86,26 @@ public class ColumnGenerationBasedHeuristic {
                 .singletonList(ExactPricingProblemSolver.class);
 
         // ----------------------------------generateInitialFeasibleSolution-------------------------------------------------//
+        int[] temp=new int[dataModel.numService];
         List<Cycle> artificalVars = new ArrayList<Cycle>();
         // for weak forcing constraints(ifForResourceBoundConstraints=0)
         for (int edgeIndex = 0; edgeIndex < dataModel.numServiceArc; edgeIndex++) {
             Set<Integer> set = new HashSet<>();
             set.add(edgeIndex);
-            Cycle cycle = new Cycle(pricingProblems.get(0), true, "Artificial", set, 100000000, 0, 0);
+            Cycle cycle = new Cycle(pricingProblems.get(0), true, "Artificial", set, 100000000, 0, 0,temp);
             artificalVars.add(cycle);
         }
 
         // for resource bound constraints(ifForResourceBoundConstraints=1)
         for (SNDRCPricingProblem pricingProblem : pricingProblems) {
             Set<Integer> set = new HashSet<>();
-            Cycle cycle = new Cycle(pricingProblem, true, "Artificial", set, 100000000, 0, 1);
+            Cycle cycle = new Cycle(pricingProblem, true, "Artificial", set, 100000000, 0, 1,temp);
             artificalVars.add(cycle);
         }
 
         // for holding edge branch constraints(ifForResourceBoundConstraints=2)
         Set<Integer> set = new HashSet<>();
-        Cycle cycle0 = new Cycle(pricingProblems.get(0), true, "Artificial", set, 100000000, 0, 2);
+        Cycle cycle0 = new Cycle(pricingProblems.get(0), true, "Artificial", set, 100000000, 0, 2,temp);
         artificalVars.add(cycle0);
 
         // ----------------------------------generateInitialFeasibleSolution-------------------------------------------------//

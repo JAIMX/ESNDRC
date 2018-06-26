@@ -32,6 +32,7 @@ import cg.SNDRCPricingProblem;
 import cg.master.Master;
 import cg.master.SNDRCMasterData;
 import cg.master.cuts.StrongInequalityGenerator;
+import ch.qos.logback.core.net.SyslogOutputStream;
 import logger.BapLogger;
 import logger.BapLoggerA;
 import logger.BapLoggerA_M;
@@ -91,7 +92,7 @@ public class SNDRCSolver {
         // BranchAndPriceB bap=new BranchAndPriceB(dataModel, master,
         // pricingProblems, solvers,
         // branchCreators,Double.MAX_VALUE,0.65,0.2,0.1,1,0.001,3,0.1,true);
-        BranchAndPriceB_M bap = new BranchAndPriceB_M(dataModel, master, pricingProblems, solvers, branchCreators,Double.MAX_VALUE, 0.65, 0.3, 0.1, 1, -0.001, 4, 0, true, false);
+        BranchAndPriceB_M bap = new BranchAndPriceB_M(dataModel, master, pricingProblems, solvers, branchCreators,Double.MAX_VALUE, 0.65, 0.3, 0.1, 1, -0.001,6, 0, true, false);
         // BranchAndPriceA_M bap=new BranchAndPriceA_M(dataModel, master,
         // pricingProblems, solvers,
         // branchCreators,Double.MAX_VALUE,0.6,0.3,0.1,10,0.001,10,0.1,false,true);
@@ -169,6 +170,7 @@ public class SNDRCSolver {
         
         int totalNumVehicle=0;
         Map<Integer,Integer> vehicleCoverServiceEdgeRecord=new HashMap<>();
+        int[][] commodityFlowIntoTerminal=new int[dataModel.numNode][dataModel.timePeriod];
 
         if (bap.hasSolution()) {
             System.out.println("Solution is optimal: " + bap.isOptimal());
@@ -183,6 +185,8 @@ public class SNDRCSolver {
                 int varCost = (int) (column.cost - fixCost);
 
                 double columnValue= (double) bap.GetOptSolutionValueMap().get(column);
+                int value=MathProgrammingUtil.doubleToInt(columnValue);
+                
                 vehicleFixTotalCost += fixCost*columnValue;
                 vehicleVarTotalCost += varCost*columnValue;
                 vehicleVarCost.put(column, varCost);
@@ -193,15 +197,26 @@ public class SNDRCSolver {
                 
                 for(int edgeIndex:column.edgeIndexSet){
                     
+                	int index=edgeIndex;
                     Edge edge;
                     if(!ifOptGetFromSubGraph){
                         edge=dataModel.edgeSet.get(edgeIndex);
-                    }else edge=dataModel.subEdgeSet.get(edgeIndex);
+                    }else {
+                    	edge=dataModel.subEdgeSet.get(edgeIndex);
+                    	index=dataModel.edgeSetIndexMap.get(edgeIndex);
+                    }
                     if(edge.edgeType==0){
                         vehicleDowork+=dataModel.capacity[column.associatedPricingProblem.capacityTypeS]*edge.duration; 
+                        
+                        if(!vehicleCoverServiceEdgeRecord.containsKey(index)) {
+                        	vehicleCoverServiceEdgeRecord.put(index, value);
+                        }else {
+                        	vehicleCoverServiceEdgeRecord.put(index, vehicleCoverServiceEdgeRecord.get(index)+value);
+                        }
                     }
                     
-                    ready to insert
+                    
+                    
                 }
             }
 
@@ -224,6 +239,8 @@ public class SNDRCSolver {
                     cost += dataModel.beta * edge.duration * xValues.get(edgeIndex);
                     
                     commodityDowork+=edge.duration*xValues.get(edgeIndex);
+                    
+                    commodityFlowIntoTerminal[edge.v][edge.t2]+=MathProgrammingUtil.doubleToInt(xValues.get(edgeIndex));
                 }
             }
 
@@ -233,10 +250,45 @@ public class SNDRCSolver {
 
         System.out.println("fix cost+variable cost+commodity cost= " + vehicleFixTotalCost + "+" + vehicleVarTotalCost
                 + "+" + commodityTotalCost + "=" + (vehicleFixTotalCost + vehicleVarTotalCost + commodityTotalCost));
-        
+        System.out.println();
         System.out.println("vehicle dowork= "+vehicleDowork+" commodity dowork= "+commodityDowork);
         System.out.println("no load ratio= "+(vehicleDowork-commodityDowork)/vehicleDowork);
+        System.out.println();
         System.out.println("Total vehicles used= "+totalNumVehicle);
+        System.out.println();
+        System.out.println("vehicleCoverServiceEdge information:");
+        System.out.println(vehicleCoverServiceEdgeRecord.toString());
+        System.out.println();
+        System.out.println("commodityFlowIntoTerminal information:");
+        for(int terminal=0;terminal<dataModel.numNode;terminal++) {
+        	for(int i=0;i<dataModel.timePeriod;i++) {
+        		System.out.print(commodityFlowIntoTerminal[terminal][i]+" ");
+        	}
+        	System.out.println();
+//        	System.out.println(Arrays.toString(commodityFlowIntoTerminal[terminal]));
+        }
+        
+        
+        System.out.println();
+        System.out.println("vehicle pattern information:");
+        Set<int[]> avoidRepeatPattern=new HashSet<>();
+        List<Cycle> solution = bap.getSolution();
+        for (Cycle column : solution) {
+        	boolean check=true;
+        	for(int[] recordPattern:avoidRepeatPattern) {
+        		if(Arrays.equals(recordPattern, column.pattern)) {
+        			check=false;
+        			break;
+        		}
+        	}
+        	
+        	if(check) {
+        		System.out.println(Arrays.toString(column.pattern));
+        		avoidRepeatPattern.add(column.pattern);
+        	}
+        }
+        
+        
         
         
         
@@ -339,6 +391,7 @@ public class SNDRCSolver {
             new SNDRCSolver(sndrc);
 
             long time1 = System.currentTimeMillis();
+            System.out.println();
             System.out.println("Total time= " + (time1 - time0));
 
         }
