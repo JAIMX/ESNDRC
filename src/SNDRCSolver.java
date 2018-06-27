@@ -309,7 +309,7 @@ public class SNDRCSolver {
         
         System.out.println("Common edge information:");
         System.out.println("size0= "+serviceEdgeSet0.size()+" size1= "+keyServiceEdgeIndexSet.size()+" # of common edges= "+commonCount);
-        double ratio=commonCount/serviceEdgeSet0.size();
+        double ratio=(double)commonCount/serviceEdgeSet0.size();
         System.out.println("common edge ratio= "+ratio);
         
         
@@ -340,7 +340,7 @@ public class SNDRCSolver {
         
         System.out.println("Common pattern information:");
         System.out.println("size of pattrenSet0= "+pattern0.size()+" size of patternSet1= "+avoidRepeatPattern.size()+" # of common patterns= "+commonCount);
-        ratio=commonCount/pattern0.size();
+        ratio=(double)commonCount/pattern0.size();
         System.out.println("common pattern ratio= "+ratio);
         
         
@@ -449,6 +449,8 @@ public class SNDRCSolver {
             System.out.println("Total time= " + (time1 - time0));
 
         }
+
+              
         
 
     }
