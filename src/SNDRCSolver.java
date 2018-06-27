@@ -171,7 +171,7 @@ public class SNDRCSolver {
         
         int totalNumVehicle=0;
         Map<Integer,Integer> vehicleCoverServiceEdgeRecord=new HashMap<>();
-        int[][] commodityFlowIntoTerminal=new int[dataModel.numNode][dataModel.timePeriod];
+        double[][] commodityFlowIntoTerminal=new double[dataModel.numNode][dataModel.timePeriod];
 
         if (bap.hasSolution()) {
             System.out.println("Solution is optimal: " + bap.isOptimal());
@@ -241,7 +241,8 @@ public class SNDRCSolver {
                     
                     commodityDowork+=edge.duration*xValues.get(edgeIndex);
                     
-                    commodityFlowIntoTerminal[edge.v][edge.t2]+=MathProgrammingUtil.doubleToInt(xValues.get(edgeIndex));
+//                    commodityFlowIntoTerminal[edge.v][edge.t2]+=MathProgrammingUtil.doubleToInt(xValues.get(edgeIndex));
+                    commodityFlowIntoTerminal[edge.v][edge.t2]+=xValues.get(edgeIndex);
                 }
             }
 
@@ -263,7 +264,7 @@ public class SNDRCSolver {
         System.out.println("commodityFlowIntoTerminal information:");
         for(int terminal=0;terminal<dataModel.numNode;terminal++) {
         	for(int i=0;i<dataModel.timePeriod;i++) {
-        		System.out.print(commodityFlowIntoTerminal[terminal][i]+" ");
+        		System.out.print((int)commodityFlowIntoTerminal[terminal][i]+" ");
         	}
         	System.out.println();
 //        	System.out.println(Arrays.toString(commodityFlowIntoTerminal[terminal]));
