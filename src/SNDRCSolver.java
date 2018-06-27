@@ -1,5 +1,6 @@
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.*;
 
 import org.jorlib.frameworks.columnGeneration.branchAndPrice.AbstractBranchAndPrice;
@@ -45,7 +46,7 @@ public class SNDRCSolver {
     SNDRC dataModel;
     boolean ifOptGetFromSubGraph;
 
-    public SNDRCSolver(SNDRC dataModel) {
+    public SNDRCSolver(SNDRC dataModel) throws IOException {
         this.dataModel = dataModel;
 
         // Create the pricing problems
@@ -92,14 +93,14 @@ public class SNDRCSolver {
         // BranchAndPriceB bap=new BranchAndPriceB(dataModel, master,
         // pricingProblems, solvers,
         // branchCreators,Double.MAX_VALUE,0.65,0.2,0.1,1,0.001,3,0.1,true);
-        BranchAndPriceB_M bap = new BranchAndPriceB_M(dataModel, master, pricingProblems, solvers, branchCreators,Double.MAX_VALUE, 0.65, 0.3, 0.1, 1, -0.001,6, 0, true, false);
+//        BranchAndPriceB_M bap = new BranchAndPriceB_M(dataModel, master, pricingProblems, solvers, branchCreators,Double.MAX_VALUE, 0.65, 0.3, 0.1, 1, -0.001,3, 0, true, false);
         // BranchAndPriceA_M bap=new BranchAndPriceA_M(dataModel, master,
         // pricingProblems, solvers,
         // branchCreators,Double.MAX_VALUE,0.6,0.3,0.1,10,0.001,10,0.1,false,true);
-//        BranchAndPriceA_M bap = new BranchAndPriceA_M(dataModel, master, pricingProblems, solvers, branchCreators,5000000, 0.6, 0.2, 0.5, 10, 0.001, 10, 0.1, false, true);
+        BranchAndPriceA_M bap = new BranchAndPriceA_M(dataModel, master, pricingProblems, solvers, branchCreators,5000000, 0.6, 0.2, 0.5, 10, 0.001, 10, 0.1, false, true);
         // bap.setNodeOrdering(new BFSbapNodeComparator());
         // bap.setNodeOrdering(new NodeBoundbapNodeComparatorMaxBound());
-//        bap.setNodeOrdering(new NodeBoundbapNodeComparator());
+        bap.setNodeOrdering(new NodeBoundbapNodeComparator());
 
         // OPTIONAL: Attach a debugger
         // SimpleDebugger debugger=new SimpleDebugger(bap, true);
@@ -109,8 +110,8 @@ public class SNDRCSolver {
         // File("./output/BAPlogger.log"));
         // BapLoggerB logger=new BapLoggerB(bap, new
         // File("./output/BAPlogger.log"));
-        BapLoggerB_M logger = new BapLoggerB_M(bap, new File("./output/BAPlogger.log"));
-//        BapLoggerA_M logger = new BapLoggerA_M(bap, new File("./output/BAPlogger.log"));
+//        BapLoggerB_M logger = new BapLoggerB_M(bap, new File("./output/BAPlogger.log"));
+        BapLoggerA_M logger = new BapLoggerA_M(bap, new File("./output/BAPlogger.log"));
 
         // Solve the TSP problem through Branch-and-Price
         // bap.runBranchAndPrice(System.currentTimeMillis()+18000000L); //5
@@ -290,6 +291,59 @@ public class SNDRCSolver {
         
         
         
+        //compare keyServiceEdgeIndexSet and serviceEdgeSet0
+        Scanner in = new Scanner(Paths.get("C:/Users/DELL/Desktop/part3-data/test5_compareInfo.txt"));
+        String line=in.nextLine();
+        String[] result=line.split(", ");
+        Set<Integer> serviceEdgeSet0=new HashSet<>();
+        for(int i=0;i<result.length;i++){
+            serviceEdgeSet0.add(Integer.parseInt(result[i]));
+        }
+        
+        int commonCount=0;
+        for(int edgeIndex:keyServiceEdgeIndexSet){
+            if(serviceEdgeSet0.contains(edgeIndex)){
+                commonCount++;
+            }
+        }
+        
+        System.out.println("Common edge information:");
+        System.out.println("size0= "+serviceEdgeSet0.size()+" size1= "+keyServiceEdgeIndexSet.size()+" # of common edges= "+commonCount);
+        double ratio=commonCount/serviceEdgeSet0.size();
+        System.out.println("common edge ratio= "+ratio);
+        
+        
+        //compare avoidRepeatPattern and pattern0
+        Set<int[]> pattern0=new HashSet<>();
+        while(in.hasNextLine()){
+            line=in.nextLine();
+            result=line.split(", ");
+            int[] temp=new int[result.length];
+            for(int i=0;i<result.length;i++){
+                temp[i]=Integer.parseInt(result[i]);
+            }
+            pattern0.add(temp);
+        }
+        
+        commonCount=0;
+        for(int[] pattern:avoidRepeatPattern){
+            boolean check=false;
+            for(int[] ele:pattern0){
+                if(Arrays.equals(ele, pattern)){
+                    check=true;
+                    break;
+                }
+            }
+            
+            if(check) commonCount++;
+        }
+        
+        System.out.println("Common pattern information:");
+        System.out.println("size of pattrenSet0= "+pattern0.size()+" size of patternSet1= "+avoidRepeatPattern.size()+" # of common patterns= "+commonCount);
+        ratio=commonCount/pattern0.size();
+        System.out.println("common pattern ratio= "+ratio);
+        
+        
         
         
 
@@ -395,6 +449,7 @@ public class SNDRCSolver {
             System.out.println("Total time= " + (time1 - time0));
 
         }
+        
 
     }
 
