@@ -3,65 +3,61 @@ number of holding arcs=75
 
 ================ Solution ================
 BAP terminated with objective : 30742
-Total Number of iterations: 125760
-Total Number of processed nodes: 18151
-Total Time spent on master problems: 3444644 Total time spent on pricing problems: 731050
+Total Number of iterations: 144180
+Total Number of processed nodes: 26325
+Total Time spent on master problems: 4298070 Total time spent on pricing problems: 1633382
 Best bound : 30742.0
-[3, 7, 9, 17, 18, 24, 26, 30, 35, 36, 37, 42, 47, 56, 59, 64, 65, 69, 70, 72, 74, 80, 85, 89, 95, 102, 104, 112, 120, 121, 122, 123, 124, 125, 127, 130, 132, 135, 137, 139, 140, 142, 144, 148, 151, 152, 154, 157, 159, 161, 162, 163, 164, 169, 173, 176, 178, 179, 180, 182, 190, 195, 198, 200, 201, 203, 204, 205, 206, 207, 210, 214, 219, 220, 223]
-The number of service edges used= 75
+[3, 5, 8, 10, 15, 18, 20, 26, 31, 34, 37, 38, 40, 43, 47, 48, 57, 66, 69, 71, 72, 73, 74, 76, 79, 83, 85, 95, 96, 99, 103, 108, 111, 120, 121, 123, 124, 130, 132, 133, 135, 136, 139, 140, 143, 148, 150, 151, 155, 157, 158, 159, 160, 163, 166, 169, 172, 174, 175, 177, 179, 182, 183, 191, 194, 198, 199, 201, 204, 205, 206, 208, 210, 214, 216, 219, 220, 222]
+The number of service edges used= 78
 
 Solution is optimal: true
 Columns (only non-zero columns are returned):
-artificial: false set: [35, 180, 70] start node= 2 start time= 5 capacity type= 0
-(3,0)->(2,5)->(1,10)->(3,0):1.0
+artificial: false set: [38, 183, 73] start node= 2 start time= 8 capacity type= 0
+(3,3)->(2,8)->(1,13)->(3,3):1.0
 Fix cost= 100 variable cost= 60
 
-artificial: false set: [240, 241, 292, 293, 294, 295, 206, 47] start node= 4 start time= 7 capacity type= 0
-(1,0)->(1,1)->(1,2)->(4,7)->(4,8)->(4,9)->(4,10)->(4,11)->(1,0):3.0
+artificial: false set: [208, 292, 293, 294, 295, 296, 297, 47] start node= 4 start time= 7 capacity type= 0
+(1,2)->(4,7)->(4,8)->(4,9)->(4,10)->(4,11)->(4,12)->(4,13)->(1,2):3.0
 Fix cost= 50 variable cost= 36
-
-artificial: false set: [80, 179, 152, 220] start node= 1 start time= 2 capacity type= 1
-(1,2)->(0,5)->(2,10)->(3,14)->(1,2):1.0
-Fix cost= 200 variable cost= 60
 
 artificial: false set: [210, 85, 169, 157] start node= 1 start time= 7 capacity type= 1
 (2,0)->(3,4)->(1,7)->(0,10)->(2,0):1.0
-Fix cost= 200 variable cost= 60
-
-artificial: false set: [161, 214, 89, 173] start node= 1 start time= 11 capacity type= 1
-(2,4)->(3,8)->(1,11)->(0,14)->(2,4):2.0
-Fix cost= 200 variable cost= 60
-
-artificial: false set: [112, 242, 243, 244, 245, 246, 42] start node= 1 start time= 2 capacity type= 1
-(1,2)->(1,3)->(1,4)->(1,5)->(1,6)->(1,7)->(2,12)->(1,2):2.0
-Fix cost= 200 variable cost= 40
-
-artificial: false set: [65, 30, 190] start node= 1 start time= 5 capacity type= 1
-(2,0)->(1,5)->(3,10)->(2,0):2.0
 Fix cost= 200 variable cost= 60
 
 artificial: false set: [37, 182, 72] start node= 1 start time= 12 capacity type= 1
 (3,2)->(2,7)->(1,12)->(3,2):2.0
 Fix cost= 200 variable cost= 60
 
-artificial: false set: [176, 164, 7, 122] start node= 4 start time= 7 capacity type= 1
-(0,2)->(4,7)->(3,11)->(1,14)->(0,2):1.0
-Fix cost= 150 variable cost= 60
+artificial: false set: [83, 243, 244, 43, 155] start node= 1 start time= 3 capacity type= 1
+(1,3)->(1,4)->(1,5)->(0,8)->(2,13)->(1,3):1.0
+Fix cost= 200 variable cost= 52
 
-artificial: false set: [178, 151, 9, 124] start node= 4 start time= 9 capacity type= 1
-(1,1)->(0,4)->(4,9)->(3,13)->(1,1):2.0
-Fix cost= 150 variable cost= 60
+artificial: false set: [244, 245, 166, 266, 222, 111] start node= 1 start time= 5 capacity type= 1
+(3,1)->(1,4)->(1,5)->(1,6)->(2,11)->(2,12)->(3,1):1.0
+Fix cost= 200 variable cost= 48
 
-artificial: false set: [17, 36, 56, 286] start node= 4 start time= 1 capacity type= 1
-(4,1)->(4,2)->(2,6)->(1,11)->(4,1):1.0
-Fix cost= 150 variable cost= 56
+artificial: false set: [163, 216, 76, 175] start node= 1 start time= 13 capacity type= 1
+(0,1)->(2,6)->(3,10)->(1,13)->(0,1):1.0
+Fix cost= 200 variable cost= 60
+
+artificial: false set: [66, 31, 191] start node= 1 start time= 6 capacity type= 1
+(2,1)->(1,6)->(3,11)->(2,1):1.0
+Fix cost= 200 variable cost= 60
+
+artificial: false set: [34, 194, 69] start node= 1 start time= 9 capacity type= 1
+(2,4)->(1,9)->(3,14)->(2,4):1.0
+Fix cost= 200 variable cost= 60
+
+artificial: false set: [240, 241, 242, 38, 108, 253, 254] start node= 1 start time= 13 capacity type= 1
+(1,0)->(1,1)->(1,2)->(1,3)->(2,8)->(1,13)->(1,14)->(1,0):1.0
+Fix cost= 200 variable cost= 40
+
+artificial: false set: [240, 151, 40, 264, 79] start node= 1 start time= 0 capacity type= 1
+(1,0)->(1,1)->(0,4)->(2,9)->(2,10)->(1,0):1.0
+Fix cost= 200 variable cost= 52
 
 artificial: false set: [18, 148, 262, 263, 219] start node= 4 start time= 3 capacity type= 1
-(4,3)->(2,7)->(2,8)->(2,9)->(3,13)->(4,3):2.0
-Fix cost= 150 variable cost= 52
-
-artificial: false set: [292, 293, 24, 137, 223] start node= 4 start time= 7 capacity type= 1
-(3,2)->(4,7)->(4,8)->(4,9)->(2,13)->(3,2):3.0
+(4,3)->(2,7)->(2,8)->(2,9)->(3,13)->(4,3):3.0
 Fix cost= 150 variable cost= 52
 
 artificial: false set: [274, 210, 295, 26, 140] start node= 4 start time= 10 capacity type= 1
@@ -69,87 +65,104 @@ artificial: false set: [274, 210, 295, 26, 140] start node= 4 start time= 10 cap
 Fix cost= 150 variable cost= 52
 
 artificial: false set: [132, 198, 247, 248, 159, 287] start node= 4 start time= 2 capacity type= 1
-(4,2)->(4,3)->(1,7)->(1,8)->(1,9)->(0,12)->(4,2):2.0
-Fix cost= 150 variable cost= 48
-
-artificial: false set: [162, 290, 120, 201, 250, 251] start node= 4 start time= 5 capacity type= 1
-(0,0)->(4,5)->(4,6)->(1,10)->(1,11)->(1,12)->(0,0):2.0
+(4,2)->(4,3)->(1,7)->(1,8)->(1,9)->(0,12)->(4,2):3.0
 Fix cost= 150 variable cost= 48
 
 artificial: false set: [163, 291, 292, 293, 121, 204] start node= 4 start time= 6 capacity type= 1
 (0,1)->(4,6)->(4,7)->(4,8)->(4,9)->(1,13)->(0,1):1.0
 Fix cost= 150 variable cost= 48
 
-artificial: false set: [241, 242, 243, 154, 127, 207] start node= 4 start time= 12 capacity type= 1
-(1,1)->(1,2)->(1,3)->(1,4)->(0,7)->(4,12)->(1,1):1.0
+artificial: false set: [293, 150, 294, 295, 123, 206] start node= 4 start time= 8 capacity type= 1
+(1,0)->(0,3)->(4,8)->(4,9)->(4,10)->(4,11)->(1,0):2.0
 Fix cost= 150 variable cost= 48
 
-artificial: false set: [3, 297, 298, 299, 285, 142, 286, 287] start node= 4 start time= 12 capacity type= 1
-(4,0)->(4,1)->(4,2)->(4,3)->(3,7)->(4,12)->(4,13)->(4,14)->(4,0):1.0
-Fix cost= 150 variable cost= 36
-
-artificial: false set: [69, 135, 200, 284] start node= 4 start time= 5 capacity type= 1
-(3,0)->(4,5)->(1,9)->(3,14)->(3,0):1.0
+artificial: false set: [71, 136, 201, 250] start node= 4 start time= 6 capacity type= 1
+(3,1)->(4,6)->(1,10)->(1,11)->(3,1):2.0
 Fix cost= 150 variable cost= 56
 
 artificial: false set: [294, 74, 139, 205] start node= 4 start time= 9 capacity type= 1
 (3,4)->(4,9)->(4,10)->(1,14)->(3,4):2.0
 Fix cost= 150 variable cost= 56
 
-artificial: false set: [289, 290, 291, 292, 59, 203, 252, 253] start node= 4 start time= 4 capacity type= 1
-(4,4)->(4,5)->(4,6)->(4,7)->(4,8)->(1,12)->(1,13)->(1,14)->(4,4):1.0
-Fix cost= 150 variable cost= 36
-
 artificial: false set: [288, 289, 130, 285, 286, 95, 287] start node= 4 start time= 0 capacity type= 1
 (4,0)->(4,1)->(4,2)->(4,3)->(4,4)->(4,5)->(0,10)->(4,0):2.0
 Fix cost= 150 variable cost= 40
 
-artificial: false set: [227, 293, 102, 294, 295, 296, 123] start node= 4 start time= 8 capacity type= 1
-(0,2)->(0,3)->(4,8)->(4,9)->(4,10)->(4,11)->(4,12)->(0,2):2.0
+artificial: false set: [48, 242, 179, 293, 294, 10] start node= 4 start time= 8 capacity type= 1
+(1,2)->(1,3)->(4,8)->(4,9)->(4,10)->(3,14)->(1,2):1.0
+Fix cost= 150 variable cost= 48
+
+artificial: false set: [96, 288, 289, 290, 133, 236, 237] start node= 4 start time= 3 capacity type= 1
+(4,3)->(4,4)->(4,5)->(4,6)->(0,11)->(0,12)->(0,13)->(4,3):1.0
 Fix cost= 150 variable cost= 40
 
-artificial: false set: [229, 295, 104, 296, 297, 298, 125] start node= 4 start time= 10 capacity type= 1
-(0,4)->(0,5)->(4,10)->(4,11)->(4,12)->(4,13)->(4,14)->(0,4):2.0
+artificial: false set: [290, 99, 291, 292, 293, 120, 239] start node= 4 start time= 5 capacity type= 1
+(0,0)->(4,5)->(4,6)->(4,7)->(4,8)->(4,9)->(0,14)->(0,0):2.0
 Fix cost= 150 variable cost= 40
 
-artificial: false set: [144, 64, 195, 299] start node= 4 start time= 14 capacity type= 1
-(4,0)->(1,4)->(3,9)->(4,14)->(4,0):1.0
-Fix cost= 150 variable cost= 56
+artificial: false set: [228, 294, 103, 295, 296, 297, 124] start node= 4 start time= 9 capacity type= 1
+(0,3)->(0,4)->(4,9)->(4,10)->(4,11)->(4,12)->(4,13)->(0,3):1.0
+Fix cost= 150 variable cost= 40
+
+artificial: false set: [288, 132, 199, 236, 158, 287] start node= 4 start time= 2 capacity type= 1
+(4,2)->(4,3)->(4,4)->(1,8)->(0,11)->(0,12)->(4,2):1.0
+Fix cost= 150 variable cost= 48
+
+artificial: false set: [160, 3, 133, 172] start node= 4 start time= 3 capacity type= 1
+(4,3)->(3,7)->(1,10)->(0,13)->(4,3):1.0
+Fix cost= 150 variable cost= 60
+
+artificial: false set: [177, 150, 8, 123] start node= 4 start time= 8 capacity type= 1
+(1,0)->(0,3)->(4,8)->(3,12)->(1,0):1.0
+Fix cost= 150 variable cost= 60
+
+artificial: false set: [214, 298, 299, 143, 15] start node= 4 start time= 13 capacity type= 1
+(4,0)->(2,4)->(3,8)->(4,13)->(4,14)->(4,0):1.0
+Fix cost= 150 variable cost= 52
+
+artificial: false set: [288, 289, 5, 57, 174, 287] start node= 4 start time= 2 capacity type= 1
+(4,2)->(4,3)->(4,4)->(4,5)->(3,9)->(1,12)->(4,2):1.0
+Fix cost= 150 variable cost= 48
+
+artificial: false set: [20, 135, 264, 284, 220] start node= 4 start time= 5 capacity type= 1
+(3,0)->(4,5)->(2,9)->(2,10)->(3,14)->(3,0):2.0
+Fix cost= 150 variable cost= 52
 
 fix cost+variable cost+commodity cost= 6450+2100+22192.0=30742.0
 
-vehicle dowork= 15780 commodity dowork= 22192.0
-no load ratio= -0.40633713561470214
+vehicle dowork= 24990 commodity dowork= 22192.0
+no load ratio= 0.11196478591436575
 
 Total vehicles used= 42
 
 vehicleCoverServiceEdge information:
-{130=2, 3=1, 132=2, 7=1, 135=1, 9=2, 137=3, 139=2, 140=1, 142=1, 144=1, 17=1, 18=2, 148=2, 151=2, 152=1, 24=3, 26=1, 154=1, 157=1, 30=2, 159=2, 161=2, 162=2, 35=1, 163=1, 164=1, 36=1, 37=2, 169=1, 42=2, 173=2, 47=3, 176=1, 178=2, 179=1, 180=1, 182=2, 56=1, 59=1, 190=2, 64=1, 65=2, 195=1, 69=1, 70=1, 198=2, 72=2, 200=1, 201=2, 74=2, 203=1, 204=1, 205=2, 206=3, 207=1, 80=1, 210=2, 85=1, 214=2, 89=2, 219=2, 220=1, 223=3, 95=2, 102=2, 104=2, 112=2, 120=2, 121=1, 122=1, 123=2, 124=2, 125=2, 127=1}
+{130=2, 3=1, 132=4, 133=2, 5=1, 135=2, 136=2, 8=1, 10=1, 139=2, 140=1, 143=1, 15=1, 18=3, 148=3, 20=2, 150=3, 151=1, 26=1, 155=1, 157=1, 158=1, 31=1, 159=3, 160=1, 34=1, 163=2, 37=2, 38=2, 166=1, 40=1, 169=1, 43=1, 172=1, 174=1, 47=3, 175=1, 48=1, 177=1, 179=1, 182=2, 183=1, 57=1, 191=1, 66=1, 194=1, 69=1, 198=3, 71=2, 199=1, 72=2, 73=1, 201=2, 74=2, 76=1, 204=1, 205=2, 206=2, 79=1, 208=3, 210=2, 83=1, 85=1, 214=1, 216=1, 219=3, 220=2, 222=1, 95=2, 96=1, 99=2, 103=1, 108=1, 111=1, 120=2, 121=1, 123=3, 124=1}
 
 commodityFlowIntoTerminal information:
-100 50 148 0 200 50 0 50 0 0 150 0 100 0 100 
-60 70 100 0 50 96 0 150 0 50 56 122 100 32 150 
-150 0 0 0 96 20 0 96 0 0 50 0 100 128 0 
-20 0 250 0 190 0 0 50 98 50 100 50 0 200 96 
-100 50 90 100 50 82 38 250 76 200 150 0 74 0 50 
+0 100 0 200 50 0 0 0 50 0 150 100 150 50 98 
+114 0 44 50 40 0 50 186 50 50 134 0 150 84 84 
+56 50 0 0 100 0 50 96 70 122 0 50 0 50 0 
+0 144 100 20 200 0 0 50 50 50 50 50 46 150 194 
+100 0 170 228 0 184 146 60 174 144 50 0 0 50 0 
 
 vehicle pattern information:
 [0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0]
 [0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0]
 [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 1, 0, 0, 1]
+[0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0]
+[0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1]
 [0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0]
-[1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 0, 0]
-[0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 [0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
 [0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 1, 0]
-[1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0]
 [0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0]
 [0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0]
+[1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0]
+[1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 0, 0]
 Common edge information:
-size0= 59 size1= 75 # of common edges= 34
-common edge ratio= 0.576271186440678
+size0= 80 size1= 78 # of common edges= 30
+common edge ratio= 0.375
 Common pattern information:
-size of pattrenSet0= 10 size of patternSet1= 11 # of common patterns= 10
-common pattern ratio= 1.0
+size of pattrenSet0= 6 size of patternSet1= 12 # of common patterns= 5
+common pattern ratio= 0.8333333333333334
 
-Total time= 11143399
+Total time= 20833713
