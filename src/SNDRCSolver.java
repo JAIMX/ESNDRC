@@ -45,7 +45,7 @@ public class SNDRCSolver {
 	SNDRC dataModel;
 	boolean ifOptGetFromSubGraph;
 
-	public SNDRCSolver(SNDRC dataModel) throws IOException {
+	public SNDRCSolver(SNDRC dataModel,String fileName) throws IOException {
 		this.dataModel = dataModel;
 
 		// Create the pricing problems
@@ -114,7 +114,8 @@ public class SNDRCSolver {
 		// File("./output/BAPlogger.log"));
 		// BapLoggerB_M logger = new BapLoggerB_M(bap, new
 		// File("./output/BAPlogger.log"));
-		BapLoggerA_M logger = new BapLoggerA_M(bap, new File("./output/BAPlogger.log"));
+//		BapLoggerA_M logger = new BapLoggerA_M(bap, new File("./output/BAPlogger.log"));
+		BapLoggerA_M logger = new BapLoggerA_M(bap, new File("./output/"+fileName+".log"));
 
 		// Solve the TSP problem through Branch-and-Price
 		// bap.runBranchAndPrice(System.currentTimeMillis()+18000000L); //5
@@ -435,25 +436,47 @@ public class SNDRCSolver {
 
 	public static void main(String[] args) throws IOException {
 
-		SNDRC sndrc;
-		for (String arg : args) {
-			long time0 = System.currentTimeMillis();
-			sndrc = new SNDRC(arg);
-			// sndrc.Output();
-			Properties properties = new Properties();
-			// properties.setProperty("EXPORT_MODEL", "True");
-			// properties.setProperty("MAXTHREADS", "10");
-			// properties.setProperty("PRECISION", "0.00001");
-			// properties.setProperty("CUTSENABLED", "false");
-			Configuration.readFromFile(properties);
+//		SNDRC sndrc;
+//		for (String arg : args) {
+//			long time0 = System.currentTimeMillis();
+//			sndrc = new SNDRC(arg);
+//			// sndrc.Output();
+//			Properties properties = new Properties();
+//			// properties.setProperty("EXPORT_MODEL", "True");
+//			// properties.setProperty("MAXTHREADS", "10");
+//			// properties.setProperty("PRECISION", "0.00001");
+//			// properties.setProperty("CUTSENABLED", "false");
+//			Configuration.readFromFile(properties);
+//
+//			new SNDRCSolver(sndrc);
+//
+//			long time1 = System.currentTimeMillis();
+//			System.out.println();
+//			System.out.println("Total time= " + (time1 - time0));
+//
+//		}
+	    
+	  SNDRC sndrc;
+	  String path="./data/transferData/transfer1/test4/";
+	  String name0="test4_1.0_";
+	  
+	  for(int i=1;i<5;i++){
+	      String name=path+name0+i+".txt";
+	      System.out.println("Solve for "+name);
+	      System.out.println();
+	      
+          long time0 = System.currentTimeMillis();
+          sndrc = new SNDRC(name);
+          
+          new SNDRCSolver(sndrc,name0+i);
 
-			new SNDRCSolver(sndrc);
+          long time1 = System.currentTimeMillis();
+          System.out.println();
+          System.out.println("Total time= " + (time1 - time0));
+          System.out.println();
+	  }
 
-			long time1 = System.currentTimeMillis();
-			System.out.println();
-			System.out.println("Total time= " + (time1 - time0));
-
-		}
+	    
 
 	}
 
