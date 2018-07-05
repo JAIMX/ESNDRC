@@ -458,9 +458,9 @@ public class SNDRCSolver {
 	    
 	  SNDRC sndrc;
 	  String path="./data/transferData/transfer1/test4/";
-	  String name0="test4_1.0_";
+	  String name0="test4_2.0_";
 	  
-	  for(int i=1;i<5;i++){
+	  for(int i=0;i<5;i++){
 	      String name=path+name0+i+".txt";
 	      System.out.println("Solve for "+name);
 	      System.out.println();
@@ -475,6 +475,41 @@ public class SNDRCSolver {
           System.out.println("Total time= " + (time1 - time0));
           System.out.println();
 	  }
+	  
+	  
+	   name0="test4_5.0_";
+	   for(int i=0;i<5;i++){
+	          String name=path+name0+i+".txt";
+	          System.out.println("Solve for "+name);
+	          System.out.println();
+	          
+	          long time0 = System.currentTimeMillis();
+	          sndrc = new SNDRC(name);
+	          
+	          new SNDRCSolver(sndrc,name0+i);
+
+	          long time1 = System.currentTimeMillis();
+	          System.out.println();
+	          System.out.println("Total time= " + (time1 - time0));
+	          System.out.println();
+	      }
+	   
+       name0="test4_10.0_";
+       for(int i=0;i<5;i++){
+              String name=path+name0+i+".txt";
+              System.out.println("Solve for "+name);
+              System.out.println();
+              
+              long time0 = System.currentTimeMillis();
+              sndrc = new SNDRC(name);
+              
+              new SNDRCSolver(sndrc,name0+i);
+
+              long time1 = System.currentTimeMillis();
+              System.out.println();
+              System.out.println("Total time= " + (time1 - time0));
+              System.out.println();
+          }
 
 	    
 
