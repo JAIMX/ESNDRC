@@ -46,7 +46,7 @@ public class SNDRCSolver {
     SNDRC dataModel;
     boolean ifOptGetFromSubGraph;
 
-    public SNDRCSolver(SNDRC dataModel) throws IOException {
+    public SNDRCSolver(SNDRC dataModel,String fileName) throws IOException {
         this.dataModel = dataModel;
 
         // Create the pricing problems
@@ -111,7 +111,8 @@ public class SNDRCSolver {
         // File("./output/BAPlogger.log"));
         // BapLoggerB logger=new BapLoggerB(bap, new
         // File("./output/BAPlogger.log"));
-        BapLoggerB_M logger = new BapLoggerB_M(bap, new File("./output/BAPlogger.log"));
+//        BapLoggerB_M logger = new BapLoggerB_M(bap, new File("./output/BAPlogger.log"));
+        BapLoggerB_M logger = new BapLoggerB_M(bap, new File("./output/"+fileName+".log"));
 //        BapLoggerA_M logger = new BapLoggerA_M(bap, new File("./output/BAPlogger.log"));
 
         // Solve the TSP problem through Branch-and-Price
@@ -294,7 +295,7 @@ public class SNDRCSolver {
         
         
         //compare keyServiceEdgeIndexSet and serviceEdgeSet0
-        Scanner in = new Scanner(Paths.get("./data/testset/test5_compareInfo.txt"));
+        Scanner in = new Scanner(Paths.get("./data/testset/test9A_compareInfo.txt"));
         String line=in.nextLine();
         String[] result=line.split(", ");
         Set<Integer> serviceEdgeSet0=new HashSet<>();
@@ -432,24 +433,56 @@ public class SNDRCSolver {
 
     public static void main(String[] args) throws IOException {
 
+//        SNDRC sndrc;
+//        for (String arg : args) {
+//            long time0 = System.currentTimeMillis();
+//            sndrc = new SNDRC(arg);
+//            // sndrc.Output();
+//            Properties properties = new Properties();
+//            // properties.setProperty("EXPORT_MODEL", "True");
+//            // properties.setProperty("MAXTHREADS", "10");
+//            // properties.setProperty("PRECISION", "0.001");
+//            properties.setProperty("CUTSENABLED", "false");
+//            Configuration.readFromFile(properties);
+//
+//            new SNDRCSolver(sndrc);
+//
+//            long time1 = System.currentTimeMillis();
+//            System.out.println();
+//            System.out.println("Total time= " + (time1 - time0));
+//
+//        }
+        
+        
         SNDRC sndrc;
-        for (String arg : args) {
-            long time0 = System.currentTimeMillis();
-            sndrc = new SNDRC(arg);
-            // sndrc.Output();
-            Properties properties = new Properties();
-            // properties.setProperty("EXPORT_MODEL", "True");
-            // properties.setProperty("MAXTHREADS", "10");
-            // properties.setProperty("PRECISION", "0.001");
-            properties.setProperty("CUTSENABLED", "false");
-            Configuration.readFromFile(properties);
-
-            new SNDRCSolver(sndrc);
-
-            long time1 = System.currentTimeMillis();
-            System.out.println();
-            System.out.println("Total time= " + (time1 - time0));
-
+        String path="./data/transferData/transfer1/test9A/";
+        String name0="test9A";
+        double[] var={0.5,1.0,2.0,5.0,10.0};
+        
+        for(int i=0;i<var.length;i++){
+            double variance=var[i];
+            
+            for(int j=0;j<5;j++){
+                String name=path+name0+"_"+variance+"_"+j+".txt";
+                System.out.println("Solve for "+name);
+                System.out.println();
+                
+                
+                long time0 = System.currentTimeMillis();
+                sndrc = new SNDRC(name);
+                
+                Properties properties = new Properties();
+                properties.setProperty("CUTSENABLED", "false");
+                Configuration.readFromFile(properties);
+                
+                new SNDRCSolver(sndrc,name0+"_"+variance+"_"+j);
+                
+                long time1 = System.currentTimeMillis();
+                System.out.println();
+                System.out.println("Total time= " + (time1 - time0));
+                System.out.println();
+                
+            }
         }
 
               
