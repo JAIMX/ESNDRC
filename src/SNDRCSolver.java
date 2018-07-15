@@ -445,7 +445,7 @@ public class SNDRCSolver {
 //            properties.setProperty("CUTSENABLED", "false");
 //            Configuration.readFromFile(properties);
 //
-//            new SNDRCSolver(sndrc);
+//            new SNDRCSolver(sndrc,"test2_5_15_20_25");
 //
 //            long time1 = System.currentTimeMillis();
 //            System.out.println();
@@ -459,10 +459,21 @@ public class SNDRCSolver {
         String name0="test9A";
         double[] var={0.5,1.0,2.0,5.0,10.0};
         
+        Properties properties = new Properties();
+        properties.setProperty("CUTSENABLED", "false");
+        Configuration.readFromFile(properties);
+        
+        boolean ifFirst=true;
         for(int i=0;i<var.length;i++){
             double variance=var[i];
             
             for(int j=0;j<5;j++){
+                
+                if(ifFirst){
+                    ifFirst=false;
+                    continue;
+                }
+                
                 String name=path+name0+"_"+variance+"_"+j+".txt";
                 System.out.println("Solve for "+name);
                 System.out.println();
@@ -471,9 +482,7 @@ public class SNDRCSolver {
                 long time0 = System.currentTimeMillis();
                 sndrc = new SNDRC(name);
                 
-                Properties properties = new Properties();
-                properties.setProperty("CUTSENABLED", "false");
-                Configuration.readFromFile(properties);
+
                 
                 new SNDRCSolver(sndrc,name0+"_"+variance+"_"+j);
                 
