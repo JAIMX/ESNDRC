@@ -457,24 +457,19 @@ public class SNDRCSolver {
 //		}
 	    
 	  SNDRC sndrc;
-	  String path="./data/transferData/transfer2/test1/";
-	  String[] name0={"test1_1.2","test1_1.5","test1_1.8","test1_2.0","test1_3.0"};
+	  String path="./data/transferData/transfer1/test1/";
+//	  String[] name0={"test1_1.2","test1_1.5","test1_1.8","test1_2.0","test1_3.0"};
+	  String[] name0=new String[25];
+	  double[] var={0.5,1.0,2.0,5.0,10.0};
 	  
-//	  for(int i=0;i<5;i++){
-//	      String name=path+name0+i+".txt";
-//	      System.out.println("Solve for "+name);
-//	      System.out.println();
-//	      
-//          long time0 = System.currentTimeMillis();
-//          sndrc = new SNDRC(name);
-//          
-//          new SNDRCSolver(sndrc,name0+i);
-//
-//          long time1 = System.currentTimeMillis();
-//          System.out.println();
-//          System.out.println("Total time= " + (time1 - time0));
-//          System.out.println();
-//	  }
+	  int index=0;
+	  for(double variance:var){
+	      for(int i=0;i<5;i++){
+	          name0[index]="test1_"+variance+"_"+i;
+	          index++;
+	      }
+	  }
+	  
 	  
 	  for(String fileName:name0){
 	      String name=path+fileName+".txt";
