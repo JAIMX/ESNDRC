@@ -299,7 +299,7 @@ public class SNDRCSolver {
 		}
 
 		// compare keyServiceEdgeIndexSet and serviceEdgeSet0
-		Scanner in = new Scanner(Paths.get("./data/testset/test4_compareInfo.txt"));
+		Scanner in = new Scanner(Paths.get("./data/testset/test1_compareInfo.txt"));
 		String line = in.nextLine();
 		String[] result = line.split(", ");
 		Set<Integer> serviceEdgeSet0 = new HashSet<>();
@@ -457,8 +457,8 @@ public class SNDRCSolver {
 //		}
 	    
 	  SNDRC sndrc;
-	  String path="./data/transferData/transfer1/test4/";
-	  String[] name0={"test4_0.5_0","test4_10.0_1","test4_10.0_4","test4_1.2","tes4_1.8"};
+	  String path="./data/transferData/transfer2/test1/";
+	  String[] name0={"test1_1.2","test1_1.5","test1_1.8","test1_2.0","test1_3.0"};
 	  
 //	  for(int i=0;i<5;i++){
 //	      String name=path+name0+i+".txt";
