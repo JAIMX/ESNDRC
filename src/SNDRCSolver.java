@@ -92,14 +92,13 @@ public class SNDRCSolver {
 		// BranchAndPriceB bap=new BranchAndPriceB(dataModel, master,
 		// pricingProblems, solvers,
 		// branchCreators,Double.MAX_VALUE,0.65,0.2,0.1,1,0.001,3,0.1,true);
-		// BranchAndPriceB_M bap = new BranchAndPriceB_M(dataModel, master,
-		// pricingProblems, solvers, branchCreators,
-		// Double.MAX_VALUE, 0.65, 0.3, 0.1, 1, -0.001, 4, 0, true, false);
+		 BranchAndPriceB_M bap = new BranchAndPriceB_M(dataModel, master,pricingProblems, solvers, branchCreators,5000000, 0.65, 0.3, 0.1, 1, -0.001, 2, 0, true, false);
+		 
 		// BranchAndPriceA_M bap=new BranchAndPriceA_M(dataModel,
 		// master,pricingProblems,
 		// solvers,branchCreators,Double.MAX_VALUE,0.6,0.3,0.1,10,0.001,10,0.1,false,true);
-		BranchAndPriceA_M bap = new BranchAndPriceA_M(dataModel, master, pricingProblems, solvers, branchCreators,
-				5000000, 0.6, 0.2, 0.5, 10, 0.001, 10, 0.1, false, true);
+//		BranchAndPriceA_M bap = new BranchAndPriceA_M(dataModel, master, pricingProblems, solvers, branchCreators,
+//				5000000, 0.6, 0.2, 0.5, 10, 0.001, 10, 0.1, false, true);
 		// bap.setNodeOrdering(new BFSbapNodeComparator());
 		// bap.setNodeOrdering(new NodeBoundbapNodeComparatorMaxBound());
 		bap.setNodeOrdering(new NodeBoundbapNodeComparator());
@@ -112,15 +111,14 @@ public class SNDRCSolver {
 		// File("./output/BAPlogger.log"));
 		// BapLoggerB logger=new BapLoggerB(bap, new
 		// File("./output/BAPlogger.log"));
-		// BapLoggerB_M logger = new BapLoggerB_M(bap, new
-		// File("./output/BAPlogger.log"));
+		BapLoggerB_M logger = new BapLoggerB_M(bap, new File("./output/"+fileName+".log"));
 //		BapLoggerA_M logger = new BapLoggerA_M(bap, new File("./output/BAPlogger.log"));
-		BapLoggerA_M logger = new BapLoggerA_M(bap, new File("./output/"+fileName+".log"));
+//		BapLoggerA_M logger = new BapLoggerA_M(bap, new File("./output/"+fileName+".log"));
 
 		// Solve the TSP problem through Branch-and-Price
 		// bap.runBranchAndPrice(System.currentTimeMillis()+18000000L); //5
 		// hours
-		bap.runBranchAndPrice(System.currentTimeMillis() + 360000000L); // 100
+		bap.runBranchAndPrice(System.currentTimeMillis() + 1800000L); // 0.5
 																		// hours
 
 		this.ifOptGetFromSubGraph = bap.GetIfOptGetFromSubGraph();
@@ -458,32 +456,37 @@ public class SNDRCSolver {
 	    
 	  SNDRC sndrc;
 	  String path="./data/transferData/transfer1/test1/";
-//	  String[] name0={"test1_1.2","test1_1.5","test1_1.8","test1_2.0","test1_3.0"};
-	  String[] name0=new String[25];
-	  double[] var={0.5,1.0,2.0,5.0,10.0};
+	  String[] name0={"test1_2.0_3_plus","test1_5.0_1_plus"};
+//	  String[] name0=new String[25];
+//	  double[] var={0.5,1.0,2.0,5.0,10.0};
+//	  
+//	  int index=0;
+//	  for(double variance:var){
+//	      for(int i=0;i<5;i++){
+//	          name0[index]="test1_"+variance+"_"+i;
+//	          index++;
+//	      }
+//	  }
 	  
-	  int index=0;
-	  for(double variance:var){
-	      for(int i=0;i<5;i++){
-	          name0[index]="test1_"+variance+"_"+i;
-	          index++;
-	      }
-	  }
-	  
+	  int count=10;
 	  
 	  for(String fileName:name0){
-	      String name=path+fileName+".txt";
-	      System.out.println("Solve for "+name);
-	      System.out.println();
+	      count++;
+	      if(count>9){
+	          String name=path+fileName+".txt";
+	          System.out.println("Solve for "+name);
+	          System.out.println();
+	              
+	          long time0 = System.currentTimeMillis();
+	          sndrc = new SNDRC(name);
+	          new SNDRCSolver(sndrc,fileName);
 	          
-	      long time0 = System.currentTimeMillis();
-	      sndrc = new SNDRC(name);
-	      new SNDRCSolver(sndrc,fileName);
-	      
-          long time1 = System.currentTimeMillis();
-          System.out.println();
-          System.out.println("Total time= " + (time1 - time0));
-          System.out.println();
+	          long time1 = System.currentTimeMillis();
+	          System.out.println();
+	          System.out.println("Total time= " + (time1 - time0));
+	          System.out.println();
+	      }
+
 	  }
 	 
 	    

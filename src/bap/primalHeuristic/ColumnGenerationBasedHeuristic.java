@@ -350,7 +350,8 @@ public class ColumnGenerationBasedHeuristic {
         System.out.println();
 
         runTime = System.currentTimeMillis() - runTime;
-        long timeLeft = 3600000 - runTime;  //1 hour
+//        long timeLeft = 3600000 - runTime;  //1 hour
+        long timeLeft = 1800000 - runTime;  //0.5 hour
 //        long timeLeft = 20000 - runTime;
         cplex.setParam(IloCplex.DoubleParam.TiLim, timeLeft / 1000);
         
