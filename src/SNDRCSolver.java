@@ -112,7 +112,7 @@ public class SNDRCSolver {
         // BapLoggerB logger=new BapLoggerB(bap, new
         // File("./output/BAPlogger.log"));
 //        BapLoggerB_M logger = new BapLoggerB_M(bap, new File("./output/BAPlogger.log"));
-        BapLoggerB_M logger = new BapLoggerB_M(bap, new File("./output/"+fileName+".log"));
+//        BapLoggerB_M logger = new BapLoggerB_M(bap, new File("./output/"+fileName+".log"));
 //        BapLoggerA_M logger = new BapLoggerA_M(bap, new File("./output/BAPlogger.log"));
 
         // Solve the TSP problem through Branch-and-Price
@@ -463,33 +463,33 @@ public class SNDRCSolver {
         properties.setProperty("CUTSENABLED", "false");
         Configuration.readFromFile(properties);
         
-        boolean ifFirst=true;
+        int count=0;
         for(int i=0;i<var.length;i++){
             double variance=var[i];
             
             for(int j=0;j<5;j++){
+                count++;
                 
-                if(ifFirst){
-                    ifFirst=false;
-                    continue;
+                if(count>12){
+                    String name=path+name0+"_"+variance+"_"+j+".txt";
+                    System.out.println("Solve for "+name);
+                    System.out.println();
+                    
+                    
+                    long time0 = System.currentTimeMillis();
+                    sndrc = new SNDRC(name);
+                    
+
+                    
+                    new SNDRCSolver(sndrc,name0+"_"+variance+"_"+j);
+                    
+                    long time1 = System.currentTimeMillis();
+                    System.out.println();
+                    System.out.println("Total time= " + (time1 - time0));
+                    System.out.println();
                 }
                 
-                String name=path+name0+"_"+variance+"_"+j+".txt";
-                System.out.println("Solve for "+name);
-                System.out.println();
-                
-                
-                long time0 = System.currentTimeMillis();
-                sndrc = new SNDRC(name);
-                
 
-                
-                new SNDRCSolver(sndrc,name0+"_"+variance+"_"+j);
-                
-                long time1 = System.currentTimeMillis();
-                System.out.println();
-                System.out.println("Total time= " + (time1 - time0));
-                System.out.println();
                 
             }
         }
