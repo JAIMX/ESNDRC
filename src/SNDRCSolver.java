@@ -470,7 +470,7 @@ public class SNDRCSolver {
             for(int j=0;j<5;j++){
                 count++;
                 
-                if(count>19){
+                if(count>30){
                     String name=path+name0+"_"+variance+"_"+j+".txt";
                     System.out.println("Solve for "+name);
                     System.out.println();
@@ -493,6 +493,33 @@ public class SNDRCSolver {
                 
             }
         }
+        
+        
+        path="./data/transferData/transfer2/test9A/";
+        name0="test9A";
+//        double[] times={1.2,1.5,1.8,2.0,3.0};
+        double[] times={1.8,2.0,3.0};
+        
+        for(double time:times){
+            String name=path+name0+"_"+time+".txt";
+            System.out.println("Solve for "+name);
+            System.out.println();
+            
+            
+            long time0 = System.currentTimeMillis();
+            sndrc = new SNDRC(name);
+            
+
+            
+            new SNDRCSolver(sndrc,name0+"_"+time);
+            
+            long time1 = System.currentTimeMillis();
+            System.out.println();
+            System.out.println("Total time= " + (time1 - time0));
+            System.out.println();
+        }
+        
+        
 
               
         
