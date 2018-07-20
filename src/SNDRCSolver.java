@@ -295,7 +295,7 @@ public class SNDRCSolver {
         
         
         //compare keyServiceEdgeIndexSet and serviceEdgeSet0
-        Scanner in = new Scanner(Paths.get("./data/testset/test9A_compareInfo.txt"));
+        Scanner in = new Scanner(Paths.get("./data/testset/test12D_compareInfo.txt"));
         String line=in.nextLine();
         String[] result=line.split(", ");
         Set<Integer> serviceEdgeSet0=new HashSet<>();
@@ -445,7 +445,7 @@ public class SNDRCSolver {
 //            properties.setProperty("CUTSENABLED", "false");
 //            Configuration.readFromFile(properties);
 //
-//            new SNDRCSolver(sndrc,"test2_5_15_20_25");
+//            new SNDRCSolver(sndrc,"BAPlogger");
 //
 //            long time1 = System.currentTimeMillis();
 //            System.out.println();
@@ -455,8 +455,8 @@ public class SNDRCSolver {
         
         
         SNDRC sndrc;
-        String path="./data/transferData/transfer1/test9A/";
-        String name0="test9A";
+        String path="./data/transferData/transfer1/test12D/";
+        String name0="test12D";
         double[] var={0.5,1.0,2.0,5.0,10.0};
         
         Properties properties = new Properties();
@@ -470,7 +470,7 @@ public class SNDRCSolver {
             for(int j=0;j<5;j++){
                 count++;
                 
-                if(count>30){
+                if(count>2){
                     String name=path+name0+"_"+variance+"_"+j+".txt";
                     System.out.println("Solve for "+name);
                     System.out.println();
@@ -495,29 +495,29 @@ public class SNDRCSolver {
         }
         
         
-        path="./data/transferData/transfer2/test9A/";
-        name0="test9A";
-//        double[] times={1.2,1.5,1.8,2.0,3.0};
-        double[] times={1.8,2.0,3.0};
-        
-        for(double time:times){
-            String name=path+name0+"_"+time+".txt";
-            System.out.println("Solve for "+name);
-            System.out.println();
-            
-            
-            long time0 = System.currentTimeMillis();
-            sndrc = new SNDRC(name);
-            
-
-            
-            new SNDRCSolver(sndrc,name0+"_"+time);
-            
-            long time1 = System.currentTimeMillis();
-            System.out.println();
-            System.out.println("Total time= " + (time1 - time0));
-            System.out.println();
-        }
+//        path="./data/transferData/transfer2/test9A/";
+//        name0="test9A";
+////        double[] times={1.2,1.5,1.8,2.0,3.0};
+//        double[] times={1.8,2.0,3.0};
+//        
+//        for(double time:times){
+//            String name=path+name0+"_"+time+".txt";
+//            System.out.println("Solve for "+name);
+//            System.out.println();
+//            
+//            
+//            long time0 = System.currentTimeMillis();
+//            sndrc = new SNDRC(name);
+//            
+//
+//            
+//            new SNDRCSolver(sndrc,name0+"_"+time);
+//            
+//            long time1 = System.currentTimeMillis();
+//            System.out.println();
+//            System.out.println("Total time= " + (time1 - time0));
+//            System.out.println();
+//        }
         
         
 
