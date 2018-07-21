@@ -470,7 +470,7 @@ public class SNDRCSolver {
             for(int j=0;j<5;j++){
                 count++;
                 
-                if(count>2){
+                if(count>3){
                     String name=path+name0+"_"+variance+"_"+j+".txt";
                     System.out.println("Solve for "+name);
                     System.out.println();
@@ -495,10 +495,10 @@ public class SNDRCSolver {
         }
         
         
-//        path="./data/transferData/transfer2/test9A/";
-//        name0="test9A";
-////        double[] times={1.2,1.5,1.8,2.0,3.0};
-//        double[] times={1.8,2.0,3.0};
+//        path="./data/transferData/transfer2/test12D/";
+//        name0="test12D";
+//        double[] times={1.2,1.5,1.8,2.0,3.0};
+////        double[] times={1.8,2.0,3.0};
 //        
 //        for(double time:times){
 //            String name=path+name0+"_"+time+".txt";
