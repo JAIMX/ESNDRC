@@ -118,7 +118,7 @@ public class SNDRCSolver {
         // Solve the TSP problem through Branch-and-Price
         // bap.runBranchAndPrice(System.currentTimeMillis()+18000000L); //5
         // hours
-        bap.runBranchAndPrice(System.currentTimeMillis() + 36000000L); // 10
+        bap.runBranchAndPrice(System.currentTimeMillis() + 72000000L); // 2
                                                                        // hours
 
         this.ifOptGetFromSubGraph = bap.GetIfOptGetFromSubGraph();
@@ -459,65 +459,65 @@ public class SNDRCSolver {
         String name0="test12D";
         double[] var={0.5,1.0,2.0,5.0,10.0};
         
-//        Properties properties = new Properties();
-//        properties.setProperty("CUTSENABLED", "false");
-//        Configuration.readFromFile(properties);
-//        
-//        int count=0;
-//        for(int i=0;i<var.length;i++){
-//            double variance=var[i];
-//            
-//            for(int j=0;j<5;j++){
-//                count++;
-//                
-//                if(count>5){
-//                    String name=path+name0+"_"+variance+"_"+j+".txt";
-//                    System.out.println("Solve for "+name);
-//                    System.out.println();
-//                    
-//                    
-//                    long time0 = System.currentTimeMillis();
-//                    sndrc = new SNDRC(name);
-//                    
-//
-//                    
-//                    new SNDRCSolver(sndrc,name0+"_"+variance+"_"+j);
-//                    
-//                    long time1 = System.currentTimeMillis();
-//                    System.out.println();
-//                    System.out.println("Total time= " + (time1 - time0));
-//                    System.out.println();
-//                }
-//                
-//
-//                
-//            }
-//        }
+        Properties properties = new Properties();
+        properties.setProperty("CUTSENABLED", "false");
+        Configuration.readFromFile(properties);
         
-        
-        path="./data/transferData/transfer2/test12D/";
-        name0="test12D";
-//        double[] times={1.2,1.5,1.8,2.0,3.0};
-        double[] times={1.5,1.8,2.0,3.0};
-        
-        for(double time:times){
-            String name=path+name0+"_"+time+".txt";
-            System.out.println("Solve for "+name);
-            System.out.println();
+        int count=0;
+        for(int i=0;i<var.length;i++){
+            double variance=var[i];
             
-            
-            long time0 = System.currentTimeMillis();
-            sndrc = new SNDRC(name);
-            
+            for(int j=0;j<5;j++){
+                count++;
+                
+                if(count>3){
+                    String name=path+name0+"_"+variance+"_"+j+".txt";
+                    System.out.println("Solve for "+name);
+                    System.out.println();
+                    
+                    
+                    long time0 = System.currentTimeMillis();
+                    sndrc = new SNDRC(name);
+                    
 
-            
-            new SNDRCSolver(sndrc,name0+"_"+time);
-            
-            long time1 = System.currentTimeMillis();
-            System.out.println();
-            System.out.println("Total time= " + (time1 - time0));
-            System.out.println();
+                    
+                    new SNDRCSolver(sndrc,name0+"_"+variance+"_"+j);
+                    
+                    long time1 = System.currentTimeMillis();
+                    System.out.println();
+                    System.out.println("Total time= " + (time1 - time0));
+                    System.out.println();
+                }
+                
+
+                
+            }
         }
+        
+        
+//        path="./data/transferData/transfer2/test12D/";
+//        name0="test12D";
+////        double[] times={1.2,1.5,1.8,2.0,3.0};
+//        double[] times={1.5,1.8,2.0,3.0};
+//        
+//        for(double time:times){
+//            String name=path+name0+"_"+time+".txt";
+//            System.out.println("Solve for "+name);
+//            System.out.println();
+//            
+//            
+//            long time0 = System.currentTimeMillis();
+//            sndrc = new SNDRC(name);
+//            
+//
+//            
+//            new SNDRCSolver(sndrc,name0+"_"+time);
+//            
+//            long time1 = System.currentTimeMillis();
+//            System.out.println();
+//            System.out.println("Total time= " + (time1 - time0));
+//            System.out.println();
+//        }
         
         
 
