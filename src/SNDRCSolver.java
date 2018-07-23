@@ -470,7 +470,7 @@ public class SNDRCSolver {
             for(int j=0;j<5;j++){
                 count++;
                 
-                if(count>5){
+                if(count>24){
                     String name=path+name0+"_"+variance+"_"+j+".txt";
                     System.out.println("Solve for "+name);
                     System.out.println();
