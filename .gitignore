@@ -1,6 +1,7 @@
 #忽略.classpath 文件
 .classpath
 .project
+.DS_Store
 
 /output/
 /bin/
