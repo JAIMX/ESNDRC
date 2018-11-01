@@ -149,25 +149,26 @@ public class BranchAndPriceB_M<V> extends AbstractBranchAndPrice<SNDRC, Cycle, S
     @Override
     protected List<Cycle> generateInitialFeasibleSolution(BAPNode<SNDRC, Cycle> node) {
 
+    	int[] temp=new int[dataModel.numService];
         List<Cycle> artificalVars = new ArrayList<Cycle>();
         // for weak forcing constraints(ifForResourceBoundConstraints=0)
         for (int edgeIndex = 0; edgeIndex < dataModel.numServiceArc; edgeIndex++) {
             Set<Integer> set = new HashSet<>();
             set.add(edgeIndex);
-            Cycle cycle = new Cycle(pricingProblems.get(0), true, "Artificial", set, 100000000, 0, 0);
+            Cycle cycle = new Cycle(pricingProblems.get(0), true, "Artificial", set, 100000000, 0, 0,temp);
             artificalVars.add(cycle);
         }
 
         // for resource bound constraints(ifForResourceBoundConstraints=1)
         for (SNDRCPricingProblem pricingProblem : pricingProblems) {
             Set<Integer> set = new HashSet<>();
-            Cycle cycle = new Cycle(pricingProblem, true, "Artificial", set, 100000000, 0, 1);
+            Cycle cycle = new Cycle(pricingProblem, true, "Artificial", set, 100000000, 0, 1,temp);
             artificalVars.add(cycle);
         }
 
         // for holding edge branch constraints(ifForResourceBoundConstraints=2)
         Set<Integer> set = new HashSet<>();
-        Cycle cycle = new Cycle(pricingProblems.get(0), true, "Artificial", set, 100000000, 0, 2);
+        Cycle cycle = new Cycle(pricingProblems.get(0), true, "Artificial", set, 100000000, 0, 2,temp);
         artificalVars.add(cycle);
 
         return artificalVars;
@@ -249,6 +250,11 @@ public class BranchAndPriceB_M<V> extends AbstractBranchAndPrice<SNDRC, Cycle, S
             try {
 
                 this.solveBAPNode(bapNode, timeLimit);
+                
+                if(bapNode.nodeID==0){
+                    System.out.println();
+                    System.out.println("root node bound= "+bapNode.getBound());
+                }
 
                 // output the model
                 // ((Master) master).Output(bapNode.nodeID);
@@ -332,6 +338,9 @@ public class BranchAndPriceB_M<V> extends AbstractBranchAndPrice<SNDRC, Cycle, S
                 if (this.nodesProcessed == 0 && ifUseLearningUB) {
                     try {
                         LearningUB();
+                        if(!ifUseLearningUB){
+                            break;
+                        }
                     } catch (TimeLimitExceededException | IloException e) {
                         // TODO Auto-generated catch block
                         e.printStackTrace();
@@ -384,6 +393,7 @@ public class BranchAndPriceB_M<V> extends AbstractBranchAndPrice<SNDRC, Cycle, S
                     for (Cycle cycle : incumbentSolution) {
                         optSolutionValueMap.put(cycle, cycle.value);
                     }
+                    
                     try {
                         optXValues = ((Master) master).getXValues();
                         // bapNodeSolutionOutput(bapNode);
@@ -628,6 +638,8 @@ public class BranchAndPriceB_M<V> extends AbstractBranchAndPrice<SNDRC, Cycle, S
                     for (Cycle cycle : incumbentSolution) {
                         optSolutionValueMap.put(cycle, cycle.value);
                     }
+                    
+                    
                     try {
                         optXValues = ((Master) master).getXValues();
                         // bapNodeSolutionOutput(bapNode);
@@ -879,9 +891,9 @@ public class BranchAndPriceB_M<V> extends AbstractBranchAndPrice<SNDRC, Cycle, S
             // subGraph.isFeasibleForX=true;
             // System.out.println(subGraph.isFeasibleForX);
             // subGraph.isFeasibleForX=true;
-            if (subGraph.isFeasibleForX) {
+//            if (subGraph.isFeasibleForX) {
 
-                // --------------------------------------------------------------------------------------------------------------------------------------
+                // ---------------------------------------ColumnGenerationBasedHeuristic----------------------------------------------------------------
                 long time0 = System.currentTimeMillis();
                 ColumnGenerationBasedHeuristic solver = new ColumnGenerationBasedHeuristic(subGraph, 0.65, false);
 //                ColumnGenerationBasedHeuristic solver = new ColumnGenerationBasedHeuristic(subGraph, 0.65, true);
@@ -904,15 +916,29 @@ public class BranchAndPriceB_M<V> extends AbstractBranchAndPrice<SNDRC, Cycle, S
 //                        optSolutionValueMap.put(cycle, cycle.value);
 //                    }
                     
-                    this.optSolutionValueMap=solver.optSolutionValueMap;
                     
-                    optXValues=solver.optXValues;
+                    Map<Cycle,Double> temp=solver.optSolutionValueMap;
+                    this.optSolutionValueMap=new HashMap<>();
+                    for(Cycle cycle:temp.keySet()){
+                        optSolutionValueMap.put(cycle, temp.get(cycle));
+                    }
+                    
+                    
+//                    this.optSolutionValueMap=solver.optSolutionValueMap;
+                    
+                    this.optXValues=new ArrayList<>();
+                    for(int commodity=0;commodity<dataModel.numDemand;commodity++){
+                        Map<Integer,Double> tempOptXValues=new HashMap<Integer,Double>();
+                        tempOptXValues.putAll(solver.optXValues.get(commodity));
+                        optXValues.add(tempOptXValues);
+                    }
+//                    optXValues=solver.optXValues;
                     
                     this.ifOptGetFromSubGraph=true;
 
                 }
 
-                // --------------------------------------------------------------------------------------------------------------------------------------
+                // -------------------------------------------ColumnGenerationBasedHeuristic----------------------------------------------------------
 
                 this.ifUseLearningUB = false;
                 //
@@ -1004,7 +1030,7 @@ public class BranchAndPriceB_M<V> extends AbstractBranchAndPrice<SNDRC, Cycle, S
                 //
                 // subBap.close();
                 // subCutHandler.close();
-            }
+//            }
 
         } else {
             System.out.println("No");

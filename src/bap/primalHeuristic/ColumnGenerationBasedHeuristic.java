@@ -86,25 +86,26 @@ public class ColumnGenerationBasedHeuristic {
                 .singletonList(ExactPricingProblemSolver.class);
 
         // ----------------------------------generateInitialFeasibleSolution-------------------------------------------------//
+        int[] temp=new int[dataModel.numService];
         List<Cycle> artificalVars = new ArrayList<Cycle>();
         // for weak forcing constraints(ifForResourceBoundConstraints=0)
         for (int edgeIndex = 0; edgeIndex < dataModel.numServiceArc; edgeIndex++) {
             Set<Integer> set = new HashSet<>();
             set.add(edgeIndex);
-            Cycle cycle = new Cycle(pricingProblems.get(0), true, "Artificial", set, 100000000, 0, 0);
+            Cycle cycle = new Cycle(pricingProblems.get(0), true, "Artificial", set, 100000000, 0, 0,temp);
             artificalVars.add(cycle);
         }
 
         // for resource bound constraints(ifForResourceBoundConstraints=1)
         for (SNDRCPricingProblem pricingProblem : pricingProblems) {
             Set<Integer> set = new HashSet<>();
-            Cycle cycle = new Cycle(pricingProblem, true, "Artificial", set, 100000000, 0, 1);
+            Cycle cycle = new Cycle(pricingProblem, true, "Artificial", set, 100000000, 0, 1,temp);
             artificalVars.add(cycle);
         }
 
         // for holding edge branch constraints(ifForResourceBoundConstraints=2)
         Set<Integer> set = new HashSet<>();
-        Cycle cycle0 = new Cycle(pricingProblems.get(0), true, "Artificial", set, 100000000, 0, 2);
+        Cycle cycle0 = new Cycle(pricingProblems.get(0), true, "Artificial", set, 100000000, 0, 2,temp);
         artificalVars.add(cycle0);
 
         // ----------------------------------generateInitialFeasibleSolution-------------------------------------------------//
@@ -117,7 +118,7 @@ public class ColumnGenerationBasedHeuristic {
         // SimpleCGLogger logger = new SimpleCGLogger(cg, new
         // File("./output/cgLogger.log"));
 
-        cg.solve(System.currentTimeMillis() + 3600000L); // 1 hour limit
+        cg.solve(System.currentTimeMillis() + 36000000L); // 10 hour limit
 
         System.out.println("Time of first LP solve= " + (System.currentTimeMillis() - runTime));
 
@@ -340,6 +341,7 @@ public class ColumnGenerationBasedHeuristic {
         /// solve and
         /// output------------------------------------------------------------------///
 
+        
         cg.close();
         cutHandler.close();
 
@@ -348,9 +350,12 @@ public class ColumnGenerationBasedHeuristic {
         System.out.println();
 
         runTime = System.currentTimeMillis() - runTime;
-        long timeLeft = 3600000 - runTime;
+//        long timeLeft = 3600000 - runTime;
+        long timeLeft = 7200000; //2 hours
+//        long timeLeft = 20000 - runTime;
         cplex.setParam(IloCplex.DoubleParam.TiLim, timeLeft / 1000);
-        // cplex.setParam(IloCplex.DoubleParam.TiLim, 36000);
+        
+//        cplex.exportModel("./output/masterLP/" + "check"  + ".lp");
         cplex.solve();
         System.out.println("optimal objective= " + cplex.getObjValue());
         System.out.println();
@@ -362,12 +367,15 @@ public class ColumnGenerationBasedHeuristic {
 
             this.objectiveIncumbentSolution = integerObjective;
             this.incumbentSolution = new ArrayList<>();
+            
             for (Cycle cycle : cycleVar.keySet()) {
                 IloIntVar var = cycleVar.get(cycle);
-                int value = (int) cplex.getValue(var);
+//                int value = (int) cplex.getValue(var);
+                int value = MathProgrammingUtil.doubleToInt(cplex.getValue(var));
 
-                if (value > 0.1) {
+                if (value > 0.01) {
                     this.incumbentSolution.add(cycle);
+                    cycle.value=value;
                 }
 
             }

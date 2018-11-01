@@ -1,0 +1,49 @@
+number of service arcs=1200
+number of holding arcs=300
+
+
+root node bound= 26724.519999999986
+Yes
+256
+
+ilog.cplex.CpxException: CPLEX Error  1422: Could not open file './output/masterLP/check.lp' for writing.
+
+	at ilog.cplex.CplexI.CALL(CplexI.java:4714)
+	at ilog.cplex.CplexI._writeModel(CplexI.java:5081)
+	at ilog.cplex.CplexI.exportModel(CplexI.java:756)
+	at ilog.cplex.IloCplex.exportModel(IloCplex.java:997)
+	at cg.master.Master.solveMasterProblem(Master.java:481)
+	at org.jorlib.frameworks.columnGeneration.master.AbstractMaster.solve(AbstractMaster.java:152)
+	at org.jorlib.frameworks.columnGeneration.colgenMain.ColGen.invokeMaster(ColGen.java:271)
+	at org.jorlib.frameworks.columnGeneration.colgenMain.ColGen.solve(ColGen.java:224)
+	at bap.primalHeuristic.ColumnGenerationBasedHeuristic.Solve(ColumnGenerationBasedHeuristic.java:120)
+	at bap.BranchAndPriceB_M.LearningUB(BranchAndPriceB_M.java:900)
+	at bap.BranchAndPriceB_M.runBranchAndPrice(BranchAndPriceB_M.java:339)
+	at SNDRCSolver.<init>(SNDRCSolver.java:116)
+	at SNDRCSolver.main(SNDRCSolver.java:301)
+Time of first LP solve= 606
+
+There are 287 columns added to the model.
+
+Infeasibility row 'c101523':  0  = 15.
+Presolve time = 0.00 sec. (2.54 ticks)
+
+Root node processing (before b&c):
+  Real time             =    0.01 sec. (5.61 ticks)
+Parallel b&c, 4 threads:
+  Real time             =    0.00 sec. (0.00 ticks)
+  Sync time (average)   =    0.00 sec.
+  Wait time (average)   =    0.00 sec.
+                          ------------
+Total (root+branch&cut) =    0.01 sec. (5.61 ticks)
+ilog.cplex.CpxException: CPLEX Error  1217: No solution exists.
+
+	at ilog.cplex.CplexI.CALL(CplexI.java:4714)
+	at ilog.cplex.CplexI._getObjValue(CplexI.java:5983)
+	at ilog.cplex.CplexI.getObjValue(CplexI.java:3114)
+	at ilog.cplex.IloCplex.getObjValue(IloCplex.java:5309)
+	at bap.primalHeuristic.ColumnGenerationBasedHeuristic.Solve(ColumnGenerationBasedHeuristic.java:359)
+	at bap.BranchAndPriceB_M.LearningUB(BranchAndPriceB_M.java:900)
+	at bap.BranchAndPriceB_M.runBranchAndPrice(BranchAndPriceB_M.java:339)
+	at SNDRCSolver.<init>(SNDRCSolver.java:116)
+	at SNDRCSolver.main(SNDRCSolver.java:301)

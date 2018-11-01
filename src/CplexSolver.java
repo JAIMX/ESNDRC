@@ -58,7 +58,8 @@ public class CplexSolver {
 		
 		FileOutputStream outputStream=new FileOutputStream(new File("./output/cplexOut.txt"));
 		
-		cplex.setOut(outputStream);
+//		cplex.setOut(outputStream);
+		
 		cplex.setParam(IloCplex.IntParam.Threads, 4);
 		cplex.setParam(IloCplex.Param.Simplex.Tolerances.Markowitz, 0.1);
 		cplex.setParam(IloCplex.DoubleParam.TiLim, 36000); //10 hours
@@ -165,6 +166,8 @@ public class CplexSolver {
 		// add all columns
 		Scanner in = new Scanner(Paths.get(fileName));
 		
+		int count2=0;
+		
 		for(int originNode=0;originNode<dataModel.numNode;originNode++) {
 			int count=0;
 			
@@ -217,6 +220,8 @@ public class CplexSolver {
 					// Create the variable and store it
 //					IloNumVar var =cplex.intVar(iloColumn, 0, dataModel.vehicleLimit[capacityType][originNode],"z_" + capacityType + ","+originNode+","+count);
 					IloNumVar var =cplex.intVar(iloColumn, 0, Integer.MAX_VALUE,"z_" + capacityType + ","+originNode+","+count);
+					count2++;
+					
 					Path newPath=new Path();
 					newPath.capacityType=capacityType;
 					newPath.originNode=originNode;
@@ -241,6 +246,7 @@ public class CplexSolver {
 		}
 		in.close();
 		
+		System.out.println("count2= "+count2);
 		
 		
 		cplex.solve();
@@ -325,6 +331,8 @@ public class CplexSolver {
 	public void  GeneratePathFile() throws FileNotFoundException {
 		PrintWriter out=new PrintWriter(fileName);
 		
+		int count=0;
+		
 		for(int originNode=0;originNode<dataModel.numNode;originNode++) {
 			
 			Set<Set<Integer>> checkRepeat=new HashSet<>();
@@ -378,6 +386,8 @@ public class CplexSolver {
 							}
 							if(!checkRepeat.contains(pathEdgeSet)) {
 								checkRepeat.add(pathEdgeSet);
+								
+								count++;
 								
 								for(int i=0;i<pathEdgeRecord.size();i++) {
 									out.print(pathEdgeRecord.get(i));
@@ -454,6 +464,7 @@ public class CplexSolver {
 		
 		out.close();
 		
+		System.out.println("number of cycles= "+count);
 	}
 	
 	

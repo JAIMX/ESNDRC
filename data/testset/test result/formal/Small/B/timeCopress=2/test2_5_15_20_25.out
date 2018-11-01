@@ -1,0 +1,139 @@
+number of service arcs=300
+number of holding arcs=100
+
+Yes
+150
+
+Time of first LP solve= 432
+
+There are 760 columns added to the model.
+
+Tried aggregator 2 times.
+MIP Presolve eliminated 1130 rows and 42 columns.
+Aggregator did 584 substitutions.
+Reduced MIP has 946 rows, 2698 columns, and 8433 nonzeros.
+Reduced MIP has 0 binaries, 749 generals, 0 SOSs, and 0 indicators.
+Presolve time = 0.01 sec. (5.32 ticks)
+Found incumbent of value 1.7000551e+09 after 0.01 sec. (10.63 ticks)
+Tried aggregator 1 time.
+Reduced MIP has 946 rows, 2698 columns, and 8433 nonzeros.
+Reduced MIP has 0 binaries, 749 generals, 0 SOSs, and 0 indicators.
+Presolve time = 0.00 sec. (3.17 ticks)
+MIP emphasis: balance optimality and feasibility.
+MIP search method: dynamic search.
+Parallel mode: deterministic, using up to 4 threads.
+Root relaxation solution time = 0.08 sec. (21.02 ticks)
+
+        Nodes                                         Cuts/
+   Node  Left     Objective  IInf  Best Integer    Best Bound    ItCnt     Gap
+
+*     0+    0                       1.70006e+09    -1515.0000           100.00%
+*     0+    0                       4.00007e+08    -1515.0000           100.00%
+*     0+    0                         5717.0000    -1515.0000           126.50%
+*     0+    0                         5439.0000    -1515.0000           127.85%
+*     0+    0                         5289.0000    -1515.0000           128.64%
+      0     0     3720.5200    19     5289.0000     3720.5200      881   29.66%
+*     0+    0                         4181.0000     3720.5200            11.01%
+      0     0     3734.7072    19     4181.0000     Cuts: 108     1169   10.67%
+      0     0     3746.6507    23     4181.0000   MIRcuts: 77     1376   10.39%
+*     0+    0                         4175.0000     3746.6507            10.26%
+      0     0     3773.6779    17     4175.0000  MIRcuts: 108     1545    9.61%
+*     0+    0                         4041.0000     3773.6779             6.62%
+      0     0     3785.3652    15     4041.0000   MIRcuts: 70     1760    6.33%
+      0     0     3795.2400    19     4041.0000   MIRcuts: 75     1906    6.08%
+*     0+    0                         3941.0000     3795.2400             3.70%
+      0     0     3796.2600    20     3941.0000   MIRcuts: 78     2076    3.67%
+      0     0     3798.4234    23     3941.0000  MIRcuts: 117     2254    3.62%
+*     0+    0                         3937.0000     3798.4234             3.52%
+      0     0     3798.4383    18     3937.0000   MIRcuts: 99     2439    3.52%
+      0     0     3801.9650    18     3937.0000   MIRcuts: 84     2544    3.43%
+      0     0     3801.9650    16     3937.0000  MIRcuts: 104     2645    3.43%
+      0     2     3801.9650    16     3937.0000     3804.3904     2645    3.37%
+Elapsed time = 1.32 sec. (526.66 ticks, tree = 0.00 MB, solutions = 10)
+     14    12     3826.0483    12     3937.0000     3804.3904     5085    3.37%
+*    73+   44                         3933.0000     3804.3904             3.27%
+    195    90     3862.7124    10     3933.0000     3809.4663    17460    3.14%
+*   296+  116                         3909.0000     3809.4663             2.55%
+    393   108     3817.5025    17     3909.0000     3810.2923    26998    2.53%
+    569   212     3877.2660    12     3909.0000     3813.0654    42207    2.45%
+    843   326     3860.5746    11     3909.0000     3813.1894    55064    2.45%
+   1022   413        cutoff           3909.0000     3817.7563    68763    2.33%
+   1342   549     3861.4489    11     3909.0000     3818.2110    83219    2.32%
+   1576   679     3892.4684    18     3909.0000     3823.9792   100182    2.18%
+   1821   778     3856.9534     6     3909.0000     3825.4176   114887    2.14%
+*  2305+  990                         3899.0000     3827.5911             1.83%
+   2811  1020     3852.0000     4     3899.0000     3835.6520   177229    1.62%
+Elapsed time = 6.85 sec. (3684.54 ticks, tree = 1.32 MB, solutions = 13)
+   3597  1285     3817.2510    21     3899.0000     3843.8188   232294    1.42%
+   4143   627     3879.7695    13     3899.0000     3843.8188   248255    1.42%
+   5503   856     3858.8499     9     3899.0000     3845.1257   293457    1.38%
+   6924  1150     3874.7004    10     3899.0000     3860.1593   345286    1.00%
+   8459  1184        cutoff           3899.0000     3872.5905   394487    0.68%
+  10257   252        cutoff           3899.0000     3889.6861   445320    0.24%
+
+Mixed integer rounding cuts applied:  153
+Lift and project cuts applied:  3
+Gomory fractional cuts applied:  3
+
+Root node processing (before b&c):
+  Real time             =    1.31 sec. (526.01 ticks)
+Parallel b&c, 4 threads:
+  Real time             =   16.40 sec. (9484.08 ticks)
+  Sync time (average)   =    1.00 sec.
+  Wait time (average)   =    1.27 sec.
+                          ------------
+Total (root+branch&cut) =   17.71 sec. (10010.09 ticks)
+optimal objective= 3899.0
+
+artificial: false set: [144, 51, 116, 197, 151, 185, 186, 187, 109] start node= 1 start time= 15 capacity type= 1
+(0,1)->(0,2)->(2,7)->(2,8)->(3,12)->(1,15)->(1,16)->(1,17)->(1,18)->(0,1):1
+
+artificial: false set: [241, 242, 83, 243, 244, 101, 119, 7, 172] start node= 4 start time= 11 capacity type= 1
+(1,2)->(1,3)->(0,6)->(4,11)->(4,12)->(4,13)->(4,14)->(4,15)->(3,19)->(1,2):1
+
+artificial: false set: [130, 37, 24, 72, 249] start node= 4 start time= 0 capacity type= 1
+(4,0)->(1,4)->(2,9)->(1,14)->(4,19)->(4,0):1
+
+artificial: false set: [65, 57, 92, 140, 239] start node= 4 start time= 9 capacity type= 0
+(2,0)->(3,4)->(4,9)->(4,10)->(0,15)->(2,0):1
+
+artificial: false set: [195, 164, 230, 87, 23, 105, 10] start node= 4 start time= 0 capacity type= 1
+(4,0)->(4,1)->(2,5)->(2,6)->(1,11)->(0,14)->(0,15)->(4,0):1
+
+Column Generation Based Heuristic Time= 18166
+javax.naming.TimeLimitExceededException
+	at cg.master.Master.solveMasterProblem(Master.java:479)
+	at org.jorlib.frameworks.columnGeneration.master.AbstractMaster.solve(AbstractMaster.java:152)
+	at org.jorlib.frameworks.columnGeneration.colgenMain.ColGen.invokeMaster(ColGen.java:271)
+	at org.jorlib.frameworks.columnGeneration.colgenMain.ColGen.solve(ColGen.java:224)
+	at org.jorlib.frameworks.columnGeneration.branchAndPrice.AbstractBranchAndPrice.solveBAPNode(AbstractBranchAndPrice.java:342)
+	at bap.BranchAndPriceB_M.runBranchAndPrice(BranchAndPriceB_M.java:251)
+	at SNDRCSolver.<init>(SNDRCSolver.java:97)
+	at SNDRCSolver.main(SNDRCSolver.java:233)
+================ Solution ================
+BAP terminated with objective : 3899
+Total Number of iterations: 93754
+Total Number of processed nodes: 3705
+Total Time spent on master problems: 35493537 Total time spent on pricing problems: 337604
+Best bound : 3720.52
+[7, 10, 23, 24, 37, 51, 57, 65, 72, 83, 87, 92, 101, 105, 109, 116, 119, 130, 140, 144]
+The number of service edges used= 20
+
+Solution is optimal: false
+Columns (only non-zero columns are returned):
+artificial: false set: [144, 51, 116, 197, 151, 185, 186, 187, 109] start node= 1 start time= 15 capacity type= 1
+(0,1)->(0,2)->(2,7)->(2,8)->(3,12)->(1,15)->(1,16)->(1,17)->(1,18)->(0,1):0.0
+
+artificial: false set: [241, 242, 83, 243, 244, 101, 119, 7, 172] start node= 4 start time= 11 capacity type= 1
+(1,2)->(1,3)->(0,6)->(4,11)->(4,12)->(4,13)->(4,14)->(4,15)->(3,19)->(1,2):0.0
+
+artificial: false set: [130, 37, 24, 72, 249] start node= 4 start time= 0 capacity type= 1
+(4,0)->(1,4)->(2,9)->(1,14)->(4,19)->(4,0):0.32
+
+artificial: false set: [65, 57, 92, 140, 239] start node= 4 start time= 9 capacity type= 0
+(2,0)->(3,4)->(4,9)->(4,10)->(0,15)->(2,0):0.0
+
+artificial: false set: [195, 164, 230, 87, 23, 105, 10] start node= 4 start time= 0 capacity type= 1
+(4,0)->(4,1)->(2,5)->(2,6)->(1,11)->(0,14)->(0,15)->(4,0):0.0
+
+Total time= 36000200

@@ -1,0 +1,1 @@
+		BranchAndPriceA_M bap=new BranchAndPriceA_M(dataModel, master, pricingProblems, solvers, branchCreators,5000000,0.6,0.2,0.5,10,0.001,10,0.1,false,true);

@@ -135,8 +135,8 @@ public class BranchOnServiceEdge extends AbstractBranchCreator<SNDRC, Cycle, SND
 		RoundServiceEdge branchingDecision2=new RoundServiceEdge(1,branchEdgeIndex,branchEdgeValue,branchPricingProblem);
 		BAPNode<SNDRC,Cycle> node2=this.createBranch(parentNode, branchingDecision2, parentNode.getSolution(), parentNode.getInequalities());
 		
-//		return Arrays.asList(node2,node1);
-		return Arrays.asList(node1,node2);
+		return Arrays.asList(node2,node1);
+//		return Arrays.asList(node1,node2);
 	}
 	
 	
