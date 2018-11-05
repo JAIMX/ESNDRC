@@ -1,16 +1,11 @@
 package model;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Currency;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
-import java.util.Set;
+import java.util.*;
+
 
 import org.jorlib.frameworks.columnGeneration.model.ModelInterface;
 
@@ -28,6 +23,12 @@ public class SNDRC implements ModelInterface {
 //        private int LB, UB;
 //        private int capacity;
         private int duration;
+        
+        public String toString(){
+        	String string=origin+"->"+destination+":"+duration;
+        	return string;
+        }
+        
     }
 
     public class Demand {
@@ -50,6 +51,36 @@ public class SNDRC implements ModelInterface {
             return this.t1 - other.t1;
         }
 
+    }
+    
+    public class Path{
+    	List<Integer>  serviceIndexList;
+    	int totalDuration;
+    	int origin,destination;
+    	
+    	public Path(int origin,int destination,List serviceIndexList){
+    		this.serviceIndexList=serviceIndexList;
+    		this.origin=origin;
+    		this.destination=destination;
+    		
+    		totalDuration=0;
+    		for(int serviceIndex:this.serviceIndexList){
+    			Service service=serviceSet.get(serviceIndex);
+    			totalDuration+=service.duration;
+    		}
+    		
+    	}
+    	
+    	public String toString(){
+    		String string="";
+    		for(int serviceIndex:serviceIndexList){
+    			Service service=serviceSet.get(serviceIndex);
+    			string=string+" "+service.toString();
+    		}
+    		
+    		return string;
+    	}
+    	
     }
 
     public final int fleetSize;
@@ -81,6 +112,8 @@ public class SNDRC implements ModelInterface {
     public ArrayList<Edge> subEdgeSet;
     public Map<Integer,Integer> edgeSetIndexMap; //edge index of subEdgeSet to edge index of edgeSet
 
+    private String filename;
+    private ArrayList<Set<Integer>> pointToService;
 
     public SNDRC(SNDRC sndrcParent, Set<Integer> serviceEdgeSet) {
     	
@@ -152,70 +185,6 @@ public class SNDRC implements ModelInterface {
         sndrcParent.subEdgeSet=edgeSet;
 
 
-        // add x variables with edges only needed(dp process)
-//        isFeasibleForX = true;
-//        for (int p = 0; p < numDemand; p++) {
-//
-//            boolean ifDestinationAchievable = false;
-//            boolean[] achieve = new boolean[abstractNumNode];
-//            for (int i = 0; i < achieve.length; i++) {
-//                achieve[i] = false;
-//            }
-//
-//            Demand demand = demandSet.get(p);
-//            int originNodeIndex = demand.origin * timePeriod + demand.timeAvailable;
-//            int startTime = demand.timeAvailable;
-//            int endTime = demand.timeDue;
-//            int durationLimit;
-//            achieve[originNodeIndex] = true;
-//
-//            if (endTime > startTime) {
-//                durationLimit = endTime - startTime;
-//            } else {
-//                durationLimit = endTime - startTime + timePeriod;
-//            }
-//
-//            int timeDuration = durationLimit;
-//
-//            for (int t = 0; t < timeDuration; t++) {
-//                int currentTime = t + startTime;
-//                currentTime = currentTime % timePeriod;
-//
-//                for (int localNode = 0; localNode < numNode; localNode++) {
-//                    int currentNodeIndex = localNode * timePeriod + currentTime;
-//
-//                    if (achieve[currentNodeIndex]) {
-//                        for (int edgeIndex : pointToEdgeSet.get(currentNodeIndex)) {
-//                            Edge edge = edgeSet.get(edgeIndex);
-//
-//                            // here we have some sort of bugs, the duration of holding arcs is 0. But that doesn't affact the correctness of the programs
-//                            if (edge.duration < durationLimit || (edge.duration == durationLimit
-//                                    && edge.end == demand.destination * timePeriod + endTime)) {
-//                                edgesForX.get(p).add(edgeIndex);
-//                                achieve[edge.end] = true;
-//
-//                                if (edge.end == demand.destination * timePeriod + endTime) {
-//                                    ifDestinationAchievable = true;
-//                                }
-//
-//                            }
-//                        }
-//                    }
-//
-//                }
-//
-//                durationLimit--;
-//
-//            }
-//
-//            if (!ifDestinationAchievable) {
-//                isFeasibleForX = false;
-//                break;
-//            }
-//            
-//            System.out.println("Size of commodity "+p+"= "+edgesForX.get(p).size());
-//            
-//        }
         
   
 ///----------------------------------------------reduce size of x variables--------------------------------------------/// 
@@ -385,6 +354,10 @@ public class SNDRC implements ModelInterface {
         // readData2(filename);
         // }
 
+    	this.filename=filename;
+
+    	
+    	
         // read data
         Scanner in = new Scanner(Paths.get(filename));
 
@@ -594,9 +567,24 @@ public class SNDRC implements ModelInterface {
 
         numHoldingArc = abstractNumNode;
         numArc = numServiceArc + numHoldingArc;
+        
+    	this.pointToService=new ArrayList<>();
+    	HashSet<Integer> tempSet;
+    	for(int i=0;i<numNode;i++){
+    		tempSet=new HashSet<>();
+    		this.pointToService.add(tempSet);
+    	}
+  
+    	for(int i=0;i<numService;i++){
+    		Service service=serviceSet.get(i);
+    		pointToService.get(service.origin).add(i);
+    	}
+    	
+    	
         System.out.println("number of service arcs=" + numServiceArc);
         System.out.println("number of holding arcs=" + numHoldingArc);
         System.out.println();
+        
 
         this.edgesForX = new ArrayList<Set<Integer>>();
         for (int p = 0; p < numDemand; p++) {
@@ -815,96 +803,7 @@ public class SNDRC implements ModelInterface {
         this.edgeSetIndexMap=new HashMap<>();
     }
 
-    /***
-     * private void readData1(String filename) throws IOException {
-     * 
-     * alpha = 0; speed = 1; drivingTimePerDay = 1; numOfCapacity = 1; beta = 1;
-     * fixedCost = new double[1]; fixedCost[0] = 5000; capacity = new int[1];
-     * capacity[0] = 1;
-     * 
-     * Scanner in = new Scanner(Paths.get(filename));
-     * 
-     * in.nextLine(); fleetSize = in.nextInt(); in.nextLine(); in.nextLine();
-     * numNode = in.nextInt(); in.nextLine(); in.nextLine(); timePeriod =
-     * in.nextInt(); in.nextLine(); in.nextLine(); numService = in.nextInt();
-     * 
-     * in.nextLine(); in.nextLine(); serviceSet = new ArrayList<>(); demandSet =
-     * new ArrayList<>(); for (int i = 0; i < numService; i++) { Service service
-     * = new Service(); in.nextInt(); service.origin = in.nextInt() - 1;
-     * service.destination = in.nextInt() - 1; service.LB = in.nextInt();
-     * service.UB = in.nextInt(); service.capacity = in.nextInt();
-     * service.duration = in.nextInt(); serviceSet.add(service); }
-     * 
-     * in.nextLine(); in.nextLine(); numDemand = in.nextInt(); in.nextLine();
-     * in.nextLine(); for (int i = 0; i < numDemand; i++) { Demand demand = new
-     * Demand(); in.nextInt(); demand.origin = in.nextInt() - 1;
-     * demand.destination = in.nextInt() - 1; demand.timeAvailable =
-     * in.nextInt() - 1; demand.volume = in.nextInt(); demand.valueOfTime =
-     * in.nextInt(); demandSet.add(demand); }
-     * 
-     * in.close();
-     * 
-     * }
-     * 
-     * private void readData2(String filename) throws IOException {
-     * 
-     * Scanner in = new Scanner(Paths.get(filename));
-     * 
-     * in.nextLine(); fleetSize = in.nextInt(); in.nextLine(); in.nextLine();
-     * numNode = in.nextInt(); in.nextLine(); in.nextLine(); timePeriod =
-     * in.nextInt(); in.nextLine(); in.nextLine(); numService = in.nextInt();
-     * 
-     * in.nextLine(); in.nextLine(); serviceSet = new ArrayList<>(); demandSet =
-     * new ArrayList<>(); for (int i = 0; i < numService; i++) { Service service
-     * = new Service(); in.nextInt(); service.origin = in.nextInt() - 1;
-     * service.destination = in.nextInt() - 1; service.duration = in.nextInt();
-     * serviceSet.add(service); }
-     * 
-     * in.nextLine(); in.nextLine(); numDemand = in.nextInt(); in.nextLine();
-     * in.nextLine(); for (int i = 0; i < numDemand; i++) { Demand demand = new
-     * Demand(); in.nextInt(); demand.origin = in.nextInt() - 1;
-     * demand.destination = in.nextInt() - 1; demand.timeAvailable =
-     * in.nextInt() - 1; demand.timeDue = in.nextInt() - 1; demand.volume =
-     * in.nextInt(); demandSet.add(demand); }
-     * 
-     * // read parameter in.nextLine(); in.nextLine(); alpha = in.nextDouble();
-     * in.nextLine(); in.nextLine(); beta = in.nextDouble(); in.nextLine();
-     * in.nextLine(); speed = in.nextDouble(); in.nextLine(); in.nextLine();
-     * drivingTimePerDay = in.nextDouble(); in.nextLine(); in.nextLine();
-     * 
-     * numOfCapacity = in.nextInt(); in.nextLine(); in.nextLine(); capacity =
-     * new int[numOfCapacity]; fixedCost = new double[numOfCapacity]; for (int i
-     * = 0; i < numOfCapacity; i++) { capacity[i] = in.nextInt(); }
-     * 
-     * in.nextLine(); in.nextLine(); for (int i = 0; i < numOfCapacity; i++) {
-     * fixedCost[i] = in.nextDouble(); }
-     * 
-     * in.close(); }
-     * 
-     * private void graphTransfer() {
-     * 
-     * edgeSet = new ArrayList<Edge>(); pointToEdgeSet = new ArrayList<HashSet
-     * <Integer>>(); pointFromEdgeSet = new ArrayList<HashSet<Integer>>();
-     * 
-     * for (int i = 0; i < abstractNumNode; i++) { HashSet<Integer> templist1 =
-     * new HashSet(); HashSet<Integer> templist2 = new HashSet();
-     * pointToEdgeSet.add(templist1); pointFromEdgeSet.add(templist2); }
-     * 
-     * // add hat A for (int serviceIndex = 0; serviceIndex < numService;
-     * serviceIndex++) { Service service = serviceSet.get(serviceIndex); for
-     * (int time = 0; time < timePeriod; time++) { int timeEnd = time +
-     * service.duration; if (timeEnd > timePeriod - 1) timeEnd = timeEnd %
-     * timePeriod; Edge newEdge = new Edge(); int start = service.origin *
-     * timePeriod + time; int end = service.destination * timePeriod + timeEnd;
-     * newEdge.start = start; newEdge.end = end; newEdge.u = service.origin;
-     * newEdge.v = service.destination; newEdge.t1 = time; newEdge.t2 = timeEnd;
-     * edgeSet.add(newEdge); pointToEdgeSet.get(start).add(edgeSet.size() - 1);
-     * pointFromEdgeSet.get(end).add(edgeSet.size() - 1); }
-     * 
-     * } numServiceArc = edgeSet.size();
-     * 
-     * }
-     ***/
+    
     @Override
     public String getName() {
         return "ServiceNetworkDesignModel";
@@ -918,8 +817,112 @@ public class SNDRC implements ModelInterface {
         }
     }
 
+    public void outputFeature(String filename) throws FileNotFoundException{
+    	PrintWriter out=new PrintWriter(filename);
+    	
+    	
+    	//Network related features
+    	out.println("Network:");
+    	
+    	int totalSupply=0;
+    	for(Demand demand:demandSet){
+    		totalSupply+=demand.volume;
+    	}
+    	out.println(abstractNumNode+" "+numArc+" "+totalSupply);
+    	
+    	
+    	
+    	
+    	out.println("Service Arc:");
+    	for(int edgeIndex=0;edgeIndex<numServiceArc;edgeIndex++){
+    		Edge edge=edgeSet.get(edgeIndex);
+    		
+    		out.println(edge.duration);
+    		
+    	}
+    		
+    	out.println();
+    	
+    	
+    	
+    	out.close();
+    }
+    
+    /*
+     * Based on original network
+     */
+    public ArrayList<Path> findRShortestPath(int r,int demandIndex){
+    	
+    	ArrayList<Path> pathListA=new ArrayList<>();
+    	ArrayList<Path> pathListB=new ArrayList<>();
+    	Demand demand=demandSet.get(demandIndex);
+    	Path path0=BellmanFordSP(demand.origin, demand.destination);
+    	pathListA.add(path0);
+    	
+    	
+    	
+    	
+    	return pathListA;
+    	
+    }
+    
+    public Path BellmanFordSP(int origin,int destination){
+    	int[] distTo=new int[numNode];
+    	int[] edgeTo=new int[numNode];
+    	boolean[] onQ=new boolean[numNode];
+    	ArrayDeque<Integer> queue=new ArrayDeque();
+    	
+    	for(int i=0;i<numNode;i++){
+    		distTo[i]=Integer.MAX_VALUE;
+    		onQ[i]=false;
+    		edgeTo[i]=-1;
+    	}
+    	
+    	distTo[origin]=0;
+    	onQ[origin]=true;
+    	queue.add(origin);
+    	
+    	while(!queue.isEmpty()){
+    		int v=queue.poll();
+    		onQ[v]=false;
+    		
+    		Set<Integer> serviceIndexSet=pointToService.get(v);
+    		for(int serviceIndex:serviceIndexSet){
+    			Service service=serviceSet.get(serviceIndex);
+    			int w=service.destination;
+    			
+    			if(distTo[w]>distTo[v]+service.duration){
+    				distTo[w]=distTo[v]+service.duration;
+    				edgeTo[w]=serviceIndex;
+    				
+    				if(!onQ[w]){
+    					queue.add(w);
+    					onQ[w]=true;
+    				}
+    			}
+    		}
+    	}
+    	
+    	
+    	//create the shortest path
+    	Stack<Integer> pathRecord=new Stack<>();
+    	for(int serviceIndex=edgeTo[destination];serviceIndex>=0;serviceIndex=edgeTo[serviceSet.get(serviceIndex).origin]){
+    		pathRecord.push(serviceIndex);
+    	}
+    	ArrayList<Integer> serviceIndexList=new ArrayList<>();
+    	while(!pathRecord.isEmpty()){
+    		serviceIndexList.add(pathRecord.pop());
+    	}
+    	
+    	Path path=new Path(origin, destination, serviceIndexList);
+    	return path;
+    	
+    }
+    
     public static void main(String[] args) throws IOException {
-        SNDRC test = new SNDRC("./data/data0.txt");
+        SNDRC test = new SNDRC("./data/testset/test0_5_10_10_5.txt");
+        test.outputFeature("./featureSet/test0_5_10_10_5.txt");
+        
     }
 
 }
