@@ -6,7 +6,9 @@ import java.io.PrintWriter;
 import java.nio.file.Paths;
 import java.util.*;
 
+import javax.xml.crypto.dsig.CanonicalizationMethod;
 
+import org.jgrapht.alg.EulerianCircuit;
 import org.jorlib.frameworks.columnGeneration.model.ModelInterface;
 
 import com.google.common.util.concurrent.Service.State;
@@ -38,6 +40,11 @@ public class SNDRC implements ModelInterface {
         public int timeDue;
         public int volume;
         public double valueOfTime;
+        
+        public String toString(){
+        	return origin+"->"+destination;
+        }
+        
     }
 
     public class Edge implements Comparable<Edge> {
@@ -53,7 +60,7 @@ public class SNDRC implements ModelInterface {
 
     }
     
-    public class Path{
+    public class Path implements Comparable<Path>{
     	List<Integer>  serviceIndexList;
     	int totalDuration;
     	int origin,destination;
@@ -79,6 +86,30 @@ public class SNDRC implements ModelInterface {
     		}
     		
     		return string;
+    	}
+    	
+    	public int compareTo(Path other){
+    		return this.totalDuration-other.totalDuration;
+    	}
+    	
+    	public Path merge(List<Integer> serviceIndexSequence){
+    		ArrayList<Integer> list=new ArrayList<>();
+    		for(int serviceIndex:serviceIndexSequence){
+    			list.add(serviceIndex);
+    		}
+    		for(int serviceIndex:this.serviceIndexList){
+    			list.add(serviceIndex);
+    		}
+    		int origin;
+    		if(serviceIndexSequence.size()>0){
+        		origin=serviceSet.get(serviceIndexSequence.get(0)).origin;
+    		}else{
+    			origin=serviceSet.get(this.serviceIndexList.get(0)).origin;
+    		}
+
+    		int destination=this.destination;
+    		Path newPath=new Path(origin, destination, list);
+    		return newPath;
     	}
     	
     }
@@ -114,6 +145,7 @@ public class SNDRC implements ModelInterface {
 
     private String filename;
     private ArrayList<Set<Integer>> pointToService;
+    private boolean[] ifCanBeUsed;
 
     public SNDRC(SNDRC sndrcParent, Set<Integer> serviceEdgeSet) {
     	
@@ -832,12 +864,22 @@ public class SNDRC implements ModelInterface {
     	
     	
     	
+    	ArrayList<ArrayList<Path>> rPathSet=new ArrayList<>();
+    	for(int k=0;k<numDemand;k++){
+    		rPathSet.add(findRShortestPath(3, k));
+    		
+        	ArrayList<Path> tempPathSet=rPathSet.get(rPathSet.size()-1);
+        	System.out.println("commodity "+k+":"+demandSet.get(k).toString());
+        	for(Path path:tempPathSet){
+        		System.out.println(path.toString());
+        	}
+    	}
+
     	
     	out.println("Service Arc:");
     	for(int edgeIndex=0;edgeIndex<numServiceArc;edgeIndex++){
     		Edge edge=edgeSet.get(edgeIndex);
     		
-    		out.println(edge.duration);
     		
     	}
     		
@@ -849,16 +891,119 @@ public class SNDRC implements ModelInterface {
     }
     
     /*
-     * Based on original network
+     * Based on original network. there are not definitely r paths in the output list when the length of path exceeds
+     * time window of certain commodity
      */
     public ArrayList<Path> findRShortestPath(int r,int demandIndex){
     	
     	ArrayList<Path> pathListA=new ArrayList<>();
-    	ArrayList<Path> pathListB=new ArrayList<>();
+    	Queue<Path> pathListB=new PriorityQueue<>();
     	Demand demand=demandSet.get(demandIndex);
-    	Path path0=BellmanFordSP(demand.origin, demand.destination);
+    	int destination=demand.destination;
+    	int duration=demand.timeDue-demand.timeAvailable;
+ 
+    	if(duration<=0){
+    		duration+=timePeriod;
+    	}
+       	
+    	ifCanBeUsed=new boolean[numService];
+    	for(int i=0;i<numService;i++){
+    		ifCanBeUsed[i]=true;
+    	}
+    	Set<Integer> forbiddenNodeSet=new HashSet<>();
+    	
+    	Path path0=BellmanFordSP(demand.origin, demand.destination,forbiddenNodeSet);
     	pathListA.add(path0);
     	
+    	for(int k=2;k<=r;k++){
+    		
+    		if(pathListA.size()>=r||pathListA.get(pathListA.size()-1).totalDuration>duration){
+    			break;
+    		}
+    		
+    		ifCanBeUsed=new boolean[numService];
+    		for(int i=0;i<numService;i++){
+    			ifCanBeUsed[i]=true;
+    		}
+    		
+    		Path path=pathListA.get(pathListA.size()-1);
+    		List<Integer> serviceIndexSequence=new ArrayList<Integer>();
+    		forbiddenNodeSet=new HashSet<>();
+    		
+    		for(int pathIndex=0;pathIndex<path.serviceIndexList.size();pathIndex++){
+    			Service service=serviceSet.get(path.serviceIndexList.get(pathIndex));
+    			forbiddenNodeSet.add(service.origin);
+
+    			
+    			if(serviceIndexSequence.size()==0){
+    				for(Path tempPath:pathListA){
+    					int serviceIndex=tempPath.serviceIndexList.get(0);
+    					ifCanBeUsed[serviceIndex]=false;
+    				}
+    			}else{
+    				for(Path tempPath:pathListA){
+    					boolean check=true;
+    					if(serviceIndexSequence.size()<tempPath.serviceIndexList.size()){
+        					for(int index=0;index<serviceIndexSequence.size();index++){
+        						if(tempPath.serviceIndexList.get(index)!=serviceIndexSequence.get(index)){
+        							check=false;
+        							break;
+        						}
+        					}
+    					}else{
+    						check=false;
+    					}
+    					
+    					if(check){
+    						ifCanBeUsed[tempPath.serviceIndexList.get(serviceIndexSequence.size())]=false;
+    					}
+
+    					
+    				}
+    			}
+    			
+    			Path pathS=BellmanFordSP(service.origin, destination, forbiddenNodeSet);
+    			if(pathS!=null){
+        			Path newPath=pathS.merge(serviceIndexSequence);
+        			pathListB.add(newPath);
+    			}
+    			
+    			serviceIndexSequence.add(path.serviceIndexList.get(pathIndex));
+    		}
+    		
+    		
+    		Path tempPath;
+    		int length;
+    		if(pathListB.size()>0){
+        		tempPath=pathListB.poll();
+        		length=tempPath.totalDuration;
+        		pathListA.add(tempPath);
+        		
+        		while(pathListB.size()>0 && pathListB.peek().totalDuration==length){
+        			tempPath=pathListB.poll();
+        			pathListA.add(tempPath);
+        		}
+        		
+    		}else{
+    			break;
+    		}
+
+    		
+
+    	}
+    	
+    	
+    	if(pathListA.size()>r){
+    		for(int index=pathListA.size()-1;index>r-1;index--){
+    			pathListA.remove(index);
+    		}
+    	}
+    	
+    	Path tempPath=pathListA.get(pathListA.size()-1);
+    	while(tempPath.totalDuration>duration){
+    		pathListA.remove(pathListA.size()-1);
+    		tempPath=pathListA.get(pathListA.size()-1);
+    	}
     	
     	
     	
@@ -866,7 +1011,8 @@ public class SNDRC implements ModelInterface {
     	
     }
     
-    public Path BellmanFordSP(int origin,int destination){
+    
+    public Path BellmanFordSP(int origin,int destination,Set<Integer> forbiddenNodeSet){
     	int[] distTo=new int[numNode];
     	int[] edgeTo=new int[numNode];
     	boolean[] onQ=new boolean[numNode];
@@ -888,34 +1034,44 @@ public class SNDRC implements ModelInterface {
     		
     		Set<Integer> serviceIndexSet=pointToService.get(v);
     		for(int serviceIndex:serviceIndexSet){
+    			
     			Service service=serviceSet.get(serviceIndex);
     			int w=service.destination;
     			
-    			if(distTo[w]>distTo[v]+service.duration){
-    				distTo[w]=distTo[v]+service.duration;
-    				edgeTo[w]=serviceIndex;
-    				
-    				if(!onQ[w]){
-    					queue.add(w);
-    					onQ[w]=true;
-    				}
+
+    			if(ifCanBeUsed[serviceIndex]&&!forbiddenNodeSet.contains(w)){
+        			if(distTo[w]>distTo[v]+service.duration){
+        				distTo[w]=distTo[v]+service.duration;
+        				edgeTo[w]=serviceIndex;
+        				
+        				if(!onQ[w]){
+        					queue.add(w);
+        					onQ[w]=true;
+        				}
+        			}
     			}
+
     		}
     	}
     	
     	
     	//create the shortest path
-    	Stack<Integer> pathRecord=new Stack<>();
-    	for(int serviceIndex=edgeTo[destination];serviceIndex>=0;serviceIndex=edgeTo[serviceSet.get(serviceIndex).origin]){
-    		pathRecord.push(serviceIndex);
+    	if(edgeTo[destination]<0){
+    		return null;
+    	}else{
+        	Stack<Integer> pathRecord=new Stack<>();
+        	for(int serviceIndex=edgeTo[destination];serviceIndex>=0;serviceIndex=edgeTo[serviceSet.get(serviceIndex).origin]){
+        		pathRecord.push(serviceIndex);
+        	}
+        	ArrayList<Integer> serviceIndexList=new ArrayList<>();
+        	while(!pathRecord.isEmpty()){
+        		serviceIndexList.add(pathRecord.pop());
+        	}
+        	
+        	Path path=new Path(origin, destination, serviceIndexList);
+        	return path;
     	}
-    	ArrayList<Integer> serviceIndexList=new ArrayList<>();
-    	while(!pathRecord.isEmpty()){
-    		serviceIndexList.add(pathRecord.pop());
-    	}
-    	
-    	Path path=new Path(origin, destination, serviceIndexList);
-    	return path;
+
     	
     }
     
