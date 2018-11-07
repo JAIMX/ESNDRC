@@ -40,7 +40,15 @@ public class SNDRC implements ModelInterface {
         public int timeDue;
         public int volume;
         public double valueOfTime;
+        public int duration;
         
+        public Demand(){
+        	if(timeAvailable<timeDue){
+        		duration=timeDue-timeAvailable;
+        	}else{
+        		duration=timeDue-timeAvailable+timePeriod;
+        	}
+        }
         public String toString(){
         	return origin+"->"+destination;
         }
@@ -49,7 +57,7 @@ public class SNDRC implements ModelInterface {
 
     public class Edge implements Comparable<Edge> {
         public int start, end;
-        public double duration;
+        public int duration;
         public int u, v, t1, t2;
         public int edgeType;// 0: service arc | 1: holding arc
         public int serviceIndex;
@@ -57,11 +65,16 @@ public class SNDRC implements ModelInterface {
         public int compareTo(Edge other) {
             return this.t1 - other.t1;
         }
+        
+        public String toString(){
+        	return "("+u+","+t1+")->("+v+","+t2+")";
+        }
 
     }
     
     public class Path implements Comparable<Path>{
     	List<Integer>  serviceIndexList;
+    	List<Integer> timeList;
     	int totalDuration;
     	int origin,destination;
     	
@@ -70,13 +83,16 @@ public class SNDRC implements ModelInterface {
     		this.origin=origin;
     		this.destination=destination;
     		
+    		timeList=new ArrayList<Integer>();
     		totalDuration=0;
     		for(int serviceIndex:this.serviceIndexList){
+    			timeList.add(totalDuration);
     			Service service=serviceSet.get(serviceIndex);
     			totalDuration+=service.duration;
     		}
     		
     	}
+    	
     	
     	public String toString(){
     		String string="";
@@ -131,8 +147,7 @@ public class SNDRC implements ModelInterface {
 
     // graph parameter
     public final ArrayList<Edge> edgeSet;
-    public final ArrayList<HashSet<Integer>> pointToEdgeSet, pointFromEdgeSet; // not
-                                                                               // record
+    public final ArrayList<HashSet<Integer>> pointToEdgeSet, pointFromEdgeSet; // record
                                                                                // holding
                                                                                // arcs
     public final int numServiceArc, numHoldingArc, numArc;
@@ -869,21 +884,325 @@ public class SNDRC implements ModelInterface {
     		rPathSet.add(findRShortestPath(3, k));
     		
         	ArrayList<Path> tempPathSet=rPathSet.get(rPathSet.size()-1);
-        	System.out.println("commodity "+k+":"+demandSet.get(k).toString());
+        	out.println();
+        	out.println("commodity "+k+":"+demandSet.get(k).toString());
         	for(Path path:tempPathSet){
-        		System.out.println(path.toString());
+        		out.println(path.toString());
         	}
     	}
+    	out.println();
+    	out.println();
 
+    	
+    	out.println("Commodity:");
+    	int[] difference=new int[numDemand];
+    	for(int k=0;k<numDemand;k++){
+        	Demand demand=demandSet.get(k);
+        	int duration=demand.timeDue-demand.timeAvailable;
+        	if(duration<=0){
+        		duration+=timePeriod;
+        	}
+        	int diff=duration-rPathSet.get(k).get(0).totalDuration;
+        	difference[k]=diff;
+        	out.print(diff+" ");
+    	}
+    	out.println();
+    	out.println();
+    	
+    	
+    	
+    	//Calculate supply and demand information for each node
+    	ArrayList<Set<Integer>> supplyNodeInfo,demandNodeInfo;
+    	supplyNodeInfo=new ArrayList<>();
+    	Set<Integer> tempSet=new HashSet<>();
+    	for(int i=0;i<abstractNumNode;i++){
+    		tempSet=new HashSet<>();
+    		supplyNodeInfo.add(tempSet);
+    	}
+    	demandNodeInfo=new ArrayList<>();
+    	for(int i=0;i<abstractNumNode;i++){
+    		tempSet=new HashSet<>();
+    		demandNodeInfo.add(tempSet);
+    	}
+ 
+    	for(int k=0;k<numDemand;k++){
+    		Demand demand=demandSet.get(k);
+    		//supply
+    		int node=demand.origin;
+    		for(int time=demand.timeAvailable;time<=demand.timeAvailable+difference[k];time++){
+    			int t=time%timePeriod;
+    			int nodeIndex=node*timePeriod+t;
+    			supplyNodeInfo.get(nodeIndex).add(k);
+    		}
+    		//demand
+    		node=demand.destination;
+    		for(int time=demand.timeDue;time>=demand.timeDue-difference[k];time--){
+    			int t=time;
+    			if(t<0){
+    				t+=timePeriod;
+    			}
+    			int nodeIndex=node*timePeriod+t;
+    			demandNodeInfo.get(nodeIndex).add(k);
+    		}
+    	}   	
     	
     	out.println("Service Arc:");
     	for(int edgeIndex=0;edgeIndex<numServiceArc;edgeIndex++){
     		Edge edge=edgeSet.get(edgeIndex);
+    		out.println(edgeIndex+" "+edge.toString());
+    		
+    		int count=0;
+    		for(int k=0;k<numDemand;k++){
+    			ArrayList<Path> pathSet=rPathSet.get(k);
+    			Demand demand=demandSet.get(k);
+    			boolean check=false;
+    			for(Path path:pathSet){
+    				for(int i=0;i<path.serviceIndexList.size();i++){
+    					int serviceIndex=path.serviceIndexList.get(i);
+    					
+    					if(edge.serviceIndex==serviceIndex){
+    						int time=path.timeList.get(i);
+    						for(int t=0;t<=demand.duration-path.totalDuration;t++){
+    							//timeAvalible+time+t
+    							int cTime=demand.timeAvailable+time+t;
+    							cTime=cTime%timePeriod;
+    							if(edge.t1==cTime){
+    								check=true;
+    								break;
+    							}
+    						}
+    					}
+    					if(check) break;
+    					
+    				}
+    				if(check) break;
+    			}
+    			if(check) count++;
+    		}
+    		out.print(count);
     		
     		
+    		
+    		out.print(" "+edge.duration);
+    		
+    		count=0;
+    		for(int k:supplyNodeInfo.get(edge.start)){
+    			Demand demand=demandSet.get(k);
+    			count+=demand.volume;
+    		}
+    		out.print(" "+count);
+    		count=0;
+    		for(int k:demandNodeInfo.get(edge.start)){
+    			Demand demand=demandSet.get(k);
+    			count+=demand.volume;
+    		}
+    		out.print(" "+count);
+  		
+    		count=0;
+    		for(int k:supplyNodeInfo.get(edge.end)){
+    			Demand demand=demandSet.get(k);
+    			count+=demand.volume;
+    		}
+    		out.print(" "+count);
+    		count=0;
+    		for(int k:demandNodeInfo.get(edge.end)){
+    			Demand demand=demandSet.get(k);
+    			count+=demand.volume;
+    		}
+    		out.print(" "+count);
+    		
+    		
+    		
+    		
+    		
+    		
+    		int a1,a2,a3,a4,a5,a6,a7,a8;
+    		count=0;
+    		a1=0;
+    		for(int index:pointToEdgeSet.get(edge.start)){
+    			Edge tempEdge=edgeSet.get(index);
+    			for(int k:supplyNodeInfo.get(tempEdge.end)){
+    				count+=demandSet.get(k).volume;
+    			}
+    			if(supplyNodeInfo.get(tempEdge.end).size()>0){
+    				a1++;
+    			}
+    			
+    		}
+    		out.print(" "+count);
+    		count=0;
+    		a2=0;
+    		for(int index:pointToEdgeSet.get(edge.start)){
+    			Edge tempEdge=edgeSet.get(index);
+    			for(int k:demandNodeInfo.get(tempEdge.end)){
+    				count+=demandSet.get(k).volume;
+    			}
+    			if(demandNodeInfo.get(tempEdge.end).size()>0){
+    				a2++;
+    			}
+    		}
+    		out.print(" "+count);
+    		
+    		count=0;
+    		a3=0;
+    		for(int index:pointFromEdgeSet.get(edge.start)){
+    			Edge tempEdge=edgeSet.get(index);
+    			for(int k:supplyNodeInfo.get(tempEdge.start)){
+    				count+=demandSet.get(k).volume;
+    			}
+    			if(supplyNodeInfo.get(tempEdge.start).size()>0){
+    				a3++;
+    			}
+    		}
+    		out.print(" "+count);
+    		count=0;
+    		a4=0;
+    		for(int index:pointFromEdgeSet.get(edge.start)){
+    			Edge tempEdge=edgeSet.get(index);
+    			for(int k:demandNodeInfo.get(tempEdge.start)){
+    				count+=demandSet.get(k).volume;
+    			}
+    			if(demandNodeInfo.get(tempEdge.start).size()>0){
+    				a4++;
+    			}
+    		}
+    		out.print(" "+count);
+    		
+    		
+    		count=0;
+    		a5=0;
+    		for(int index:pointToEdgeSet.get(edge.end)){
+    			Edge tempEdge=edgeSet.get(index);
+    			for(int k:supplyNodeInfo.get(tempEdge.end)){
+    				count+=demandSet.get(k).volume;
+    			}
+    			if(supplyNodeInfo.get(tempEdge.end).size()>0){
+    				a5++;
+    			}
+    		}
+    		out.print(" "+count);
+    		count=0;
+    		a6=0;
+    		for(int index:pointToEdgeSet.get(edge.end)){
+    			Edge tempEdge=edgeSet.get(index);
+    			for(int k:demandNodeInfo.get(tempEdge.end)){
+    				count+=demandSet.get(k).volume;
+    			}
+    			if(demandNodeInfo.get(tempEdge.end).size()>0){
+    				a6++;
+    			}
+    		}
+    		out.print(" "+count);
+    		
+    		count=0;
+    		a7=0;
+    		for(int index:pointFromEdgeSet.get(edge.end)){
+    			Edge tempEdge=edgeSet.get(index);
+    			for(int k:supplyNodeInfo.get(tempEdge.start)){
+    				count+=demandSet.get(k).volume;
+    			}
+    			if(supplyNodeInfo.get(tempEdge.start).size()>0){
+    				a7++;
+    			}
+    		}
+    		out.print(" "+count);
+    		count=0;
+    		a8=0;
+    		for(int index:pointFromEdgeSet.get(edge.end)){
+    			Edge tempEdge=edgeSet.get(index);
+    			for(int k:demandNodeInfo.get(tempEdge.start)){
+    				count+=demandSet.get(k).volume;
+    			}
+    			if(demandNodeInfo.get(tempEdge.start).size()>0){
+    				a8++;
+    			}
+    		}
+    		out.print(" "+count);
+    		
+    		
+    		
+    		
+    		
+    		
+    		
+    		
+    		//degree information
+    		out.print(" "+pointToEdgeSet.get(edge.start).size());
+    		out.print(" "+a1);
+    		out.print(" "+a2);
+    		out.print(" "+pointFromEdgeSet.get(edge.start).size());
+    		out.print(" "+a3);
+    		out.print(" "+a4);
+    		out.print(" "+pointToEdgeSet.get(edge.end).size());
+    		out.print(" "+a5);
+    		out.print(" "+a6);
+    		out.print(" "+pointFromEdgeSet.get(edge.end).size());
+    		out.print(" "+a7);
+    		out.print(" "+a8);
+    		
+
+    		
+    		
+    		out.println();
     	}
+    	
+		out.println();
+		out.println("Commodity k & Service arc:");
+		for(int k=0;k<numDemand;k++){
+			Demand demand=demandSet.get(k);
+			out.println(k);
+			for(int edgeIndex=0;edgeIndex<numServiceArc;edgeIndex++){
+				Edge edge=edgeSet.get(edgeIndex);
+				out.println(edgeIndex+" "+edge.toString());
+				
+				int nodeIndex=edge.start;
+				if(supplyNodeInfo.get(nodeIndex).contains(k)){
+					out.print(1);
+				}else{
+					out.print(0);
+				}
+				
+				nodeIndex=edge.end;
+				if(demandNodeInfo.get(nodeIndex).contains(k)){
+					out.print(" "+1);
+				}else{
+					out.print(" "+0);
+				}
+				
+				
+				
+				int count=0;
+				for(Path path:rPathSet.get(k)){
+					boolean check=false;
+					
+    				for(int i=0;i<path.serviceIndexList.size();i++){
+    					int serviceIndex=path.serviceIndexList.get(i);
+    					
+    					if(edge.serviceIndex==serviceIndex){
+    						int time=path.timeList.get(i);
+    						for(int t=0;t<=demand.duration-path.totalDuration;t++){
+    							//timeAvalible+time+t
+    							int cTime=demand.timeAvailable+time+t;
+    							cTime=cTime%timePeriod;
+    							if(edge.t1==cTime){
+    								check=true;
+    								break;
+    							}
+    						}
+    					}
+    					if(check) break;
+    					
+    				}
+    				if(check) count++;
+    				
+				}
+				out.println(" "+count);
+				
+				
+			}
+
+		}
     		
-    	out.println();
     	
     	
     	
