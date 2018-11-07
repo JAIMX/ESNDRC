@@ -63,6 +63,7 @@ public class BranchAndPriceB_M<V> extends AbstractBranchAndPrice<SNDRC, Cycle, S
     private int nrNonImproForAcce;
     private Map<Cycle, Double> optSolutionValueMap;
     private List<Map<Integer, Double>> optXValues;
+    private List<Map<Integer,Double>> xValuesForRootLP;
     // private double[] nodeBoundRecord;
     // private int helpOutPut;
 
@@ -254,13 +255,16 @@ public class BranchAndPriceB_M<V> extends AbstractBranchAndPrice<SNDRC, Cycle, S
                 if(bapNode.nodeID==0){
                     System.out.println();
                     System.out.println("root node bound= "+bapNode.getBound());
+                    
+                    xValuesForRootLP=new ArrayList<>();
+                    xValuesForRootLP=((Master) master).getXValues();
                 }
 
                 // output the model
                 // ((Master) master).Output(bapNode.nodeID);
                 // nodeBoundRecord[bapNode.nodeID] = bapNode.getBound();
 
-            } catch (TimeLimitExceededException e) {
+            } catch (TimeLimitExceededException | IloException e) {
                 queue.add(bapNode);
                 lowBoundQueue.add(bapNode);
                 notifier.fireTimeOutEvent(bapNode);
@@ -707,6 +711,9 @@ public class BranchAndPriceB_M<V> extends AbstractBranchAndPrice<SNDRC, Cycle, S
 
     public List<Map<Integer, Double>> GetOptXValues() {
         return optXValues;
+    }
+    public List<Map<Integer, Double>> GetxValuesForRootLP(){
+    	return this.xValuesForRootLP;
     }
 
     public void bapNodeSolutionOutput(BAPNode<SNDRC, Cycle> bapNode) throws UnknownObjectException, IloException {

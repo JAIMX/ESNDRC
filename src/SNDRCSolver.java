@@ -1,5 +1,7 @@
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.nio.file.Paths;
 import java.util.*;
 
@@ -41,10 +43,12 @@ import logger.BapLoggerB;
 import logger.BapLoggerB_M;
 import model.SNDRC;
 import model.SNDRC.Edge;
+import sun.security.krb5.PrincipalName;
 
 public class SNDRCSolver {
     SNDRC dataModel;
     boolean ifOptGetFromSubGraph;
+    BranchAndPriceA bap;
 
     public SNDRCSolver(SNDRC dataModel,String fileName) throws IOException {
         this.dataModel = dataModel;
@@ -87,14 +91,12 @@ public class SNDRCSolver {
         // 0.5, 5),new BranchOnServiceEdge(dataModel, pricingProblems, 0.5));
 
         // Create a Branch-and-Price instance
-        // BranchAndPriceA bap=new BranchAndPriceA(dataModel, master,
-        // pricingProblems, solvers,
-        // branchCreators,Double.MAX_VALUE,0.6,0.2,0.1,10,0.0001,3,false;
+         this.bap=new BranchAndPriceA(dataModel, master,pricingProblems, solvers,branchCreators,Double.MAX_VALUE,0.6,0.2,0.1,10,0.0001,3,false);
         // BranchAndPriceB bap=new BranchAndPriceB(dataModel, master,
         // pricingProblems, solvers,
         // branchCreators,Double.MAX_VALUE,0.65,0.2,0.1,1,0.001,3,0.1,true);
 //        BranchAndPriceB_M bap = new BranchAndPriceB_M(dataModel, master, pricingProblems, solvers, branchCreators,Double.MAX_VALUE, 0.65, 0.3, 0.1, 1, -0.001,3, 0, true, false);
-        BranchAndPriceB_M bap = new BranchAndPriceB_M(dataModel, master, pricingProblems, solvers, branchCreators,5000000, 0.65, 0.3, 0.1, 1, -0.001,3, 0, true, false);
+//        BranchAndPriceB_M bap = new BranchAndPriceB_M(dataModel, master, pricingProblems, solvers, branchCreators,5000000, 0.65, 0.3, 0.1, 1, -0.001,3, 0, true, false);
         // BranchAndPriceA_M bap=new BranchAndPriceA_M(dataModel, master,
         // pricingProblems, solvers,
         // branchCreators,Double.MAX_VALUE,0.6,0.3,0.1,10,0.001,10,0.1,false,true);
@@ -431,7 +433,58 @@ public class SNDRCSolver {
 
     }
 
+    
+    public void output(String filename,BranchAndPriceA bap) throws FileNotFoundException{
+    	PrintWriter out=new PrintWriter(filename);
+    	
+    	out.println("LP information:");
+    	for(int k=0;k<dataModel.numDemand;k++){
+    		Map<Integer,Double> map=(Map<Integer, Double>) bap.GetxValuesForRootLP().get(k);
+    		out.println(k);
+    		for(int edgeIndex:map.keySet()){
+    			double value=map.get(edgeIndex);
+    			if(value>0.0001&&dataModel.edgeSet.get(edgeIndex).edgeType==0){
+    				out.print(edgeIndex+" "+value+" ");
+    			}
+    		}
+    		out.println();
+    		
+    	}
+    	
+    	//Here we need to notice the change of edge index
+    	out.println();
+    	out.println("Final Solution:");
+    	for(int k=0;k<dataModel.numDemand;k++){
+    		Map<Integer,Double> map=(Map<Integer, Double>) bap.GetOptXValues().get(k);
+    		out.println(k);
+    		
+    		for(int edgeIndex:map.keySet()){
+    			double value=map.get(edgeIndex);
+    			
+    			int index;
+    			if(ifOptGetFromSubGraph){
+    				index=dataModel.edgeSetIndexMap.get(edgeIndex);
+    			}else index=edgeIndex;
+    			
+    			if(value>0.0001&&dataModel.edgeSet.get(index).edgeType==0){
+                    out.print(index+" "+value+" ");
+    			}
+    			
+    		}
+    		out.println();
+    		
+    	}
+    	
+    	out.close();
+    	
+    }
+    
     public static void main(String[] args) throws IOException {
+    	
+    	SNDRC sndrc=new SNDRC("./data/testset/test0_5_10_10_5.txt");
+    	SNDRCSolver solver=new SNDRCSolver(sndrc,"BAPlogger");
+    	solver.output("./featureSet/LPoutput.txt", solver.bap);
+    	
 
 //        SNDRC sndrc;
 //        for (String arg : args) {
@@ -454,45 +507,45 @@ public class SNDRCSolver {
 //        }
         
         
-        SNDRC sndrc;
-        String path="./data/transferData/transfer1/test12D/";
-        String name0="test12D";
-        double[] var={0.5,1.0,2.0,5.0,10.0};
-        
-        Properties properties = new Properties();
-        properties.setProperty("CUTSENABLED", "false");
-        Configuration.readFromFile(properties);
-        
-        int count=0;
-        for(int i=0;i<var.length;i++){
-            double variance=var[i];
-            
-            for(int j=0;j<5;j++){
-                count++;
-                
-                if(count>24){
-                    String name=path+name0+"_"+variance+"_"+j+".txt";
-                    System.out.println("Solve for "+name);
-                    System.out.println();
-                    
-                    
-                    long time0 = System.currentTimeMillis();
-                    sndrc = new SNDRC(name);
-                    
-
-                    
-                    new SNDRCSolver(sndrc,name0+"_"+variance+"_"+j);
-                    
-                    long time1 = System.currentTimeMillis();
-                    System.out.println();
-                    System.out.println("Total time= " + (time1 - time0));
-                    System.out.println();
-                }
-                
-
-                
-            }
-        }
+//        SNDRC sndrc;
+//        String path="./data/transferData/transfer1/test12D/";
+//        String name0="test12D";
+//        double[] var={0.5,1.0,2.0,5.0,10.0};
+//        
+//        Properties properties = new Properties();
+//        properties.setProperty("CUTSENABLED", "false");
+//        Configuration.readFromFile(properties);
+//        
+//        int count=0;
+//        for(int i=0;i<var.length;i++){
+//            double variance=var[i];
+//            
+//            for(int j=0;j<5;j++){
+//                count++;
+//                
+//                if(count>24){
+//                    String name=path+name0+"_"+variance+"_"+j+".txt";
+//                    System.out.println("Solve for "+name);
+//                    System.out.println();
+//                    
+//                    
+//                    long time0 = System.currentTimeMillis();
+//                    sndrc = new SNDRC(name);
+//                    
+//
+//                    
+//                    new SNDRCSolver(sndrc,name0+"_"+variance+"_"+j);
+//                    
+//                    long time1 = System.currentTimeMillis();
+//                    System.out.println();
+//                    System.out.println("Total time= " + (time1 - time0));
+//                    System.out.println();
+//                }
+//                
+//
+//                
+//            }
+//        }
         
         
 //        path="./data/transferData/transfer2/test12D/";
@@ -518,6 +571,8 @@ public class SNDRCSolver {
 //            System.out.println("Total time= " + (time1 - time0));
 //            System.out.println();
 //        }
+    	
+    	
         
         
 

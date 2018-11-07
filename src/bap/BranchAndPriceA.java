@@ -1,6 +1,8 @@
 package bap;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -52,6 +54,7 @@ public class BranchAndPriceA <V> extends AbstractBranchAndPrice<SNDRC, Cycle, SN
     private int nrNonImproForAcce;
     private Map<Cycle, Double> optSolutionValueMap;
     private List<Map<Integer, Double>> optXValues;
+    private List<Map<Integer, Double>> xValuesForRootLP;
 //    private double[] nodeBoundRecord;
 //    private int helpOutPut;
     
@@ -63,6 +66,7 @@ public class BranchAndPriceA <V> extends AbstractBranchAndPrice<SNDRC, Cycle, SN
     private int timeCompress;
     private boolean ifUseLearningUB;
     private final boolean ifOptGetFromSubGraph;
+    
     
     
     /**
@@ -223,6 +227,14 @@ public class BranchAndPriceA <V> extends AbstractBranchAndPrice<SNDRC, Cycle, SN
                 
                 
                 this.solveBAPNode(bapNode, timeLimit);
+                
+                if(bapNode.nodeID==0){
+                    System.out.println();
+                    System.out.println("root node bound= "+bapNode.getBound());
+                    
+                    xValuesForRootLP=new ArrayList<>();
+                    xValuesForRootLP=((Master) master).getXValues();
+                }
 
                 // output the model
 //                ((Master) master).Output(bapNode.nodeID);
@@ -230,7 +242,7 @@ public class BranchAndPriceA <V> extends AbstractBranchAndPrice<SNDRC, Cycle, SN
 
                 
 
-            } catch (TimeLimitExceededException e) {
+            } catch (TimeLimitExceededException | IloException e) {
                 queue.add(bapNode);
                 lowBoundQueue.add(bapNode);
                 notifier.fireTimeOutEvent(bapNode);
@@ -660,6 +672,9 @@ public class BranchAndPriceA <V> extends AbstractBranchAndPrice<SNDRC, Cycle, SN
     public List<Map<Integer, Double>> GetOptXValues() {
         return optXValues;
     }
+    public List<Map<Integer, Double>> GetxValuesForRootLP() {
+        return xValuesForRootLP;
+    }
     
     public void bapNodeSolutionOutput(BAPNode<SNDRC, Cycle> bapNode) throws UnknownObjectException, IloException{
         System.out.println("Now the node bound="+bapNode.getBound());
@@ -815,4 +830,23 @@ public class BranchAndPriceA <V> extends AbstractBranchAndPrice<SNDRC, Cycle, SN
     public boolean GetIfOptGetFromSubGraph(){
  	   return ifOptGetFromSubGraph;
     }
+    
+    
+    public void output(String filename,BranchAndPriceA bap) throws FileNotFoundException{
+    	PrintWriter out=new PrintWriter(filename);
+    	
+    	out.println("LP information:");
+    	for(int k=0;k<dataModel.numDemand;k++){
+    		Map<Integer,Double> map=(Map<Integer, Double>) bap.GetxValuesForRootLP().get(k);
+    		out.println(k);
+    		for(int edgeIndex:map.keySet()){
+    			double value=map.get(edgeIndex);
+    			if(value>0.0001&&dataModel.edgeSet.get(edgeIndex).edgeType==0){
+    				out.print(edgeIndex+" "+value+" ");
+    			}
+    		}
+    		out.println();
+    		
+    	}
+}
 }
