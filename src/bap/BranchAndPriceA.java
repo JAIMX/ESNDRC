@@ -229,7 +229,6 @@ public class BranchAndPriceA <V> extends AbstractBranchAndPrice<SNDRC, Cycle, SN
                 this.solveBAPNode(bapNode, timeLimit);
                 
                 if(bapNode.nodeID==0){
-                    System.out.println();
                     System.out.println("root node bound= "+bapNode.getBound());
                     
                     xValuesForRootLP=new ArrayList<>();

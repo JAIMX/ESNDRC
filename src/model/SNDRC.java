@@ -883,14 +883,14 @@ public class SNDRC implements ModelInterface {
     	for(int k=0;k<numDemand;k++){
     		rPathSet.add(findRShortestPath(3, k));
     		
-        	ArrayList<Path> tempPathSet=rPathSet.get(rPathSet.size()-1);
-        	out.println();
-        	out.println("commodity "+k+":"+demandSet.get(k).toString());
-        	for(Path path:tempPathSet){
-        		out.println(path.toString());
-        	}
+//        	ArrayList<Path> tempPathSet=rPathSet.get(rPathSet.size()-1);
+//        	out.println();
+//        	out.println("commodity "+k+":"+demandSet.get(k).toString());
+//        	for(Path path:tempPathSet){
+//        		out.println(path.toString());
+//        	}
     	}
-    	out.println();
+//    	out.println();
     	out.println();
 
     	

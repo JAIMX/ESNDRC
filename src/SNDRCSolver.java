@@ -116,6 +116,7 @@ public class SNDRCSolver {
 //        BapLoggerB_M logger = new BapLoggerB_M(bap, new File("./output/BAPlogger.log"));
 //        BapLoggerB_M logger = new BapLoggerB_M(bap, new File("./output/"+fileName+".log"));
 //        BapLoggerA_M logger = new BapLoggerA_M(bap, new File("./output/BAPlogger.log"));
+        BapLoggerA logger = new BapLoggerA(bap, new File("./output/BAPlogger.log"));
 
         // Solve the TSP problem through Branch-and-Price
         // bap.runBranchAndPrice(System.currentTimeMillis()+18000000L); //5
@@ -481,10 +482,31 @@ public class SNDRCSolver {
     
     public static void main(String[] args) throws IOException {
     	
-    	SNDRC sndrc=new SNDRC("./data/testset/test0_5_10_10_5.txt");
-    	SNDRCSolver solver=new SNDRCSolver(sndrc,"BAPlogger");
-    	solver.output("./featureSet/LPoutput.txt", solver.bap);
+//    	SNDRC sndrc=new SNDRC("./data/testset/test0_5_10_10_5.txt");
+//    	sndrc.outputFeature("./learningData/result/1-1.txt");
+//    	SNDRCSolver solver=new SNDRCSolver(sndrc,"BAPlogger");
+//    	solver.output("./learningData/result/1-2.txt", solver.bap);
     	
+    	int count=0;
+    	String path="./learningData/test";
+    	File file=new File(path);
+    	File[] fs=file.listFiles();
+    	for(File f:fs){
+    		if(!f.isDirectory()&&!f.isHidden()){
+    			String filename=count+"_0.txt";
+    			
+    		    System.out.println("Sovle for "+f.toString());
+    		    System.out.println();
+    	    	SNDRC sndrc=new SNDRC(f.toString());
+    	    	sndrc.outputFeature("./learningData/result/"+filename);
+    	    	SNDRCSolver solver=new SNDRCSolver(sndrc,"BAPlogger");
+    	    	filename=count+"_1.txt";
+    	    	solver.output("./learningData/result/"+filename, solver.bap);
+    	    	
+    	    	count++;
+    			System.out.println();
+    		}
+    	}
 
 //        SNDRC sndrc;
 //        for (String arg : args) {
