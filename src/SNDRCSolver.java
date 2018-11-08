@@ -116,7 +116,7 @@ public class SNDRCSolver {
 //        BapLoggerB_M logger = new BapLoggerB_M(bap, new File("./output/BAPlogger.log"));
 //        BapLoggerB_M logger = new BapLoggerB_M(bap, new File("./output/"+fileName+".log"));
 //        BapLoggerA_M logger = new BapLoggerA_M(bap, new File("./output/BAPlogger.log"));
-        BapLoggerA logger = new BapLoggerA(bap, new File("./output/BAPlogger.log"));
+        BapLoggerA logger = new BapLoggerA(bap, new File("../output/BAPlogger.log"));
 
         // Solve the TSP problem through Branch-and-Price
         // bap.runBranchAndPrice(System.currentTimeMillis()+18000000L); //5
@@ -296,58 +296,58 @@ public class SNDRCSolver {
         }
         
         
-        
-        //compare keyServiceEdgeIndexSet and serviceEdgeSet0
-        Scanner in = new Scanner(Paths.get("./data/testset/test12D_compareInfo.txt"));
-        String line=in.nextLine();
-        String[] result=line.split(", ");
-        Set<Integer> serviceEdgeSet0=new HashSet<>();
-        for(int i=0;i<result.length;i++){
-            serviceEdgeSet0.add(Integer.parseInt(result[i]));
-        }
-        
-        int commonCount=0;
-        for(int edgeIndex:keyServiceEdgeIndexSet){
-            if(serviceEdgeSet0.contains(edgeIndex)){
-                commonCount++;
-            }
-        }
-        
-        System.out.println("Common edge information:");
-        System.out.println("size0= "+serviceEdgeSet0.size()+" size1= "+keyServiceEdgeIndexSet.size()+" # of common edges= "+commonCount);
-        double ratio=(double)commonCount/serviceEdgeSet0.size();
-        System.out.println("common edge ratio= "+ratio);
-        
-        
-        //compare avoidRepeatPattern and pattern0
-        Set<int[]> pattern0=new HashSet<>();
-        while(in.hasNextLine()){
-            line=in.nextLine();
-            result=line.split(", ");
-            int[] temp=new int[result.length];
-            for(int i=0;i<result.length;i++){
-                temp[i]=Integer.parseInt(result[i]);
-            }
-            pattern0.add(temp);
-        }
-        
-        commonCount=0;
-        for(int[] pattern:avoidRepeatPattern){
-            boolean check=false;
-            for(int[] ele:pattern0){
-                if(Arrays.equals(ele, pattern)){
-                    check=true;
-                    break;
-                }
-            }
-            
-            if(check) commonCount++;
-        }
-        
-        System.out.println("Common pattern information:");
-        System.out.println("size of pattrenSet0= "+pattern0.size()+" size of patternSet1= "+avoidRepeatPattern.size()+" # of common patterns= "+commonCount);
-        ratio=(double)commonCount/pattern0.size();
-        System.out.println("common pattern ratio= "+ratio);
+//        
+//        //compare keyServiceEdgeIndexSet and serviceEdgeSet0
+//        Scanner in = new Scanner(Paths.get("./data/testset/test12D_compareInfo.txt"));
+//        String line=in.nextLine();
+//        String[] result=line.split(", ");
+//        Set<Integer> serviceEdgeSet0=new HashSet<>();
+//        for(int i=0;i<result.length;i++){
+//            serviceEdgeSet0.add(Integer.parseInt(result[i]));
+//        }
+//        
+//        int commonCount=0;
+//        for(int edgeIndex:keyServiceEdgeIndexSet){
+//            if(serviceEdgeSet0.contains(edgeIndex)){
+//                commonCount++;
+//            }
+//        }
+//        
+//        System.out.println("Common edge information:");
+//        System.out.println("size0= "+serviceEdgeSet0.size()+" size1= "+keyServiceEdgeIndexSet.size()+" # of common edges= "+commonCount);
+//        double ratio=(double)commonCount/serviceEdgeSet0.size();
+//        System.out.println("common edge ratio= "+ratio);
+//        
+//        
+//        //compare avoidRepeatPattern and pattern0
+//        Set<int[]> pattern0=new HashSet<>();
+//        while(in.hasNextLine()){
+//            line=in.nextLine();
+//            result=line.split(", ");
+//            int[] temp=new int[result.length];
+//            for(int i=0;i<result.length;i++){
+//                temp[i]=Integer.parseInt(result[i]);
+//            }
+//            pattern0.add(temp);
+//        }
+//        
+//        commonCount=0;
+//        for(int[] pattern:avoidRepeatPattern){
+//            boolean check=false;
+//            for(int[] ele:pattern0){
+//                if(Arrays.equals(ele, pattern)){
+//                    check=true;
+//                    break;
+//                }
+//            }
+//            
+//            if(check) commonCount++;
+//        }
+//        
+//        System.out.println("Common pattern information:");
+//        System.out.println("size of pattrenSet0= "+pattern0.size()+" size of patternSet1= "+avoidRepeatPattern.size()+" # of common patterns= "+commonCount);
+//        ratio=(double)commonCount/pattern0.size();
+//        System.out.println("common pattern ratio= "+ratio);
         
         
         
@@ -488,9 +488,10 @@ public class SNDRCSolver {
 //    	solver.output("./learningData/result/1-2.txt", solver.bap);
     	
     	int count=0;
-    	String path="./learningData/test";
+    	String path="../learningData/test";
     	File file=new File(path);
     	File[] fs=file.listFiles();
+    	
     	for(File f:fs){
     		if(!f.isDirectory()&&!f.isHidden()){
     			String filename=count+"_0.txt";
@@ -498,10 +499,10 @@ public class SNDRCSolver {
     		    System.out.println("Sovle for "+f.toString());
     		    System.out.println();
     	    	SNDRC sndrc=new SNDRC(f.toString());
-    	    	sndrc.outputFeature("./learningData/result/"+filename);
+    	    	sndrc.outputFeature("../learningData/result/"+filename);
     	    	SNDRCSolver solver=new SNDRCSolver(sndrc,"BAPlogger");
     	    	filename=count+"_1.txt";
-    	    	solver.output("./learningData/result/"+filename, solver.bap);
+    	    	solver.output("../learningData/result/"+filename, solver.bap);
     	    	
     	    	count++;
     			System.out.println();
