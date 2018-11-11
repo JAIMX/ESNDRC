@@ -1,7 +1,8 @@
-#忽略.classpath 文件
+﻿#忽略.classpath 文件
 .classpath
 .project
 .DS_Store
 
+/learningData/test.csv
 /output/
 /bin/

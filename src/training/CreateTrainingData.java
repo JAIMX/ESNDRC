@@ -98,7 +98,6 @@ public class CreateTrainingData {
     	File[] fs=file.listFiles();
     	
     	List<NetworkData> networkDataList=new ArrayList<>();
-    	int i=0;
     	for(File f:fs){
     		String fileName=f.toString().substring(20);
     		SNDRC sndrc=new SNDRC("./learningData/test/"+fileName);
@@ -108,9 +107,6 @@ public class CreateTrainingData {
     		String filename2="./learningData/result/"+count+"_1.txt";
     		trainingData.readData(filename1, filename2);
     		networkDataList.add(trainingData);
-    		i++;
-    		if(i==1)break;
-    		
     	}
     	CreateTrainingData test=new CreateTrainingData(networkDataList, "./test.csv");
 
