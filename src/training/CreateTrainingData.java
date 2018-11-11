@@ -1,9 +1,14 @@
 package training;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Scanner;
 import java.util.Set;
 
 import com.opencsv.CSVWriter;
@@ -18,7 +23,7 @@ public class CreateTrainingData {
 		this.networkDataList=networkDataList;
 		
 		CSVWriter writer=new CSVWriter(new FileWriter(filename));
-		String[] featureName="NumOfNodes,NumOfArcs,VolumeOfDemands,timeSurplus,Arc0,Arc1,Arc2,Arc3,Arc4,Arc5,Arc6,Arc7,Arc8,Arc9,Arc10,Arc11,Arc12,Arc13,Arc14,Arc15,Arc16,Arc17,Arc18,Arc19,Arc20,Arc21,Arc22,Arc23,Arc24,Arc25,iIfOrigin,jIfDestination,rSPCount,iflpCover,lpPercent，timeDiff".split(",");
+		String[] featureName="NumOfNodes,NumOfArcs,VolumeOfDemands,timeSurplus,Arc0,Arc1,Arc2,Arc3,Arc4,Arc5,Arc6,Arc7,Arc8,Arc9,Arc10,Arc11,Arc12,Arc13,Arc14,Arc15,Arc16,Arc17,Arc18,Arc19,Arc20,Arc21,Arc22,Arc23,Arc24,Arc25,iIfOrigin,jIfDestination,rSPCount,iflpCover,lpPercent,timeDiff".split(",");
 		writer.writeNext(featureName);
 		
 		for(NetworkData networkData:networkDataList){
@@ -29,7 +34,7 @@ public class CreateTrainingData {
 					String string=networkData.numOfNodes+","+networkData.numOfArcs+","+networkData.totalVolumeOfDemands+","+networkData.timeSurplus[k];
 					for(int i=0;i<networkData.serviceArcFeature[0].length;i++){
 						if(i>=2&&i<=13){
-							double value=networkData.serviceArcFeature[serviceEdgeIndex][i]/networkData.totalVolumeOfDemands;
+							double value=(double)networkData.serviceArcFeature[serviceEdgeIndex][i]/networkData.totalVolumeOfDemands;
 							string+=","+String.format("%.2f", value);
 						}else string+=","+networkData.serviceArcFeature[serviceEdgeIndex][i];
 					}
@@ -47,7 +52,7 @@ public class CreateTrainingData {
 					if(iflpCover==0){
 						string+=",0.00";
 					}else{
-						double volume=networkData.lpSolution.get(k).get(serviceEdgeIndex)/modelData.demandSet.get(k).volume;
+						double volume=(double)networkData.lpSolution.get(k).get(serviceEdgeIndex)/modelData.demandSet.get(k).volume;
 						string+=","+String.format("%.2f", volume);
 					}
 					
@@ -58,6 +63,7 @@ public class CreateTrainingData {
 					int minRecord=modelData.timePeriod;
 					for(int edgeIndex:set){
 						Edge edge=modelData.edgeSet.get(edgeIndex);
+						
 						if(edge.serviceIndex==edge0.serviceIndex){
 							minRecord=Math.min(minRecord, Math.abs(edge0.t1-edge.t1));
 						}
@@ -76,11 +82,38 @@ public class CreateTrainingData {
 	
 	
 	public static void main(String[] args) throws IOException {
-		SNDRC sndrc=new SNDRC("./data/testset/test1_5_10_15_20.txt");
-		NetworkData trainingData=new NetworkData(sndrc);
-		List<NetworkData> networkDataList=new ArrayList<>();
-		networkDataList.add(trainingData);
+		Scanner in = new Scanner(Paths.get("./learningData/result/nameMap.out"));
+		Map<String,Integer> map=new HashMap<>();
+		int count=0;
+		while(in.hasNextLine()) {
+			String string=in.nextLine();
+			map.put(string, count);
+			count++;
+		}
+		in.close();
 		
-		CreateTrainingData test=new CreateTrainingData(networkDataList, "./test.csv");
+		
+    	String path="./learningData/test";
+    	File file=new File(path);
+    	File[] fs=file.listFiles();
+    	
+    	List<NetworkData> networkDataList=new ArrayList<>();
+    	int i=0;
+    	for(File f:fs){
+    		String fileName=f.toString().substring(20);
+    		SNDRC sndrc=new SNDRC("./learningData/test/"+fileName);
+    		NetworkData trainingData=new NetworkData(sndrc);
+    		count=map.get(fileName);
+    		String filename1="./learningData/result/"+count+"_0.txt";
+    		String filename2="./learningData/result/"+count+"_1.txt";
+    		trainingData.readData(filename1, filename2);
+    		networkDataList.add(trainingData);
+    		i++;
+    		if(i==1)break;
+    		
+    	}
+    	CreateTrainingData test=new CreateTrainingData(networkDataList, "./test.csv");
+
+		
 	}
 }
