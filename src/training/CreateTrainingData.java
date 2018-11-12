@@ -88,35 +88,36 @@ public class CreateTrainingData {
 	
 	
 	public static void main(String[] args) throws IOException {
-		Scanner in = new Scanner(Paths.get("./learningData/result/nameMap.out"));
-		Map<String,Integer> map=new HashMap<>();
-		int count=0;
-		while(in.hasNextLine()) {
-			String string=in.nextLine();
-			map.put(string, count);
-			count++;
-		}
-		in.close();
 		
-		
-    	String path="./learningData/test";
-    	File file=new File(path);
-    	File[] fs=file.listFiles();
-    	
-    	List<NetworkData> networkDataList=new ArrayList<>();
-    	for(File f:fs){
-    		if(!f.isDirectory()&&!f.isHidden()){
-        		String fileName=f.toString().substring(20);
-        		SNDRC sndrc=new SNDRC("./learningData/test/"+fileName);
-        		NetworkData trainingData=new NetworkData(sndrc);
-        		count=map.get(fileName);
-        		String filename1="./learningData/result/"+count+"_0.txt";
-        		String filename2="./learningData/result/"+count+"_1.txt";
-        		trainingData.readData(filename1, filename2);
-        		networkDataList.add(trainingData);
-    		}
-    	}
-    	CreateTrainingData test=new CreateTrainingData(networkDataList, "./test.csv");
+//		Scanner in = new Scanner(Paths.get("./learningData/result/nameMap.out"));
+//		Map<String,Integer> map=new HashMap<>();
+//		int count=0;
+//		while(in.hasNextLine()) {
+//			String string=in.nextLine();
+//			map.put(string, count);
+//			count++;
+//		}
+//		in.close();
+//		
+//		
+//    	String path="./learningData/test";
+//    	File file=new File(path);
+//    	File[] fs=file.listFiles();
+//    	
+//    	List<NetworkData> networkDataList=new ArrayList<>();
+//    	for(File f:fs){
+//    		if(!f.isDirectory()&&!f.isHidden()){
+//        		String fileName=f.toString().substring(20);
+//        		SNDRC sndrc=new SNDRC("./learningData/test/"+fileName);
+//        		NetworkData trainingData=new NetworkData(sndrc);
+//        		count=map.get(fileName);
+//        		String filename1="./learningData/result/"+count+"_0.txt";
+//        		String filename2="./learningData/result/"+count+"_1.txt";
+//        		trainingData.readData(filename1, filename2);
+//        		networkDataList.add(trainingData);
+//    		}
+//    	}
+//    	CreateTrainingData test=new CreateTrainingData(networkDataList, "./test.csv");
 
 		
 	}
