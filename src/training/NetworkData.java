@@ -109,11 +109,14 @@ public class NetworkData {
 		for(int k=0;k<modelData.numDemand;k++){
 			in.nextLine();
 			String[] string=in.nextLine().split(" ");
-			for(int i=0;i<string.length;i=i+2) {
-				int index=Integer.parseInt(string[i]);
-				double value=Double.parseDouble(string[i+1]);
-				lpSolution.get(k).put(index, value);
+			if(string.length>1){
+				for(int i=0;i<string.length;i=i+2) {
+					int index=Integer.parseInt(string[i]);
+					double value=Double.parseDouble(string[i+1]);
+					lpSolution.get(k).put(index, value);
+				}
 			}
+
 		}
 		
 		
@@ -124,12 +127,13 @@ public class NetworkData {
 
 		for(int k=0;k<modelData.numDemand;k++){
 			in.nextLine();
-			
 			String[] string=in.nextLine().split(" ");
-			for(int i=0;i<string.length;i=i+2) {
-				int index=Integer.parseInt(string[i]);
-				double value=Double.parseDouble(string[i+1]);
-				exactSolution.get(k).add(index);
+			if(string.length>1){
+				for(int i=0;i<string.length;i=i+2) {
+					int index=Integer.parseInt(string[i]);
+					double value=Double.parseDouble(string[i+1]);
+					exactSolution.get(k).add(index);
+				}
 			}
 
 		}

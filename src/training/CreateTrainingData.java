@@ -23,7 +23,7 @@ public class CreateTrainingData {
 		this.networkDataList=networkDataList;
 		
 		CSVWriter writer=new CSVWriter(new FileWriter(filename));
-		String[] featureName="NumOfNodes,NumOfArcs,VolumeOfDemands,timeSurplus,Arc0,Arc1,Arc2,Arc3,Arc4,Arc5,Arc6,Arc7,Arc8,Arc9,Arc10,Arc11,Arc12,Arc13,Arc14,Arc15,Arc16,Arc17,Arc18,Arc19,Arc20,Arc21,Arc22,Arc23,Arc24,Arc25,iIfOrigin,jIfDestination,rSPCount,iflpCover,lpPercent,timeDiff".split(",");
+		String[] featureName="NumOfNodes,NumOfArcs,VolumeOfDemands,timeSurplus,Arc0,Arc1,Arc2,Arc3,Arc4,Arc5,Arc6,Arc7,Arc8,Arc9,Arc10,Arc11,Arc12,Arc13,Arc14,Arc15,Arc16,Arc17,Arc18,Arc19,Arc20,Arc21,Arc22,Arc23,Arc24,Arc25,iIfOrigin,jIfDestination,rSPCount,iflpCover,lpPercent,timeDiff,y".split(",");
 		writer.writeNext(featureName);
 		
 		for(NetworkData networkData:networkDataList){
@@ -71,6 +71,12 @@ public class CreateTrainingData {
 					
 					string+=","+minRecord;
 					
+					//lable
+					if(networkData.exactSolution.get(k).contains(serviceEdgeIndex)){
+						string+=","+1;
+					}else string+=","+0;
+
+					
 					
 					writer.writeNext(string.split(","));
 				}
@@ -99,14 +105,16 @@ public class CreateTrainingData {
     	
     	List<NetworkData> networkDataList=new ArrayList<>();
     	for(File f:fs){
-    		String fileName=f.toString().substring(20);
-    		SNDRC sndrc=new SNDRC("./learningData/test/"+fileName);
-    		NetworkData trainingData=new NetworkData(sndrc);
-    		count=map.get(fileName);
-    		String filename1="./learningData/result/"+count+"_0.txt";
-    		String filename2="./learningData/result/"+count+"_1.txt";
-    		trainingData.readData(filename1, filename2);
-    		networkDataList.add(trainingData);
+    		if(!f.isDirectory()&&!f.isHidden()){
+        		String fileName=f.toString().substring(20);
+        		SNDRC sndrc=new SNDRC("./learningData/test/"+fileName);
+        		NetworkData trainingData=new NetworkData(sndrc);
+        		count=map.get(fileName);
+        		String filename1="./learningData/result/"+count+"_0.txt";
+        		String filename2="./learningData/result/"+count+"_1.txt";
+        		trainingData.readData(filename1, filename2);
+        		networkDataList.add(trainingData);
+    		}
     	}
     	CreateTrainingData test=new CreateTrainingData(networkDataList, "./test.csv");
 
