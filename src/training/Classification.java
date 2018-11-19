@@ -76,69 +76,69 @@ public class Classification {
 		
 		
 		
-//		/*
-//		 * Build a decision tree
-//		 */
-//		String[] options = new String[1];
-//		options[0] = "-U";
-//		J48 tree = new J48();
-//		tree.setOptions(options);
-//		tree.buildClassifier(train);
-//		System.out.println(tree);
-//		
-//		
-//		/*
-//		 * Visualize decision tree
-//		 */
-//		TreeVisualizer tv = new TreeVisualizer(null, tree.graph(),
-//				new PlaceNode2());
-//		JFrame frame = new javax.swing.JFrame("Tree Visualizer");
-//		frame.setSize(800, 500);
-//		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//		frame.getContentPane().add(tv);
-//		frame.setVisible(true);
-//		tv.fitToScreen();
-//		
-//		/*
-//		 * Evaluation
-//		 */
-//
-//		Classifier cl = new J48();
-//		Evaluation eval_roc = new Evaluation(train);
-//		eval_roc.crossValidateModel(cl, train, 10, new Random(1), new Object[] {});
-//		System.out.println(eval_roc.toSummaryString());
-//		// Confusion matrix
-//		double[][] confusionMatrix = eval_roc.confusionMatrix();
-//		System.out.println(eval_roc.toMatrixString());
-//		
-//		/*
-//		 * Bonus: Plot ROC curve
-//		 */
-//
-//		ThresholdCurve tc = new ThresholdCurve();
-//		int classIndex = 0;
-//		Instances result = tc.getCurve(eval_roc.predictions(), classIndex);
-//		// plot curve
-//		ThresholdVisualizePanel vmc = new ThresholdVisualizePanel();
-//		vmc.setROCString("(Area under ROC = " + tc.getROCArea(result) + ")");
-//		vmc.setName(result.relationName());
-//		PlotData2D tempd = new PlotData2D(result);
-//		tempd.setPlotName(result.relationName());
-//		tempd.addInstanceNumberAttribute();
-//		// specify which points are connected
-//		boolean[] cp = new boolean[result.numInstances()];
-//		for (int n = 1; n < cp.length; n++)
-//			cp[n] = true;
-//		tempd.setConnectPoints(cp);
-//
-//		// add plot
-//		vmc.addPlot(tempd);
-//		// display curve
-//		JFrame frameRoc = new javax.swing.JFrame("ROC Curve");
-//		frameRoc.setSize(800, 500);
-//		frameRoc.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//		frameRoc.getContentPane().add(vmc);
-//		frameRoc.setVisible(true);
+		/*
+		 * Build a decision tree
+		 */
+		String[] options = new String[1];
+		options[0] = "-U";
+		J48 tree = new J48();
+		tree.setOptions(options);
+		tree.buildClassifier(train);
+		System.out.println(tree);
+		
+		
+		/*
+		 * Visualize decision tree
+		 */
+		TreeVisualizer tv = new TreeVisualizer(null, tree.graph(),
+				new PlaceNode2());
+		JFrame frame = new javax.swing.JFrame("Tree Visualizer");
+		frame.setSize(800, 500);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.getContentPane().add(tv);
+		frame.setVisible(true);
+		tv.fitToScreen();
+		
+		/*
+		 * Evaluation
+		 */
+
+		Classifier cl = new J48();
+		Evaluation eval_roc = new Evaluation(train);
+		eval_roc.crossValidateModel(cl, train, 10, new Random(1), new Object[] {});
+		System.out.println(eval_roc.toSummaryString());
+		// Confusion matrix
+		double[][] confusionMatrix = eval_roc.confusionMatrix();
+		System.out.println(eval_roc.toMatrixString());
+		
+		/*
+		 * Bonus: Plot ROC curve
+		 */
+
+		ThresholdCurve tc = new ThresholdCurve();
+		int classIndex = 0;
+		Instances result = tc.getCurve(eval_roc.predictions(), classIndex);
+		// plot curve
+		ThresholdVisualizePanel vmc = new ThresholdVisualizePanel();
+		vmc.setROCString("(Area under ROC = " + tc.getROCArea(result) + ")");
+		vmc.setName(result.relationName());
+		PlotData2D tempd = new PlotData2D(result);
+		tempd.setPlotName(result.relationName());
+		tempd.addInstanceNumberAttribute();
+		// specify which points are connected
+		boolean[] cp = new boolean[result.numInstances()];
+		for (int n = 1; n < cp.length; n++)
+			cp[n] = true;
+		tempd.setConnectPoints(cp);
+
+		// add plot
+		vmc.addPlot(tempd);
+		// display curve
+		JFrame frameRoc = new javax.swing.JFrame("ROC Curve");
+		frameRoc.setSize(800, 500);
+		frameRoc.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frameRoc.getContentPane().add(vmc);
+		frameRoc.setVisible(true);
 		
 		
 		
