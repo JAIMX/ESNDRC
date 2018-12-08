@@ -73,10 +73,10 @@ public class SNDRC implements ModelInterface {
     }
     
     public class Path implements Comparable<Path>{
-    	List<Integer>  serviceIndexList;
-    	List<Integer> timeList;
-    	int totalDuration;
-    	int origin,destination;
+    	public List<Integer>  serviceIndexList;
+    	public List<Integer> timeList;
+    	public int totalDuration;
+    	public int origin,destination;
     	
     	public Path(int origin,int destination,List serviceIndexList){
     		this.serviceIndexList=serviceIndexList;
