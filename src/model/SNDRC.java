@@ -24,7 +24,7 @@ public class SNDRC implements ModelInterface {
         private int destination;
 //        private int LB, UB;
 //        private int capacity;
-        private int duration;
+        public int duration;
         
         public String toString(){
         	String string=origin+"->"+destination+":"+duration;
