@@ -850,6 +850,9 @@ public class SNDRC implements ModelInterface {
         this.edgeSetIndexMap=new HashMap<>();
     }
 
+    public void ModifyEdgesForX(List<Set<Integer>> edgesForX) {
+    	this.edgesForX=edgesForX;
+    }
     
     @Override
     public String getName() {
