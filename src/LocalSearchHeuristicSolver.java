@@ -6,11 +6,15 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.PriorityQueue;
+import java.util.Queue;
 import java.util.Set;
 
 import org.jorlib.frameworks.columnGeneration.branchAndPrice.AbstractBranchCreator;
 import org.jorlib.frameworks.columnGeneration.master.cutGeneration.CutHandler;
 import org.jorlib.frameworks.columnGeneration.pricing.AbstractPricingProblemSolver;
+import org.jorlib.frameworks.columnGeneration.util.MathProgrammingUtil;
 
 import bap.BranchAndPriceA;
 import bap.bapNodeComparators.NodeBoundbapNodeComparator;
@@ -170,20 +174,19 @@ public class LocalSearchHeuristicSolver {
 			}
 		}
 
-		//Add holding arcs to edgesForX
-		List<Set<Integer>> legalEdgesForX=modelData.edgesForX;
-		for(int k=0;k<modelData.numDemand;k++) {
-			Set<Integer> edgeSet=edgesForX.get(k);
-			Set<Integer> legalEdgeSet=legalEdgesForX.get(k);
-			
-			for(int edgeIndex=modelData.numServiceArc;edgeIndex<modelData.numArc;edgeIndex++) {
-				if(legalEdgeSet.contains(edgeIndex)) {
+		// Add holding arcs to edgesForX
+		List<Set<Integer>> legalEdgesForX = modelData.edgesForX;
+		for (int k = 0; k < modelData.numDemand; k++) {
+			Set<Integer> edgeSet = edgesForX.get(k);
+			Set<Integer> legalEdgeSet = legalEdgesForX.get(k);
+
+			for (int edgeIndex = modelData.numServiceArc; edgeIndex < modelData.numArc; edgeIndex++) {
+				if (legalEdgeSet.contains(edgeIndex)) {
 					edgeSet.add(edgeIndex);
 				}
 			}
 		}
 
-		
 		modelData.ModifyEdgesForX(edgesForX);
 
 		// try to solve use branchAndPriceA
@@ -226,7 +229,6 @@ public class LocalSearchHeuristicSolver {
 
 		bap.runBranchAndPrice(System.currentTimeMillis() + 7200000L); // 2 hours
 
-
 		// Print solution:
 		System.out.println("================ Solution ================");
 		System.out.println("BAP terminated with objective : " + bap.getObjective());
@@ -236,8 +238,128 @@ public class LocalSearchHeuristicSolver {
 				+ " Total time spent on pricing problems: " + bap.getPricingSolveTime());
 		System.out.println("Best bound : " + bap.getBound());
 
-        bap.close();
-        cutHandler.close();
+		if (bap.hasSolution()) {
+			System.out.println("Solution is optimal: " + bap.isOptimal());
+			System.out.println("Columns (only non-zero columns are returned):");
+			List<Cycle> solution = bap.getSolution();
+			int totalNumVehicle = 0;
+			int vehicleFixTotalCost = 0;
+			int vehicleVarTotalCost = 0;
+
+			for (Cycle column : solution) {
+				System.out.println(column);
+				System.out.println(out(column) + ":" + bap.GetOptSolutionValueMap().get(column));
+				totalNumVehicle += MathProgrammingUtil.doubleToInt((double) bap.GetOptSolutionValueMap().get(column));
+
+				int fixCost = (int) modelData.fixedCost[column.associatedPricingProblem.originNodeO][column.associatedPricingProblem.capacityTypeS];
+				int varCost = (int) (column.cost - fixCost);
+
+				double columnValue = (double) bap.GetOptSolutionValueMap().get(column);
+				int value = MathProgrammingUtil.doubleToInt(columnValue);
+
+				vehicleFixTotalCost += fixCost * columnValue;
+				vehicleVarTotalCost += varCost * columnValue;
+				// vehicleVarCost.put(column, varCost);
+				System.out.println("Fix cost= " + fixCost + " variable cost= " + varCost);
+
+				System.out.println();
+
+			}
+
+		}
+		
+		
+        // calculate cost of commodities
+        List<Map<Integer, Double>> optXValues = bap.GetOptXValues();
+        List<Double> commodityCost = new ArrayList<>();
+        for (int commodity = 0; commodity < modelData.numDemand; commodity++) {
+            Map<Integer, Double> xValues = optXValues.get(commodity);
+            double cost = 0;
+            for (int edgeIndex : xValues.keySet()) {
+                Edge edge;
+                edge = modelData.edgeSet.get(edgeIndex);
+
+                if (edge.edgeType == 0) {
+                    cost += modelData.beta * edge.duration * xValues.get(edgeIndex);
+                    
+//                    commodityDowork+=edge.duration*xValues.get(edgeIndex);
+                    
+//                    commodityFlowIntoTerminal[edge.v][edge.t2]+=xValues.get(edgeIndex);
+                }
+            }
+
+            commodityCost.add(cost);
+//            commodityTotalCost += cost;
+        }
+        // output x variables
+        for (int demand = 0; demand < modelData.numDemand; demand++) {
+            for (int edgeIndex : optXValues.get(demand).keySet()) {
+                if (optXValues.get(demand).get(edgeIndex) > 0.01) {
+                    Edge edge;
+
+                    edge = modelData.edgeSet.get(edgeIndex);
+
+
+                    
+                    if(edge.edgeType==0){
+                        System.out.println("x[" + demand + "]:" + edge.u + "," + edge.t1 + "->" + edge.v + "," + edge.t2
+                                + "= " + optXValues.get(demand).get(edgeIndex) + " " + edge.duration);
+                    }
+
+                }
+            }
+            System.out.println("total cost= " + commodityCost.get(demand));
+            System.out.println();
+        }
+
+		bap.close();
+		cutHandler.close();
+	}
+
+	public String out(Cycle column) {
+
+		Queue<Edge> path = new PriorityQueue<>();
+
+		for (int edgeIndex : column.edgeIndexSet) {
+			path.add(modelData.edgeSet.get(edgeIndex));
+		}
+
+		StringBuilder pathRecord = new StringBuilder();
+
+		// int count=0;
+		// for(Edge edge:path) {
+		// count++;
+		// pathRecord.append(edge.start);
+		//
+		// if(count!=column.edgeIndexSet.size()) {
+		// pathRecord.append("->");
+		// }
+		//
+		// }
+
+		Edge edge = null;
+		int size = path.size();
+		for (int i = 0; i < size; i++) {
+
+			edge = path.poll();
+			pathRecord.append('(');
+			pathRecord.append(edge.u);
+			pathRecord.append(',');
+			pathRecord.append(edge.t1);
+			pathRecord.append(')');
+
+			pathRecord.append("->");
+
+		}
+
+		pathRecord.append('(');
+		pathRecord.append(edge.v);
+		pathRecord.append(',');
+		pathRecord.append(edge.t2);
+		pathRecord.append(')');
+
+		return pathRecord.toString();
+
 	}
 
 	public static void main(String[] args) throws IOException {

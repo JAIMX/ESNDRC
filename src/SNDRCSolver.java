@@ -353,29 +353,29 @@ public class SNDRCSolver {
         
         
 
-//        // output x variables
-//        for (int demand = 0; demand < dataModel.numDemand; demand++) {
-//            for (int edgeIndex : optXValues.get(demand).keySet()) {
-//                if (optXValues.get(demand).get(edgeIndex) > 0.01) {
-//                    Edge edge;
-//
-//                    if (!ifOptGetFromSubGraph) {
-//                        edge = dataModel.edgeSet.get(edgeIndex);
-//                    } else {
-//                        edge = dataModel.subEdgeSet.get(edgeIndex);
-//                    }
-//
-//                    
-////                    if(edge.edgeType==0){
-////                        System.out.println("x[" + demand + "]:" + edge.u + "," + edge.t1 + "->" + edge.v + "," + edge.t2
-////                                + "= " + optXValues.get(demand).get(edgeIndex) + " " + edge.duration);
-////                    }
-//
-//                }
-//            }
-////            System.out.println("total cost= " + commodityCost.get(demand));
-////            System.out.println();
-//        }
+        // output x variables
+        for (int demand = 0; demand < dataModel.numDemand; demand++) {
+            for (int edgeIndex : optXValues.get(demand).keySet()) {
+                if (optXValues.get(demand).get(edgeIndex) > 0.01) {
+                    Edge edge;
+
+                    if (!ifOptGetFromSubGraph) {
+                        edge = dataModel.edgeSet.get(edgeIndex);
+                    } else {
+                        edge = dataModel.subEdgeSet.get(edgeIndex);
+                    }
+
+                    
+                    if(edge.edgeType==0){
+                        System.out.println("x[" + demand + "]:" + edge.u + "," + edge.t1 + "->" + edge.v + "," + edge.t2
+                                + "= " + optXValues.get(demand).get(edgeIndex) + " " + edge.duration);
+                    }
+
+                }
+            }
+            System.out.println("total cost= " + commodityCost.get(demand));
+            System.out.println();
+        }
 
         bap.close();
         cutHandler.close();
