@@ -47,7 +47,17 @@ public class LocalSearchHeuristicSolver {
 
 	}
 
-	public void Initialization() {
+	class FeasibleSolution {
+		List<Map<Integer, Double>> optXValues;
+		List<Cycle> cycleValues;
+
+		public FeasibleSolution(List<Map<Integer, Double>> optXValues, List<Cycle> cycleValues) {
+			this.optXValues = optXValues;
+			this.cycleValues = cycleValues;
+		}
+	}
+
+	public List<FeasibleSolution> Initialization() {
 
 		// We first calculate how many shortest paths service edge (i,j) belong to
 		// commodity k's r shortest paths
@@ -238,6 +248,8 @@ public class LocalSearchHeuristicSolver {
 				+ " Total time spent on pricing problems: " + bap.getPricingSolveTime());
 		System.out.println("Best bound : " + bap.getBound());
 
+		
+		ArrayList<FeasibleSolution> solutionList=new ArrayList<>();
 		if (bap.hasSolution()) {
 			System.out.println("Solution is optimal: " + bap.isOptimal());
 			System.out.println("Columns (only non-zero columns are returned):");
@@ -255,7 +267,7 @@ public class LocalSearchHeuristicSolver {
 				int varCost = (int) (column.cost - fixCost);
 
 				double columnValue = (double) bap.GetOptSolutionValueMap().get(column);
-				int value = MathProgrammingUtil.doubleToInt(columnValue);
+				// int value = MathProgrammingUtil.doubleToInt(columnValue);
 
 				vehicleFixTotalCost += fixCost * columnValue;
 				vehicleVarTotalCost += varCost * columnValue;
@@ -266,56 +278,67 @@ public class LocalSearchHeuristicSolver {
 
 			}
 
+			// calculate cost of commodities
+			List<Map<Integer, Double>> optXValues = bap.GetOptXValues();
+			List<Double> commodityCost = new ArrayList<>();
+			for (int commodity = 0; commodity < modelData.numDemand; commodity++) {
+				Map<Integer, Double> xValues = optXValues.get(commodity);
+				double cost = 0;
+				for (int edgeIndex : xValues.keySet()) {
+					Edge edge;
+					edge = modelData.edgeSet.get(edgeIndex);
+
+					if (edge.edgeType == 0) {
+						cost += modelData.beta * edge.duration * xValues.get(edgeIndex);
+
+						// commodityDowork+=edge.duration*xValues.get(edgeIndex);
+
+						// commodityFlowIntoTerminal[edge.v][edge.t2]+=xValues.get(edgeIndex);
+					}
+				}
+
+				commodityCost.add(cost);
+				// commodityTotalCost += cost;
+			}
+			// output x variables
+			for (int demand = 0; demand < modelData.numDemand; demand++) {
+				for (int edgeIndex : optXValues.get(demand).keySet()) {
+					if (optXValues.get(demand).get(edgeIndex) > 0.01) {
+						Edge edge;
+
+						edge = modelData.edgeSet.get(edgeIndex);
+
+						if (edge.edgeType == 0) {
+							System.out.println("x[" + demand + "]:" + edge.u + "," + edge.t1 + "->" + edge.v + ","
+									+ edge.t2 + "= " + optXValues.get(demand).get(edgeIndex) + " " + edge.duration);
+						}
+
+					}
+				}
+				System.out.println("total cost= " + commodityCost.get(demand));
+				System.out.println();
+			}
+			
+			 FeasibleSolution feasibleSolution=new FeasibleSolution(optXValues, solution);
+			 solutionList.add(feasibleSolution);
+
 		}
-		
-		
-        // calculate cost of commodities
-        List<Map<Integer, Double>> optXValues = bap.GetOptXValues();
-        List<Double> commodityCost = new ArrayList<>();
-        for (int commodity = 0; commodity < modelData.numDemand; commodity++) {
-            Map<Integer, Double> xValues = optXValues.get(commodity);
-            double cost = 0;
-            for (int edgeIndex : xValues.keySet()) {
-                Edge edge;
-                edge = modelData.edgeSet.get(edgeIndex);
-
-                if (edge.edgeType == 0) {
-                    cost += modelData.beta * edge.duration * xValues.get(edgeIndex);
-                    
-//                    commodityDowork+=edge.duration*xValues.get(edgeIndex);
-                    
-//                    commodityFlowIntoTerminal[edge.v][edge.t2]+=xValues.get(edgeIndex);
-                }
-            }
-
-            commodityCost.add(cost);
-//            commodityTotalCost += cost;
-        }
-        // output x variables
-        for (int demand = 0; demand < modelData.numDemand; demand++) {
-            for (int edgeIndex : optXValues.get(demand).keySet()) {
-                if (optXValues.get(demand).get(edgeIndex) > 0.01) {
-                    Edge edge;
-
-                    edge = modelData.edgeSet.get(edgeIndex);
-
-
-                    
-                    if(edge.edgeType==0){
-                        System.out.println("x[" + demand + "]:" + edge.u + "," + edge.t1 + "->" + edge.v + "," + edge.t2
-                                + "= " + optXValues.get(demand).get(edgeIndex) + " " + edge.duration);
-                    }
-
-                }
-            }
-            System.out.println("total cost= " + commodityCost.get(demand));
-            System.out.println();
-        }
 
 		bap.close();
 		cutHandler.close();
+		
+		return solutionList;
+
 	}
 
+	/**
+	 * We search for the neighbourhoods and return a best estimated flow distribution
+	 * @param currentSolution
+	 */
+	public void Search(FeasibleSolution currentSolution) {
+		
+	}
+	
 	public String out(Cycle column) {
 
 		Queue<Edge> path = new PriorityQueue<>();
@@ -325,17 +348,6 @@ public class LocalSearchHeuristicSolver {
 		}
 
 		StringBuilder pathRecord = new StringBuilder();
-
-		// int count=0;
-		// for(Edge edge:path) {
-		// count++;
-		// pathRecord.append(edge.start);
-		//
-		// if(count!=column.edgeIndexSet.size()) {
-		// pathRecord.append("->");
-		// }
-		//
-		// }
 
 		Edge edge = null;
 		int size = path.size();
