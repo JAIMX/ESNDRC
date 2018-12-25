@@ -56,6 +56,17 @@ public class LocalSearchHeuristicSolver {
 			this.cycleValues = cycleValues;
 		}
 	}
+	
+	class Node{
+		int nodeIndex;
+		List<Integer> pathRecord;
+		
+		public Node(int nodeIndex,List<Integer> pathRecord) {
+			this.nodeIndex=nodeIndex;
+			this.pathRecord=new ArrayList<>(pathRecord);
+		}
+		
+	}
 
 	public List<FeasibleSolution> Initialization() {
 
@@ -339,6 +350,31 @@ public class LocalSearchHeuristicSolver {
 		
 	}
 	
+	/**
+	 * Here we use BFS to search for furthest extension path for commodity k on edge(i,j)
+	 * @param edgeIndex
+	 * @param commodityIndex
+	 * @param xValues
+	 * @return
+	 */
+	public List<Integer> SourceSearch(int edgeIndex,int commodityIndex,List<Map<Integer, Double>> xValues){
+		List<Integer> resultPathRecord=new ArrayList<>();
+		Edge keyEdge=modelData.edgeSet.get(edgeIndex);
+		int i=keyEdge.start;
+		int j=keyEdge.end;
+		double commodityAmount=xValues.get(commodityIndex).get(edgeIndex);
+		
+		//backward extension
+		Queue<Node> searchQueue=new PriorityQueue<Node>();
+		List<Integer> tempList=new ArrayList<>();
+		Node rootNode=new Node(i, tempList);
+		searchQueue.add(rootNode);
+		
+		while
+		
+		
+	}
+	
 	public String out(Cycle column) {
 
 		Queue<Edge> path = new PriorityQueue<>();
@@ -375,8 +411,10 @@ public class LocalSearchHeuristicSolver {
 	}
 
 	public static void main(String[] args) throws IOException {
-		LocalSearchHeuristicSolver solver = new LocalSearchHeuristicSolver("./data/testset/test0_5_10_10_5.txt", 3);
-		solver.Initialization();
+//		LocalSearchHeuristicSolver solver = new LocalSearchHeuristicSolver("./data/testset/test0_5_10_10_5.txt", 3);
+//		solver.Initialization();
+
+		
 	}
 
 }
