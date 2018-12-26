@@ -34,12 +34,10 @@ import model.SNDRC.Demand;
 import model.SNDRC.Edge;
 import model.SNDRC.Path;
 import model.SNDRC.Service;
-import sun.awt.AWTAccessor.ToolkitAccessor;
 
 public class LocalSearchHeuristicSolver {
 	SNDRC modelData;
-	int r;
-	// List<Set<Integer>> edgesForX;
+	int r;    //r shortest path in the initialization phase
 
 	public LocalSearchHeuristicSolver(String filename, int r) throws IOException {
 		modelData = new SNDRC(filename);
