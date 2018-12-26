@@ -319,7 +319,7 @@ public class LocalSearchHeuristicSolver {
 
 						if (edge.edgeType == 0) {
 							System.out.println("x[" + demand + "]:" + edge.u + "," + edge.t1 + "->" + edge.v + ","
-									+ edge.t2 + "= " + optXValues.get(demand).get(edgeIndex) + " " + edge.duration);
+									+ edge.t2 + "= " + optXValues.get(demand).get(edgeIndex) + " " + edgeIndex);
 						}
 
 					}
@@ -327,6 +327,7 @@ public class LocalSearchHeuristicSolver {
 				System.out.println("total cost= " + commodityCost.get(demand));
 				System.out.println();
 			}
+			
 			
 			 FeasibleSolution feasibleSolution=new FeasibleSolution(optXValues, solution);
 			 solutionList.add(feasibleSolution);
@@ -336,6 +337,7 @@ public class LocalSearchHeuristicSolver {
 		bap.close();
 		cutHandler.close();
 		
+
 		return solutionList;
 
 	}
@@ -362,15 +364,84 @@ public class LocalSearchHeuristicSolver {
 		int j=keyEdge.end;
 		double commodityAmount=xValues.get(commodityIndex).get(edgeIndex);
 		
-		//backward extension
+		//Backward extension
 		Queue<Node> searchQueue=new PriorityQueue<Node>();
 		List<Integer> tempList=new ArrayList<>();
 		Node rootNode=new Node(i, tempList);
 		searchQueue.add(rootNode);
 		
-		while
+		while(!searchQueue.isEmpty()){
+			Node currentNode=searchQueue.poll();
+			Set<Integer> pointFromEdgeSet=modelData.pointFromEdgeSet.get(currentNode.nodeIndex);
+			
+			
+			for(int pointFromEdgeIndex:pointFromEdgeSet){
+				Edge edge=modelData.edgeSet.get(pointFromEdgeIndex);
+				if(xValues.get(commodityIndex).containsKey(pointFromEdgeIndex)){
+					if(xValues.get(commodityIndex).get(pointFromEdgeIndex)>=commodityAmount-0.01){
+						//add this pointFromEdge to searchQueue
+						int sourceNodeIndex=edge.start;
+						List<Integer> pathRecord=new ArrayList<>(currentNode.pathRecord);
+						pathRecord.add(pointFromEdgeIndex);
+						Node newNode=new Node(sourceNodeIndex,pathRecord);
+						searchQueue.add(newNode);
+					}
+				}
+			}
+			
+			
+			
+			// we add the first part path to resultPathRecord based on currentNode
+			if(searchQueue.isEmpty()){
+				int index=currentNode.pathRecord.size()-1;
+				while(index>=0){
+					resultPathRecord.add(currentNode.pathRecord.get(index));
+					index--;
+				}
+			}
+		}
 		
 		
+		resultPathRecord.add(edgeIndex);
+		
+		//Forward extension
+		searchQueue=new PriorityQueue<Node>();
+		tempList=new ArrayList<>();
+		rootNode=new Node(j, tempList);
+		searchQueue.add(rootNode);
+		
+		while(!searchQueue.isEmpty()){
+			Node currentNode=searchQueue.poll();
+			Set<Integer> pointToEdgeSet=modelData.pointToEdgeSet.get(currentNode.nodeIndex);
+			
+			for(int pointToEdgeIndex:pointToEdgeSet){
+				Edge edge=modelData.edgeSet.get(pointToEdgeIndex);
+				if(xValues.get(commodityIndex).containsKey(pointToEdgeIndex)){
+					if(xValues.get(commodityIndex).get(pointToEdgeIndex)>=commodityAmount-0.01){
+						//add this pointToEdge to searchQueue
+						int sourceNodeIndex=edge.end;
+						List<Integer> pathRecord=new ArrayList<>(currentNode.pathRecord);
+						pathRecord.add(pointToEdgeIndex);
+						Node newNode=new Node(sourceNodeIndex,pathRecord);
+						searchQueue.add(newNode);
+					}
+				}
+			}
+			
+			
+			
+			// we add the second part path to resultPathRecord based on currentNode
+			if(searchQueue.isEmpty()){
+				
+				for(int index=0;index<currentNode.pathRecord.size();index++){
+					resultPathRecord.add(currentNode.pathRecord.get(index));
+				}
+				
+			}
+		}
+		
+	return resultPathRecord;
+	
 	}
 	
 	public String out(Cycle column) {
@@ -409,8 +480,8 @@ public class LocalSearchHeuristicSolver {
 	}
 
 	public static void main(String[] args) throws IOException {
-//		LocalSearchHeuristicSolver solver = new LocalSearchHeuristicSolver("./data/testset/test0_5_10_10_5.txt", 3);
-//		solver.Initialization();
+		LocalSearchHeuristicSolver solver = new LocalSearchHeuristicSolver("./data/testset/test0_5_10_10_5.txt", 3);
+		solver.Initialization();
 
 		
 	}
