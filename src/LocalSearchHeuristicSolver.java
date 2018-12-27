@@ -65,6 +65,22 @@ public class LocalSearchHeuristicSolver {
 		}
 		
 	}
+	
+	class CommoditySubPath{
+		int commodityIndex,startNodeIndex,endNodeIndex;
+		double amount;
+		List<Integer> pathEdgeIndexList;
+		public CommoditySubPath(int commodityIndex,double amount,List<Integer> list){
+			this.commodityIndex=commodityIndex;
+			this.amount=amount;
+			this.pathEdgeIndexList=new ArrayList<>(list);
+			
+			Edge edge=modelData.edgeSet.get(pathEdgeIndexList.get(0));
+			startNodeIndex=edge.start;
+			edge=modelData.edgeSet.get(pathEdgeIndexList.get(pathEdgeIndexList.size()-1));
+			endNodeIndex=edge.end;
+		}
+	}
 
 	public List<FeasibleSolution> Initialization() {
 
@@ -348,6 +364,22 @@ public class LocalSearchHeuristicSolver {
 	 */
 	public void Search(FeasibleSolution currentSolution) {
 		
+		// We search the neighbourhoods based on each terminal node
+		for(int terminalIndex=0;terminalIndex<modelData.numNode;terminalIndex++){
+			
+			List<CommoditySubPath> commoditySubpathList=new ArrayList<>();
+			//1. find all the commodity paths related to terminalIndex
+			for(int commodityIndex=0;commodityIndex<modelData.numDemand;commodityIndex++){
+				Map<Integer, Double> xValues=currentSolution.optXValues.get(commodityIndex);
+				for(int edgeIndex:xValues.keySet()){
+					Edge edge=modelData.edgeSet.get(edgeIndex);
+					if(edge.u==terminalIndex||edge.v==terminalIndex){
+						
+					}
+				}
+			}
+			
+		}
 	}
 	
 	/**
