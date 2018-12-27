@@ -27,7 +27,6 @@ import cg.SNDRCPricingProblem;
 import cg.master.Master;
 import cg.master.SNDRCMasterData;
 import cg.master.cuts.StrongInequalityGenerator;
-import ch.qos.logback.classic.sift.MDCBasedDiscriminator;
 import logger.BapLoggerA;
 import model.SNDRC;
 import model.SNDRC.Demand;
@@ -68,7 +67,7 @@ public class LocalSearchHeuristicSolver {
 	
 	class CommoditySubPath{
 		int commodityIndex,startNodeIndex,endNodeIndex;
-		double amount;
+		double amount,flowCost;
 		List<Integer> pathEdgeIndexList;
 		public CommoditySubPath(int commodityIndex,double amount,List<Integer> list){
 			this.commodityIndex=commodityIndex;
@@ -79,6 +78,10 @@ public class LocalSearchHeuristicSolver {
 			startNodeIndex=edge.start;
 			edge=modelData.edgeSet.get(pathEdgeIndexList.get(pathEdgeIndexList.size()-1));
 			endNodeIndex=edge.end;
+			
+			//calculate flowCost(para=dataModel.beta * dataModel.edgeSet.get(edgeIndex).duration)
+			flowCost=0;
+			
 		}
 	}
 
@@ -374,10 +377,15 @@ public class LocalSearchHeuristicSolver {
 				for(int edgeIndex:xValues.keySet()){
 					Edge edge=modelData.edgeSet.get(edgeIndex);
 					if(edge.u==terminalIndex||edge.v==terminalIndex){
-						
+						double amount=xValues.get(edgeIndex);
+						List<Integer> pathEdgeIndexList=SourceSearch(edgeIndex, commodityIndex, currentSolution.optXValues);
+						CommoditySubPath subPath=new CommoditySubPath(commodityIndex,amount , pathEdgeIndexList);
+						commoditySubpathList.add(subPath);
 					}
 				}
 			}
+			
+			//2. 
 			
 		}
 	}
