@@ -482,7 +482,7 @@ public class SNDRCSolver {
     
     public static void main(String[] args) throws IOException {
     	
-    	SNDRC sndrc=new SNDRC("./data/testset/test0_5_10_10_5.txt");
+    	SNDRC sndrc=new SNDRC("./data/testset/test6_5_15_40_200A.txt");
 //    	sndrc.outputFeature("./learningData/result/1-1.txt");
     	SNDRCSolver solver=new SNDRCSolver(sndrc,"BAPlogger");
 //    	solver.output("./learningData/result/1-2.txt", solver.bap);

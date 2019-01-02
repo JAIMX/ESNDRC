@@ -81,8 +81,17 @@ public class LocalSearchHeuristicSolver {
 			
 			//calculate flowCost(para=dataModel.beta * dataModel.edgeSet.get(edgeIndex).duration)
 			flowCost=0;
+			for(int edgeIndex:pathEdgeIndexList){
+				edge=modelData.edgeSet.get(edgeIndex);
+				if(edge.edgeType==0){
+					flowCost+=modelData.beta*edge.duration;
+				}
+						
+			}
 			
 		}
+		
+		
 	}
 
 	public List<FeasibleSolution> Initialization() {
@@ -385,7 +394,8 @@ public class LocalSearchHeuristicSolver {
 				}
 			}
 			
-			//2. 
+			//2. remove the unnecessary vehicle edges
+			
 			
 		}
 	}
@@ -520,7 +530,8 @@ public class LocalSearchHeuristicSolver {
 	}
 
 	public static void main(String[] args) throws IOException {
-		LocalSearchHeuristicSolver solver = new LocalSearchHeuristicSolver("./data/testset/test0_5_10_10_5.txt", 3);
+		LocalSearchHeuristicSolver solver = new LocalSearchHeuristicSolver("./data/testset/test6_5_15_40_200A.txt", 3);
+	
 		solver.Initialization();
 
 		
