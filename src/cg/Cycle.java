@@ -28,6 +28,7 @@ public final class Cycle  extends AbstractColumn<SNDRC, SNDRCPricingProblem>{
 		
 		this.pattern=new int[pattern.length];
 		System.arraycopy(pattern,0, this.pattern, 0, pattern.length);
+		
 	}
 	
 

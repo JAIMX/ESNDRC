@@ -3,6 +3,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -376,6 +378,65 @@ public class LocalSearchHeuristicSolver {
 	 */
 	public void Search(FeasibleSolution currentSolution) {
 		
+		// For start, we need to identify the empty vehicle run edge
+		Map<Cycle,Map<Integer,Integer>> emptyVehicleEdgeRecord=new HashMap<>();//inside map record how many edges are empty for edgeIndex(key)
+		int nonEmptyEdgeDistanceSum=0;
+		
+
+		Map<Cycle,Double> averageFixCostForAllEdges=new HashMap<>();
+		for(Cycle cycle:currentSolution.cycleValues){
+			double fixCost=modelData.fixedCost[cycle.associatedPricingProblem.originNodeO][cycle.associatedPricingProblem.capacityTypeS];
+			int totalDistance=0;
+			for(int i=0;i<cycle.pattern.length;i++){
+				totalDistance+=cycle.pattern[i]*modelData.serviceSet.get(i).duration;
+			}
+			double value=fixCost/totalDistance;
+			averageFixCostForAllEdges.put(cycle, value);
+		}
+		
+		
+
+		//descend sort
+		Comparator<Cycle> averageFixCostComparator= new Comparator<Cycle>() {
+			@Override
+			public int compare(Cycle cycle1,Cycle cycle2){
+				return (int) (averageFixCostForAllEdges.get(cycle2)-averageFixCostForAllEdges.get(cycle1));
+			}
+		};
+		
+		Queue<Cycle> tempQueue=new PriorityQueue<>(averageFixCostComparator);
+		List<Cycle> cycleSeq=new ArrayList<>();
+		while(!tempQueue.isEmpty()){
+			cycleSeq.add(tempQueue.poll());
+		}
+		
+		
+		for(int edgeIndex=0;edgeIndex<modelData.numServiceArc;edgeIndex++){
+			
+			double flowSum=0;
+			for(Map<Integer, Double> map:currentSolution.optXValues){
+				if(map.containsKey(edgeIndex)){
+					flowSum+=map.get(edgeIndex);
+				}
+			}
+			
+			double capacitySum=0;
+			for(Cycle cycle:currentSolution.cycleValues){
+				if(cycle.edgeIndexSet.contains(edgeIndex)){
+					capacitySum+=modelData.capacity[cycle.associatedPricingProblem.capacityTypeS]*cycle.value;
+				}
+			}
+			
+			
+			while(capacitySum>flowSum+0.01){
+				//cost = dataModel.alpha * totalLength / (dataModel.speed * dataModel.drivingTimePerDay)
+                //+ dataModel.fixedCost[pricingProblem.originNodeO][pricingProblem.capacityTypeS];
+				ready to code
+			}
+			
+		}
+		
+		
 		// We search the neighbourhoods based on each terminal node
 		for(int terminalIndex=0;terminalIndex<modelData.numNode;terminalIndex++){
 			
@@ -530,9 +591,12 @@ public class LocalSearchHeuristicSolver {
 	}
 
 	public static void main(String[] args) throws IOException {
-		LocalSearchHeuristicSolver solver = new LocalSearchHeuristicSolver("./data/testset/test6_5_15_40_200A.txt", 3);
-	
-		solver.Initialization();
+//		LocalSearchHeuristicSolver solver = new LocalSearchHeuristicSolver("./data/testset/test6_5_15_40_200A.txt", 3);
+//	
+//		solver.Initialization();
+
+
+        
 
 		
 	}
