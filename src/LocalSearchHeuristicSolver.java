@@ -18,6 +18,8 @@ import org.jorlib.frameworks.columnGeneration.master.cutGeneration.CutHandler;
 import org.jorlib.frameworks.columnGeneration.pricing.AbstractPricingProblemSolver;
 import org.jorlib.frameworks.columnGeneration.util.MathProgrammingUtil;
 
+import com.google.common.collect.GenericMapMaker;
+
 import bap.BranchAndPriceA;
 import bap.bapNodeComparators.NodeBoundbapNodeComparator;
 import bap.branching.BranchOnLocalService;
@@ -29,6 +31,7 @@ import cg.SNDRCPricingProblem;
 import cg.master.Master;
 import cg.master.SNDRCMasterData;
 import cg.master.cuts.StrongInequalityGenerator;
+import ch.qos.logback.core.net.SyslogOutputStream;
 import logger.BapLoggerA;
 import model.SNDRC;
 import model.SNDRC.Demand;
@@ -56,13 +59,18 @@ public class LocalSearchHeuristicSolver {
 		}
 	}
 	
-	class Node{
-		int nodeIndex;
+	class Node implements Comparable<Node>{
+		int nodeIndex,index;
 		List<Integer> pathRecord;
 		
-		public Node(int nodeIndex,List<Integer> pathRecord) {
+		public Node(int nodeIndex,List<Integer> pathRecord,int index) {
 			this.nodeIndex=nodeIndex;
 			this.pathRecord=new ArrayList<>(pathRecord);
+			this.index=index;
+		}
+		
+		public int compareTo(Node that){
+			return 
 		}
 		
 	}
@@ -380,8 +388,7 @@ public class LocalSearchHeuristicSolver {
 		
 		// For start, we need to identify the empty vehicle run edge
 		Map<Cycle,Map<Integer,Integer>> emptyVehicleEdgeRecord=new HashMap<>();//inside map record how many edges are empty for edgeIndex(key)
-		int nonEmptyEdgeDistanceSum=0;
-		
+		double[] averageFixCostForCapacityType=new double[modelData.numOfCapacity];
 
 		Map<Cycle,Double> averageFixCostForAllEdges=new HashMap<>();
 		for(Cycle cycle:currentSolution.cycleValues){
@@ -394,6 +401,11 @@ public class LocalSearchHeuristicSolver {
 			averageFixCostForAllEdges.put(cycle, value);
 		}
 		
+		System.out.println("Check averageFixCostForAllEdges:");
+		for(Cycle cycle:averageFixCostForAllEdges.keySet()){
+			System.out.println(cycle.toString()+":"+averageFixCostForAllEdges.get(cycle));
+		}
+		System.out.println();
 		
 
 		//descend sort
@@ -405,13 +417,25 @@ public class LocalSearchHeuristicSolver {
 		};
 		
 		Queue<Cycle> tempQueue=new PriorityQueue<>(averageFixCostComparator);
+		for(Cycle cycle:currentSolution.cycleValues){
+			tempQueue.add(cycle);
+		}
 		List<Cycle> cycleSeq=new ArrayList<>();
 		while(!tempQueue.isEmpty()){
 			cycleSeq.add(tempQueue.poll());
 		}
 		
+		System.out.println("Check cycleSeq:");
+		for(Cycle cycle :cycleSeq){
+			System.out.println(cycle.toString());
+		}
+		System.out.println();
+		
 		
 		for(int edgeIndex=0;edgeIndex<modelData.numServiceArc;edgeIndex++){
+			
+			Edge edge=modelData.edgeSet.get(edgeIndex);
+			System.out.println(edge.toString());
 			
 			double flowSum=0;
 			for(Map<Integer, Double> map:currentSolution.optXValues){
@@ -431,10 +455,70 @@ public class LocalSearchHeuristicSolver {
 			while(capacitySum>flowSum+0.01){
 				//cost = dataModel.alpha * totalLength / (dataModel.speed * dataModel.drivingTimePerDay)
                 //+ dataModel.fixedCost[pricingProblem.originNodeO][pricingProblem.capacityTypeS];
-				ready to code
+				
+				//Here we pick up the removable cycle with highest average fix cost
+				boolean ifFindNewOne=false;
+				for(Cycle cycle:cycleSeq){
+					int cycleCapacity=modelData.capacity[cycle.associatedPricingProblem.capacityTypeS];
+					if(cycle.edgeIndexSet.contains(edgeIndex) && capacitySum-flowSum>cycleCapacity+0.01){
+						if(!emptyVehicleEdgeRecord.containsKey(cycle)){
+							Map<Integer,Integer> tempMap=new HashMap<>();
+							tempMap.put(edgeIndex, 1);
+							emptyVehicleEdgeRecord.put(cycle, tempMap);
+							ifFindNewOne=true;
+							capacitySum=capacitySum-cycleCapacity;
+						}else{
+							Map<Integer,Integer> tempMap=emptyVehicleEdgeRecord.get(cycle);
+							if(!tempMap.containsKey(edgeIndex)){
+								tempMap.put(edgeIndex, 1);
+								ifFindNewOne=true;
+								capacitySum=capacitySum-cycleCapacity;
+							}else{
+								if(tempMap.get(edgeIndex)<cycle.value-0.01){
+									tempMap.put(edgeIndex, tempMap.get(edgeIndex)+1);
+									ifFindNewOne=true;
+									capacitySum=capacitySum-cycleCapacity;
+								}
+							}
+						}
+					}
+					
+					if(ifFindNewOne) break;
+				}
+				
+				if(!ifFindNewOne) break;
 			}
 			
 		}
+		
+		//for each capacity type, we calculate average fix cost
+		int[] sumFixCost=new int[modelData.numOfCapacity];
+		int[] sumDistance=new int[modelData.numOfCapacity];
+		for(int capacityType=0;capacityType<modelData.numOfCapacity;capacityType++){
+			for(Cycle cycle:currentSolution.cycleValues){
+				if(capacityType==cycle.associatedPricingProblem.capacityTypeS){
+					sumFixCost[capacityType]+=cycle.value*modelData.fixedCost[cycle.associatedPricingProblem.originNodeO][cycle.associatedPricingProblem.capacityTypeS];
+					
+					double distance=0;
+					for(int i=0;i<cycle.pattern.length;i++){
+						distance+=cycle.pattern[i]*modelData.serviceSet.get(i).duration;
+					}
+					distance=distance*cycle.value;
+					if(emptyVehicleEdgeRecord.containsKey(cycle)){
+						Map<Integer,Integer> tempMap=emptyVehicleEdgeRecord.get(cycle);
+						for(int edgeIndex:tempMap.keySet()){
+							Edge edge=modelData.edgeSet.get(edgeIndex);
+							distance-=tempMap.get(edgeIndex)*edge.duration;
+						}
+					}
+					sumDistance[capacityType]+=distance;				
+				}
+			}
+			averageFixCostForCapacityType[capacityType]=sumFixCost[capacityType]/sumDistance[capacityType];
+			
+		}
+		
+		
 		
 		
 		// We search the neighbourhoods based on each terminal node
@@ -475,10 +559,11 @@ public class LocalSearchHeuristicSolver {
 		int j=keyEdge.end;
 		double commodityAmount=xValues.get(commodityIndex).get(edgeIndex);
 		
+		int count=0;
 		//Backward extension
 		Queue<Node> searchQueue=new PriorityQueue<Node>();
 		List<Integer> tempList=new ArrayList<>();
-		Node rootNode=new Node(i, tempList);
+		Node rootNode=new Node(i, tempList,count);
 		searchQueue.add(rootNode);
 		
 		while(!searchQueue.isEmpty()){
@@ -494,7 +579,8 @@ public class LocalSearchHeuristicSolver {
 						int sourceNodeIndex=edge.start;
 						List<Integer> pathRecord=new ArrayList<>(currentNode.pathRecord);
 						pathRecord.add(pointFromEdgeIndex);
-						Node newNode=new Node(sourceNodeIndex,pathRecord);
+						count++;
+						Node newNode=new Node(sourceNodeIndex,pathRecord,count);
 						searchQueue.add(newNode);
 					}
 				}
@@ -515,10 +601,11 @@ public class LocalSearchHeuristicSolver {
 		
 		resultPathRecord.add(edgeIndex);
 		
+		count=0;
 		//Forward extension
 		searchQueue=new PriorityQueue<Node>();
 		tempList=new ArrayList<>();
-		rootNode=new Node(j, tempList);
+		rootNode=new Node(j, tempList,count);
 		searchQueue.add(rootNode);
 		
 		while(!searchQueue.isEmpty()){
@@ -533,7 +620,8 @@ public class LocalSearchHeuristicSolver {
 						int sourceNodeIndex=edge.end;
 						List<Integer> pathRecord=new ArrayList<>(currentNode.pathRecord);
 						pathRecord.add(pointToEdgeIndex);
-						Node newNode=new Node(sourceNodeIndex,pathRecord);
+						count++;
+						Node newNode=new Node(sourceNodeIndex,pathRecord,count);
 						searchQueue.add(newNode);
 					}
 				}
@@ -591,10 +679,9 @@ public class LocalSearchHeuristicSolver {
 	}
 
 	public static void main(String[] args) throws IOException {
-//		LocalSearchHeuristicSolver solver = new LocalSearchHeuristicSolver("./data/testset/test6_5_15_40_200A.txt", 3);
-//	
-//		solver.Initialization();
-
+		LocalSearchHeuristicSolver solver = new LocalSearchHeuristicSolver("./data/testset/test0_5_10_10_5.txt", 3);	
+		List<FeasibleSolution> solutionList=solver.Initialization();
+		solver.Search(solutionList.get(0));
 
         
 
