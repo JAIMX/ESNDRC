@@ -70,7 +70,7 @@ public class LocalSearchHeuristicSolver {
 		}
 		
 		public int compareTo(Node that){
-			return 
+			return this.index-that.index;
 		}
 		
 	}
@@ -314,7 +314,8 @@ public class LocalSearchHeuristicSolver {
 				int varCost = (int) (column.cost - fixCost);
 
 				double columnValue = (double) bap.GetOptSolutionValueMap().get(column);
-				// int value = MathProgrammingUtil.doubleToInt(columnValue);
+				int value = MathProgrammingUtil.doubleToInt(columnValue);
+				column.value=value;
 
 				vehicleFixTotalCost += fixCost * columnValue;
 				vehicleVarTotalCost += varCost * columnValue;
@@ -490,6 +491,14 @@ public class LocalSearchHeuristicSolver {
 			}
 			
 		}
+		
+		System.out.println("Check emptyVehicleEdgeRecord:");
+		for(Cycle cycle:emptyVehicleEdgeRecord.keySet()){
+			System.out.println(cycle.toString());
+			Map<Integer,Integer> tempMap=emptyVehicleEdgeRecord.get(cycle);
+			System.out.println(tempMap);
+		}
+		
 		
 		//for each capacity type, we calculate average fix cost
 		int[] sumFixCost=new int[modelData.numOfCapacity];

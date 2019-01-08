@@ -192,6 +192,7 @@ public class SNDRCSolver {
 
                 double columnValue= (double) bap.GetOptSolutionValueMap().get(column);
                 int value=MathProgrammingUtil.doubleToInt(columnValue);
+//                column.value=value;
                 
                 vehicleFixTotalCost += fixCost*columnValue;
                 vehicleVarTotalCost += varCost*columnValue;
