@@ -452,7 +452,7 @@ public class LocalSearchHeuristicSolver {
 			
 			//2.2 remove the unnecessary vehicle edges
 			Map<Cycle,Map<Integer,Integer>> removeVehicleEdgeRecord=new HashMap<>();
-			removeEmptyVehicleEdge(removeVehicleEdgeRecord, copyOptXValues, currentSolution.cycleValues,emptyVehicleEdgeRecord);
+			double totalRemoveFixCost=removeEmptyVehicleEdge(removeVehicleEdgeRecord, copyOptXValues, currentSolution.cycleValues,emptyVehicleEdgeRecord);
 			
 			
 		}
@@ -480,6 +480,11 @@ public class LocalSearchHeuristicSolver {
 			}
 			double value=fixCost/totalDistance;
 			averageFixCostForPartEdges.put(cycle, value);
+		}
+		
+		System.out.println("Check averageFixCostForPartEdges:");
+		for(Cycle cycle:averageFixCostForPartEdges.keySet()){
+			System.out.println(cycle.toString()+": "+averageFixCostForPartEdges.get(cycle));
 		}
 		
 		
@@ -558,55 +563,70 @@ public class LocalSearchHeuristicSolver {
 					}
 				}
 			}else{ // there are flow on this service edge
+
 				while(capacitySum>flowSum+0.01){
+					//cost = dataModel.alpha * totalLength / (dataModel.speed * dataModel.drivingTimePerDay)
+	                //+ dataModel.fixedCost[pricingProblem.originNodeO][pricingProblem.capacityTypeS];
 					
-				}
-			}
-			
-			while(capacitySum>flowSum+0.01){
-				//cost = dataModel.alpha * totalLength / (dataModel.speed * dataModel.drivingTimePerDay)
-                //+ dataModel.fixedCost[pricingProblem.originNodeO][pricingProblem.capacityTypeS];
-				
-				//Here we pick up the removable cycle with highest average fix cost
-				boolean ifFindNewOne=false;
-				for(Cycle cycle:cycleSeq){
-					int cycleCapacity=modelData.capacity[cycle.associatedPricingProblem.capacityTypeS];
-					if(cycle.edgeIndexSet.contains(edgeIndex) && capacitySum-flowSum>cycleCapacity-0.01){
-						if(!emptyVehicleEdgeRecord.containsKey(cycle)){
-							Map<Integer,Integer> tempMap=new HashMap<>();
-							tempMap.put(edgeIndex, 1);
-							emptyVehicleEdgeRecord.put(cycle, tempMap);
-							ifFindNewOne=true;
-							capacitySum=capacitySum-cycleCapacity;
-						}else{
-							Map<Integer,Integer> tempMap=emptyVehicleEdgeRecord.get(cycle);
-							if(!tempMap.containsKey(edgeIndex)){
-								tempMap.put(edgeIndex, 1);
-								ifFindNewOne=true;
-								capacitySum=capacitySum-cycleCapacity;
-							}else{
-								if(tempMap.get(edgeIndex)<cycle.value-0.01){
-									tempMap.put(edgeIndex, tempMap.get(edgeIndex)+1);
-									ifFindNewOne=true;
-									capacitySum=capacitySum-cycleCapacity;
+					//Here we pick up the removable cycle with highest average fix cost
+					boolean ifFindNewOne=false;
+					for(Cycle cycle:cycleSeq){
+						int cycleCapacity=modelData.capacity[cycle.associatedPricingProblem.capacityTypeS];
+						if(cycle.edgeIndexSet.contains(edgeIndex) && capacitySum-flowSum>cycleCapacity-0.01){
+							int emptyCount=0;
+							//check emptyVehicleEdgeRecord
+							if(emptyVehicleEdgeRecord.containsKey(cycle)){
+								Map<Integer,Integer> map=emptyVehicleEdgeRecord.get(cycle);
+								if(map.containsKey(edgeIndex)){
+									emptyCount+=map.get(edgeIndex);
 								}
 							}
+							
+							//check removeVehicleEdgeRecord
+							if(removeVehicleEdgeRecord.containsKey(cycle)){
+								Map<Integer,Integer> map=removeVehicleEdgeRecord.get(cycle);
+								if(map.containsKey(edgeIndex)){
+									emptyCount+=map.get(edgeIndex);
+								}
+							}
+							int value=MathProgrammingUtil.doubleToInt(cycle.value-emptyCount);
+							if(value<0) System.out.println("Error! value should not be negative");
+							if(value==0){
+								continue;
+							}else{// we can add the edge of cycle to removeVehicleEdgeRecord
+								
+								if(removeVehicleEdgeRecord.containsKey(cycle)){
+									Map<Integer,Integer> map=removeVehicleEdgeRecord.get(cycle);
+									if(map.containsKey(edgeIndex)){
+										map.put(edgeIndex, map.get(edgeIndex)+1);
+									}else{
+										map.put(edgeIndex, 1);
+									}
+
+								}else{
+									Map<Integer,Integer> map=new HashMap<>();
+									map.put(edgeIndex, 1);
+									removeVehicleEdgeRecord.put(cycle, map);
+								}
+								ifFindNewOne=true;
+								capacitySum=capacitySum-cycleCapacity;
+								Edge edge=modelData.edgeSet.get(edgeIndex);
+								totalRemoveFixCost+=averageFixCostForPartEdges.get(cycle)*edge.duration;
+							}
+
 						}
+						
+						if(ifFindNewOne) break;
 					}
 					
-					if(ifFindNewOne) break;
+					if(!ifFindNewOne) break;
 				}
 				
-				if(!ifFindNewOne) break;
 			}
-			
-			
-			
-			
 			
 		}
 		
-		
+		return totalRemoveFixCost;
 		
 	}
 	
