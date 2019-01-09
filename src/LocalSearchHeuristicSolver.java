@@ -19,6 +19,7 @@ import org.jorlib.frameworks.columnGeneration.pricing.AbstractPricingProblemSolv
 import org.jorlib.frameworks.columnGeneration.util.MathProgrammingUtil;
 
 import com.google.common.collect.GenericMapMaker;
+import com.sun.prism.TextureMap;
 
 import bap.BranchAndPriceA;
 import bap.bapNodeComparators.NodeBoundbapNodeComparator;
@@ -79,6 +80,7 @@ public class LocalSearchHeuristicSolver {
 		int commodityIndex,startNodeIndex,endNodeIndex;
 		double amount,flowCost;
 		List<Integer> pathEdgeIndexList;
+		
 		public CommoditySubPath(int commodityIndex,double amount,List<Integer> list){
 			this.commodityIndex=commodityIndex;
 			this.amount=amount;
@@ -100,6 +102,19 @@ public class LocalSearchHeuristicSolver {
 			}
 			
 		}
+		
+		
+		public String toString(){
+			String str="";
+			for(int edgeIndex:this.pathEdgeIndexList){
+				str+=modelData.edgeSet.get(edgeIndex).toString()+" ";
+			}
+			str+=" commodityIndex="+commodityIndex;
+			str+=" amount="+amount;
+			
+			return str;
+		}
+		
 		
 		
 	}
@@ -387,10 +402,215 @@ public class LocalSearchHeuristicSolver {
 	 */
 	public void Search(FeasibleSolution currentSolution) {
 		
-		// For start, we need to identify the empty vehicle run edge
+		//1. For start, we need to identify the empty vehicle run edge
 		Map<Cycle,Map<Integer,Integer>> emptyVehicleEdgeRecord=new HashMap<>();//inside map record how many edges are empty for edgeIndex(key)
 		double[] averageFixCostForCapacityType=new double[modelData.numOfCapacity];
+		identifyEmptyVehicleRun(emptyVehicleEdgeRecord, averageFixCostForCapacityType, currentSolution);
+		
+		
+		
+		
+		//2. We search the neighbourhoods based on each terminal node
+		System.out.println();
+		System.out.println("Check commoditySubpathList:");
+		for(int terminalIndex=0;terminalIndex<modelData.numNode;terminalIndex++){
+			
+			System.out.println("terminal index="+terminalIndex);
+			List<Map<Integer,Double>> copyOptXValues=new ArrayList<>();
+			for(Map<Integer,Double> map:currentSolution.optXValues){
+				copyOptXValues.add(new HashMap<>(map));
+			}
+			
+			List<CommoditySubPath> commoditySubpathList=new ArrayList<>();
+			//2.1. find all the commodity paths related to terminalIndex
+			for(int commodityIndex=0;commodityIndex<modelData.numDemand;commodityIndex++){
+//				Map<Integer, Double> xValues=currentSolution.optXValues.get(commodityIndex);
+				Map<Integer, Double> xValues=copyOptXValues.get(commodityIndex);
+				
+				for(int edgeIndex:xValues.keySet()){
+					Edge edge=modelData.edgeSet.get(edgeIndex);
+					if(edge.edgeType==0&&(edge.u==terminalIndex||edge.v==terminalIndex)){
+						
+						double amount=xValues.get(edgeIndex);
+						if(amount>0.001){
+							List<Integer> pathEdgeIndexList=SourceSearch(edgeIndex, commodityIndex,copyOptXValues);
+							//modify xValues in copyOptXValues
+							for(int tempEdgeIndex:pathEdgeIndexList){
+								xValues.put(tempEdgeIndex, xValues.get(tempEdgeIndex)-amount);
+							}
+							
+							CommoditySubPath subPath=new CommoditySubPath(commodityIndex,amount , pathEdgeIndexList);
+							System.out.println(subPath.toString());
+							commoditySubpathList.add(subPath);
+						}
+						
+					}
+				}
+			}
+			
+			
+			
+			//2.2 remove the unnecessary vehicle edges
+			Map<Cycle,Map<Integer,Integer>> removeVehicleEdgeRecord=new HashMap<>();
+			removeEmptyVehicleEdge(removeVehicleEdgeRecord, copyOptXValues, currentSolution.cycleValues,emptyVehicleEdgeRecord);
+			
+			
+		}
+	}
+	
+	public double removeEmptyVehicleEdge(Map<Cycle,Map<Integer,Integer>> removeVehicleEdgeRecord,List<Map<Integer,Double>> copyOptXValues,List<Cycle> cycleValues,Map<Cycle,Map<Integer,Integer>> emptyVehicleEdgeRecord){
+		double totalRemoveFixCost=0;
+		
+		Map<Cycle,Double> averageFixCostForPartEdges=new HashMap<>();
+		for(Cycle cycle:cycleValues){
+			double fixCost=modelData.fixedCost[cycle.associatedPricingProblem.originNodeO][cycle.associatedPricingProblem.capacityTypeS];
+			int totalDistance=0;
+			for(int i=0;i<cycle.pattern.length;i++){
+				totalDistance+=cycle.pattern[i]*modelData.serviceSet.get(i).duration;
+			}
+			if(emptyVehicleEdgeRecord.containsKey(cycle)){
+				Map<Integer,Integer> map=emptyVehicleEdgeRecord.get(cycle);
+				for(int edgeIndex:map.keySet()){
+					Edge edge=modelData.edgeSet.get(edgeIndex);
+					if(edge.edgeType==0){
+						totalDistance-=edge.duration;
+					}
 
+				}
+			}
+			double value=fixCost/totalDistance;
+			averageFixCostForPartEdges.put(cycle, value);
+		}
+		
+		
+		//descend sort
+		Comparator<Cycle> averageFixCostComparator= new Comparator<Cycle>() {
+			@Override
+			public int compare(Cycle cycle1,Cycle cycle2){
+				return (int) (averageFixCostForPartEdges.get(cycle2)-averageFixCostForPartEdges.get(cycle1));
+			}
+		};
+		
+		Queue<Cycle> tempQueue=new PriorityQueue<>(averageFixCostComparator);
+		for(Cycle cycle:cycleValues){
+			tempQueue.add(cycle);
+		}
+		List<Cycle> cycleSeq=new ArrayList<>();
+		while(!tempQueue.isEmpty()){
+			cycleSeq.add(tempQueue.poll());
+		}
+		
+		
+		for(int edgeIndex=0;edgeIndex<modelData.numServiceArc;edgeIndex++){
+			
+			
+			double flowSum=0;
+			for(Map<Integer, Double> map:copyOptXValues){
+				if(map.containsKey(edgeIndex)){
+					flowSum+=map.get(edgeIndex);
+				}
+			}
+			
+			double capacitySum=0;
+			for(Cycle cycle:cycleValues){
+				if(cycle.edgeIndexSet.contains(edgeIndex)){
+					capacitySum+=modelData.capacity[cycle.associatedPricingProblem.capacityTypeS]*cycle.value;
+					
+					if(emptyVehicleEdgeRecord.containsKey(cycle)){
+						Map<Integer,Integer> map=emptyVehicleEdgeRecord.get(cycle);
+						if(map.containsKey(edgeIndex)){
+							capacitySum-=modelData.capacity[cycle.associatedPricingProblem.capacityTypeS]*map.get(edgeIndex);
+						}
+					}
+					
+				}
+			}
+			
+			//if no commodity, we remove all the vehicle edges on this service edge
+			if(flowSum<0.001){
+				for(Cycle cycle:cycleValues){
+					if(cycle.edgeIndexSet.contains(edgeIndex)){
+						
+						int emptyCount=0;
+						//check emptyVehicleEdgeRecord
+						if(emptyVehicleEdgeRecord.containsKey(cycle)){
+							Map<Integer,Integer> map=emptyVehicleEdgeRecord.get(cycle);
+							if(map.containsKey(edgeIndex)){
+								emptyCount=map.get(edgeIndex);
+							}
+						}
+						
+						if(cycle.value>emptyCount+0.01){// we should remove the edge of this vehicle 
+							int value=MathProgrammingUtil.doubleToInt(cycle.value-emptyCount);
+							if(removeVehicleEdgeRecord.containsKey(cycle)){
+								Map<Integer,Integer> map=removeVehicleEdgeRecord.get(cycle);
+								map.put(edgeIndex, value);
+							}else{
+								Map<Integer,Integer> map=new HashMap<>();
+								map.put(edgeIndex, value);
+								removeVehicleEdgeRecord.put(cycle, map);
+							}
+							Edge edge=modelData.edgeSet.get(edgeIndex);
+							totalRemoveFixCost+=edge.duration*averageFixCostForPartEdges.get(cycle)*value;
+							
+						}
+						
+					}
+				}
+			}else{ // there are flow on this service edge
+				while(capacitySum>flowSum+0.01){
+					
+				}
+			}
+			
+			while(capacitySum>flowSum+0.01){
+				//cost = dataModel.alpha * totalLength / (dataModel.speed * dataModel.drivingTimePerDay)
+                //+ dataModel.fixedCost[pricingProblem.originNodeO][pricingProblem.capacityTypeS];
+				
+				//Here we pick up the removable cycle with highest average fix cost
+				boolean ifFindNewOne=false;
+				for(Cycle cycle:cycleSeq){
+					int cycleCapacity=modelData.capacity[cycle.associatedPricingProblem.capacityTypeS];
+					if(cycle.edgeIndexSet.contains(edgeIndex) && capacitySum-flowSum>cycleCapacity-0.01){
+						if(!emptyVehicleEdgeRecord.containsKey(cycle)){
+							Map<Integer,Integer> tempMap=new HashMap<>();
+							tempMap.put(edgeIndex, 1);
+							emptyVehicleEdgeRecord.put(cycle, tempMap);
+							ifFindNewOne=true;
+							capacitySum=capacitySum-cycleCapacity;
+						}else{
+							Map<Integer,Integer> tempMap=emptyVehicleEdgeRecord.get(cycle);
+							if(!tempMap.containsKey(edgeIndex)){
+								tempMap.put(edgeIndex, 1);
+								ifFindNewOne=true;
+								capacitySum=capacitySum-cycleCapacity;
+							}else{
+								if(tempMap.get(edgeIndex)<cycle.value-0.01){
+									tempMap.put(edgeIndex, tempMap.get(edgeIndex)+1);
+									ifFindNewOne=true;
+									capacitySum=capacitySum-cycleCapacity;
+								}
+							}
+						}
+					}
+					
+					if(ifFindNewOne) break;
+				}
+				
+				if(!ifFindNewOne) break;
+			}
+			
+			
+			
+			
+			
+		}
+		
+		
+		
+	}
+	
+	public void identifyEmptyVehicleRun(Map<Cycle,Map<Integer,Integer>> emptyVehicleEdgeRecord,double[] averageFixCostForCapacityType,FeasibleSolution currentSolution){
 		Map<Cycle,Double> averageFixCostForAllEdges=new HashMap<>();
 		for(Cycle cycle:currentSolution.cycleValues){
 			double fixCost=modelData.fixedCost[cycle.associatedPricingProblem.originNodeO][cycle.associatedPricingProblem.capacityTypeS];
@@ -435,8 +655,6 @@ public class LocalSearchHeuristicSolver {
 		
 		for(int edgeIndex=0;edgeIndex<modelData.numServiceArc;edgeIndex++){
 			
-			Edge edge=modelData.edgeSet.get(edgeIndex);
-			System.out.println(edge.toString());
 			
 			double flowSum=0;
 			for(Map<Integer, Double> map:currentSolution.optXValues){
@@ -461,7 +679,7 @@ public class LocalSearchHeuristicSolver {
 				boolean ifFindNewOne=false;
 				for(Cycle cycle:cycleSeq){
 					int cycleCapacity=modelData.capacity[cycle.associatedPricingProblem.capacityTypeS];
-					if(cycle.edgeIndexSet.contains(edgeIndex) && capacitySum-flowSum>cycleCapacity+0.01){
+					if(cycle.edgeIndexSet.contains(edgeIndex) && capacitySum-flowSum>cycleCapacity-0.01){
 						if(!emptyVehicleEdgeRecord.containsKey(cycle)){
 							Map<Integer,Integer> tempMap=new HashMap<>();
 							tempMap.put(edgeIndex, 1);
@@ -496,6 +714,9 @@ public class LocalSearchHeuristicSolver {
 		for(Cycle cycle:emptyVehicleEdgeRecord.keySet()){
 			System.out.println(cycle.toString());
 			Map<Integer,Integer> tempMap=emptyVehicleEdgeRecord.get(cycle);
+			for(int edgeIndex:tempMap.keySet()){
+				System.out.println(modelData.edgeSet.get(edgeIndex).toString()+"="+tempMap.get(edgeIndex));
+			}
 			System.out.println(tempMap);
 		}
 		
@@ -527,31 +748,10 @@ public class LocalSearchHeuristicSolver {
 			
 		}
 		
-		
-		
-		
-		// We search the neighbourhoods based on each terminal node
-		for(int terminalIndex=0;terminalIndex<modelData.numNode;terminalIndex++){
-			
-			List<CommoditySubPath> commoditySubpathList=new ArrayList<>();
-			//1. find all the commodity paths related to terminalIndex
-			for(int commodityIndex=0;commodityIndex<modelData.numDemand;commodityIndex++){
-				Map<Integer, Double> xValues=currentSolution.optXValues.get(commodityIndex);
-				for(int edgeIndex:xValues.keySet()){
-					Edge edge=modelData.edgeSet.get(edgeIndex);
-					if(edge.u==terminalIndex||edge.v==terminalIndex){
-						double amount=xValues.get(edgeIndex);
-						List<Integer> pathEdgeIndexList=SourceSearch(edgeIndex, commodityIndex, currentSolution.optXValues);
-						CommoditySubPath subPath=new CommoditySubPath(commodityIndex,amount , pathEdgeIndexList);
-						commoditySubpathList.add(subPath);
-					}
-				}
-			}
-			
-			//2. remove the unnecessary vehicle edges
-			
-			
-		}
+		System.out.println("Check averageFixCostForCapacityType:");
+		System.out.println("sumFixCost="+Arrays.toString(sumFixCost));
+		System.out.println("sumDistance="+Arrays.toString(sumDistance));
+		System.out.println("averageFixCostForCapacityType="+Arrays.toString(averageFixCostForCapacityType));
 	}
 	
 	/**
@@ -691,6 +891,7 @@ public class LocalSearchHeuristicSolver {
 		LocalSearchHeuristicSolver solver = new LocalSearchHeuristicSolver("./data/testset/test0_5_10_10_5.txt", 3);	
 		List<FeasibleSolution> solutionList=solver.Initialization();
 		solver.Search(solutionList.get(0));
+		
 
         
 
