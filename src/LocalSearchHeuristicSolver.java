@@ -415,6 +415,7 @@ public class LocalSearchHeuristicSolver {
 		System.out.println("Check commoditySubpathList:");
 		for(int terminalIndex=0;terminalIndex<modelData.numNode;terminalIndex++){
 			
+			System.out.println();
 			System.out.println("terminal index="+terminalIndex);
 			List<Map<Integer,Double>> copyOptXValues=new ArrayList<>();
 			for(Map<Integer,Double> map:currentSolution.optXValues){
@@ -453,6 +454,12 @@ public class LocalSearchHeuristicSolver {
 			//2.2 remove the unnecessary vehicle edges
 			Map<Cycle,Map<Integer,Integer>> removeVehicleEdgeRecord=new HashMap<>();
 			double totalRemoveFixCost=removeEmptyVehicleEdge(removeVehicleEdgeRecord, copyOptXValues, currentSolution.cycleValues,emptyVehicleEdgeRecord);
+			System.out.println("totalRemoveFixCost="+totalRemoveFixCost);
+			
+			//2.3 Create the residual network for each subPath in commoditySubpathList and redirect the flow
+			//Now we can drop the cycle info and only record the vehicle edge info on each service edge.
+			
+			
 			
 			
 		}
@@ -482,10 +489,11 @@ public class LocalSearchHeuristicSolver {
 			averageFixCostForPartEdges.put(cycle, value);
 		}
 		
-		System.out.println("Check averageFixCostForPartEdges:");
-		for(Cycle cycle:averageFixCostForPartEdges.keySet()){
-			System.out.println(cycle.toString()+": "+averageFixCostForPartEdges.get(cycle));
-		}
+//		System.out.println("Check averageFixCostForPartEdges:");
+//		for(Cycle cycle:averageFixCostForPartEdges.keySet()){
+//			System.out.println(cycle.toString()+": "+averageFixCostForPartEdges.get(cycle));
+//		}
+//		System.out.println();
 		
 		
 		//descend sort
@@ -505,9 +513,15 @@ public class LocalSearchHeuristicSolver {
 			cycleSeq.add(tempQueue.poll());
 		}
 		
+//		System.out.println("Check cycleSeq:");
+//		for(Cycle cycle:cycleSeq){
+//			System.out.println(cycle.toString());
+//		}
+//		System.out.println();
+		
 		
 		for(int edgeIndex=0;edgeIndex<modelData.numServiceArc;edgeIndex++){
-			
+			Edge edge=modelData.edgeSet.get(edgeIndex);
 			
 			double flowSum=0;
 			for(Map<Integer, Double> map:copyOptXValues){
@@ -555,7 +569,7 @@ public class LocalSearchHeuristicSolver {
 								map.put(edgeIndex, value);
 								removeVehicleEdgeRecord.put(cycle, map);
 							}
-							Edge edge=modelData.edgeSet.get(edgeIndex);
+							System.out.println(edge.toString()+" 0:"+edge.duration*averageFixCostForPartEdges.get(cycle)*value);
 							totalRemoveFixCost+=edge.duration*averageFixCostForPartEdges.get(cycle)*value;
 							
 						}
@@ -591,6 +605,8 @@ public class LocalSearchHeuristicSolver {
 							}
 							int value=MathProgrammingUtil.doubleToInt(cycle.value-emptyCount);
 							if(value<0) System.out.println("Error! value should not be negative");
+							
+							
 							if(value==0){
 								continue;
 							}else{// we can add the edge of cycle to removeVehicleEdgeRecord
@@ -610,7 +626,8 @@ public class LocalSearchHeuristicSolver {
 								}
 								ifFindNewOne=true;
 								capacitySum=capacitySum-cycleCapacity;
-								Edge edge=modelData.edgeSet.get(edgeIndex);
+								
+								System.out.println(edge.toString()+" 1:"+edge.duration*averageFixCostForPartEdges.get(cycle)*value);
 								totalRemoveFixCost+=averageFixCostForPartEdges.get(cycle)*edge.duration;
 							}
 
