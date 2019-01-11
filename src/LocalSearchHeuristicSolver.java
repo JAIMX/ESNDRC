@@ -19,6 +19,7 @@ import org.jorlib.frameworks.columnGeneration.pricing.AbstractPricingProblemSolv
 import org.jorlib.frameworks.columnGeneration.util.MathProgrammingUtil;
 
 import com.google.common.collect.GenericMapMaker;
+import com.sun.media.sound.ModelAbstractChannelMixer;
 import com.sun.prism.TextureMap;
 
 import bap.BranchAndPriceA;
@@ -32,7 +33,6 @@ import cg.SNDRCPricingProblem;
 import cg.master.Master;
 import cg.master.SNDRCMasterData;
 import cg.master.cuts.StrongInequalityGenerator;
-import ch.qos.logback.core.net.SyslogOutputStream;
 import logger.BapLoggerA;
 import model.SNDRC;
 import model.SNDRC.Demand;
@@ -98,8 +98,8 @@ public class LocalSearchHeuristicSolver {
 				if(edge.edgeType==0){
 					flowCost+=modelData.beta*edge.duration;
 				}
-						
 			}
+			flowCost=flowCost*amount;
 			
 		}
 		
@@ -413,6 +413,9 @@ public class LocalSearchHeuristicSolver {
 		//2. We search the neighbourhoods based on each terminal node
 		System.out.println();
 		System.out.println("Check commoditySubpathList:");
+		double[][] flowSum=new double[modelData.numNode][modelData.numServiceArc];//[terminalIndex][serviceEdgeIndex]
+		double[] costModification=new double[modelData.numNode];//[terminalIndex]
+		
 		for(int terminalIndex=0;terminalIndex<modelData.numNode;terminalIndex++){
 			
 			System.out.println();
@@ -457,15 +460,164 @@ public class LocalSearchHeuristicSolver {
 			System.out.println("totalRemoveFixCost="+totalRemoveFixCost);
 			
 			//2.3 Create the residual network for each subPath in commoditySubpathList and redirect the flow
+			
 			//Now we can drop the cycle info and only record the vehicle edge info on each service edge.
+			int[][] vehicleEdgeCover=new int[modelData.numServiceArc][modelData.numOfCapacity];
+			double[] flowEdgeCover=new double[modelData.numServiceArc];
+			for(Cycle cycle:currentSolution.cycleValues){
+				Map<Integer,Integer> map1=new HashMap<>();
+				Map<Integer,Integer> map2=new HashMap<>();
+				if(emptyVehicleEdgeRecord.containsKey(cycle)){
+					map1=emptyVehicleEdgeRecord.get(cycle);
+				}
+				if(removeVehicleEdgeRecord.containsKey(cycle)){
+					map2=removeVehicleEdgeRecord.get(cycle);
+				}
+				
+				for(int edgeIndex:cycle.edgeIndexSet){
+					Edge edge=modelData.edgeSet.get(edgeIndex);
+					int capacityType=cycle.associatedPricingProblem.capacityTypeS;
+					if(edge.edgeType==0){
+						vehicleEdgeCover[edgeIndex][capacityType]+=MathProgrammingUtil.doubleToInt(cycle.value);
+						if(map1.containsKey(edgeIndex)){
+							vehicleEdgeCover[edgeIndex][capacityType]-=map1.get(edgeIndex);
+						}
+						if(map2.containsKey(edgeIndex)){
+							vehicleEdgeCover[edgeIndex][capacityType]-=map2.get(edgeIndex);
+						}
+					}
+				}
+			}
 			
+			for(Map<Integer,Double> map:copyOptXValues){
+				for(int edgeIndex:map.keySet()){
+					if(modelData.edgeSet.get(edgeIndex).edgeType==0){
+						flowEdgeCover[edgeIndex]+=map.get(edgeIndex);
+					}
+				}
+			}
 			
+			//Currently, we plan the commodities in a sequence in commoditySubpathList
 			
 			
 		}
 	}
 	
-	public double removeEmptyVehicleEdge(Map<Cycle,Map<Integer,Integer>> removeVehicleEdgeRecord,List<Map<Integer,Double>> copyOptXValues,List<Cycle> cycleValues,Map<Cycle,Map<Integer,Integer>> emptyVehicleEdgeRecord){
+	public void rebuildSubPath(double[] flowEdgeCover,int[][] vehicleEdgeCover,List<CommoditySubPath> commoditySubpathList,double[] averageFixCostForCapacityType){
+		
+		for(CommoditySubPath subPath:commoditySubpathList){
+			double amount=subPath.amount;
+			int[][] modifyVehicleEdgeCover=new int[modelData.numServiceArc][modelData.numOfCapacity];
+			double[] residualNetwork=createResidualNetwork(flowEdgeCover,vehicleEdgeCover,subPath,modifyVehicleEdgeCover,averageFixCostForCapacityType);
+		}
+		
+	}
+	
+	public double[] createResidualNetwork(double[] flowEdgeCover,int[][] vehicleEdgeCover,CommoditySubPath subPath,int[][] modifyVehicleEdgeCover,double[] averageFixCostForCapacityType){
+		int[] totalVehicleCapacityForServiceEdge=new int[modelData.numServiceArc];
+		for(int edgeIndex=0;edgeIndex<modelData.numServiceArc;edgeIndex++){
+			totalVehicleCapacityForServiceEdge[edgeIndex]=0;
+			for(int capacityType=0;capacityType<modelData.numOfCapacity;capacityType++){
+				totalVehicleCapacityForServiceEdge[edgeIndex]+=vehicleEdgeCover[edgeIndex][capacityType]*modelData.capacity[capacityType];
+			}
+		}
+		
+		double amount=subPath.amount;
+		double variableCostPara=modelData.alpha / (modelData.speed * modelData.drivingTimePerDay);
+		double[] residualNetworkCost=new double[modelData.numServiceArc];
+		for(int serviceEdgeIndex=0;serviceEdgeIndex<modelData.numServiceArc;serviceEdgeIndex++){
+			
+			Edge edge=modelData.edgeSet.get(serviceEdgeIndex);
+			if(totalVehicleCapacityForServiceEdge[serviceEdgeIndex]<0.1){// no vehicle cover
+				residualNetworkCost[serviceEdgeIndex]=modelData.beta*edge.duration*amount;
+				
+				int capacityType=-1;
+				double amount_copy=amount;
+				while(amount_copy>0.01){
+					
+					for(int capacityIndex=0;capacityIndex<modelData.numOfCapacity;capacityIndex++){
+						if(modelData.capacity[capacityIndex]>amount-0.001){
+							capacityType=capacityIndex;
+							break;
+						}
+					}
+					if(capacityType>=0){
+						modifyVehicleEdgeCover[serviceEdgeIndex][capacityType]+=1;
+						residualNetworkCost[serviceEdgeIndex]+=variableCostPara*edge.duration;
+						residualNetworkCost[serviceEdgeIndex]+=averageFixCostForCapacityType[capacityType]*edge.duration;
+						break;
+					}else{
+						amount_copy-=modelData.capacity[modelData.numOfCapacity-1];
+						modifyVehicleEdgeCover[serviceEdgeIndex][modelData.numOfCapacity-1]+=1;
+						residualNetworkCost[serviceEdgeIndex]+=variableCostPara*edge.duration;
+						residualNetworkCost[serviceEdgeIndex]+=averageFixCostForCapacityType[modelData.numOfCapacity-1]*edge.duration;
+					}
+					
+				}
+			}else{ // there is vehicle cover
+				
+				double surplusCapacity=totalVehicleCapacityForServiceEdge[serviceEdgeIndex]-flowEdgeCover[serviceEdgeIndex];
+				if(surplusCapacity>amount-0.001){ //no new vehicle edges
+					residualNetworkCost[serviceEdgeIndex]+=modelData.beta*edge.duration*amount;
+				}else{  // we add new vehicle edges or modify the vehicle type
+					
+					int capacityType=-1;
+					double amount_copy=amount-surplusCapacity;
+					//if we add new vehicle edges
+					double cost1=0;
+					int[] modifyCapacityRecord1=new int[modelData.numOfCapacity];
+					while(amount_copy>0.01){
+						for(int capacityIndex=0;capacityIndex<modelData.numOfCapacity;capacityIndex++){
+							if(modelData.capacity[capacityIndex]>amount_copy-0.001){
+								capacityType=capacityIndex;
+								break;
+							}
+						}
+						if(capacityType>=0){
+							modifyCapacityRecord1[capacityType]+=1;
+							cost1+=variableCostPara*edge.duration+averageFixCostForCapacityType[capacityType]*edge.duration;
+							break;
+						}else{
+							amount_copy-=modelData.capacity[modelData.numOfCapacity-1];
+							modifyCapacityRecord1[modelData.numOfCapacity-1]+=1;
+							cost1+=variableCostPara*edge.duration+averageFixCostForCapacityType[modelData.numOfCapacity-1]*edge.duration;
+						}
+					}
+					
+					//if we modify the vehicle type
+					double cost2=0;
+					int[] modifyCapacityRecord2=new int[modelData.numOfCapacity];
+					//Firstly, we check if maximal possible vehicle capacity will satisfy the flow
+					int count=0;
+					for(int value:vehicleEdgeCover[serviceEdgeIndex]){
+						count+=value;
+					}
+					if(count*modelData.capacity[modelData.numOfCapacity-1]>flowEdgeCover[serviceEdgeIndex]+amount-0.001){
+						//we modify the vehicle type
+						int currentCapacity=totalVehicleCapacityForServiceEdge[serviceEdgeIndex];
+						while(currentCapacity<flowEdgeCover[serviceEdgeIndex]+amount+0.001){
+							for(int capacityIndex=0;capacityIndex<modelData.numOfCapacity;capacityIndex++){
+								if(vehicleEdgeCover[serviceEdgeIndex][capacityIndex]-modifyCapacityRecord2[capacityIndex]>0){
+									
+								}
+							}
+						}
+						
+					}else{
+						cost2=Double.MAX_VALUE;
+					}
+					
+				}
+				
+				
+			}
+			
+		}
+		
+	}
+
+	
+ 	public double removeEmptyVehicleEdge(Map<Cycle,Map<Integer,Integer>> removeVehicleEdgeRecord,List<Map<Integer,Double>> copyOptXValues,List<Cycle> cycleValues,Map<Cycle,Map<Integer,Integer>> emptyVehicleEdgeRecord){
 		double totalRemoveFixCost=0;
 		
 		Map<Cycle,Double> averageFixCostForPartEdges=new HashMap<>();
