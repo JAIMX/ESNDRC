@@ -46,11 +46,15 @@ import sun.awt.AWTAccessor.ToolkitAccessor;
 public class LocalSearchHeuristicSolver {
 	SNDRC modelData;
 	int r;    //r shortest path in the initialization phase
+	double balanceValue1,balanceValue2;
+	int timeZone;
 
-	public LocalSearchHeuristicSolver(String filename, int r) throws IOException {
+	public LocalSearchHeuristicSolver(String filename, int r,double balanceValue1,double balanceValue2,int timeZone) throws IOException {
 		modelData = new SNDRC(filename);
 		this.r = r;
-
+		this.balanceValue1=balanceValue1;
+		this.balanceValue2=balanceValue2;
+		this.timeZone=timeZone;
 	}
 
 	class FeasibleSolution {
@@ -753,6 +757,62 @@ public class LocalSearchHeuristicSolver {
 		}
 		
 		
+		//add surplus value on residual network based on flowEdgeCover
+		
+		//Firstly, we find the nearest node
+		List<Set<Integer>> nearestNodeSet=new ArrayList<>();
+		int[][] distance=new int[modelData.numNode][modelData.numNode];
+		for(int i=0;i<modelData.numNode;i++){
+			for(int j=0;j<modelData.numNode;j++){
+				distance[i][j]=Integer.MAX_VALUE;
+			}
+		}
+		for(Service service:modelData.serviceSet){
+			distance[service.origin][service.destination]=service.duration;
+		}
+		for(int terminalIndex=0;terminalIndex<modelData.numNode;terminalIndex++){
+			int minDistance=Integer.MAX_VALUE;
+			for(int i=0;i<modelData.numNode;i++){
+				if(minDistance>distance[i][terminalIndex]){
+					minDistance=distance[i][terminalIndex];
+				}
+			}
+			
+			Set<Integer> set=new HashSet<>();
+			if(minDistance<Integer.MAX_VALUE-10){
+				for(int i=0;i<modelData.numNode;i++){
+					if(distance[i][terminalIndex]==minDistance){
+						set.add(i);
+					}
+				}
+			}
+			nearestNodeSet.add(set);
+		}
+		
+		//Next, we modify the cost of network
+		for(int edgeIndex=0;edgeIndex<modelData.numServiceArc;edgeIndex++){
+			if(flowEdgeCover[edgeIndex]>0.01){
+				Edge edge=modelData.edgeSet.get(edgeIndex);
+				int taili=edge.start;
+				for(int edgeIndex2:modelData.pointFromEdgeSet.get(taili)){
+					residualNetworkCost[edgeIndex2]-=balanceValue1;
+					double reduce=balanceValue1/timeZone;
+					double reduceCost=balanceValue1-reduce;
+					Map<Integer,Double> map=new HashMap<>();
+					int time=modelData.edgeSet.get(edgeIndex2).t2;
+					for(int timeDiff=1;timeDiff<=timeZone-1;timeDiff++){
+						int tempTime=time-timeDiff;
+						if(tempTime<0){
+							tempTime+=modelData.timePeriod;
+						}
+						map.put(tempTime, reduceCost);
+						reduceCost-=reduce;
+					}
+				}
+			}
+		}
+		
+		
 		return residualNetworkCost;
 		
 	}
@@ -1218,7 +1278,7 @@ public class LocalSearchHeuristicSolver {
 	}
 
 	public static void main(String[] args) throws IOException {
-		LocalSearchHeuristicSolver solver = new LocalSearchHeuristicSolver("./data/testset/test0_5_10_10_5.txt", 3);	
+		LocalSearchHeuristicSolver solver = new LocalSearchHeuristicSolver("./data/testset/test0_5_10_10_5.txt", 3,5,3,3);	
 		List<FeasibleSolution> solutionList=solver.Initialization();
 		solver.Search(solutionList.get(0));
 		

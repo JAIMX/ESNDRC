@@ -20,8 +20,8 @@ import model.SNDRC.Edge;
 public class SNDRC implements ModelInterface {
 
     public class Service {
-        private int origin;
-        private int destination;
+        public int origin;
+        public int destination;
 //        private int LB, UB;
 //        private int capacity;
         public int duration;
