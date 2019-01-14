@@ -33,12 +33,15 @@ import cg.SNDRCPricingProblem;
 import cg.master.Master;
 import cg.master.SNDRCMasterData;
 import cg.master.cuts.StrongInequalityGenerator;
+import ilog.cplex.CpxApplyGoal;
+import jdk.nashorn.internal.runtime.Timing;
 import logger.BapLoggerA;
 import model.SNDRC;
 import model.SNDRC.Demand;
 import model.SNDRC.Edge;
 import model.SNDRC.Path;
 import model.SNDRC.Service;
+import sun.awt.AWTAccessor.ToolkitAccessor;
 
 public class LocalSearchHeuristicSolver {
 	SNDRC modelData;
@@ -498,18 +501,116 @@ public class LocalSearchHeuristicSolver {
 			}
 			
 			//Currently, we plan the commodities in a sequence in commoditySubpathList
-			
-			
+			rebuildSubPath(flowEdgeCover, vehicleEdgeCover, commoditySubpathList, averageFixCostForCapacityType);
+			break;
 		}
 	}
 	
-	public void rebuildSubPath(double[] flowEdgeCover,int[][] vehicleEdgeCover,List<CommoditySubPath> commoditySubpathList,double[] averageFixCostForCapacityType){
+	public double rebuildSubPath(double[] flowEdgeCover,int[][] vehicleEdgeCover,List<CommoditySubPath> commoditySubpathList,double[] averageFixCostForCapacityType){
+		
+		double totalCost=0;
 		
 		for(CommoditySubPath subPath:commoditySubpathList){
 			double amount=subPath.amount;
 			int[][] modifyVehicleEdgeCover=new int[modelData.numServiceArc][modelData.numOfCapacity];
 			double[] residualNetwork=createResidualNetwork(flowEdgeCover,vehicleEdgeCover,subPath,modifyVehicleEdgeCover,averageFixCostForCapacityType);
+			
+//			System.out.println(subPath.toString());
+//			for(int edgeIndex=0;edgeIndex<residualNetwork.length;edgeIndex++){
+//				System.out.println(modelData.edgeSet.get(edgeIndex).toString()+":"+residualNetwork[edgeIndex]);
+//			}
+//			break;
+			
+			List<Integer> shortestPath=new ArrayList<>();
+			totalCost+=findShortestPath(subPath,residualNetwork,shortestPath);
+			//modify flowEdgeCover vehicleEdgeCover based on shortestPath and modifyVehicleEdgeCover
+			for(int edgeIndex:shortestPath){
+				Edge edge=modelData.edgeSet.get(edgeIndex);
+				if(edge.edgeType==0){
+					flowEdgeCover[edgeIndex]+=amount;
+					for(int capacityIndex=0;capacityIndex<modelData.numOfCapacity;capacityIndex++){
+						vehicleEdgeCover[edgeIndex][capacityIndex]+=modifyVehicleEdgeCover[edgeIndex][capacityIndex];
+					}
+				}
+			}
 		}
+		
+		for(int edgeIndex=0;edgeIndex<modelData.numServiceArc;edgeIndex++){
+			Edge edge=modelData.edgeSet.get(edgeIndex);
+			if(flowEdgeCover[edgeIndex]>0.001){
+				System.out.println(edge.toString()+" "+flowEdgeCover[edgeIndex]);
+			}
+
+		}
+		
+		return totalCost;
+		
+	}
+	
+	public double findShortestPath(CommoditySubPath subPath,double[] residualNetwork,List<Integer> shortestPath){
+		int startTime=subPath.startNodeIndex%modelData.timePeriod;
+		int endTime=subPath.endNodeIndex%modelData.timePeriod;
+		int timeLength=endTime-startTime;
+		if(timeLength<=0){
+			timeLength+=modelData.timePeriod;
+		}
+		
+		
+		double[] f=new double[modelData.abstractNumNode];
+		for(int i=0;i<f.length;i++){
+			f[i]=Integer.MAX_VALUE;
+		}
+		f[subPath.startNodeIndex]=0;
+		int[] record=new int[modelData.abstractNumNode];
+		
+		for(int time=0;time<timeLength;time++){
+			int timeIndex=startTime+time;
+			timeIndex=timeIndex%modelData.timePeriod;
+			
+			for(int terminalIndex=0;terminalIndex<modelData.numNode;terminalIndex++){
+				int nodeIndex=terminalIndex*modelData.timePeriod+timeIndex;
+				if(f[nodeIndex]<Integer.MAX_VALUE-1000){
+					for(int edgeIndex:modelData.pointToEdgeSet.get(nodeIndex)){
+						Edge edge=modelData.edgeSet.get(edgeIndex);
+						int duration=edge.duration;
+						if(edge.edgeType==1){
+							duration=1;
+						}
+						
+						if(time+duration<=timeLength){
+							if(edge.edgeType==0){
+								double distance=f[nodeIndex]+residualNetwork[edgeIndex];
+								if(f[edge.end]>distance){
+									f[edge.end]=distance;
+									record[edge.end]=edgeIndex;
+								}
+							}else{ //holding edge
+								if(f[edge.end]>f[nodeIndex]){
+									f[edge.end]=f[nodeIndex];
+									record[edge.end]=edgeIndex;
+								}
+							}
+						}
+					}
+				}
+			}
+			
+		}
+		
+		
+//		System.out.println(f[subPath.endNodeIndex]);
+		int nodeIndex=subPath.endNodeIndex;
+		while(nodeIndex!=subPath.startNodeIndex){
+			int edgeIndex=record[nodeIndex];
+			shortestPath.add(edgeIndex);
+			nodeIndex=modelData.edgeSet.get(edgeIndex).start;
+//			System.out.print(modelData.edgeSet.get(edgeIndex).toString()+" ");
+		}
+
+		
+		return f[subPath.endNodeIndex];
+		
+		
 		
 	}
 	
@@ -595,16 +696,53 @@ public class LocalSearchHeuristicSolver {
 					if(count*modelData.capacity[modelData.numOfCapacity-1]>flowEdgeCover[serviceEdgeIndex]+amount-0.001){
 						//we modify the vehicle type
 						int currentCapacity=totalVehicleCapacityForServiceEdge[serviceEdgeIndex];
-						while(currentCapacity<flowEdgeCover[serviceEdgeIndex]+amount+0.001){
-							for(int capacityIndex=0;capacityIndex<modelData.numOfCapacity;capacityIndex++){
-								if(vehicleEdgeCover[serviceEdgeIndex][capacityIndex]-modifyCapacityRecord2[capacityIndex]>0){
-									
+						int maxCapacity=modelData.capacity[modelData.numOfCapacity-1];
+						boolean check=false;
+						
+						for(int capacityIndex=0;capacityIndex<modelData.numOfCapacity-1;capacityIndex++){
+							int capacity0=modelData.capacity[capacityIndex];
+							
+							while(vehicleEdgeCover[serviceEdgeIndex][capacityIndex]+modifyCapacityRecord2[capacityIndex]>0){
+								if(currentCapacity+maxCapacity-modelData.capacity[capacityIndex]>flowEdgeCover[serviceEdgeIndex]+amount-0.001){
+									for(int capacityIndex1=capacityIndex+1;capacityIndex1<modelData.numOfCapacity;capacityIndex1++){
+										int capacity1=modelData.capacity[capacityIndex1];
+										if(currentCapacity+capacity1-capacity0>flowEdgeCover[serviceEdgeIndex]+amount-0.001){
+											modifyCapacityRecord2[capacityIndex]--;
+											modifyCapacityRecord2[capacityIndex1]++;
+											currentCapacity=currentCapacity+capacity1-capacity0;
+											cost2+=(averageFixCostForCapacityType[capacityIndex1]-averageFixCostForCapacityType[capacityIndex])*edge.duration;
+											check=true;
+											break;
+										}
+									}
+								}
+								
+								if(!check){ //change the capacityIndex to largest capacity type
+									modifyCapacityRecord2[capacityIndex]--;
+									modifyCapacityRecord2[modelData.numOfCapacity-1]++;
+									currentCapacity=currentCapacity+maxCapacity-modelData.capacity[capacityIndex];
+									cost2+=(averageFixCostForCapacityType[modelData.numOfCapacity-1]-averageFixCostForCapacityType[capacityIndex])*edge.duration;
+								}else{
+									break;
 								}
 							}
+							if(check) break;
 						}
 						
 					}else{
 						cost2=Double.MAX_VALUE;
+					}
+					
+					
+					
+					
+					//compare the cost and decide if we add vehicles or modify vehicle types
+					if(cost1<cost2){// add vehicles
+						residualNetworkCost[serviceEdgeIndex]=modelData.beta*edge.duration*amount+cost1;
+						modifyVehicleEdgeCover[serviceEdgeIndex]=modifyCapacityRecord1;
+					}else{
+						residualNetworkCost[serviceEdgeIndex]=modelData.beta*edge.duration*amount+cost2;
+						modifyVehicleEdgeCover[serviceEdgeIndex]=modifyCapacityRecord2;
 					}
 					
 				}
@@ -613,6 +751,9 @@ public class LocalSearchHeuristicSolver {
 			}
 			
 		}
+		
+		
+		return residualNetworkCost;
 		
 	}
 
