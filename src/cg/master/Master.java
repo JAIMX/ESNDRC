@@ -29,9 +29,8 @@ import ilog.cplex.*;
 import ilog.cplex.IloCplex.UnknownObjectException;
 import model.SNDRC;
 import model.SNDRC.Edge;
-import sun.applet.resources.MsgAppletViewer_sv;
 
-public final class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProblem, SNDRCMasterData> {
+public class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProblem, SNDRCMasterData> {
 
     private IloObjective obj;
     // private IloNumVar[][] x;

@@ -161,6 +161,9 @@ public class SNDRC implements ModelInterface {
     private String filename;
     private ArrayList<Set<Integer>> pointToService;
     private boolean[] ifCanBeUsed;
+    
+    public double[] flowCover;
+    public double totalFlowCost;
 
     public SNDRC(SNDRC sndrcParent, Set<Integer> serviceEdgeSet) {
     	

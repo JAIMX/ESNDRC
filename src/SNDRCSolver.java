@@ -481,7 +481,7 @@ public class SNDRCSolver {
     	
     }
     
-    public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws IOException {
     	
     	SNDRC sndrc=new SNDRC("./data/testset/test6_5_15_40_200A.txt");
 //    	sndrc.outputFeature("./learningData/result/1-1.txt");
