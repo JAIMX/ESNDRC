@@ -451,7 +451,12 @@ public class LocalSearchHeuristicSolver {
 				bestFoundSolution=newSolution;
 				nonImprovementCount=0;
 				System.out.println("A new better solution has been found. obj="+bestObjectiveValue);
+			}else{
+				nonImprovementCount++;
 			}
+			
+			currentSolution=newSolution;
+			
 		}
 		
 	}
@@ -632,15 +637,10 @@ public class LocalSearchHeuristicSolver {
 			
 //			double totalCostModification=variableCost1+variableCost2+fixCost2+variableCost3+fixCost3+totalFlowCost;
 			double totalCostModification=variableCost1+flowCost2+variableCost2+fixCost2+residualNetworkCost;
-//			System.out.println(variableCost1);
-//			System.out.println(flowCost2);
-//			System.out.println(variableCost2);
-//			System.out.println(fixCost2);
-//			System.out.println(variableCost3);
-//			System.out.println(fixCost3);
-//			System.out.println(totalFlowCost);
-//			System.out.println(residualNetworkCost);
-//			System.out.println();
+			System.out.println(variableCost1+" "+flowCost2+" "+variableCost2+" "+fixCost2+" "+residualNetworkCost);
+			if(commoditySubpathList.size()==0){
+				totalCostModification=0;
+			}
 			System.out.println("totalCostModification="+totalCostModification);
 			
 			
