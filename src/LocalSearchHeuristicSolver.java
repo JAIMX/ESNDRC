@@ -13,6 +13,7 @@ import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Set;
 
+
 import org.jorlib.frameworks.columnGeneration.branchAndPrice.AbstractBranchCreator;
 import org.jorlib.frameworks.columnGeneration.io.SimpleDebugger;
 import org.jorlib.frameworks.columnGeneration.master.cutGeneration.CutHandler;
@@ -20,11 +21,7 @@ import org.jorlib.frameworks.columnGeneration.pricing.AbstractPricingProblemSolv
 import org.jorlib.frameworks.columnGeneration.util.MathProgrammingUtil;
 import org.jorlib.io.tspLibReader.graph.VehicleRoutingTable;
 
-import com.google.common.collect.GenericMapMaker;
-import com.sun.media.sound.ModelAbstractChannelMixer;
-import com.sun.prism.TextureMap;
 
-import apple.laf.JRSUIConstants.NoIndicator;
 import bap.BranchAndPriceA;
 import bap.bapNodeComparators.NodeBoundbapNodeComparator;
 import bap.branching.BranchOnLocalService;
@@ -37,7 +34,6 @@ import cg.master.Master;
 import cg.master.MasterForVehicleCover;
 import cg.master.SNDRCMasterData;
 import cg.master.cuts.StrongInequalityGenerator;
-import ch.qos.logback.core.net.SyslogOutputStream;
 import ilog.concert.IloException;
 import ilog.concert.IloLinearNumExpr;
 import ilog.concert.IloNumVar;
@@ -52,8 +48,6 @@ import model.SNDRC.Demand;
 import model.SNDRC.Edge;
 import model.SNDRC.Path;
 import model.SNDRC.Service;
-import sun.awt.ModalExclude;
-import sun.awt.AWTAccessor.ToolkitAccessor;
 
 public class LocalSearchHeuristicSolver {
 	SNDRC modelData;
@@ -510,7 +504,7 @@ public class LocalSearchHeuristicSolver {
 								xValues.put(tempEdgeIndex, xValues.get(tempEdgeIndex)-amount);
 							}
 							
-							CommoditySubPath subPath=new CommoditySubPath(commodityIndex,amount , pathEdgeIndexList);
+							CommoditySubPath subPath=new CommoditySubPath(commodityIndex,amount,pathEdgeIndexList);
 							System.out.println(subPath.toString());
 							commoditySubpathList.add(subPath);
 						}
@@ -658,6 +652,8 @@ public class LocalSearchHeuristicSolver {
 		
 		
 		//3. Using bnp to solve vehicle cover problem
+		System.out.println();
+		System.out.println("Step 3-SolveVehicleCover");
 		int minIndex=0;
 		double minCost=costModification[0];
 		for(int i=1;i<costModification.length;i++){
@@ -670,6 +666,7 @@ public class LocalSearchHeuristicSolver {
 		List<Cycle> cycleSolution=SolveVehicleCover(flowSum[minIndex],totalFlowCostArray[minIndex]);
 		
 		//4. Adjust flow based on the cycleSolution
+		System.out.println("Step 4-AdjustFlow");
 		List<Map<Integer, Double>> optXValues=AdjustFlow(cycleSolution);
 		
 		FeasibleSolution output=new FeasibleSolution(optXValues, cycleSolution);
@@ -1433,18 +1430,17 @@ public class LocalSearchHeuristicSolver {
 			}
 		};
 		
-		Queue<Cycle> tempQueue=new PriorityQueue<>(averageFixCostComparator);
-		for(Cycle cycle:currentSolution.cycleValues){
-			tempQueue.add(cycle);
-		}
+
 		List<Cycle> cycleSeq=new ArrayList<>();
-		while(!tempQueue.isEmpty()){
-			cycleSeq.add(tempQueue.poll());
+		for(Cycle cycle:currentSolution.cycleValues){
+			cycleSeq.add(cycle);
 		}
+
+		Collections.sort(cycleSeq,averageFixCostComparator);
 		
 		System.out.println("Check cycleSeq:");
 		for(Cycle cycle :cycleSeq){
-			System.out.println(cycle.toString());
+			System.out.println(cycle.toString()+" "+averageFixCostForAllEdges.get(cycle));
 		}
 		System.out.println();
 		
@@ -1540,7 +1536,7 @@ public class LocalSearchHeuristicSolver {
 					sumDistance[capacityType]+=distance;				
 				}
 			}
-			averageFixCostForCapacityType[capacityType]=sumFixCost[capacityType]/sumDistance[capacityType];
+			averageFixCostForCapacityType[capacityType]=(double)sumFixCost[capacityType]/sumDistance[capacityType];
 			
 		}
 		
