@@ -32,50 +32,50 @@ import model.SNDRC.Edge;
 
 public class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProblem, SNDRCMasterData> {
 
-    private IloObjective obj;
+    protected IloObjective obj;
     // private IloNumVar[][] x;
     // private List<Set<Integer>> edgesForX;
 
-    private IloRange[][] flowBalanceConstraints;
-    private IloRange[] weakForcingConstraints;
-    private IloRange[][] resourceBoundConstraints;
+    protected  IloRange[][] flowBalanceConstraints;
+    protected  IloRange[] weakForcingConstraints;
+    protected  IloRange[][] resourceBoundConstraints;
 
     // branch on q variables
-    private Set<RoundQ> qBranchingSet;
-    private Map<RoundQ, IloRange> qBranchingconstraints;
+    protected  Set<RoundQ> qBranchingSet;
+    protected  Map<RoundQ, IloRange> qBranchingconstraints;
 
     // branch on service edge
-    private Set<RoundServiceEdge> serviceEdgeBrachingSet;
-    private Map<RoundServiceEdge, IloRange> ServiceEdgeBranchingConstraints;
+    protected  Set<RoundServiceEdge> serviceEdgeBrachingSet;
+    protected  Map<RoundServiceEdge, IloRange> ServiceEdgeBranchingConstraints;
 
     // branch on service edge for all pricing problems
-    private Set<RoundServiceEdgeForAllPricingProblems> serviceEdge4AllBrachingSet;
-    private Map<RoundServiceEdgeForAllPricingProblems, IloRange> serviceEdge4AllBranchingConstraints;
+    protected  Set<RoundServiceEdgeForAllPricingProblems> serviceEdge4AllBrachingSet;
+    protected  Map<RoundServiceEdgeForAllPricingProblems, IloRange> serviceEdge4AllBranchingConstraints;
 
     // branch on local service
-    private Set<RoundLocalService> localServiceBranchingSet;
-    private Map<RoundLocalService, IloRange> localServiceBranchingConstraints;
+    protected  Set<RoundLocalService> localServiceBranchingSet;
+    protected  Map<RoundLocalService, IloRange> localServiceBranchingConstraints;
 
     // branch on holding edges
-    private Set<RoundHoldingEdge> holdingEdgeBranchingSet;
-    private Map<RoundHoldingEdge, IloRange> holdingEdgeBranchingConstraints;
+    protected  Set<RoundHoldingEdge> holdingEdgeBranchingSet;
+    protected  Map<RoundHoldingEdge, IloRange> holdingEdgeBranchingConstraints;
 
     // branch on local service 4 all
-    private Set<RoundLocalServiceForAllPricingProblems> localService4AllBranchingSet;
-    private Map<RoundLocalServiceForAllPricingProblems, IloRange> localService4AllBranchingConstraints;
+    protected  Set<RoundLocalServiceForAllPricingProblems> localService4AllBranchingSet;
+    protected  Map<RoundLocalServiceForAllPricingProblems, IloRange> localService4AllBranchingConstraints;
     
     //branch on time service
-    private Set<RoundTimeService> timeServiceBranchingSet;
-    private Map<RoundTimeService, IloRange> timeServiceBranchingConstraints;
+    protected  Set<RoundTimeService> timeServiceBranchingSet;
+    protected  Map<RoundTimeService, IloRange> timeServiceBranchingConstraints;
     
     //branch on time service 4 all
-    private Set<RoundTimeServiceForAllPricingProblems> timeService4AllBranchingSet;
-    private Map<RoundTimeServiceForAllPricingProblems, IloRange> timeService4AllBranchingConstraints;
+    protected  Set<RoundTimeServiceForAllPricingProblems> timeService4AllBranchingSet;
+    protected  Map<RoundTimeServiceForAllPricingProblems, IloRange> timeService4AllBranchingConstraints;
 
     // record the branches leading to a node which needs to be solved by cut
-    private Set<BranchingDecision> branchSetNodeSolvedByCut;
-    private StrongInequalityGenerator cutGen;
-    private boolean ifContainsCut;
+    protected  Set<BranchingDecision> branchSetNodeSolvedByCut;
+    protected  StrongInequalityGenerator cutGen;
+    protected  boolean ifContainsCut;
 
     public Master(SNDRC dataModel, List<SNDRCPricingProblem> pricingProblems,
             CutHandler<SNDRC, SNDRCMasterData> cutHandler, StrongInequalityGenerator cutGen,
@@ -160,14 +160,7 @@ public class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProblem, SN
              * Here we assume the cost of edge AT is 0
              */
             IloLinearNumExpr exprObj = cplex.linearNumExpr();
-            // for (int p = 0; p < dataModel.numDemand; p++) {
-            // for (int edgeIndex = 0; edgeIndex < dataModel.numServiceArc;
-            // edgeIndex++) {
-            // exprObj.addTerm(dataModel.beta *
-            // dataModel.edgeSet.get(edgeIndex).duration,
-            // x[p][edgeIndex]);
-            // }
-            // }
+
 
             for (int p = 0; p < dataModel.numDemand; p++) {
                 Map<Integer, IloNumVar> map = x.get(p);
@@ -380,7 +373,7 @@ public class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProblem, SN
                 }
             }
             
-            // time serivice branching constraints
+            // time service branching constraints
             if(timeServiceBranchingSet!=null){
                 for(RoundTimeService timeServiceBranch:timeServiceBranchingSet){
                     if(timeServiceBranch.roundUpOrDown==0){ 
@@ -398,7 +391,7 @@ public class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProblem, SN
             }
             
             
-            // time serivice 4 all branching constraints
+            // time service 4 all branching constraints
             if(timeService4AllBranchingSet!=null){
                 for(RoundTimeServiceForAllPricingProblems timeService4AllBranch:timeService4AllBranchingSet){
                     if(timeService4AllBranch.roundUpOrDown==0){ 

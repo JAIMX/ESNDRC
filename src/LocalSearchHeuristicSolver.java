@@ -14,14 +14,17 @@ import java.util.Queue;
 import java.util.Set;
 
 import org.jorlib.frameworks.columnGeneration.branchAndPrice.AbstractBranchCreator;
+import org.jorlib.frameworks.columnGeneration.io.SimpleDebugger;
 import org.jorlib.frameworks.columnGeneration.master.cutGeneration.CutHandler;
 import org.jorlib.frameworks.columnGeneration.pricing.AbstractPricingProblemSolver;
 import org.jorlib.frameworks.columnGeneration.util.MathProgrammingUtil;
+import org.jorlib.io.tspLibReader.graph.VehicleRoutingTable;
 
 import com.google.common.collect.GenericMapMaker;
 import com.sun.media.sound.ModelAbstractChannelMixer;
 import com.sun.prism.TextureMap;
 
+import apple.laf.JRSUIConstants.NoIndicator;
 import bap.BranchAndPriceA;
 import bap.bapNodeComparators.NodeBoundbapNodeComparator;
 import bap.branching.BranchOnLocalService;
@@ -35,7 +38,13 @@ import cg.master.MasterForVehicleCover;
 import cg.master.SNDRCMasterData;
 import cg.master.cuts.StrongInequalityGenerator;
 import ch.qos.logback.core.net.SyslogOutputStream;
+import ilog.concert.IloException;
+import ilog.concert.IloLinearNumExpr;
+import ilog.concert.IloNumVar;
+import ilog.concert.IloObjective;
+import ilog.concert.IloRange;
 import ilog.cplex.CpxApplyGoal;
+import ilog.cplex.IloCplex;
 import jdk.nashorn.internal.runtime.Timing;
 import logger.BapLoggerA;
 import model.SNDRC;
@@ -51,6 +60,7 @@ public class LocalSearchHeuristicSolver {
 	int r;    //r shortest path in the initialization phase
 	double balanceValue1,balanceValue2;
 	int timeZone;
+	List<Set<Integer>> edgesForXRecord;
 
 	public LocalSearchHeuristicSolver(String filename, int r,double balanceValue1,double balanceValue2,int timeZone) throws IOException {
 		modelData = new SNDRC(filename);
@@ -63,10 +73,37 @@ public class LocalSearchHeuristicSolver {
 	class FeasibleSolution {
 		List<Map<Integer, Double>> optXValues;
 		List<Cycle> cycleValues;
+		double fixCost,variableCost,flowCost,totalCost;
 
 		public FeasibleSolution(List<Map<Integer, Double>> optXValues, List<Cycle> cycleValues) {
 			this.optXValues = optXValues;
 			this.cycleValues = cycleValues;
+			
+			fixCost=0;
+			variableCost=0;
+			flowCost=0;
+			
+			for(Map<Integer,Double> map:optXValues){
+				for(int edgeIndex:map.keySet()){
+					Edge edge=modelData.edgeSet.get(edgeIndex);
+					if(edge.edgeType==0){
+						flowCost+=modelData.beta*edge.duration*map.get(edgeIndex);
+					}
+				}
+			}
+			
+			for(Cycle cycle:cycleValues){
+				fixCost+=modelData.fixedCost[cycle.associatedPricingProblem.originNodeO][cycle.associatedPricingProblem.capacityTypeS];
+				for(int edgeIndex:cycle.edgeIndexSet){
+					Edge edge=modelData.edgeSet.get(edgeIndex);
+					if(edge.edgeType==0){
+						//dataModel.alpha * totalLength / (dataModel.speed * dataModel.drivingTimePerDay)
+						variableCost+=modelData.alpha/(modelData.speed*modelData.drivingTimePerDay)*edge.duration;
+					}
+				}
+			}
+			totalCost=fixCost+variableCost+flowCost;
+			
 		}
 	}
 	
@@ -269,6 +306,7 @@ public class LocalSearchHeuristicSolver {
 			}
 		}
 
+		edgesForXRecord=modelData.edgesForX;
 		modelData.ModifyEdgesForX(edgesForX);
 
 		// try to solve use branchAndPriceA
@@ -406,11 +444,29 @@ public class LocalSearchHeuristicSolver {
 
 	}
 
+	public void TabuSearch(FeasibleSolution currentSolution0) throws IloException{
+		FeasibleSolution bestFoundSolution=currentSolution0;
+		double bestObjectiveValue=currentSolution0.totalCost;
+		FeasibleSolution currentSolution=currentSolution0;
+		
+		int nonImprovementCount=0;
+		while(nonImprovementCount<10){
+			FeasibleSolution newSolution=Neighbourhood(currentSolution);
+			if(newSolution.totalCost<bestObjectiveValue-0.001){
+				bestObjectiveValue=newSolution.totalCost;
+				bestFoundSolution=newSolution;
+				nonImprovementCount=0;
+				System.out.println("A new better solution has been found. obj="+bestObjectiveValue);
+			}
+		}
+		
+	}
 	/**
 	 * We search for the neighbourhoods and return a best estimated flow distribution
 	 * @param currentSolution
+	 * @throws IloException 
 	 */
-	public void Search(FeasibleSolution currentSolution) {
+	public FeasibleSolution Neighbourhood(FeasibleSolution currentSolution) throws IloException {
 		
 		//1. For start, we need to identify the empty vehicle run edge
 		Map<Cycle,Map<Integer,Integer>> emptyVehicleEdgeRecord=new HashMap<>();//inside map record how many edges are empty for edgeIndex(key)
@@ -598,7 +654,6 @@ public class LocalSearchHeuristicSolver {
 			costModification[terminalIndex]=totalCostModification;
 			totalFlowCostArray[terminalIndex]=totalFlowCost;
 			
-//			break;
 		}
 		
 		
@@ -612,10 +667,128 @@ public class LocalSearchHeuristicSolver {
 			}
 		}
 		
-		SolveVehicleCover(flowSum[minIndex],totalFlowCostArray[minIndex]);
+		List<Cycle> cycleSolution=SolveVehicleCover(flowSum[minIndex],totalFlowCostArray[minIndex]);
+		
+		//4. Adjust flow based on the cycleSolution
+		List<Map<Integer, Double>> optXValues=AdjustFlow(cycleSolution);
+		
+		FeasibleSolution output=new FeasibleSolution(optXValues, cycleSolution);
+		return output;
 	}
 	
-	public void SolveVehicleCover(double[] flowCover,double totalFlowCost){
+	public List<Map<Integer, Double>> AdjustFlow(List<Cycle> cycleSolution) throws IloException{
+		modelData.ModifyEdgesForX(edgesForXRecord);
+		
+		double[] totalVehicleCapacity=new double[modelData.numServiceArc];
+		//calculate total vehicle capacity for each service edge
+		for(Cycle cycle:cycleSolution){
+			int capacity=modelData.capacity[cycle.associatedPricingProblem.capacityTypeS];
+			for(int edgeIndex:cycle.edgeIndexSet){
+				Edge edge=modelData.edgeSet.get(edgeIndex);
+				if(edge.edgeType==0){
+					totalVehicleCapacity[edgeIndex]+=capacity*cycle.value;
+				}
+			}
+		}
+		
+		IloCplex cplex = new IloCplex();
+
+//        cplex.setOut(null);
+//        cplex.setParam(IloCplex.IntParam.Threads, config.MAXTHREADS);
+        cplex.setParam(IloCplex.Param.Simplex.Tolerances.Markowitz, 0.1);
+        List<Map<Integer, IloNumVar>> x; // map:edgeIndex, x variable
+        IloNumVar[][] q;
+
+        // Define variables x
+        x = new ArrayList<>();
+        for (int p = 0; p < modelData.numDemand; p++) {
+            Map<Integer, IloNumVar> initialX = new HashMap<Integer, IloNumVar>();
+            x.add(initialX);
+        }
+
+        // add x variables
+        for (int p = 0; p < modelData.numDemand; p++) {
+            for (int edgeIndex : modelData.edgesForX.get(p)) {
+                Edge edge = modelData.edgeSet.get(edgeIndex);
+                IloNumVar varX = cplex.numVar(0,modelData.demandSet.get(p).volume,
+                        "x" + p + "," + edge.start + "," + edge.end);
+                x.get(p).put(edgeIndex, varX);
+            }
+        }
+
+        // Define the objective
+        /**
+         * Here we assume the cost of edge AT is 0
+         */
+        IloLinearNumExpr exprObj = cplex.linearNumExpr();
+
+
+        for (int p = 0; p < modelData.numDemand; p++) {
+            Map<Integer, IloNumVar> map = x.get(p);
+            for (int edgeIndex : map.keySet()) {
+                exprObj.addTerm(modelData.beta *modelData.edgeSet.get(edgeIndex).duration, map.get(edgeIndex));
+            }
+        }
+
+        IloObjective obj = cplex.addMinimize(exprObj);
+        
+        // Define flowBalanceConstraints
+        IloRange[][] flowBalanceConstraints = new IloRange[modelData.numDemand][modelData.abstractNumNode];
+
+        IloLinearNumExpr expr = cplex.linearNumExpr();
+        for (int p = 0; p < modelData.numDemand; p++) {
+            Map<Integer, IloNumVar> map = x.get(p);
+
+            for (int i = 0; i < modelData.abstractNumNode; i++) {
+                expr.clear();
+                // edges which point from i
+                for (int edgeIndex : modelData.pointToEdgeSet.get(i)) {
+                    if (map.containsKey(edgeIndex)) {
+                        expr.addTerm(1, map.get(edgeIndex));
+                    }
+                }
+
+                // edges which point to i
+                for (int edgeIndex : modelData.pointFromEdgeSet.get(i)) {
+                    if (map.containsKey(edgeIndex)) {
+                        expr.addTerm(-1, map.get(edgeIndex));
+                    }
+                }
+                flowBalanceConstraints[p][i] = cplex.addEq(modelData.b[p][i], expr);
+
+            }
+        }
+
+        // Define weakForcingConstraints
+        IloRange[] weakForcingConstraints = new IloRange[modelData.numServiceArc];
+        for (int arcIndex = 0; arcIndex < modelData.numServiceArc; arcIndex++) {
+            expr.clear();
+            for (int p = 0; p < modelData.numDemand; p++) {
+                if (x.get(p).containsKey(arcIndex)) {
+                    expr.addTerm(1, x.get(p).get(arcIndex));
+                }
+            }
+
+            weakForcingConstraints[arcIndex] = cplex.addGe(totalVehicleCapacity[arcIndex], expr);
+        }
+        
+        cplex.solve();
+        System.out.println("After adjust, flowCost="+cplex.getObjValue());
+        
+        List<Map<Integer, Double>> xValues = new ArrayList<>();
+        for (int commodity = 0; commodity < modelData.numDemand; commodity++) {
+            Map tempMap = new HashMap<>();
+            for (int edgeIndex : x.get(commodity).keySet()) {
+                tempMap.put(edgeIndex, cplex.getValue(x.get(commodity).get(edgeIndex)));
+            }
+            xValues.add(tempMap);
+        }
+        
+        return xValues;
+        
+	}
+	
+	public List<Cycle> SolveVehicleCover(double[] flowCover,double totalFlowCost){
 		
         // Create the pricing problems
         List<SNDRCPricingProblem> pricingProblems = new LinkedList<SNDRCPricingProblem>();
@@ -650,15 +823,26 @@ public class LocalSearchHeuristicSolver {
         bap.setNodeOrdering(new NodeBoundbapNodeComparator());
         
         BapLoggerA logger = new BapLoggerA(bap, new File("./output/BAPlogger.log"));
+        // OPTIONAL: Attach a debugger
+//        SimpleDebugger debugger=new SimpleDebugger(bap, true);
 
         bap.runBranchAndPrice(System.currentTimeMillis() + 7200000L); // 2
                                                                        // hours
+        // Print solution:
+        System.out.println("================ Solution ================");
+        System.out.println("BAP terminated with objective : " + bap.getObjective()+"+"+totalFlowCost+"="+(bap.getObjective()+totalFlowCost));
+        System.out.println("Total Number of iterations: " + bap.getTotalNrIterations());
+        System.out.println("Total Number of processed nodes: " + bap.getNumberOfProcessedNodes());
+        System.out.println("Total Time spent on master problems: " + bap.getMasterSolveTime()
+                + " Total time spent on pricing problems: " + bap.getPricingSolveTime());
+        System.out.println("Best bound : " + bap.getBound());
         
         
+        List<Cycle> solution=new ArrayList<>();
         if (bap.hasSolution()) {
             System.out.println("Solution is optimal: " + bap.isOptimal());
             System.out.println("Columns (only non-zero columns are returned):");
-            List<Cycle> solution = bap.getSolution();
+            solution = bap.getSolution();
             for (Cycle column : solution) {
                 System.out.println(column);
                 System.out.println(out(column) + ":" + bap.GetOptSolutionValueMap().get(column));
@@ -668,7 +852,7 @@ public class LocalSearchHeuristicSolver {
 
                 double columnValue= (double) bap.GetOptSolutionValueMap().get(column);
                 int value=MathProgrammingUtil.doubleToInt(columnValue);
-//                column.value=value;
+                column.value=value;
                 
                 System.out.println("Fix cost= " + fixCost + " variable cost= " + varCost);
 
@@ -677,6 +861,10 @@ public class LocalSearchHeuristicSolver {
         }
         
         
+        bap.close();
+        cutHandler.close();
+        
+        return solution;
 	}
 	
 	public double rebuildSubPath(double[] flowEdgeCover,int[][] vehicleEdgeCover,List<CommoditySubPath> commoditySubpathList,double[] averageFixCostForCapacityType){
@@ -1495,13 +1683,12 @@ public class LocalSearchHeuristicSolver {
 
 	}
 
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws IOException, IloException {
 		LocalSearchHeuristicSolver solver = new LocalSearchHeuristicSolver("./data/testset/test0_5_10_10_5.txt", 3,5,3,3);	
 		List<FeasibleSolution> solutionList=solver.Initialization();
-		solver.Search(solutionList.get(0));
+//		solver.Neighbourhood(solutionList.get(0));
+		solver.TabuSearch(solutionList.get(0));
 		
-
-        
 
 		
 	}
