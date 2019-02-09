@@ -670,6 +670,25 @@ public class LocalSearchHeuristicSolver {
 		List<Map<Integer, Double>> optXValues=AdjustFlow(cycleSolution);
 		
 		FeasibleSolution output=new FeasibleSolution(optXValues, cycleSolution);
+		
+		// output x variables
+		for (int demand = 0; demand < modelData.numDemand; demand++) {
+			for (int edgeIndex : optXValues.get(demand).keySet()) {
+				if (optXValues.get(demand).get(edgeIndex) > 0.01) {
+					Edge edge;
+					edge = modelData.edgeSet.get(edgeIndex);
+					if (edge.edgeType == 0) {
+						System.out.println("x[" + demand + "]:" + edge.u + "," + edge.t1 + "->" + edge.v + ","
+								+ edge.t2 + "= " + optXValues.get(demand).get(edgeIndex) + " " + edgeIndex);
+					}
+
+				}
+			}
+			System.out.println();
+		}
+		
+		
+		
 		return output;
 	}
 	
