@@ -1,5 +1,6 @@
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -19,7 +20,6 @@ import org.jorlib.frameworks.columnGeneration.io.SimpleDebugger;
 import org.jorlib.frameworks.columnGeneration.master.cutGeneration.CutHandler;
 import org.jorlib.frameworks.columnGeneration.pricing.AbstractPricingProblemSolver;
 import org.jorlib.frameworks.columnGeneration.util.MathProgrammingUtil;
-import org.jorlib.io.tspLibReader.graph.VehicleRoutingTable;
 
 
 import bap.BranchAndPriceA;
@@ -39,9 +39,7 @@ import ilog.concert.IloLinearNumExpr;
 import ilog.concert.IloNumVar;
 import ilog.concert.IloObjective;
 import ilog.concert.IloRange;
-import ilog.cplex.CpxApplyGoal;
 import ilog.cplex.IloCplex;
-import jdk.nashorn.internal.runtime.Timing;
 import logger.BapLoggerA;
 import model.SNDRC;
 import model.SNDRC.Demand;
@@ -50,18 +48,22 @@ import model.SNDRC.Path;
 import model.SNDRC.Service;
 
 public class LocalSearchHeuristicSolver {
-	SNDRC modelData;
-	int r;    //r shortest path in the initialization phase
-	double balanceValue1,balanceValue2;
-	int timeZone;
-	List<Set<Integer>> edgesForXRecord;
+	private SNDRC modelData;
+	private int r;    //r shortest path in the initialization phase
+	private double balanceValue1,balanceValue2;
+	private int timeZone;
+	private List<Set<Integer>> edgesForXRecord;
+	private int tabuListLengthLimit,tabuAppearLimit;//parameters for tabu list
+	private ArrayDeque<Integer> tabuList;
 
-	public LocalSearchHeuristicSolver(String filename, int r,double balanceValue1,double balanceValue2,int timeZone) throws IOException {
+	public LocalSearchHeuristicSolver(String filename, int r,double balanceValue1,double balanceValue2,int timeZone,int tabuListLengthLimit,int tabuAppearLimit) throws IOException {
 		modelData = new SNDRC(filename);
 		this.r = r;
 		this.balanceValue1=balanceValue1;
 		this.balanceValue2=balanceValue2;
 		this.timeZone=timeZone;
+		this.tabuListLengthLimit=tabuListLengthLimit;
+		this.tabuAppearLimit=tabuAppearLimit;
 	}
 
 	class FeasibleSolution {
@@ -443,8 +445,47 @@ public class LocalSearchHeuristicSolver {
 		double bestObjectiveValue=currentSolution0.totalCost;
 		FeasibleSolution currentSolution=currentSolution0;
 		
+		//for tabu list
+		this.tabuList=new ArrayDeque<Integer>();
+		int[] tabuCount=new int[modelData.numServiceArc];
+		
 		int nonImprovementCount=0;
 		while(nonImprovementCount<10){
+			
+			//update tabu list
+			boolean[] ifCover=new boolean[modelData.numServiceArc];
+			List<Map<Integer, Double>> xValues=currentSolution.optXValues;
+			for(Map<Integer,Double> map:xValues) {
+				for(int edgeIndex:map.keySet()) {
+					if(edgeIndex<modelData.numServiceArc&&map.get(edgeIndex)>0.001) {
+						ifCover[edgeIndex]=true;
+					}
+				}
+			}
+			for(int serviceEdgeIndex=0;serviceEdgeIndex<modelData.numServiceArc;serviceEdgeIndex++) {
+				if(!ifCover[serviceEdgeIndex]) {
+					tabuCount[serviceEdgeIndex]=0;
+				}else {
+					tabuCount[serviceEdgeIndex]++;
+				}
+				
+				if(tabuCount[serviceEdgeIndex]>tabuAppearLimit&&!tabuList.contains(serviceEdgeIndex)) {
+					tabuList.add(serviceEdgeIndex);
+				}
+			}
+			while(tabuList.size()>tabuListLengthLimit) {
+				tabuList.remove();
+			}
+			
+			System.out.println("===========================new round=========================");
+			System.out.println("tabu list edge:");
+			for(int edgeIndex:tabuList) {
+				Edge edge=modelData.edgeSet.get(edgeIndex);
+				System.out.print(edge.toString()+" ");
+			}
+			System.out.println();
+			
+			
 			FeasibleSolution newSolution=Neighbourhood(currentSolution);
 			if(newSolution.totalCost<bestObjectiveValue-0.001){
 				bestObjectiveValue=newSolution.totalCost;
@@ -892,7 +933,7 @@ public class LocalSearchHeuristicSolver {
 			int[][] modifyVehicleEdgeCover=new int[modelData.numServiceArc][modelData.numOfCapacity];
 			double[] residualNetwork=createResidualNetwork(flowEdgeCover,vehicleEdgeCover,subPath,modifyVehicleEdgeCover,averageFixCostForCapacityType);
 			
-//			System.out.println(subPath.toString());
+			System.out.println(subPath.toString());
 //			for(int edgeIndex=0;edgeIndex<residualNetwork.length;edgeIndex++){
 //				System.out.println(modelData.edgeSet.get(edgeIndex).toString()+":"+residualNetwork[edgeIndex]);
 //			}
@@ -908,7 +949,10 @@ public class LocalSearchHeuristicSolver {
 						vehicleEdgeCover[edgeIndex][capacityIndex]+=modifyVehicleEdgeCover[edgeIndex][capacityIndex];
 					}
 				}
+				
+				System.out.print(modelData.edgeSet.get(edgeIndex).toString()+" ");
 			}
+			System.out.println();
 			
 		}
 		
@@ -957,7 +1001,7 @@ public class LocalSearchHeuristicSolver {
 						}
 						
 						if(time+duration<=timeLength){
-							if(edge.edgeType==0){
+							if(edge.edgeType==0&&!tabuList.contains(edgeIndex)){
 								double distance=f[nodeIndex]+residualNetwork[edgeIndex];
 								if(f[edge.end]>distance){
 									f[edge.end]=distance;
@@ -1699,7 +1743,7 @@ public class LocalSearchHeuristicSolver {
 	}
 
 	public static void main(String[] args) throws IOException, IloException {
-		LocalSearchHeuristicSolver solver = new LocalSearchHeuristicSolver("./data/testset/test0_5_10_10_5.txt", 3,5,3,3);	
+		LocalSearchHeuristicSolver solver = new LocalSearchHeuristicSolver("./data/testset/test0_5_10_10_5.txt", 3,5,3,3,10,3);	
 		List<FeasibleSolution> solutionList=solver.Initialization();
 //		solver.Neighbourhood(solutionList.get(0));
 		solver.TabuSearch(solutionList.get(0));
