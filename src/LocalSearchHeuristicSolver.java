@@ -942,6 +942,7 @@ public class LocalSearchHeuristicSolver {
 			totalCost+=findShortestPath(subPath,residualNetwork,shortestPath);
 			//modify flowEdgeCover vehicleEdgeCover based on shortestPath and modifyVehicleEdgeCover
 			for(int edgeIndex:shortestPath){
+				
 				Edge edge=modelData.edgeSet.get(edgeIndex);
 				if(edge.edgeType==0){
 					flowEdgeCover[edgeIndex]+=amount;
@@ -950,9 +951,13 @@ public class LocalSearchHeuristicSolver {
 					}
 				}
 				
-				System.out.print(modelData.edgeSet.get(edgeIndex).toString()+" ");
+//				System.out.print(modelData.edgeSet.get(edgeIndex).toString()+" ");
+//				if(tabuList.contains(edgeIndex)) {
+//					System.out.println("Attention!!!!!!!!!");
+//				}
 			}
-			System.out.println();
+//			System.out.println();
+			shortestPath.clear();
 			
 		}
 		
@@ -1001,18 +1006,22 @@ public class LocalSearchHeuristicSolver {
 						}
 						
 						if(time+duration<=timeLength){
-							if(edge.edgeType==0&&!tabuList.contains(edgeIndex)){
-								double distance=f[nodeIndex]+residualNetwork[edgeIndex];
-								if(f[edge.end]>distance){
-									f[edge.end]=distance;
-									record[edge.end]=edgeIndex;
-								}
-							}else{ //holding edge
-								if(f[edge.end]>f[nodeIndex]){
-									f[edge.end]=f[nodeIndex];
-									record[edge.end]=edgeIndex;
+							
+							if(!tabuList.contains(edgeIndex)) {
+								if(edge.edgeType==0){
+									double distance=f[nodeIndex]+residualNetwork[edgeIndex];
+									if(f[edge.end]>distance){
+										f[edge.end]=distance;
+										record[edge.end]=edgeIndex;
+									}
+								}else{ //holding edge
+									if(f[edge.end]>f[nodeIndex]){
+										f[edge.end]=f[nodeIndex];
+										record[edge.end]=edgeIndex;
+									}
 								}
 							}
+
 						}
 					}
 				}
