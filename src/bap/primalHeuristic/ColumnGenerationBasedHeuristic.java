@@ -364,6 +364,7 @@ public class ColumnGenerationBasedHeuristic {
         if (cplex.getObjValue() < this.objectiveIncumbentSolution) {
 
             int integerObjective = MathProgrammingUtil.doubleToInt(cplex.getObjValue());
+//            int integerObjective = (int) Math.round(cplex.getObjValue());
 
             this.objectiveIncumbentSolution = integerObjective;
             this.incumbentSolution = new ArrayList<>();
