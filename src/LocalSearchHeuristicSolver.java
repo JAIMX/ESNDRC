@@ -1,3 +1,4 @@
+import java.awt.Dialog.ModalExclusionType;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -61,17 +62,18 @@ public class LocalSearchHeuristicSolver {
 	private double balanceValue1,balanceValue2;
 	private int timeZone;
 	private List<Set<Integer>> edgesForXRecord;
-	private int tabuListLengthLimit,tabuAppearLimit;//parameters for tabu list
-	private ArrayDeque<Integer> tabuList;
+	private int tabuListLengthLimit;//parameters for tabu list
+	private List<Integer> tabuCommodityList,tabuEdgeIndexList;
+	private boolean[][] tabuEdge;
 
-	public LocalSearchHeuristicSolver(String filename, int r,double balanceValue1,double balanceValue2,int timeZone,int tabuListLengthLimit,int tabuAppearLimit) throws IOException {
+	public LocalSearchHeuristicSolver(String filename, int r,double balanceValue1,double balanceValue2,int timeZone,int tabuListLengthLimit) throws IOException {
 		modelData = new SNDRC(filename);
 		this.r = r;
 		this.balanceValue1=balanceValue1;
 		this.balanceValue2=balanceValue2;
 		this.timeZone=timeZone;
 		this.tabuListLengthLimit=tabuListLengthLimit;
-		this.tabuAppearLimit=tabuAppearLimit;
+//		this.tabuAppearLimit=tabuAppearLimit;
 	}
 
 	class FeasibleSolution {
@@ -131,11 +133,13 @@ public class LocalSearchHeuristicSolver {
 		int commodityIndex,startNodeIndex,endNodeIndex;
 		double amount,flowCost;
 		List<Integer> pathEdgeIndexList;
+		int tabuEdgeIndex;
 		
-		public CommoditySubPath(int commodityIndex,double amount,List<Integer> list){
+		public CommoditySubPath(int commodityIndex,double amount,List<Integer> list,int tabuEdgeIndex){
 			this.commodityIndex=commodityIndex;
 			this.amount=amount;
 			this.pathEdgeIndexList=new ArrayList<>(list);
+			this.tabuEdgeIndex=tabuEdgeIndex;
 			
 			Edge edge=modelData.edgeSet.get(pathEdgeIndexList.get(0));
 			startNodeIndex=edge.start;
@@ -606,46 +610,32 @@ public class LocalSearchHeuristicSolver {
 		FeasibleSolution currentSolution=currentSolution0;
 		
 		//for tabu list
-		this.tabuList=new ArrayDeque<Integer>();
-		int[] tabuCount=new int[modelData.numServiceArc];
+		tabuCommodityList=new LinkedList<Integer>();
+		tabuEdgeIndexList=new LinkedList<Integer>();
+//		this.tabuList=new ArrayDeque<Integer>();
+//		int[] tabuCount=new int[modelData.numServiceArc];
 		
 		int nonImprovementCount=0;
 		while(nonImprovementCount<100){
 			
-			//update tabu list
-			boolean[] ifCover=new boolean[modelData.numServiceArc];
-			List<Map<Integer, Double>> xValues=currentSolution.optXValues;
-			for(Map<Integer,Double> map:xValues) {
-				for(int edgeIndex:map.keySet()) {
-					if(edgeIndex<modelData.numServiceArc&&map.get(edgeIndex)>0.001) {
-						ifCover[edgeIndex]=true;
-					}
-				}
+			//update tabuList and tabuEdge
+			while(tabuCommodityList.size()>tabuListLengthLimit){
+				tabuCommodityList.remove(0);
+				tabuEdgeIndexList.remove(0);
 			}
-			for(int serviceEdgeIndex=0;serviceEdgeIndex<modelData.numServiceArc;serviceEdgeIndex++) {
-				if(!ifCover[serviceEdgeIndex]) {
-					tabuCount[serviceEdgeIndex]=0;
-				}else {
-					tabuCount[serviceEdgeIndex]++;
-				}
-				
-				if(tabuCount[serviceEdgeIndex]>tabuAppearLimit&&!tabuList.contains(serviceEdgeIndex)) {
-					tabuList.add(serviceEdgeIndex);
-				}
+			
+			tabuEdge=new boolean[modelData.numDemand][modelData.numServiceArc];
+			for(int i=0;i<modelData.numDemand;i++){
+				Arrays.fill(tabuEdge[i], true);
 			}
-			while(tabuList.size()>tabuListLengthLimit) {
-				tabuList.remove();
+			for(int i=0;i<tabuCommodityList.size();i++){
+				tabuEdge[tabuCommodityList.get(i)][tabuEdgeIndexList.get(i)]=false;
 			}
+			
+			
 			
 			System.out.println("===========================new round=========================");
-			System.out.println("tabu list edge:");
-			for(int edgeIndex:tabuList) {
-				Edge edge=modelData.edgeSet.get(edgeIndex);
-				System.out.print(edge.toString()+" ");
-			}
-			System.out.println();
-			
-			
+
 			FeasibleSolution newSolution=Neighbourhood(currentSolution);
 			if(newSolution.totalCost<bestObjectiveValue-0.001){
 				bestObjectiveValue=newSolution.totalCost;
@@ -682,6 +672,7 @@ public class LocalSearchHeuristicSolver {
 		double[][] flowSum=new double[modelData.numNode][modelData.numServiceArc];//[terminalIndex][serviceEdgeIndex]
 		double[] costModification=new double[modelData.numNode];//[terminalIndex]
 		double[] totalFlowCostArray=new double[modelData.numNode];
+		List<List<CommoditySubPath>> commoditySubpathListRecord=new ArrayList<>();
 		
 		for(int terminalIndex=0;terminalIndex<modelData.numNode;terminalIndex++){
 			
@@ -710,7 +701,7 @@ public class LocalSearchHeuristicSolver {
 								xValues.put(tempEdgeIndex, xValues.get(tempEdgeIndex)-amount);
 							}
 							
-							CommoditySubPath subPath=new CommoditySubPath(commodityIndex,amount,pathEdgeIndexList);
+							CommoditySubPath subPath=new CommoditySubPath(commodityIndex,amount,pathEdgeIndexList,edgeIndex);
 							System.out.println(subPath.toString());
 							commoditySubpathList.add(subPath);
 						}
@@ -718,28 +709,8 @@ public class LocalSearchHeuristicSolver {
 					}
 				}
 			}
+			commoditySubpathListRecord.add(new ArrayList<>(commoditySubpathList));
 			
-			//find all the commodity paths related to edges in tabu list
-			for(int edgeIndex:tabuList){
-				for(int commodityIndex=0;commodityIndex<modelData.numDemand;commodityIndex++){
-					Map<Integer, Double> xValues=copyOptXValues.get(commodityIndex);
-					if(xValues.containsKey(edgeIndex)){
-						double amount=xValues.get(edgeIndex);
-						if(amount>0.001){
-							List<Integer> pathEdgeIndexList=SourceSearch(edgeIndex, commodityIndex,copyOptXValues);
-							//modify xValues in copyOptXValues
-							for(int tempEdgeIndex:pathEdgeIndexList){
-								xValues.put(tempEdgeIndex, xValues.get(tempEdgeIndex)-amount);
-							}
-							
-							CommoditySubPath subPath=new CommoditySubPath(commodityIndex,amount,pathEdgeIndexList);
-							System.out.println(subPath.toString());
-							commoditySubpathList.add(subPath);
-						}
-					}
-
-				}
-			}
 			
 			
 			
@@ -747,6 +718,8 @@ public class LocalSearchHeuristicSolver {
 			Map<Cycle,Map<Integer,Integer>> removeVehicleEdgeRecord=new HashMap<>();
 			double totalRemoveFixCost=removeEmptyVehicleEdge(removeVehicleEdgeRecord, copyOptXValues, currentSolution.cycleValues,emptyVehicleEdgeRecord);
 			System.out.println("totalRemoveFixCost="+totalRemoveFixCost);
+	
+			
 			
 			//2.3 Create the residual network for each subPath in commoditySubpathList and redirect the flow
 			
@@ -886,8 +859,14 @@ public class LocalSearchHeuristicSolver {
 			}
 		}
 		
+		List<CommoditySubPath> commoditySubPathList=commoditySubpathListRecord.get(minIndex);
+		for(CommoditySubPath subpath:commoditySubPathList){
+			tabuCommodityList.add(subpath.commodityIndex);
+			tabuEdgeIndexList.add(subpath.tabuEdgeIndex);
+		}
+		
 //		List<Cycle> cycleSolution=SolveVehicleCover(flowSum[minIndex],totalFlowCostArray[minIndex]);
-		List<Cycle> cycleSolution=SolveVehicleCoverCGHeuristic(flowSum[minIndex],totalFlowCostArray[minIndex],true);
+		List<Cycle> cycleSolution=SolveVehicleCoverCGHeuristic(flowSum[minIndex],totalFlowCostArray[minIndex],false);
 		
 		//4. Adjust flow based on the cycleSolution
 		System.out.println("Step 4-AdjustFlow");
@@ -1501,14 +1480,17 @@ public class LocalSearchHeuristicSolver {
 						}
 						
 						if(time+duration<=timeLength){
-							
-							if(!tabuList.contains(edgeIndex)) {
+							if(edgeIndex!=subPath.tabuEdgeIndex){
 								if(edge.edgeType==0){
-									double distance=f[nodeIndex]+residualNetwork[edgeIndex];
-									if(f[edge.end]>distance){
-										f[edge.end]=distance;
-										record[edge.end]=edgeIndex;
+									
+									if(tabuEdge[subPath.commodityIndex][edgeIndex]){
+										double distance=f[nodeIndex]+residualNetwork[edgeIndex];
+										if(f[edge.end]>distance){
+											f[edge.end]=distance;
+											record[edge.end]=edgeIndex;
+										}
 									}
+									
 								}else{ //holding edge
 									if(f[edge.end]>f[nodeIndex]){
 										f[edge.end]=f[nodeIndex];
@@ -1516,6 +1498,9 @@ public class LocalSearchHeuristicSolver {
 									}
 								}
 							}
+//							if(!tabuList.contains(edgeIndex)) {
+//
+//							}
 
 						}
 					}
@@ -1529,7 +1514,10 @@ public class LocalSearchHeuristicSolver {
 		
 //		System.out.println(f[subPath.endNodeIndex]);
 		if(f[subPath.endNodeIndex]>100000000){
-			shortestPath=subPath.pathEdgeIndexList;
+//			shortestPath=subPath.pathEdgeIndexList;
+			for(int edgeIndex:subPath.pathEdgeIndexList){
+				shortestPath.add(edgeIndex);
+			}
 			double length=0;
 			for(int edgeIndex:shortestPath){
 				if(edgeIndex<modelData.numServiceArc){
@@ -1537,9 +1525,9 @@ public class LocalSearchHeuristicSolver {
 				}
 				
 				//将tabu list中的边去掉
-				if(tabuList.contains(edgeIndex)){
-					tabuList.remove(edgeIndex);
-				}
+//				if(tabuList.contains(edgeIndex)){
+//					tabuList.remove(edgeIndex);
+//				}
 			}		
 			return length;
 			
@@ -2335,9 +2323,9 @@ public class LocalSearchHeuristicSolver {
 //      properties.setProperty("CUTSENABLED", "false");
         Configuration.readFromFile(properties);
 		
-		LocalSearchHeuristicSolver solver = new LocalSearchHeuristicSolver("./data/testset/test0_5_10_10_5.txt", 3,5,3,3,10,3);	
-//		LocalSearchHeuristicSolver solver = new LocalSearchHeuristicSolver("./data/testset/test1_5_10_15_20.txt", 3,5,3,3,10,3);
-//		LocalSearchHeuristicSolver solver = new LocalSearchHeuristicSolver("./data/testset/test12_10_50_30_100C.txt", 3,5,3,10,100,3);
+//		LocalSearchHeuristicSolver solver = new LocalSearchHeuristicSolver("./data/testset/test0_5_10_10_5.txt", 3,5,3,3,20);	
+//		LocalSearchHeuristicSolver solver = new LocalSearchHeuristicSolver("./data/testset/test1_5_10_15_20.txt", 3,5,3,3,60);
+		LocalSearchHeuristicSolver solver = new LocalSearchHeuristicSolver("./data/testset/test12_10_50_30_100A.txt", 3,5,3,10,200);
 
 //		List<FeasibleSolution> solutionList=solver.Initialization();
 		List<FeasibleSolution> solutionList=solver.InitializationCGHeuristic();
