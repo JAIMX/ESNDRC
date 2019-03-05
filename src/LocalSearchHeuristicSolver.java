@@ -691,10 +691,10 @@ public class LocalSearchHeuristicSolver {
 		
 //---------------------------------------------------------------START-----------------------------------------
 		for(int abstarctNodeIndex=0;abstarctNodeIndex<modelData.abstractNumNode;abstarctNodeIndex++){
-			//首先检查该点是否有货物流进出
+			//棣栧厛妫�鏌ヨ鐐规槸鍚︽湁璐х墿娴佽繘鍑�
 			boolean check=false;
 			for(int edgeIndex:modelData.pointToEdgeSet.get(abstarctNodeIndex)){
-				if(edgeIndex<modelData.numServiceArc){ //要求是service edge
+				if(edgeIndex<modelData.numServiceArc){ //瑕佹眰鏄痵ervice edge
 					for(int commodityIndex=0;commodityIndex<modelData.numDemand;commodityIndex++){
 						if(currentSolution.optXValues.get(commodityIndex).containsKey(edgeIndex)){
 							double value=currentSolution.optXValues.get(commodityIndex).get(edgeIndex);
@@ -709,7 +709,7 @@ public class LocalSearchHeuristicSolver {
 			}
 			
 			for(int edgeIndex:modelData.pointFromEdgeSet.get(abstarctNodeIndex)){
-				if(edgeIndex<modelData.numServiceArc){ //要求是service edge
+				if(edgeIndex<modelData.numServiceArc){ //瑕佹眰鏄痵ervice edge
 					for(int commodityIndex=0;commodityIndex<modelData.numDemand;commodityIndex++){
 						if(currentSolution.optXValues.get(commodityIndex).containsKey(edgeIndex)){
 							double value=currentSolution.optXValues.get(commodityIndex).get(edgeIndex);
@@ -1580,7 +1580,7 @@ public class LocalSearchHeuristicSolver {
 		}
 		
 		
-		//由于存在 tabu list 可能找不到最短路，这里我们返回空的边集和Double.MaxValue,返回后该flow仍按照之间路径流过，同时将相关边从tabu list 中剔除
+		//鐢变簬瀛樺湪 tabu list 鍙兘鎵句笉鍒版渶鐭矾锛岃繖閲屾垜浠繑鍥炵┖鐨勮竟闆嗗拰Double.MaxValue,杩斿洖鍚庤flow浠嶆寜鐓т箣闂磋矾寰勬祦杩囷紝鍚屾椂灏嗙浉鍏宠竟浠巘abu list 涓墧闄�
 		
 //		System.out.println(f[subPath.endNodeIndex]);
 		if(f[subPath.endNodeIndex]>100000000){
@@ -1597,7 +1597,7 @@ public class LocalSearchHeuristicSolver {
 					length+=residualNetwork[edgeIndex];
 				}
 				
-//				//将tabu list中的边去掉
+//				//灏唗abu list涓殑杈瑰幓鎺�
 //				if(tabuList.contains(edgeIndex)){
 //					tabuList.remove(edgeIndex);
 //				}
@@ -1622,7 +1622,7 @@ public class LocalSearchHeuristicSolver {
 						Edge edge=modelData.edgeSet.get(serviceEdgeIndex);
 						System.out.println(edge.toString()+":"+residualNetwork[serviceEdgeIndex]);
 					}
-					throw new Exception("最短路算法发生错误");
+					throw new Exception("鏈�鐭矾绠楁硶鍙戠敓閿欒");
 				}
 			}
 //			System.out.println();
@@ -1904,7 +1904,7 @@ public class LocalSearchHeuristicSolver {
 				}
 			}
 			
-			//这里totalDistance有可能为0，有可能做了一次flow调整后整个cycle可以删去。
+			//杩欓噷totalDistance鏈夊彲鑳戒负0锛屾湁鍙兘鍋氫簡涓�娆low璋冩暣鍚庢暣涓猚ycle鍙互鍒犲幓銆�
 			double value=fixCost/totalDistance;
 			double distance=0;
 			if(totalDistance==0){
@@ -2396,9 +2396,9 @@ public class LocalSearchHeuristicSolver {
 //      properties.setProperty("CUTSENABLED", "false");
         Configuration.readFromFile(properties);
 		
-//		LocalSearchHeuristicSolver solver = new LocalSearchHeuristicSolver("./data/testset/test0_5_10_10_5.txt", 3,5,3,3,10);	
+		LocalSearchHeuristicSolver solver = new LocalSearchHeuristicSolver("./data/testset/test0_5_10_10_5.txt", 3,5,3,3,10);	
 //		LocalSearchHeuristicSolver solver = new LocalSearchHeuristicSolver("./data/testset/test1_5_10_15_20.txt", 3,5,3,3,20);
-		LocalSearchHeuristicSolver solver = new LocalSearchHeuristicSolver("./data/testset/test12_10_50_30_100A.txt", 3,5,3,10,50);
+//		LocalSearchHeuristicSolver solver = new LocalSearchHeuristicSolver("./data/testset/test12_10_50_30_100A.txt", 3,5,3,10,50);
 
 //		List<FeasibleSolution> solutionList=solver.Initialization();
 		List<FeasibleSolution> solutionList=solver.InitializationCGHeuristic();
@@ -2406,7 +2406,7 @@ public class LocalSearchHeuristicSolver {
 		solver.TabuSearch(solutionList.get(0));
 		
 		long endTime = System.currentTimeMillis();
-		System.out.println("程序运行时间：" + (endTime - startTime) + "ms");
+		System.out.println("求解时间=" + (endTime - startTime) + "ms");
 
 		System.setOut(out0);
 		out0.close();
