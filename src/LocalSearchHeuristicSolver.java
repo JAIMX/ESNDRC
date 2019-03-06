@@ -1514,7 +1514,7 @@ public class LocalSearchHeuristicSolver {
 		}
 		
 		
-		//鐢变簬瀛樺湪 tabu list 鍙兘鎵句笉鍒版渶鐭矾锛岃繖閲屾垜浠繑鍥炵┖鐨勮竟闆嗗拰Double.MaxValue,杩斿洖鍚庤flow浠嶆寜鐓т箣闂磋矾寰勬祦杩囷紝鍚屾椂灏嗙浉鍏宠竟浠巘abu list 涓墧闄�
+		//闂佹眹鍨硅ぐ澶岃姳椤掑偊鎷峰☉娅亜锕㈤敓锟� tabu list 闂佸憡鐟崹鐢稿礂濮楋拷楠炲秹宕ｉ妷褏鎲归梺鍛婂笧婢ф銆掗崼鏇熷剹妞ゆ搫绱曢悢鍛存煥濞戞鐒风紒缁樼墵閺屽瞼浠﹂幆褏浜繛瀵稿閸撴繄鎹㈤幋锕�鐐婇柣鎰暯閺佸嫰鏌ｉ妸銉ヮ伂缂佹梻鍠栧鍧楀幢濡や礁顏疍ouble.MaxValue,闁哄鏅滈弻銊ッ洪弽顓炶Е閹兼番鍊ら崵濉甽ow婵炲濮寸粔鐢碉拷鍨矒閹ゎ槺缂佺媴缍佸鑽ゅ鐎ｎ剛鍞撮悗鍨緲鐎氼厾绮婇敂鑺ヤ氦闁搞儵顥撶粈澶愭煕濮橆剚婀版俊鐐插�绘禍鎼佸幢濞嗘劗銈查梺绋跨箰閻ゅ洨绮╅悢鍝ヮ浄鐎瑰憡顩竍u list 婵炴垶鎼╅崢鍏兼櫠瑜斿浠嬫晸閿燂拷
 		
 //		System.out.println(f[subPath.endNodeIndex]);
 		if(f[subPath.endNodeIndex]>100000000){
@@ -1528,7 +1528,7 @@ public class LocalSearchHeuristicSolver {
 					length+=residualNetwork[edgeIndex];
 				}
 				
-				//灏唗abu list涓殑杈瑰幓鎺�
+				//闁诲繐绻愰弫鍝竍u list婵炴垶鎼╅崢鎯р枔閹寸偞缍囬柣鐔告緲缁犵敻鏌熼悮瀛樺
 //				if(tabuList.contains(edgeIndex)){
 //					tabuList.remove(edgeIndex);
 //				}
@@ -1553,7 +1553,7 @@ public class LocalSearchHeuristicSolver {
 						Edge edge=modelData.edgeSet.get(serviceEdgeIndex);
 						System.out.println(edge.toString()+":"+residualNetwork[serviceEdgeIndex]);
 					}
-					throw new Exception("鏈�鐭矾绠楁硶鍙戠敓閿欒");
+					throw new Exception("闂佸搫鐗為幏鐑芥煟椤撗冨绩闁活厼澧界划璇参旀担鎭掞拷濠囨煕濞嗘劕鐏╅柡浣规崌閺屻劌鈻庨幒婵嗘");
 				}
 			}
 //			System.out.println();
@@ -1835,7 +1835,7 @@ public class LocalSearchHeuristicSolver {
 				}
 			}
 			
-			//杩欓噷totalDistance鏈夊彲鑳戒负0锛屾湁鍙兘鍋氫簡涓�娆low璋冩暣鍚庢暣涓猚ycle鍙互鍒犲幓銆�
+			//闁哄鏅滈悷鈺呭闯缁岀�榯alDistance闂佸搫鐗嗛ˇ顖濄亹閺屻儲鍤勯柟瀛樺笩缁�锟�0闂佹寧绋戦張顒�锕㈡笟锟藉畷锝夘敍濠靛棗骞嬮梺绋款儐閻喚鑺遍埄鍐枖闁跨喕妫勯埢搴ㄣ��閻炵w闁荤姴顑呴崯顖炲汲閿濆瑙﹂幖娣灪濞堣鈽夐幘璺侯嚝ycle闂佸憡鐟崹顖涚閹烘绀嗛柣妯诲絻缁犵敻鏌曢崱顓熷
 			double value=fixCost/totalDistance;
 			double distance=0;
 			if(totalDistance==0){
@@ -2314,7 +2314,13 @@ public class LocalSearchHeuristicSolver {
 
 	public static void main(String[] args) throws Exception {
 		
-	    
+        Properties properties = new Properties();
+//      // properties.setProperty("EXPORT_MODEL", "True");
+//      // properties.setProperty("MAXTHREADS", "10");
+        properties.setProperty("PRECISION", "0.001");
+//      properties.setProperty("CUTSENABLED", "false");
+        Configuration.readFromFile(properties);
+        
 	    File file=new File("data/tempTestData/");
 	    File[] array=file.listFiles();
 	    
@@ -2328,12 +2334,7 @@ public class LocalSearchHeuristicSolver {
 	        PrintStream out0=System.out;
 	        System.setOut(mytxt);
 	      
-	        Properties properties = new Properties();
-//	      // properties.setProperty("EXPORT_MODEL", "True");
-//	      // properties.setProperty("MAXTHREADS", "10");
-	        properties.setProperty("PRECISION", "0.001");
-//	      properties.setProperty("CUTSENABLED", "false");
-	        Configuration.readFromFile(properties);
+
 	        
 	        LocalSearchHeuristicSolver solver;
 	        if(fileName.endsWith("A.txt")){
@@ -2382,7 +2383,7 @@ public class LocalSearchHeuristicSolver {
 //		solver.TabuSearch(solutionList.get(0),50,(endTime-startTime));
 //		
 //		endTime = System.currentTimeMillis();
-//		System.out.println("程序运行时间=" + (endTime - startTime) + "ms");
+//		System.out.println("total run time=" + (endTime - startTime) + "ms");
 //
 ////		System.setOut(out0);
 ////		out0.close();
