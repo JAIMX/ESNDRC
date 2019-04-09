@@ -1,5 +1,7 @@
 import java.awt.Dialog.ModalExclusionType;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayDeque;
@@ -63,9 +65,9 @@ public class LocalSearchHeuristicSolver {
 	private int timeZone;
 	private List<Set<Integer>> edgesForXRecord;
 	private int tabuListLengthLimit;//parameters for tabu list
-	private List<Integer> tabuCommodityList,tabuEdgeIndexList;
-	private boolean[][] tabuEdge;
-
+//	private List<Integer> tabuCommodityList,tabuEdgeIndexList;
+//	private boolean[][] tabuEdge;
+    private ArrayDeque<Integer> tabuNodeList;
 	public LocalSearchHeuristicSolver(String filename, int r,double balanceValue1,double balanceValue2,int timeZone,int tabuListLengthLimit) throws IOException {
 		modelData = new SNDRC(filename);
 		this.r = r;
@@ -73,7 +75,6 @@ public class LocalSearchHeuristicSolver {
 		this.balanceValue2=balanceValue2;
 		this.timeZone=timeZone;
 		this.tabuListLengthLimit=tabuListLengthLimit;
-//		this.tabuAppearLimit=tabuAppearLimit;
 	}
 
 	class FeasibleSolution {
@@ -133,13 +134,14 @@ public class LocalSearchHeuristicSolver {
 		int commodityIndex,startNodeIndex,endNodeIndex;
 		double amount,flowCost;
 		List<Integer> pathEdgeIndexList;
-		int tabuEdgeIndex;
+//		int tabuEdgeIndex;
+		int tabuNodeIndex;
 		
-		public CommoditySubPath(int commodityIndex,double amount,List<Integer> list,int tabuEdgeIndex){
+		public CommoditySubPath(int commodityIndex,double amount,List<Integer> list,int tabuNodeIndex){
 			this.commodityIndex=commodityIndex;
 			this.amount=amount;
 			this.pathEdgeIndexList=new ArrayList<>(list);
-			this.tabuEdgeIndex=tabuEdgeIndex;
+			this.tabuNodeIndex=tabuNodeIndex;
 			
 			Edge edge=modelData.edgeSet.get(pathEdgeIndexList.get(0));
 			startNodeIndex=edge.start;
@@ -605,40 +607,53 @@ public class LocalSearchHeuristicSolver {
 	}
 
 	
-	public void TabuSearch(FeasibleSolution currentSolution0,int maxIteration) throws Exception{
+	public void TabuSearch(FeasibleSolution currentSolution0,int maxIteration,int columnManageLimit) throws Exception{
 	    long startTime=System.currentTimeMillis();
 		FeasibleSolution bestFoundSolution=currentSolution0;
 		double bestObjectiveValue=currentSolution0.totalCost;
 		FeasibleSolution currentSolution=currentSolution0;
 		
+		//for intensification
+		Map<Cycle,Integer> columnManager=new HashMap<>();
+		Comparator<Cycle> columnManageSort;
+		columnManageSort=new Comparator<Cycle>() {
+			@Override
+			public int compare(Cycle cycle1,Cycle cycle2){
+				return (columnManager.get(cycle2)-columnManager.get(cycle1));
+			}
+		};
+
+		PriorityQueue<Cycle> columnQueue=new PriorityQueue<Cycle>(columnManageSort);
+		for(Cycle cycle:currentSolution.cycleValues){
+			columnManager.put(cycle, 0);
+		}
+
+		
 		//for tabu list
-		tabuCommodityList=new LinkedList<Integer>();
-		tabuEdgeIndexList=new LinkedList<Integer>();
-//		this.tabuList=new ArrayDeque<Integer>();
-//		int[] tabuCount=new int[modelData.numServiceArc];
+		this.tabuNodeList=new ArrayDeque();
 		
 		int nonImprovementCount=0;
-		while(nonImprovementCount<maxIteration){
+		boolean ifIntensifyImprove=false;
+		int iterationCount=0;
+		while(nonImprovementCount<maxIteration||ifIntensifyImprove){
+			iterationCount++;
 		    long currentTime=System.currentTimeMillis();
 		    if(currentTime-startTime>3600000) break;
 			
-			//update tabuList and tabuEdge
-			while(tabuCommodityList.size()>tabuListLengthLimit){
-				tabuCommodityList.remove(0);
-				tabuEdgeIndexList.remove(0);
+			//update tabuNodeList
+			while(tabuNodeList.size()>tabuListLengthLimit){
+				tabuNodeList.remove();
+			}		
+			
+			//check if we should make bestSolution as our current solution
+			if(nonImprovementCount>=maxIteration){
+				currentSolution=bestFoundSolution;
+				nonImprovementCount=0;
+				ifIntensifyImprove=false;
+				System.out.println("We make bestSolution as our current solution!!!");
 			}
 			
-			tabuEdge=new boolean[modelData.numDemand][modelData.numServiceArc];
-			for(int i=0;i<modelData.numDemand;i++){
-				Arrays.fill(tabuEdge[i], true);
-			}
-			for(int i=0;i<tabuCommodityList.size();i++){
-				tabuEdge[tabuCommodityList.get(i)][tabuEdgeIndexList.get(i)]=false;
-			}
-			
-			
-			
-			System.out.println("===========================new round=========================");
+			System.out.println("===========================new round "+iterationCount+"=========================");
 
 			FeasibleSolution newSolution=Neighbourhood(currentSolution);
 			if(newSolution.totalCost<bestObjectiveValue-0.001){
@@ -652,6 +667,55 @@ public class LocalSearchHeuristicSolver {
 			
 			currentSolution=newSolution;
 			
+			//intensification
+			for(Cycle cycle:currentSolution.cycleValues){
+				boolean check=false;
+				for(Cycle cycle0:columnManager.keySet()){
+					if(cycle.equals(cycle0)){
+						check=true;
+						break;
+					}
+				}
+				if(!check){
+					columnManager.put(cycle, 0);
+				}
+			}
+
+			if(columnManager.keySet().size()>columnManageLimit){
+				columnQueue.clear();
+				for(Cycle cycle:columnManager.keySet()){
+					columnQueue.add(cycle);
+				}
+				while(columnQueue.size()>columnManageLimit){
+					columnManager.remove(columnQueue.poll());
+				}
+			}
+
+			
+			FeasibleSolution intensifySolution=Intensification(columnManager.keySet());
+			System.out.println("# columns in columnManager="+columnManager.size());
+			for(Cycle cycle:columnManager.keySet()){
+				if(!intensifySolution.cycleValues.contains(cycle)){
+					columnManager.put(cycle, columnManager.get(cycle)+1);
+				}else{
+					columnManager.put(cycle, 0);
+				}
+			}
+
+			if(intensifySolution.totalCost<bestObjectiveValue){
+				bestFoundSolution=intensifySolution;
+				bestObjectiveValue=bestFoundSolution.totalCost;
+				ifIntensifyImprove=true;
+				System.out.println("A new better solution has been found. obj="+bestObjectiveValue);
+				System.out.println("# columns in columnManager="+columnManager.size());
+			}
+			
+		}
+		
+		System.out.println("best objective value="+bestObjectiveValue);
+		for(Cycle cycle:bestFoundSolution.cycleValues){
+			System.out.println(cycle.toString());
+			System.out.println(out(cycle)+":"+cycle.value);
 		}
 		
 	}
@@ -858,8 +922,7 @@ public class LocalSearchHeuristicSolver {
 		
 		List<CommoditySubPath> commoditySubPathList=commoditySubpathListRecord.get(minIndex);
 		for(CommoditySubPath subpath:commoditySubPathList){
-			tabuCommodityList.add(subpath.commodityIndex);
-			tabuEdgeIndexList.add(subpath.tabuEdgeIndex);
+			tabuNodeList.add(subpath.tabuNodeIndex);
 		}
 		
 //		List<Cycle> cycleSolution=SolveVehicleCover(flowSum[minIndex],totalFlowCostArray[minIndex]);
@@ -1004,10 +1067,209 @@ public class LocalSearchHeuristicSolver {
         
 	}
 
-	public List<Cycle> SolveVehicleCoverCGHeuristic(double[] flowCover,double totalFlowCost,boolean ifAccelerationForUB) throws TimeLimitExceededException, IloException{
+	public FeasibleSolution Intensification(Set<Cycle> cycleSolution) throws IloException, FileNotFoundException{
+		// firstly, we create edgesForX(including holding arc)		
+		Set<Integer> edgeIndexSet=new HashSet<>();
+		for(Cycle cycle:cycleSolution){
+			for(int edgeIndex:cycle.edgeIndexSet){
+				if(modelData.edgeSet.get(edgeIndex).edgeType==0){
+					edgeIndexSet.add(edgeIndex);
+				}
+			}
+		}
+		
+		List<Set<Integer>> edgesForX = new ArrayList<>();
+		for (int k = 0; k < modelData.numDemand; k++) {
+			Set<Integer> set = new HashSet<Integer>();
+			Set<Integer> setRecord = edgesForXRecord.get(k);
+			for(int edgeIndex:setRecord){
+				if(modelData.edgeSet.get(edgeIndex).edgeType==1){
+					set.add(edgeIndex);
+				}else{
+					if(edgeIndexSet.contains(edgeIndex)){
+						set.add(edgeIndex);
+					}
+				}
+			}
+			edgesForX.add(set);
+		}
+		
+		
+		
+		//cplex solving
+        IloCplex cplex=new IloCplex();
+//		FileOutputStream outputStream=new FileOutputStream(new File("./output/cplexOut.txt"));
+        cplex.setParam(IloCplex.DoubleParam.EpGap, 0.005);
+		cplex.setOut(null);
+		
+		cplex.setParam(IloCplex.IntParam.Threads, 4);
+		cplex.setParam(IloCplex.Param.Simplex.Tolerances.Markowitz, 0.1);
+		cplex.setParam(IloCplex.DoubleParam.TiLim, 180); //3 mins
+		List<Map<Integer,IloNumVar>> x; //map:edgeIndex, x variable
+		Map<Path,IloNumVar> pathVarMap=new HashMap<>();
+		
+		// Define variables x
+		x=new ArrayList<Map<Integer,IloNumVar>>();
+		for(int p=0;p<modelData.numDemand;p++) {
+			Map<Integer,IloNumVar> initialX=new HashMap<Integer,IloNumVar>();
+			x.add(initialX);
+		}
+		
+		// add x variables
+		for(int p=0;p<modelData.numDemand;p++) {
+			for(int edgeIndex:edgesForX.get(p)) {
+				Edge edge=modelData.edgeSet.get(edgeIndex);
+				IloNumVar varX=cplex.numVar(0, modelData.demandSet.get(p).volume,"x" +p+","+ edge.start + "," + edge.end );
+				x.get(p).put(edgeIndex, varX);
+			}
+		}
+		
+		
+		// Define the objective
+		/**
+		 * Here we assume the cost of edge AT is 0
+		 */
+		IloLinearNumExpr exprObj = cplex.linearNumExpr();
+		
+		for(int p=0;p<modelData.numDemand;p++) {
+			Map<Integer,IloNumVar> map=x.get(p);
+			for(int edgeIndex:map.keySet()) {
+				exprObj.addTerm(modelData.beta*modelData.edgeSet.get(edgeIndex).duration, map.get(edgeIndex));
+			}
+		}
+		
+
+		IloObjective obj = cplex.addMinimize(exprObj);
+		
+		
+		
+		// Define flowBalanceConstraints
+		IloRange[][] flowBalanceConstraints = new IloRange[modelData.numDemand][modelData.abstractNumNode];
+
+		IloLinearNumExpr expr = cplex.linearNumExpr();
+		for (int p = 0; p < modelData.numDemand; p++) {
+			Map<Integer,IloNumVar> map=x.get(p);
+			
+			for (int i = 0; i < modelData.abstractNumNode; i++) {
+				expr.clear();
+				// edges which point from i
+				for (int edgeIndex : modelData.pointToEdgeSet.get(i)) {
+					if(map.containsKey(edgeIndex)) {
+						expr.addTerm(1, map.get(edgeIndex));
+					}
+				}
+
+				// edges which point to i
+				for (int edgeIndex : modelData.pointFromEdgeSet.get(i)) {
+					if(map.containsKey(edgeIndex)) {
+						expr.addTerm(-1, map.get(edgeIndex));
+					}
+				}
+				flowBalanceConstraints[p][i] = cplex.addEq(modelData.b[p][i], expr);
+
+			}
+		}
+		
+		
+		// Define weakForcingConstraints
+		IloRange[] weakForcingConstraints = new IloRange[modelData.numServiceArc];
+		for (int arcIndex = 0; arcIndex < modelData.numServiceArc; arcIndex++) {
+			expr.clear();
+			for (int p = 0; p < modelData.numDemand; p++) {
+				if(x.get(p).containsKey(arcIndex)) {
+					expr.addTerm(1, x.get(p).get(arcIndex));
+				}
+			}
+
+			weakForcingConstraints[arcIndex] = cplex.addGe(0, expr);
+		}
+		
+		
+		
+		
+		// Define resourceBoundConstraints
+		IloRange[][] resourceBoundConstraints = new IloRange[modelData.numOfCapacity][modelData.numNode];
+
+
+		for (int s = 0; s < modelData.numOfCapacity; s++) {
+			for (int o = 0; o < modelData.numNode; o++) {
+				expr.clear();
+				resourceBoundConstraints[s][o]=cplex.addRange(0,modelData.vehicleLimit[s][o]);
+			}
+		}
+		
+		
+		
+		//add columns
+		int count=0;
+		Map<Cycle,IloNumVar> columnMap=new HashMap<Cycle,IloNumVar>();
+		for(Cycle cycle:cycleSolution){			
+			// Register column with objective
+			IloColumn iloColumn = cplex.column(obj, cycle.cost);
+			// weak forcing constraints
+			for (int edgeIndex : cycle.edgeIndexSet) {
+				if(modelData.edgeSet.get(edgeIndex).edgeType==0) {
+					iloColumn = iloColumn.and(cplex.column(weakForcingConstraints[edgeIndex],
+							-modelData.capacity[cycle.associatedPricingProblem.capacityTypeS]));
+				}
+			}
+			
+			
+			// resource bound constraints
+			int capacityType=cycle.associatedPricingProblem.capacityTypeS;
+			int originNode=cycle.associatedPricingProblem.originNodeO;
+			iloColumn = iloColumn.and(cplex.column(resourceBoundConstraints[capacityType][cycle.associatedPricingProblem.originNodeO],1));
+			
+			
+			// Create the variable and store it
+			IloNumVar var =cplex.intVar(iloColumn, 0, Integer.MAX_VALUE,"z_" + capacityType + ","+originNode+","+count++);
+			columnMap.put(cycle,var);
+		}
+		
+		cplex.solve();
+		System.out.println("Intensification optimal objective= "+cplex.getObjValue());
+//		System.out.println("# columns= "+cycleSolution.size());
+//		//output check
+//		
+//		for(Cycle cycle:cycleSolution){
+//			Double value=cplex.getValue((IloNumVar) columnMap.get(cycle));
+//			if(value>0.001){
+//				System.out.println(cycle.toString()+":"+value);
+//				System.out.println(out(cycle));
+//			}
+//		}
+		List<Map<Integer, Double>> optXValues=new ArrayList<>();
+		List<Cycle> cycleValues=new ArrayList<>();
+		for(int k=0;k<modelData.numDemand;k++){
+			Map<Integer, Double> tempMap=new HashMap<>();
+			for(int edgeIndex:edgesForX.get(k)){
+				double value=cplex.getValue(x.get(k).get(edgeIndex));
+				if(value>0.001){
+					tempMap.put(edgeIndex, value);
+				}
+			}
+			optXValues.add(tempMap);
+		}
+		
+		for(Cycle cycle:cycleSolution){
+		  Double value=cplex.getValue(columnMap.get(cycle));
+		  if(value>0.001){
+			  cycle.value=MathProgrammingUtil.doubleToRoundedDouble(value);
+			  cycleValues.add(cycle);
+		  }
+		}
+		
+
+		FeasibleSolution feasibleSolution=new FeasibleSolution(optXValues, cycleValues);
+		return feasibleSolution;
+
+		
+	}
+	
+ 	public List<Cycle> SolveVehicleCoverCGHeuristic(double[] flowCover,double totalFlowCost,boolean ifAccelerationForUB) throws TimeLimitExceededException, IloException{
         List<Cycle> cycleList = new ArrayList<>();
         int bestObjValue=Integer.MAX_VALUE;
-		System.out.println("-------------Start to solve SolveVehicleCoverCGHeuristic()---------------");
+//		System.out.println("-------------Start to solve SolveVehicleCoverCGHeuristic()---------------");
         long runTime = System.currentTimeMillis();
 
         /// -----------------------------step1: solve the root node------------------------------------///
@@ -1071,7 +1333,7 @@ public class LocalSearchHeuristicSolver {
         
         cg.solve(System.currentTimeMillis() + 36000000L); // 10 hour limit
 
-        System.out.println("Time of first LP solve= " + (System.currentTimeMillis() - runTime));
+//        System.out.println("Time of first LP solve= " + (System.currentTimeMillis() - runTime));
 
         if (ifAccelerationForUB) {
             /// -------------------------------AccelerationForUB------------------------------------///
@@ -1245,9 +1507,9 @@ public class LocalSearchHeuristicSolver {
         cutGen.close();
         master.close();
 
-        System.out.println();
-        System.out.println("There are " + amount + " columns added to the model.");
-        System.out.println();
+//        System.out.println();
+//        System.out.println("There are " + amount + " columns added to the model.");
+//        System.out.println();
 
         runTime = System.currentTimeMillis() - runTime;
 //        long timeLeft = 3600000 - runTime;
@@ -1483,17 +1745,13 @@ public class LocalSearchHeuristicSolver {
 						}
 						
 						if(time+duration<=timeLength){
-							if(edgeIndex!=subPath.tabuEdgeIndex){
+							if(!tabuNodeList.contains(edge.start)&&!tabuNodeList.contains(edge.end)){
 								if(edge.edgeType==0){
-									
-									if(tabuEdge[subPath.commodityIndex][edgeIndex]){
 										double distance=f[nodeIndex]+residualNetwork[edgeIndex];
 										if(f[edge.end]>distance){
 											f[edge.end]=distance;
 											record[edge.end]=edgeIndex;
-										}
-									}
-									
+										}							
 								}else{ //holding edge
 									if(f[edge.end]>f[nodeIndex]){
 										f[edge.end]=f[nodeIndex];
@@ -1501,9 +1759,6 @@ public class LocalSearchHeuristicSolver {
 									}
 								}
 							}
-//							if(!tabuList.contains(edgeIndex)) {
-//
-//							}
 
 						}
 					}
@@ -2311,7 +2566,9 @@ public class LocalSearchHeuristicSolver {
 
 	}
 
-	public static void main(String[] args) throws Exception {
+	public static void main(String[] args) throws Exception {    
+	    
+		long startTime = System.currentTimeMillis();
 		
         Properties properties = new Properties();
 //      // properties.setProperty("EXPORT_MODEL", "True");
@@ -2319,92 +2576,23 @@ public class LocalSearchHeuristicSolver {
         properties.setProperty("PRECISION", "0.001");
 //      properties.setProperty("CUTSENABLED", "false");
         Configuration.readFromFile(properties);
-
 		
 //		LocalSearchHeuristicSolver solver = new LocalSearchHeuristicSolver("./data/testset/test0_5_10_10_5.txt", 3,5,3,3,20);	
 		LocalSearchHeuristicSolver solver = new LocalSearchHeuristicSolver("./data/testset/test1_5_10_15_20.txt", 3,5,3,3,60);
+//		LocalSearchHeuristicSolver solver = new LocalSearchHeuristicSolver("./data/testset/test5_5_15_15_200.txt", 3,5,3,3,60);
 //		LocalSearchHeuristicSolver solver = new LocalSearchHeuristicSolver("./data/testset/test12_10_50_30_100A.txt", 3,5,3,10,200);
 
 //		List<FeasibleSolution> solutionList=solver.Initialization();
 		List<FeasibleSolution> solutionList=solver.InitializationCGHeuristic();
-//		solver.Neighbourhood(solutionList.get(0));
-		solver.TabuSearch(solutionList.get(0));
+	    long endTime = System.currentTimeMillis();
+		solver.TabuSearch(solutionList.get(0),20,300);
 		
-		long endTime = System.currentTimeMillis();
-		System.out.println("程序运行时间：" + (endTime - startTime) + "ms");
+		endTime = System.currentTimeMillis();
+		System.out.println("total run time=" + (endTime - startTime) + "ms");
 
-		System.setOut(out0);
-		out0.close();
-		mytxt.close();
-
-        
-	    File file=new File("data/tempTestData/");
-	    File[] array=file.listFiles();
-	    
-	    for(File ele:array){
-	        
-	        long startTime = System.currentTimeMillis();
-	        String fileName=ele.getName();
-	        String filePath=ele.getPath();
-	        
-	        PrintStream mytxt=new PrintStream("output/temptest/"+fileName);
-	        PrintStream out0=System.out;
-	        System.setOut(mytxt);
-	      
-
-	        
-	        LocalSearchHeuristicSolver solver;
-	        if(fileName.endsWith("A.txt")){
-	             solver= new LocalSearchHeuristicSolver(filePath, 3,5,3,3,200);
-	        }else{
-	             solver= new LocalSearchHeuristicSolver(filePath, 3,5,3,3,60);
-	        }
-	        
-	        List<FeasibleSolution> solutionList=solver.InitializationCGHeuristic();
-	        long endTime = System.currentTimeMillis();
-	        solver.TabuSearch(solutionList.get(0),100);//1 hour limit
-	        
-	        endTime = System.currentTimeMillis();
-	        System.out.println("total run time=" + (endTime - startTime) + "ms");
-	      
-	        System.setOut(out0);
-	        out0.close();
-	        mytxt.close();
-	      
-	    }
-	    
-	    
-	    
-	    
-	    
-////		PrintStream mytxt=new PrintStream("output/log.txt");
-////		PrintStream out0=System.out;
-////		System.setOut(mytxt);
-//
-//		long startTime = System.currentTimeMillis();
-//		
-//        Properties properties = new Properties();
-////      // properties.setProperty("EXPORT_MODEL", "True");
-////      // properties.setProperty("MAXTHREADS", "10");
-//        properties.setProperty("PRECISION", "0.001");
-////      properties.setProperty("CUTSENABLED", "false");
-//        Configuration.readFromFile(properties);
-//		
-////		LocalSearchHeuristicSolver solver = new LocalSearchHeuristicSolver("./data/testset/test0_5_10_10_5.txt", 3,5,3,3,20);	
-//		LocalSearchHeuristicSolver solver = new LocalSearchHeuristicSolver("./data/testset/test1_5_10_15_20.txt", 3,5,3,3,60);
-////		LocalSearchHeuristicSolver solver = new LocalSearchHeuristicSolver("./data/testset/test12_10_50_30_100A.txt", 3,5,3,10,200);
-//
-////		List<FeasibleSolution> solutionList=solver.Initialization();
-//		List<FeasibleSolution> solutionList=solver.InitializationCGHeuristic();
-//	    long endTime = System.currentTimeMillis();
-//		solver.TabuSearch(solutionList.get(0),50,(endTime-startTime));
-//		
-//		endTime = System.currentTimeMillis();
-//		System.out.println("total run time=" + (endTime - startTime) + "ms");
-//
-////		System.setOut(out0);
-////		out0.close();
-////		mytxt.close();
+//		System.setOut(out0);
+//		out0.close();
+//		mytxt.close();
 
 
 		
