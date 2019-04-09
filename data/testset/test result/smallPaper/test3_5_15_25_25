@@ -1,0 +1,850 @@
+number of service arcs=375
+number of holding arcs=125
+
+Time of first LP solve= 1333
+
+There are 1324 columns added to the model.
+
+Tried aggregator 2 times.
+MIP Presolve eliminated 2710 rows and 2102 columns.
+MIP Presolve modified 946 coefficients.
+Aggregator did 708 substitutions.
+Reduced MIP has 92 rows, 688 columns, and 2494 nonzeros.
+Reduced MIP has 67 binaries, 533 generals, 0 SOSs, and 0 indicators.
+Presolve time = 0.01 sec. (5.24 ticks)
+Found incumbent of value 1.1000561e+09 after 0.02 sec. (6.37 ticks)
+Probing time = 0.00 sec. (0.03 ticks)
+Tried aggregator 1 time.
+Reduced MIP has 92 rows, 688 columns, and 2494 nonzeros.
+Reduced MIP has 67 binaries, 533 generals, 0 SOSs, and 0 indicators.
+Presolve time = 0.00 sec. (0.83 ticks)
+Probing time = 0.00 sec. (0.03 ticks)
+MIP emphasis: balance optimality and feasibility.
+MIP search method: dynamic search.
+Parallel mode: deterministic, using up to 4 threads.
+Root relaxation solution time = 0.00 sec. (0.76 ticks)
+
+        Nodes                                         Cuts/
+   Node  Left     Objective  IInf  Best Integer    Best Bound    ItCnt     Gap
+
+*     0+    0                       1.10006e+09     1734.0000           100.00%
+      0     0     4058.7608    16   1.10006e+09     4058.7608       57  100.00%
+*     0+    0                         4925.0000     4058.7608            17.59%
+*     0+    0                         4471.0000     4058.7608             9.22%
+      0     0     4238.2175    18     4471.0000      Cuts: 25       93    5.21%
+      0     0     4273.4474    24     4471.0000   MIRcuts: 16      127    4.42%
+*     0+    0                         4437.0000     4273.4474             3.69%
+*     0+    0                         4419.0000     4273.4474             3.29%
+
+Repeating presolve.
+Tried aggregator 1 time.
+MIP Presolve eliminated 7 rows and 317 columns.
+MIP Presolve added 1 rows and 1 columns.
+MIP Presolve modified 41 coefficients.
+Reduced MIP has 86 rows, 372 columns, and 1319 nonzeros.
+Reduced MIP has 121 binaries, 163 generals, 0 SOSs, and 0 indicators.
+Presolve time = 0.00 sec. (0.70 ticks)
+Probing time = 0.00 sec. (0.04 ticks)
+Tried aggregator 1 time.
+MIP Presolve eliminated 1 rows and 1 columns.
+MIP Presolve added 1 rows and 1 columns.
+Reduced MIP has 86 rows, 372 columns, and 1319 nonzeros.
+Reduced MIP has 121 binaries, 163 generals, 0 SOSs, and 0 indicators.
+Presolve time = 0.00 sec. (0.58 ticks)
+Represolve time = 0.01 sec. (2.56 ticks)
+Probing time = 0.00 sec. (0.04 ticks)
+MIP emphasis: balance optimality and feasibility.
+MIP search method: dynamic search.
+Parallel mode: deterministic, using up to 4 threads.
+Root relaxation solution time = 0.00 sec. (1.51 ticks)
+
+        Nodes                                         Cuts/
+   Node  Left     Objective  IInf  Best Integer    Best Bound    ItCnt     Gap
+
+*     0+    0                         4419.0000     4300.6191             2.68%
+      0     0     4273.4474    25     4419.0000     4300.6191      218    2.68%
+      0     0     4296.3040    26     4419.0000      Cuts: 24      241    2.68%
+      0     0     4299.4753    23     4419.0000    MIRcuts: 7      257    2.68%
+      0     0     4301.3892    22     4419.0000    MIRcuts: 3      268    2.66%
+      0     0     4301.7972    21     4419.0000    MIRcuts: 2      272    2.65%
+      0     0     4301.8426    22     4419.0000    MIRcuts: 1      276    2.65%
+      0     0     4301.8731    24     4419.0000    MIRcuts: 4      278    2.65%
+*     0+    0                         4387.0000     4301.8731             1.94%
+      0     2     4301.8731    24     4387.0000     4301.8731      278    1.94%
+Elapsed time = 0.70 sec. (95.84 ticks, tree = 0.01 MB, solutions = 6)
+*   155    56      integral     0     4385.0000     4308.0573     1732    1.75%
+*  1277   178      integral     0     4383.0000     4360.6183    11344    0.51%
+*  1323   138      integral     0     4367.0000     4360.6183    11726    0.15%
+
+Mixed integer rounding cuts applied:  58
+Gomory fractional cuts applied:  2
+
+Root node processing (before b&c):
+  Real time             =    0.70 sec. (95.94 ticks)
+Parallel b&c, 4 threads:
+  Real time             =    0.40 sec. (89.53 ticks)
+  Sync time (average)   =    0.08 sec.
+  Wait time (average)   =    0.16 sec.
+                          ------------
+Total (root+branch&cut) =    1.10 sec. (185.47 ticks)
+optimal objective= 4367.0
+
+artificial: false set: [384, 385, 386, 387, 388, 389, 495, 403, 275, 21, 215, 382, 254, 383] start node= 4 start time= 20 capacity type= 1
+(3,0)->(1,3)->(1,4)->(0,7)->(0,8)->(0,9)->(0,10)->(0,11)->(0,12)->(0,13)->(0,14)->(0,15)->(4,20)->(4,21)->(3,0):1
+
+artificial: false set: [448, 449, 193, 339, 84, 408, 280, 425, 351] start node= 4 start time= 14 capacity type= 1
+(2,0)->(2,1)->(3,5)->(1,8)->(1,9)->(4,14)->(1,18)->(2,23)->(2,24)->(2,0):1
+
+artificial: false set: [417, 498, 499, 404, 405, 325, 182, 406, 93, 62] start node= 4 start time= 23 capacity type= 1
+(4,0)->(1,4)->(1,5)->(1,6)->(1,7)->(2,12)->(1,17)->(1,18)->(4,23)->(4,24)->(4,0):1
+
+artificial: false set: [455, 456, 457, 393, 265, 458, 394, 459, 395, 460, 461, 146, 287, 351] start node= 1 start time= 15 capacity type= 1
+(2,1)->(3,5)->(3,6)->(3,7)->(3,8)->(3,9)->(3,10)->(3,11)->(3,12)->(1,15)->(0,18)->(0,19)->(0,20)->(0,21)->(2,1):1
+
+artificial: false set: [132, 150, 267, 220, 380, 381, 62] start node= 4 start time= 0 capacity type= 1
+(4,0)->(0,5)->(0,6)->(0,7)->(2,12)->(1,17)->(0,20)->(4,0):1
+
+===========================new round 1=========================
+optimal objective= 1502.0+2866.9999999999995=4369.0
+
+Step 4-AdjustFlow
+After adjust, flowCost=2803.0
+A new better solution has been found. obj=4305.0
+Intensification optimal objective= 3999.0
+# columns in columnManager=14
+A new better solution has been found. obj=3999.0
+# columns in columnManager=14
+===========================new round 2=========================
+optimal objective= 1440.0+2825.0=4265.0
+
+Step 4-AdjustFlow
+After adjust, flowCost=2803.0
+Intensification optimal objective= 3959.0
+# columns in columnManager=21
+A new better solution has been found. obj=3959.0000000000005
+# columns in columnManager=21
+===========================new round 3=========================
+optimal objective= 1392.0+2803.0=4195.0
+
+Step 4-AdjustFlow
+After adjust, flowCost=2803.0
+Intensification optimal objective= 3909.0
+# columns in columnManager=29
+A new better solution has been found. obj=3909.0
+# columns in columnManager=29
+===========================new round 4=========================
+optimal objective= 1456.0+2803.0=4259.0
+
+Step 4-AdjustFlow
+After adjust, flowCost=2803.0
+Intensification optimal objective= 3903.0
+# columns in columnManager=36
+A new better solution has been found. obj=3903.0
+# columns in columnManager=36
+===========================new round 5=========================
+optimal objective= 1701.999999999999+2803.0=4504.999999999999
+
+Step 4-AdjustFlow
+After adjust, flowCost=2803.0
+Intensification optimal objective= 3903.0
+# columns in columnManager=45
+===========================new round 6=========================
+optimal objective= 1714.0+2825.0=4539.0
+
+Step 4-AdjustFlow
+After adjust, flowCost=2803.0
+Intensification optimal objective= 3903.0
+# columns in columnManager=53
+===========================new round 7=========================
+optimal objective= 1964.0+2803.0=4767.0
+
+Step 4-AdjustFlow
+After adjust, flowCost=2803.0
+Intensification optimal objective= 3887.0
+# columns in columnManager=63
+A new better solution has been found. obj=3887.0
+# columns in columnManager=63
+===========================new round 8=========================
+optimal objective= 1772.0+2803.0=4575.0
+
+Step 4-AdjustFlow
+After adjust, flowCost=2803.0
+Intensification optimal objective= 3873.0
+# columns in columnManager=72
+A new better solution has been found. obj=3873.0
+# columns in columnManager=72
+===========================new round 9=========================
+optimal objective= 1664.0+2803.0=4467.0
+
+Step 4-AdjustFlow
+After adjust, flowCost=2803.0
+Intensification optimal objective= 3873.0
+# columns in columnManager=81
+===========================new round 10=========================
+optimal objective= 1590.0+2803.0=4393.0
+
+Step 4-AdjustFlow
+After adjust, flowCost=2803.0
+Intensification optimal objective= 3783.0
+# columns in columnManager=89
+A new better solution has been found. obj=3783.0
+# columns in columnManager=89
+===========================new round 11=========================
+optimal objective= 1484.0+2803.0=4287.0
+
+Step 4-AdjustFlow
+After adjust, flowCost=2803.0
+Intensification optimal objective= 3783.0
+# columns in columnManager=96
+===========================new round 12=========================
+optimal objective= 2370.0+4664.0=7034.0
+
+Step 4-AdjustFlow
+After adjust, flowCost=2803.0
+Intensification optimal objective= 3715.0
+# columns in columnManager=107
+A new better solution has been found. obj=3715.0
+# columns in columnManager=107
+===========================new round 13=========================
+optimal objective= 1576.0+2825.0=4401.0
+
+Step 4-AdjustFlow
+After adjust, flowCost=2803.0
+Intensification optimal objective= 3715.0
+# columns in columnManager=115
+===========================new round 14=========================
+optimal objective= 1650.0+2837.0=4487.0
+
+Step 4-AdjustFlow
+After adjust, flowCost=2803.0
+Intensification optimal objective= 3715.0
+# columns in columnManager=125
+===========================new round 15=========================
+optimal objective= 1734.0+2825.0=4559.0
+
+Step 4-AdjustFlow
+After adjust, flowCost=2825.0
+Intensification optimal objective= 3715.0
+# columns in columnManager=134
+===========================new round 16=========================
+optimal objective= 1690.0000000000007+2825.0=4515.000000000001
+
+Step 4-AdjustFlow
+After adjust, flowCost=2825.0
+Intensification optimal objective= 3715.0
+# columns in columnManager=144
+===========================new round 17=========================
+optimal objective= 1676.0+2825.0=4501.0
+
+Step 4-AdjustFlow
+After adjust, flowCost=2805.0
+Intensification optimal objective= 3715.0
+# columns in columnManager=156
+===========================new round 18=========================
+optimal objective= 1678.0+2809.0=4487.0
+
+Step 4-AdjustFlow
+After adjust, flowCost=2803.0
+Intensification optimal objective= 3715.0
+# columns in columnManager=166
+===========================new round 19=========================
+optimal objective= 1750.0+2803.0=4553.0
+
+Step 4-AdjustFlow
+After adjust, flowCost=2803.0
+Intensification optimal objective= 3715.0
+# columns in columnManager=178
+===========================new round 20=========================
+optimal objective= 1844.0+2831.0=4675.0
+
+Step 4-AdjustFlow
+After adjust, flowCost=2803.0
+Intensification optimal objective= 3715.0
+# columns in columnManager=189
+===========================new round 21=========================
+optimal objective= 1698.0+2803.0=4501.0
+
+Step 4-AdjustFlow
+After adjust, flowCost=2803.0
+Intensification optimal objective= 3715.0
+# columns in columnManager=198
+We make bestSolution as our current solution!!!
+===========================new round 22=========================
+optimal objective= 1462.0000000000002+2811.0=4273.0
+
+Step 4-AdjustFlow
+After adjust, flowCost=2803.0
+Intensification optimal objective= 3715.0
+# columns in columnManager=205
+===========================new round 23=========================
+optimal objective= 1466.0+2803.0=4269.0
+
+Step 4-AdjustFlow
+After adjust, flowCost=2803.0
+Intensification optimal objective= 3715.0
+# columns in columnManager=212
+===========================new round 24=========================
+optimal objective= 1654.0+2851.0=4505.0
+
+Step 4-AdjustFlow
+After adjust, flowCost=2803.0
+Intensification optimal objective= 3715.0
+# columns in columnManager=220
+===========================new round 25=========================
+optimal objective= 1680.0+2851.0=4531.0
+
+Step 4-AdjustFlow
+After adjust, flowCost=2803.0
+Intensification optimal objective= 3715.0
+# columns in columnManager=228
+===========================new round 26=========================
+optimal objective= 1788.0+2873.0=4661.0
+
+Step 4-AdjustFlow
+After adjust, flowCost=2825.0
+Intensification optimal objective= 3715.0
+# columns in columnManager=237
+===========================new round 27=========================
+optimal objective= 1708.0000000000002+2841.0=4549.0
+
+Step 4-AdjustFlow
+After adjust, flowCost=2825.0
+Intensification optimal objective= 3715.0
+# columns in columnManager=245
+===========================new round 28=========================
+optimal objective= 1740.0+2841.0=4581.0
+
+Step 4-AdjustFlow
+After adjust, flowCost=2825.0
+Intensification optimal objective= 3715.0
+# columns in columnManager=254
+===========================new round 29=========================
+optimal objective= 1748.0+2841.0=4589.0
+
+Step 4-AdjustFlow
+After adjust, flowCost=2825.0
+Intensification optimal objective= 3715.0
+# columns in columnManager=263
+===========================new round 30=========================
+optimal objective= 1538.0+2841.0=4379.0
+
+Step 4-AdjustFlow
+After adjust, flowCost=2825.0
+Intensification optimal objective= 3715.0
+# columns in columnManager=270
+===========================new round 31=========================
+optimal objective= 1656.0+2841.0=4497.0
+
+Step 4-AdjustFlow
+After adjust, flowCost=2803.0
+Intensification optimal objective= 3715.0
+# columns in columnManager=278
+===========================new round 32=========================
+optimal objective= 1880.0+3049.0=4929.0
+
+Step 4-AdjustFlow
+After adjust, flowCost=2803.0
+Intensification optimal objective= 3715.0
+# columns in columnManager=288
+===========================new round 33=========================
+optimal objective= 1962.0+2841.0=4803.0
+
+Step 4-AdjustFlow
+After adjust, flowCost=2819.0
+Intensification optimal objective= 3715.0
+# columns in columnManager=299
+===========================new round 34=========================
+optimal objective= 1772.0+2841.0=4613.0
+
+Step 4-AdjustFlow
+After adjust, flowCost=2825.0
+Intensification optimal objective= 3715.0
+# columns in columnManager=300
+===========================new round 35=========================
+optimal objective= 1968.0+2825.0=4793.0
+
+Step 4-AdjustFlow
+After adjust, flowCost=2825.0
+Intensification optimal objective= 3697.0
+# columns in columnManager=300
+A new better solution has been found. obj=3697.0
+# columns in columnManager=300
+===========================new round 36=========================
+optimal objective= 1694.0+2803.0=4497.0
+
+Step 4-AdjustFlow
+After adjust, flowCost=2803.0
+Intensification optimal objective= 3697.0
+# columns in columnManager=300
+===========================new round 37=========================
+optimal objective= 1750.0+2803.0=4553.0
+
+Step 4-AdjustFlow
+After adjust, flowCost=2803.0
+Intensification optimal objective= 3697.0
+# columns in columnManager=300
+===========================new round 38=========================
+optimal objective= 1750.0+2803.0=4553.0
+
+Step 4-AdjustFlow
+After adjust, flowCost=2803.0
+Intensification optimal objective= 3697.0
+# columns in columnManager=300
+===========================new round 39=========================
+optimal objective= 1756.0+2803.0=4559.0
+
+Step 4-AdjustFlow
+After adjust, flowCost=2803.0
+Intensification optimal objective= 3697.0
+# columns in columnManager=300
+===========================new round 40=========================
+optimal objective= 1776.0+2803.0=4579.0
+
+Step 4-AdjustFlow
+After adjust, flowCost=2803.0
+Intensification optimal objective= 3697.0
+# columns in columnManager=300
+===========================new round 41=========================
+optimal objective= 1756.0+2803.0=4559.0
+
+Step 4-AdjustFlow
+After adjust, flowCost=2803.0
+Intensification optimal objective= 3697.0
+# columns in columnManager=300
+We make bestSolution as our current solution!!!
+===========================new round 42=========================
+optimal objective= 1258.0+2819.0=4077.0
+
+Step 4-AdjustFlow
+After adjust, flowCost=2803.0
+Intensification optimal objective= 3697.0
+# columns in columnManager=300
+===========================new round 43=========================
+optimal objective= 1272.0+2825.0=4097.0
+
+Step 4-AdjustFlow
+After adjust, flowCost=2805.0
+Intensification optimal objective= 3697.0
+# columns in columnManager=300
+===========================new round 44=========================
+optimal objective= 1326.0+2825.0=4151.0
+
+Step 4-AdjustFlow
+After adjust, flowCost=2825.0
+Intensification optimal objective= 3697.0
+# columns in columnManager=300
+===========================new round 45=========================
+optimal objective= 1362.0+2841.0=4203.0
+
+Step 4-AdjustFlow
+After adjust, flowCost=2805.0
+Intensification optimal objective= 3697.0
+# columns in columnManager=300
+===========================new round 46=========================
+optimal objective= 1389.9999999999995+2825.0=4215.0
+
+Step 4-AdjustFlow
+After adjust, flowCost=2805.0
+Intensification optimal objective= 3697.0
+# columns in columnManager=300
+===========================new round 47=========================
+optimal objective= 1518.0+2825.0=4343.0
+
+Step 4-AdjustFlow
+After adjust, flowCost=2805.0
+Intensification optimal objective= 3697.0
+# columns in columnManager=300
+===========================new round 48=========================
+optimal objective= 1618.0+2825.0=4443.0
+
+Step 4-AdjustFlow
+After adjust, flowCost=2805.0
+Intensification optimal objective= 3697.0
+# columns in columnManager=300
+===========================new round 49=========================
+optimal objective= 1954.0+2825.0=4779.0
+
+Step 4-AdjustFlow
+After adjust, flowCost=2803.0
+Intensification optimal objective= 3697.0
+# columns in columnManager=300
+===========================new round 50=========================
+optimal objective= 1818.0+2857.0=4675.0
+
+Step 4-AdjustFlow
+After adjust, flowCost=2819.0
+Intensification optimal objective= 3697.0
+# columns in columnManager=300
+===========================new round 51=========================
+optimal objective= 1787.9999999999995+2845.0=4633.0
+
+Step 4-AdjustFlow
+After adjust, flowCost=2825.0
+Intensification optimal objective= 3697.0
+# columns in columnManager=300
+===========================new round 52=========================
+optimal objective= 1588.0+2847.0=4435.0
+
+Step 4-AdjustFlow
+After adjust, flowCost=2810.0
+Intensification optimal objective= 3697.0
+# columns in columnManager=300
+===========================new round 53=========================
+optimal objective= 1802.0+2838.0=4640.0
+
+Step 4-AdjustFlow
+After adjust, flowCost=2803.0
+Intensification optimal objective= 3697.0
+# columns in columnManager=300
+===========================new round 54=========================
+optimal objective= 1858.0+2803.0=4661.0
+
+Step 4-AdjustFlow
+After adjust, flowCost=2803.0
+Intensification optimal objective= 3679.0
+# columns in columnManager=300
+A new better solution has been found. obj=3679.0
+# columns in columnManager=300
+===========================new round 55=========================
+optimal objective= 1722.0+2803.0=4525.0
+
+Step 4-AdjustFlow
+After adjust, flowCost=2803.0
+Intensification optimal objective= 3679.0
+# columns in columnManager=300
+===========================new round 56=========================
+optimal objective= 1672.0+2803.0=4475.0
+
+Step 4-AdjustFlow
+After adjust, flowCost=2803.0
+Intensification optimal objective= 3679.0
+# columns in columnManager=300
+===========================new round 57=========================
+optimal objective= 1646.0+2803.0=4449.0
+
+Step 4-AdjustFlow
+After adjust, flowCost=2803.0
+Intensification optimal objective= 3679.0
+# columns in columnManager=300
+===========================new round 58=========================
+optimal objective= 1550.0+2803.0=4353.0
+
+Step 4-AdjustFlow
+After adjust, flowCost=2803.0
+Intensification optimal objective= 3679.0
+# columns in columnManager=300
+===========================new round 59=========================
+optimal objective= 1684.0000000000002+2803.0=4487.0
+
+Step 4-AdjustFlow
+After adjust, flowCost=2803.0
+Intensification optimal objective= 3679.0
+# columns in columnManager=300
+===========================new round 60=========================
+optimal objective= 1490.0+2803.0=4293.0
+
+Step 4-AdjustFlow
+After adjust, flowCost=2803.0
+Intensification optimal objective= 3679.0
+# columns in columnManager=300
+===========================new round 61=========================
+optimal objective= 1614.0+2815.0=4429.0
+
+Step 4-AdjustFlow
+After adjust, flowCost=2803.0
+Intensification optimal objective= 3679.0
+# columns in columnManager=300
+We make bestSolution as our current solution!!!
+===========================new round 62=========================
+optimal objective= 1492.0+2836.0=4328.0
+
+Step 4-AdjustFlow
+After adjust, flowCost=2805.0
+Intensification optimal objective= 3679.0
+# columns in columnManager=300
+===========================new round 63=========================
+optimal objective= 1488.0+2805.0=4293.0
+
+Step 4-AdjustFlow
+After adjust, flowCost=2805.0
+Intensification optimal objective= 3679.0
+# columns in columnManager=300
+===========================new round 64=========================
+optimal objective= 1712.0+2821.0=4533.0
+
+Step 4-AdjustFlow
+After adjust, flowCost=2803.0
+Intensification optimal objective= 3679.0
+# columns in columnManager=300
+===========================new round 65=========================
+optimal objective= 1676.0+2851.0=4527.0
+
+Step 4-AdjustFlow
+After adjust, flowCost=2803.0
+Intensification optimal objective= 3679.0
+# columns in columnManager=300
+===========================new round 66=========================
+optimal objective= 1454.0+2819.0=4273.0
+
+Step 4-AdjustFlow
+After adjust, flowCost=2807.0
+Intensification optimal objective= 3679.0
+# columns in columnManager=300
+===========================new round 67=========================
+optimal objective= 1594.0+2819.0=4413.0
+
+Step 4-AdjustFlow
+After adjust, flowCost=2803.0
+Intensification optimal objective= 3679.0
+# columns in columnManager=300
+===========================new round 68=========================
+optimal objective= 1526.0000000000005+2819.0=4345.0
+
+Step 4-AdjustFlow
+After adjust, flowCost=2803.0
+Intensification optimal objective= 3679.0
+# columns in columnManager=300
+===========================new round 69=========================
+optimal objective= 1496.0+2841.0=4337.0
+
+Step 4-AdjustFlow
+After adjust, flowCost=2803.0
+Intensification optimal objective= 3679.0
+# columns in columnManager=300
+===========================new round 70=========================
+optimal objective= 1666.0+2873.0=4539.0
+
+Step 4-AdjustFlow
+After adjust, flowCost=2803.0
+Intensification optimal objective= 3679.0
+# columns in columnManager=300
+===========================new round 71=========================
+optimal objective= 1334.0+2917.0=4251.0
+
+Step 4-AdjustFlow
+After adjust, flowCost=2803.0
+Intensification optimal objective= 3679.0
+# columns in columnManager=300
+===========================new round 72=========================
+optimal objective= 1398.0+2851.0=4249.0
+
+Step 4-AdjustFlow
+After adjust, flowCost=2803.0
+Intensification optimal objective= 3679.0
+# columns in columnManager=300
+===========================new round 73=========================
+optimal objective= 1444.0+2879.0=4323.0
+
+Step 4-AdjustFlow
+After adjust, flowCost=2803.0
+Intensification optimal objective= 3679.0
+# columns in columnManager=300
+===========================new round 74=========================
+optimal objective= 1456.0+2851.0=4307.0
+
+Step 4-AdjustFlow
+After adjust, flowCost=2803.0
+Intensification optimal objective= 3679.0
+# columns in columnManager=300
+===========================new round 75=========================
+optimal objective= 1391.9999999999982+2803.0=4194.999999999998
+
+Step 4-AdjustFlow
+After adjust, flowCost=2803.0
+Intensification optimal objective= 3679.0
+# columns in columnManager=300
+===========================new round 76=========================
+optimal objective= 1390.0+2803.0=4193.0
+
+Step 4-AdjustFlow
+After adjust, flowCost=2803.0
+Intensification optimal objective= 3679.0
+# columns in columnManager=300
+===========================new round 77=========================
+optimal objective= 1742.0+2873.0=4615.0
+
+Step 4-AdjustFlow
+After adjust, flowCost=2805.0
+Intensification optimal objective= 3679.0
+# columns in columnManager=300
+===========================new round 78=========================
+optimal objective= 1548.0+2803.0=4351.0
+
+Step 4-AdjustFlow
+After adjust, flowCost=2803.0
+Intensification optimal objective= 3679.0
+# columns in columnManager=300
+===========================new round 79=========================
+optimal objective= 1792.0+2825.0=4617.0
+
+Step 4-AdjustFlow
+After adjust, flowCost=2803.0
+Intensification optimal objective= 3675.0
+# columns in columnManager=300
+A new better solution has been found. obj=3675.0
+# columns in columnManager=300
+===========================new round 80=========================
+optimal objective= 1616.0+2825.0=4441.0
+
+Step 4-AdjustFlow
+After adjust, flowCost=2803.0
+Intensification optimal objective= 3675.0
+# columns in columnManager=300
+===========================new round 81=========================
+optimal objective= 1652.0+2803.0=4455.0
+
+Step 4-AdjustFlow
+After adjust, flowCost=2803.0
+Intensification optimal objective= 3675.0
+# columns in columnManager=300
+We make bestSolution as our current solution!!!
+===========================new round 82=========================
+optimal objective= 1266.0+2847.0=4113.0
+
+Step 4-AdjustFlow
+After adjust, flowCost=2819.0
+Intensification optimal objective= 3675.0
+# columns in columnManager=300
+===========================new round 83=========================
+optimal objective= 1342.0+2847.0=4189.0
+
+Step 4-AdjustFlow
+After adjust, flowCost=2821.0
+Intensification optimal objective= 3675.0
+# columns in columnManager=300
+===========================new round 84=========================
+optimal objective= 1204.0+2841.0=4045.0
+
+Step 4-AdjustFlow
+After adjust, flowCost=2841.0
+Intensification optimal objective= 3675.0
+# columns in columnManager=300
+===========================new round 85=========================
+optimal objective= 1342.0+2819.0=4161.0
+
+Step 4-AdjustFlow
+After adjust, flowCost=2803.0
+Intensification optimal objective= 3675.0
+# columns in columnManager=300
+===========================new round 86=========================
+optimal objective= 1474.0+2803.0=4277.0
+
+Step 4-AdjustFlow
+After adjust, flowCost=2803.0
+Intensification optimal objective= 3675.0
+# columns in columnManager=300
+===========================new round 87=========================
+optimal objective= 1419.9999999999993+2803.0=4222.999999999999
+
+Step 4-AdjustFlow
+After adjust, flowCost=2803.0
+Intensification optimal objective= 3675.0
+# columns in columnManager=300
+===========================new round 88=========================
+optimal objective= 1342.0+2803.0=4145.0
+
+Step 4-AdjustFlow
+After adjust, flowCost=2803.0
+Intensification optimal objective= 3675.0
+# columns in columnManager=300
+===========================new round 89=========================
+optimal objective= 1304.0+2825.0=4129.0
+
+Step 4-AdjustFlow
+After adjust, flowCost=2803.0
+Intensification optimal objective= 3675.0
+# columns in columnManager=300
+===========================new round 90=========================
+optimal objective= 1332.0000000000005+2825.0=4157.0
+
+Step 4-AdjustFlow
+After adjust, flowCost=2803.0
+Intensification optimal objective= 3675.0
+# columns in columnManager=300
+===========================new round 91=========================
+optimal objective= 1280.0000000000002+2803.0=4083.0
+
+Step 4-AdjustFlow
+After adjust, flowCost=2803.0
+Intensification optimal objective= 3675.0
+# columns in columnManager=300
+===========================new round 92=========================
+optimal objective= 1406.0+2821.0=4227.0
+
+Step 4-AdjustFlow
+After adjust, flowCost=2803.0
+Intensification optimal objective= 3675.0
+# columns in columnManager=300
+===========================new round 93=========================
+optimal objective= 1512.0+2803.0=4315.0
+
+Step 4-AdjustFlow
+After adjust, flowCost=2803.0
+Intensification optimal objective= 3675.0
+# columns in columnManager=300
+===========================new round 94=========================
+optimal objective= 1368.0+2803.0=4171.0
+
+Step 4-AdjustFlow
+After adjust, flowCost=2803.0
+Intensification optimal objective= 3675.0
+# columns in columnManager=300
+===========================new round 95=========================
+optimal objective= 1502.0+2803.0=4305.0
+
+Step 4-AdjustFlow
+After adjust, flowCost=2803.0
+Intensification optimal objective= 3675.0
+# columns in columnManager=300
+===========================new round 96=========================
+optimal objective= 1694.0+2861.0=4555.0
+
+Step 4-AdjustFlow
+After adjust, flowCost=2841.0
+Intensification optimal objective= 3675.0
+# columns in columnManager=300
+===========================new round 97=========================
+optimal objective= 1630.0+2839.0=4469.0
+
+Step 4-AdjustFlow
+After adjust, flowCost=2803.0
+Intensification optimal objective= 3675.0
+# columns in columnManager=300
+===========================new round 98=========================
+optimal objective= 1664.0+2831.0=4495.0
+
+Step 4-AdjustFlow
+After adjust, flowCost=2819.0
+Intensification optimal objective= 3675.0
+# columns in columnManager=300
+===========================new round 99=========================
+optimal objective= 1670.0+2819.0=4489.0
+
+Step 4-AdjustFlow
+After adjust, flowCost=2803.0
+Intensification optimal objective= 3675.0
+# columns in columnManager=300
+===========================new round 100=========================
+optimal objective= 1645.9999999999998+2819.0=4465.0
+
+Step 4-AdjustFlow
+After adjust, flowCost=2807.0
+Intensification optimal objective= 3675.0
+# columns in columnManager=300
+===========================new round 101=========================
+optimal objective= 1706.0+2819.0=4525.0
+
+Step 4-AdjustFlow
+After adjust, flowCost=2807.0
+Intensification optimal objective= 3675.0
+# columns in columnManager=300
+best objective value=3675.0
+artificial: false set: [209, 275, 371, 489, 42, 490, 491, 381, 253, 382, 383] start node= 4 start time= 14 capacity type= 1
+(3,0)->(1,3)->(0,6)->(0,7)->(0,8)->(0,9)->(4,14)->(4,15)->(4,16)->(4,17)->(2,21)->(3,0):1.0
+artificial: false set: [273, 87, 56, 344, 411, 492, 493, 126] start node= 4 start time= 18 capacity type= 1
+(0,1)->(2,6)->(1,11)->(1,12)->(4,17)->(4,18)->(4,19)->(1,23)->(0,1):1.0
+artificial: false set: [467, 468, 469, 133, 246, 470, 151, 363, 381, 382] start node= 4 start time= 1 capacity type= 0
+(4,1)->(0,6)->(0,7)->(0,8)->(2,13)->(3,17)->(3,18)->(3,19)->(3,20)->(3,21)->(4,1):1.0
+artificial: false set: [178, 275, 21, 263, 216, 58] start node= 4 start time= 21 capacity type= 1
+(3,0)->(1,3)->(2,8)->(1,13)->(0,16)->(4,21)->(3,0):1.0
+total run time=467039ms
