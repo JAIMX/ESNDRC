@@ -1,0 +1,348 @@
+number of service arcs=225
+number of holding arcs=75
+
+Time of first LP solve= 1722
+
+There are 825 columns added to the model.
+
+Tried aggregator 2 times.
+MIP Presolve eliminated 6077 rows and 2225 columns.
+MIP Presolve modified 448 coefficients.
+Aggregator did 1416 substitutions.
+Reduced MIP has 242 rows, 955 columns, and 3009 nonzeros.
+Reduced MIP has 53 binaries, 570 generals, 0 SOSs, and 0 indicators.
+Presolve time = 0.02 sec. (6.90 ticks)
+Found incumbent of value 9.1004310e+09 after 0.02 sec. (8.41 ticks)
+Probing time = 0.00 sec. (0.03 ticks)
+Tried aggregator 1 time.
+MIP Presolve eliminated 4 rows and 12 columns.
+Reduced MIP has 238 rows, 943 columns, and 2973 nonzeros.
+Reduced MIP has 53 binaries, 570 generals, 0 SOSs, and 0 indicators.
+Presolve time = 0.00 sec. (1.31 ticks)
+Probing time = 0.00 sec. (0.03 ticks)
+MIP emphasis: balance optimality and feasibility.
+MIP search method: dynamic search.
+Parallel mode: deterministic, using up to 4 threads.
+Root relaxation solution time = 0.00 sec. (1.08 ticks)
+
+        Nodes                                         Cuts/
+   Node  Left     Objective  IInf  Best Integer    Best Bound    ItCnt     Gap
+
+*     0+    0                       9.10043e+09     5889.0000           100.00%
+      0     0    16892.6507    27   9.10043e+09    16892.6507      137  100.00%
+*     0+    0                        17935.0000    16892.6507             5.81%
+      0     0    17152.7234    32    17935.0000      Cuts: 55      190    4.36%
+      0     0    17193.3017    37    17935.0000      Cuts: 41      239    4.14%
+      0     0    17210.5593    37    17935.0000   MIRcuts: 24      283    4.04%
+      0     0    17224.7628    36    17935.0000   MIRcuts: 13      317    3.96%
+      0     0    17231.8882    34    17935.0000   MIRcuts: 15      333    3.92%
+      0     0    17233.1654    29    17935.0000    MIRcuts: 8      338    3.91%
+      0     0    17234.3132    30    17935.0000    MIRcuts: 8      345    3.91%
+      0     0    17234.9848    30    17935.0000    MIRcuts: 5      351    3.90%
+*     0+    0                        17926.0000    17234.9848             3.85%
+*     0+    0                        17498.0000    17234.9848             1.50%
+*     0+    0                        17461.0000    17277.0080             1.05%
+*     0+    0                        17456.0000    17277.0080             1.03%
+      0     2    17234.9848    30    17456.0000    17277.0080      351    1.03%
+Elapsed time = 0.34 sec. (105.26 ticks, tree = 0.01 MB, solutions = 6)
+*     9+    9                        17386.0000    17277.0080             0.63%
+*     9+    9                        17365.0000    17277.0080             0.51%
+*    10+   10                        17357.0000    17277.0080             0.46%
+*    10+   10                        17345.0000    17277.0080             0.39%
+   1207   450        cutoff          17345.0000    17314.5992    21238    0.18%
+   1211   449        cutoff          17345.0000    17314.5992    21276    0.18%
+   1215   450    17337.8129    35    17345.0000    17314.5992    21338    0.18%
+   1219   450    17338.0543    16    17345.0000    17314.5992    21376    0.18%
+   1221   452    17343.9630    14    17345.0000    17314.5992    21390    0.18%
+   1233   451        cutoff          17345.0000    17315.2735    21494    0.17%
+   1234   450        cutoff          17345.0000    17315.2735    21502    0.17%
+   1235   451    17322.6568    18    17345.0000    17315.2735    21523    0.17%
+   1236   452    17339.3509    35    17345.0000    17315.2735    21537    0.17%
+*  2225   424      integral     0    17344.0000    17330.3486    34661    0.08%
+
+Mixed integer rounding cuts applied:  82
+Lift and project cuts applied:  5
+Gomory fractional cuts applied:  4
+
+Root node processing (before b&c):
+  Real time             =    0.34 sec. (105.34 ticks)
+Parallel b&c, 4 threads:
+  Real time             =    1.17 sec. (454.85 ticks)
+  Sync time (average)   =    0.19 sec.
+  Wait time (average)   =    0.27 sec.
+                          ------------
+Total (root+branch&cut) =    1.51 sec. (560.19 ticks)
+optimal objective= 17344.000000000004
+
+artificial: false set: [272, 273, 70, 247, 248, 169, 249, 270, 271] start node= 1 start time= 7 capacity type= 1
+(3,0)->(3,1)->(3,2)->(3,3)->(3,4)->(1,7)->(1,8)->(1,9)->(1,10)->(3,0):1
+
+artificial: false set: [48, 242, 23, 42] start node= 4 start time= 8 capacity type= 0
+(1,2)->(1,3)->(4,8)->(2,12)->(1,2):1
+
+artificial: false set: [0, 130, 169, 157] start node= 4 start time= 0 capacity type= 1
+(4,0)->(3,4)->(1,7)->(0,10)->(4,0):1
+
+artificial: false set: [176, 164, 7, 122] start node= 4 start time= 7 capacity type= 0
+(0,2)->(4,7)->(3,11)->(1,14)->(0,2):1
+
+artificial: false set: [149, 69, 199, 248] start node= 4 start time= 4 capacity type= 1
+(4,4)->(1,8)->(1,9)->(3,14)->(4,4):1
+
+artificial: false set: [273, 73, 139, 204] start node= 4 start time= 9 capacity type= 1
+(3,3)->(3,4)->(4,9)->(1,13)->(3,3):1
+
+artificial: false set: [290, 70, 135, 201] start node= 4 start time= 5 capacity type= 0
+(3,0)->(4,5)->(4,6)->(1,10)->(3,0):1
+
+artificial: false set: [290, 70, 135, 201] start node= 4 start time= 5 capacity type= 1
+(3,0)->(4,5)->(4,6)->(1,10)->(3,0):1
+
+artificial: false set: [241, 81, 242, 41, 153] start node= 1 start time= 2 capacity type= 1
+(1,1)->(1,2)->(1,3)->(0,6)->(2,11)->(1,1):1
+
+artificial: false set: [150, 263, 40, 264, 78] start node= 1 start time= 0 capacity type= 1
+(1,0)->(0,3)->(2,8)->(2,9)->(2,10)->(1,0):3
+
+artificial: false set: [210, 24, 139, 268, 269] start node= 4 start time= 9 capacity type= 1
+(2,0)->(3,4)->(4,9)->(2,13)->(2,14)->(2,0):1
+
+artificial: false set: [272, 23, 138, 222, 271] start node= 4 start time= 8 capacity type= 1
+(3,1)->(3,2)->(3,3)->(4,8)->(2,12)->(3,1):1
+
+artificial: false set: [210, 294, 25, 139, 269] start node= 4 start time= 9 capacity type= 1
+(2,0)->(3,4)->(4,9)->(4,10)->(2,14)->(2,0):2
+
+artificial: false set: [134, 199, 236, 237, 238, 158] start node= 4 start time= 4 capacity type= 1
+(4,4)->(1,8)->(0,11)->(0,12)->(0,13)->(0,14)->(4,4):1
+
+artificial: false set: [226, 227, 163, 293, 123, 204] start node= 4 start time= 8 capacity type= 1
+(0,1)->(0,2)->(0,3)->(4,8)->(4,9)->(1,13)->(0,1):1
+
+artificial: false set: [293, 150, 294, 123, 205, 254] start node= 4 start time= 8 capacity type= 1
+(1,0)->(0,3)->(4,8)->(4,9)->(4,10)->(1,14)->(1,0):1
+
+artificial: false set: [293, 150, 294, 295, 123, 206] start node= 4 start time= 8 capacity type= 1
+(1,0)->(0,3)->(4,8)->(4,9)->(4,10)->(4,11)->(1,0):1
+
+artificial: false set: [129, 229, 230, 231, 232, 104, 233] start node= 4 start time= 14 capacity type= 0
+(0,4)->(0,5)->(0,6)->(0,7)->(0,8)->(0,9)->(4,14)->(0,4):1
+
+artificial: false set: [112, 245, 246, 267, 268, 269, 30] start node= 2 start time= 12 capacity type= 0
+(2,0)->(1,5)->(1,6)->(1,7)->(2,12)->(2,13)->(2,14)->(2,0):1
+
+artificial: false set: [112, 245, 246, 267, 268, 269, 30] start node= 1 start time= 7 capacity type= 1
+(2,0)->(1,5)->(1,6)->(1,7)->(2,12)->(2,13)->(2,14)->(2,0):1
+
+artificial: false set: [294, 295, 104, 296, 297, 298, 124] start node= 4 start time= 9 capacity type= 1
+(0,4)->(4,9)->(4,10)->(4,11)->(4,12)->(4,13)->(4,14)->(0,4):1
+
+artificial: false set: [288, 55, 199, 248, 249, 285, 286, 287] start node= 4 start time= 3 capacity type= 0
+(4,0)->(4,1)->(4,2)->(4,3)->(4,4)->(1,8)->(1,9)->(1,10)->(4,0):1
+
+artificial: false set: [0, 294, 295, 296, 297, 298, 139, 299] start node= 4 start time= 12 capacity type= 0
+(4,0)->(3,4)->(4,9)->(4,10)->(4,11)->(4,12)->(4,13)->(4,14)->(4,0):1
+
+artificial: false set: [290, 291, 292, 293, 294, 45, 205, 254] start node= 4 start time= 7 capacity type= 0
+(1,0)->(4,5)->(4,6)->(4,7)->(4,8)->(4,9)->(4,10)->(1,14)->(1,0):1
+
+artificial: false set: [290, 291, 292, 293, 294, 45, 205, 254] start node= 4 start time= 7 capacity type= 1
+(1,0)->(4,5)->(4,6)->(4,7)->(4,8)->(4,9)->(4,10)->(1,14)->(1,0):1
+
+artificial: false set: [275, 211, 276, 277, 268, 188, 269, 255] start node= 2 start time= 0 capacity type= 0
+(2,0)->(2,1)->(3,5)->(3,6)->(3,7)->(3,8)->(2,13)->(2,14)->(2,0):1
+
+artificial: false set: [210, 274, 275, 276, 277, 268, 188, 269] start node= 3 start time= 4 capacity type= 1
+(2,0)->(3,4)->(3,5)->(3,6)->(3,7)->(3,8)->(2,13)->(2,14)->(2,0):1
+
+===========================new round 1=========================
+optimal objective= 6584.0+11373.000000000005=17957.000000000007
+
+Step 4-AdjustFlow
+After adjust, flowCost=11069.0
+Intensification optimal objective= 15590.0
+# columns in columnManager=54
+A new better solution has been found. obj=15590.0
+# columns in columnManager=54
+===========================new round 2=========================
+optimal objective= 6176.0+11160.0=17336.0
+
+Step 4-AdjustFlow
+After adjust, flowCost=11069.0
+Intensification optimal objective= 15526.0
+# columns in columnManager=82
+A new better solution has been found. obj=15526.0
+# columns in columnManager=82
+===========================new round 3=========================
+optimal objective= 6344.000000000002+11121.0=17465.0
+
+Step 4-AdjustFlow
+After adjust, flowCost=11069.0
+Intensification optimal objective= 15526.0
+# columns in columnManager=108
+===========================new round 4=========================
+optimal objective= 5484.0+11262.0=16746.0
+
+Step 4-AdjustFlow
+After adjust, flowCost=11069.0
+Intensification optimal objective= 15425.999999999998
+# columns in columnManager=132
+A new better solution has been found. obj=15426.0
+# columns in columnManager=132
+===========================new round 5=========================
+optimal objective= 6332.000000000001+11177.0=17509.0
+
+Step 4-AdjustFlow
+After adjust, flowCost=11069.0
+Intensification optimal objective= 15426.0
+# columns in columnManager=159
+===========================new round 6=========================
+optimal objective= 5847.999999999998+11198.0=17046.0
+
+Step 4-AdjustFlow
+After adjust, flowCost=11069.0
+Intensification optimal objective= 15426.0
+# columns in columnManager=183
+===========================new round 7=========================
+optimal objective= 6106.0+11386.0=17492.0
+
+Step 4-AdjustFlow
+After adjust, flowCost=11069.0
+Intensification optimal objective= 15426.0
+# columns in columnManager=213
+===========================new round 8=========================
+optimal objective= 6056.0+11237.0=17293.0
+
+Step 4-AdjustFlow
+After adjust, flowCost=11069.0
+Intensification optimal objective= 15426.0
+# columns in columnManager=242
+===========================new round 9=========================
+optimal objective= 6070.0+11238.0=17308.0
+
+Step 4-AdjustFlow
+After adjust, flowCost=11093.0
+Intensification optimal objective= 15426.0
+# columns in columnManager=271
+===========================new round 10=========================
+optimal objective= 6932.0+11072.0=18004.0
+
+Step 4-AdjustFlow
+After adjust, flowCost=11069.0
+Intensification optimal objective= 15426.0
+# columns in columnManager=300
+We make bestSolution as our current solution!!!
+===========================new round 11=========================
+optimal objective= 5890.0+11148.0=17038.0
+
+Step 4-AdjustFlow
+After adjust, flowCost=11069.0
+Intensification optimal objective= 15426.0
+# columns in columnManager=300
+===========================new round 12=========================
+optimal objective= 6092.0+11233.0=17325.0
+
+Step 4-AdjustFlow
+After adjust, flowCost=11069.0
+Intensification optimal objective= 15426.0
+# columns in columnManager=300
+===========================new round 13=========================
+optimal objective= 6746.0+11116.0=17862.0
+
+Step 4-AdjustFlow
+After adjust, flowCost=11069.0
+Intensification optimal objective= 15426.0
+# columns in columnManager=300
+===========================new round 14=========================
+optimal objective= 6690.0+11081.0=17771.0
+
+Step 4-AdjustFlow
+After adjust, flowCost=11069.0
+Intensification optimal objective= 15426.0
+# columns in columnManager=300
+===========================new round 15=========================
+optimal objective= 6520.0+11181.0=17701.0
+
+Step 4-AdjustFlow
+After adjust, flowCost=11093.0
+Intensification optimal objective= 15426.0
+# columns in columnManager=300
+===========================new round 16=========================
+optimal objective= 6466.0+11145.0=17611.0
+
+Step 4-AdjustFlow
+After adjust, flowCost=11069.0
+Intensification optimal objective= 15426.0
+# columns in columnManager=300
+===========================new round 17=========================
+optimal objective= 6528.0+11069.0=17597.0
+
+Step 4-AdjustFlow
+After adjust, flowCost=11069.0
+Intensification optimal objective= 15426.0
+# columns in columnManager=300
+===========================new round 18=========================
+optimal objective= 6326.0+11299.0=17625.0
+
+Step 4-AdjustFlow
+After adjust, flowCost=11134.0
+Intensification optimal objective= 15426.0
+# columns in columnManager=300
+===========================new round 19=========================
+optimal objective= 6314.0+11230.0=17544.0
+
+Step 4-AdjustFlow
+After adjust, flowCost=11069.0
+Intensification optimal objective= 15426.0
+# columns in columnManager=300
+===========================new round 20=========================
+optimal objective= 5664.00000000001+11153.0=16817.00000000001
+
+Step 4-AdjustFlow
+After adjust, flowCost=11087.0
+Intensification optimal objective= 15426.0
+# columns in columnManager=300
+best objective value=15426.0
+artificial: false set: [38, 150, 253, 254, 78] start node= 1 start time= 0 capacity type= 1
+(1,0)->(0,3)->(2,8)->(1,13)->(1,14)->(1,0):1.0
+artificial: false set: [112, 210, 169, 267, 268, 269] start node= 1 start time= 7 capacity type= 1
+(2,0)->(3,4)->(1,7)->(2,12)->(2,13)->(2,14)->(2,0):1.0
+artificial: false set: [38, 183, 73] start node= 1 start time= 13 capacity type= 1
+(3,3)->(2,8)->(1,13)->(3,3):1.0
+artificial: false set: [64, 44, 189] start node= 1 start time= 4 capacity type= 1
+(1,4)->(3,9)->(2,14)->(1,4):1.0
+artificial: false set: [293, 150, 294, 295, 123, 206] start node= 4 start time= 9 capacity type= 0
+(1,0)->(0,3)->(4,8)->(4,9)->(4,10)->(4,11)->(1,0):1.0
+artificial: false set: [224, 84, 168, 156] start node= 1 start time= 6 capacity type= 1
+(3,3)->(1,6)->(0,9)->(2,14)->(3,3):1.0
+artificial: false set: [288, 289, 130, 285, 286, 95, 287] start node= 4 start time= 0 capacity type= 1
+(4,0)->(4,1)->(4,2)->(4,3)->(4,4)->(4,5)->(0,10)->(4,0):1.0
+artificial: false set: [48, 23, 43, 267] start node= 4 start time= 8 capacity type= 1
+(1,3)->(4,8)->(2,12)->(2,13)->(1,3):1.0
+artificial: false set: [225, 226, 227, 99, 293, 123, 239] start node= 4 start time= 8 capacity type= 1
+(0,0)->(0,1)->(0,2)->(0,3)->(4,8)->(4,9)->(0,14)->(0,0):1.0
+artificial: false set: [272, 23, 138, 222, 271] start node= 4 start time= 8 capacity type= 1
+(3,1)->(3,2)->(3,3)->(4,8)->(2,12)->(3,1):1.0
+artificial: false set: [210, 294, 25, 139, 269] start node= 4 start time= 9 capacity type= 1
+(2,0)->(3,4)->(4,9)->(4,10)->(2,14)->(2,0):1.0
+artificial: false set: [294, 295, 104, 296, 297, 298, 124] start node= 4 start time= 9 capacity type= 1
+(0,4)->(4,9)->(4,10)->(4,11)->(4,12)->(4,13)->(4,14)->(0,4):1.0
+artificial: false set: [290, 291, 292, 293, 294, 45, 205, 254] start node= 4 start time= 7 capacity type= 1
+(1,0)->(4,5)->(4,6)->(4,7)->(4,8)->(4,9)->(4,10)->(1,14)->(1,0):1.0
+artificial: false set: [130, 195, 244, 245, 234, 156] start node= 4 start time= 0 capacity type= 1
+(4,0)->(1,4)->(1,5)->(1,6)->(0,9)->(0,10)->(4,0):1.0
+artificial: false set: [290, 70, 135, 201] start node= 4 start time= 5 capacity type= 0
+(3,0)->(4,5)->(4,6)->(1,10)->(3,0):1.0
+artificial: false set: [290, 70, 135, 201] start node= 4 start time= 5 capacity type= 1
+(3,0)->(4,5)->(4,6)->(1,10)->(3,0):2.0
+artificial: false set: [147, 67, 198, 287] start node= 4 start time= 2 capacity type= 1
+(4,2)->(4,3)->(1,7)->(3,12)->(4,2):1.0
+artificial: false set: [130, 195, 244, 245, 246, 157] start node= 4 start time= 0 capacity type= 1
+(4,0)->(1,4)->(1,5)->(1,6)->(1,7)->(0,10)->(4,0):1.0
+artificial: false set: [0, 130, 169, 157] start node= 4 start time= 0 capacity type= 1
+(4,0)->(3,4)->(1,7)->(0,10)->(4,0):1.0
+artificial: false set: [177, 150, 8, 123] start node= 4 start time= 8 capacity type= 1
+(1,0)->(0,3)->(4,8)->(3,12)->(1,0):1.0
+artificial: false set: [224, 293, 294, 25, 138] start node= 4 start time= 8 capacity type= 1
+(3,3)->(4,8)->(4,9)->(4,10)->(2,14)->(3,3):1.0
+total run time=2959975ms

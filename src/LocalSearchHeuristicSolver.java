@@ -2579,13 +2579,13 @@ public class LocalSearchHeuristicSolver {
 		
 //		LocalSearchHeuristicSolver solver = new LocalSearchHeuristicSolver("./data/testset/test0_5_10_10_5.txt", 3,5,3,3,20);	
 //		LocalSearchHeuristicSolver solver = new LocalSearchHeuristicSolver("./data/testset/test1_5_10_15_20.txt", 3,5,3,3,60);
-		LocalSearchHeuristicSolver solver = new LocalSearchHeuristicSolver("./data/testset/test4_5_15_15_100.txt", 3,5,3,3,60);
+		LocalSearchHeuristicSolver solver = new LocalSearchHeuristicSolver("./data/testset/test5_5_15_15_200.txt", 3,5,3,3,60);
 //		LocalSearchHeuristicSolver solver = new LocalSearchHeuristicSolver("./data/testset/test12_10_50_30_100A.txt", 3,5,3,10,200);
 
 //		List<FeasibleSolution> solutionList=solver.Initialization();
 		List<FeasibleSolution> solutionList=solver.InitializationCGHeuristic();
 	    long endTime = System.currentTimeMillis();
-		solver.TabuSearch(solutionList.get(0),20,300);
+		solver.TabuSearch(solutionList.get(0),10,300);
 		
 		endTime = System.currentTimeMillis();
 		System.out.println("total run time=" + (endTime - startTime) + "ms");
