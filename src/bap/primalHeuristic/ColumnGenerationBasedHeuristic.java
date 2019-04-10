@@ -45,15 +45,18 @@ public class ColumnGenerationBasedHeuristic {
     public Map<Cycle, Double> optSolutionValueMap;
     public List<Map<Integer, Double>> optXValues;
 
+
     Map<Cycle, IloIntVar> cycleVar;
     List<Map<Integer, IloNumVar>> x; // map:edgeIndex, x variable
     long runTime = 0;
+    private int cgTimeLimit;
 
-    public ColumnGenerationBasedHeuristic(SNDRC dataModel, Double thresholdValue, boolean ifAccelerationForUB) {
+    public ColumnGenerationBasedHeuristic(SNDRC dataModel, Double thresholdValue, boolean ifAccelerationForUB,int cgTimeLimit) {
         this.dataModel = dataModel;
         this.thresholdValue = thresholdValue;
         this.ifAccelerationForUB = ifAccelerationForUB;
         this.objectiveIncumbentSolution = Integer.MAX_VALUE;
+        this.cgTimeLimit=cgTimeLimit;
     }
 
     public void Solve() throws TimeLimitExceededException, IloException {
@@ -118,7 +121,9 @@ public class ColumnGenerationBasedHeuristic {
         // SimpleCGLogger logger = new SimpleCGLogger(cg, new
         // File("./output/cgLogger.log"));
 
-        cg.solve(System.currentTimeMillis() + 36000000L); // 10 hour limit
+//        cg.solve(System.currentTimeMillis() + 36000000L); // 10 hour limit
+        cgTimeLimit=cgTimeLimit*1000;
+        cg.solve(System.currentTimeMillis() + cgTimeLimit);
 
         System.out.println("Time of first LP solve= " + (System.currentTimeMillis() - runTime));
 
@@ -351,9 +356,10 @@ public class ColumnGenerationBasedHeuristic {
 
         runTime = System.currentTimeMillis() - runTime;
 //        long timeLeft = 3600000 - runTime;
-        long timeLeft = 180000; //6 mins
+        long timeLeft = 180000; //3 mins
 //        long timeLeft = 20000 - runTime;
         cplex.setParam(IloCplex.DoubleParam.TiLim, timeLeft / 1000);
+        cplex.setParam(IloCplex.DoubleParam.EpGap, 0.01);
         
 //        cplex.exportModel("./output/masterLP/" + "check"  + ".lp");
         cplex.solve();
@@ -483,7 +489,7 @@ public class ColumnGenerationBasedHeuristic {
             // properties.setProperty("PRECISION", "0.001");
             Configuration.readFromFile(properties);
 
-            ColumnGenerationBasedHeuristic solver = new ColumnGenerationBasedHeuristic(sndrc, 0.65, true);
+            ColumnGenerationBasedHeuristic solver = new ColumnGenerationBasedHeuristic(sndrc, 0.65, true,3600);
             solver.Solve();
             long time1 = System.currentTimeMillis();
             System.out.println("Total time= " + (time1 - time0));

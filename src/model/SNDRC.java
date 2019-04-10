@@ -498,6 +498,7 @@ public class SNDRC implements ModelInterface {
             // b[end][i] = -demand.volume;
             b[i][start] = demand.volume;
             b[i][end] = -demand.volume;
+            
         }
 
         // vehicle limit

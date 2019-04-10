@@ -319,7 +319,7 @@ public class LocalSearchHeuristicSolver {
 		modelData.ModifyEdgesForX(edgesForX);
 		
 		//cg-based heuristic
-		ColumnGenerationBasedHeuristic cgHeuristic=new ColumnGenerationBasedHeuristic(modelData, 0.6, false);
+		ColumnGenerationBasedHeuristic cgHeuristic=new ColumnGenerationBasedHeuristic(modelData, 0.6, false,180);
 		cgHeuristic.Solve();
 		List<FeasibleSolution> solutionList=new ArrayList<>();
 		FeasibleSolution feasibleSolution=new FeasibleSolution(cgHeuristic.optXValues, cgHeuristic.incumbentSolution);
@@ -1100,7 +1100,7 @@ public class LocalSearchHeuristicSolver {
         IloCplex cplex=new IloCplex();
 //		FileOutputStream outputStream=new FileOutputStream(new File("./output/cplexOut.txt"));
         cplex.setParam(IloCplex.DoubleParam.EpGap, 0.005);
-		cplex.setOut(null);
+//		cplex.setOut(null);
 		
 		cplex.setParam(IloCplex.IntParam.Threads, 4);
 		cplex.setParam(IloCplex.Param.Simplex.Tolerances.Markowitz, 0.1);
@@ -1269,7 +1269,7 @@ public class LocalSearchHeuristicSolver {
  	public List<Cycle> SolveVehicleCoverCGHeuristic(double[] flowCover,double totalFlowCost,boolean ifAccelerationForUB) throws TimeLimitExceededException, IloException{
         List<Cycle> cycleList = new ArrayList<>();
         int bestObjValue=Integer.MAX_VALUE;
-//		System.out.println("-------------Start to solve SolveVehicleCoverCGHeuristic()---------------");
+		System.out.println("-------------Start to solve SolveVehicleCoverCGHeuristic()---------------");
         long runTime = System.currentTimeMillis();
 
         /// -----------------------------step1: solve the root node------------------------------------///
@@ -1331,9 +1331,10 @@ public class LocalSearchHeuristicSolver {
         // File("./output/cgLogger.log"));
         
         
-        cg.solve(System.currentTimeMillis() + 36000000L); // 10 hour limit
+//        cg.solve(System.currentTimeMillis() + 36000000L); // 10 hour limit
+        cg.solve(System.currentTimeMillis() + 180000); // 3 mins limit
 
-//        System.out.println("Time of first LP solve= " + (System.currentTimeMillis() - runTime));
+        System.out.println("Time of first LP solve= " + (System.currentTimeMillis() - runTime));
 
         if (ifAccelerationForUB) {
             /// -------------------------------AccelerationForUB------------------------------------///
@@ -1425,7 +1426,8 @@ public class LocalSearchHeuristicSolver {
         
       /// --------------------------------step2:construct a cplex model------------------------------------///
         IloCplex cplex = new IloCplex();
-        cplex.setOut(null);
+//        cplex.setOut(null);
+        cplex.setParam(IloCplex.DoubleParam.EpGap, 0.01);
         cplex.setParam(IloCplex.IntParam.Threads, 4);
         cplex.setParam(IloCplex.Param.Simplex.Tolerances.Markowitz, 0.1);
 
@@ -1508,7 +1510,7 @@ public class LocalSearchHeuristicSolver {
         master.close();
 
 //        System.out.println();
-//        System.out.println("There are " + amount + " columns added to the model.");
+        System.out.println("There are " + amount + " columns added to the model.");
 //        System.out.println();
 
         runTime = System.currentTimeMillis() - runTime;
@@ -2579,13 +2581,13 @@ public class LocalSearchHeuristicSolver {
 		
 //		LocalSearchHeuristicSolver solver = new LocalSearchHeuristicSolver("./data/testset/test0_5_10_10_5.txt", 3,5,3,3,20);	
 //		LocalSearchHeuristicSolver solver = new LocalSearchHeuristicSolver("./data/testset/test1_5_10_15_20.txt", 3,5,3,3,60);
-		LocalSearchHeuristicSolver solver = new LocalSearchHeuristicSolver("./data/testset/test5_5_15_15_200.txt", 3,5,3,3,60);
-//		LocalSearchHeuristicSolver solver = new LocalSearchHeuristicSolver("./data/testset/test12_10_50_30_100A.txt", 3,5,3,10,200);
+//		LocalSearchHeuristicSolver solver = new LocalSearchHeuristicSolver("./data/testset/test5_5_15_15_200.txt", 3,5,3,3,60);
+		LocalSearchHeuristicSolver solver = new LocalSearchHeuristicSolver("./data/testset/test12_10_50_30_100A.txt", 2,5,3,5,100);
 
 //		List<FeasibleSolution> solutionList=solver.Initialization();
 		List<FeasibleSolution> solutionList=solver.InitializationCGHeuristic();
 	    long endTime = System.currentTimeMillis();
-		solver.TabuSearch(solutionList.get(0),10,300);
+		solver.TabuSearch(solutionList.get(0),10,200);
 		
 		endTime = System.currentTimeMillis();
 		System.out.println("total run time=" + (endTime - startTime) + "ms");
