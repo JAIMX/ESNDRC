@@ -902,7 +902,7 @@ public class BranchAndPriceB_M<V> extends AbstractBranchAndPrice<SNDRC, Cycle, S
 
                 // ---------------------------------------ColumnGenerationBasedHeuristic----------------------------------------------------------------
                 long time0 = System.currentTimeMillis();
-                ColumnGenerationBasedHeuristic solver = new ColumnGenerationBasedHeuristic(subGraph, 0.65, false);
+                ColumnGenerationBasedHeuristic solver = new ColumnGenerationBasedHeuristic(subGraph, 0.65, false,36000);
 //                ColumnGenerationBasedHeuristic solver = new ColumnGenerationBasedHeuristic(subGraph, 0.65, true);
 
                 solver.Solve();

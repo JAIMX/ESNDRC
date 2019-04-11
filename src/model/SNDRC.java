@@ -1402,8 +1402,8 @@ public class SNDRC implements ModelInterface {
     }
     
     public static void main(String[] args) throws IOException {
-        SNDRC test = new SNDRC("./data/testset/test0_5_10_10_5.txt");
-        test.outputFeature("./featureSet/test0_5_10_10_5.txt");
+        SNDRC test = new SNDRC("./data/testset/testL3_20_230_48_200.txt");
+//        test.outputFeature("./featureSet/test0_5_10_10_5.txt");
         
     }
 

@@ -148,7 +148,7 @@ public class ExactPricingProblemSolver extends AbstractPricingProblemSolver<SNDR
                 // {
             	
             	this.objective=Math.min(this.objective, dpFunction[originNodeIndex] + modifiedCost);
-                if (dpFunction[originNodeIndex] + modifiedCost < -0.001) {
+                if (dpFunction[originNodeIndex] + modifiedCost < -0.1) {
                     Set<Integer> edgeIndexSet = new HashSet<>();
                     double cost = 0;
                     double totalLength = 0;

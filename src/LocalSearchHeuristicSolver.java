@@ -22,6 +22,7 @@ import java.util.Set;
 
 import org.jorlib.frameworks.columnGeneration.branchAndPrice.AbstractBranchCreator;
 import org.jorlib.frameworks.columnGeneration.colgenMain.ColGen;
+import org.jorlib.frameworks.columnGeneration.io.SimpleCGLogger;
 import org.jorlib.frameworks.columnGeneration.io.SimpleDebugger;
 import org.jorlib.frameworks.columnGeneration.io.TimeLimitExceededException;
 import org.jorlib.frameworks.columnGeneration.master.cutGeneration.CutHandler;
@@ -36,6 +37,7 @@ import bap.branching.BranchOnLocalService;
 import bap.branching.BranchOnLocalServiceForAllPricingProblems;
 import bap.branching.BranchOnServiceEdge;
 import bap.primalHeuristic.ColumnGenerationBasedHeuristic;
+import cg.ColGenConditionalTerminate;
 import cg.Cycle;
 import cg.ExactPricingProblemSolver;
 import cg.SNDRCPricingProblem;
@@ -319,7 +321,7 @@ public class LocalSearchHeuristicSolver {
 		modelData.ModifyEdgesForX(edgesForX);
 		
 		//cg-based heuristic
-		ColumnGenerationBasedHeuristic cgHeuristic=new ColumnGenerationBasedHeuristic(modelData, 0.6, false,180);
+		ColumnGenerationBasedHeuristic cgHeuristic=new ColumnGenerationBasedHeuristic(modelData, 0.6, false,36000);
 		cgHeuristic.Solve();
 		List<FeasibleSolution> solutionList=new ArrayList<>();
 		FeasibleSolution feasibleSolution=new FeasibleSolution(cgHeuristic.optXValues, cgHeuristic.incumbentSolution);
@@ -638,7 +640,7 @@ public class LocalSearchHeuristicSolver {
 		while(nonImprovementCount<maxIteration||ifIntensifyImprove){
 			iterationCount++;
 		    long currentTime=System.currentTimeMillis();
-		    if(currentTime-startTime>3600000) break;
+//		    if(currentTime-startTime>3600000) break;
 			
 			//update tabuNodeList
 			while(tabuNodeList.size()>tabuListLengthLimit){
@@ -655,7 +657,7 @@ public class LocalSearchHeuristicSolver {
 			
 			System.out.println("===========================new round "+iterationCount+"=========================");
 
-			FeasibleSolution newSolution=Neighbourhood(currentSolution);
+			FeasibleSolution newSolution=Neighbourhood(currentSolution,iterationCount);
 			if(newSolution.totalCost<bestObjectiveValue-0.001){
 				bestObjectiveValue=newSolution.totalCost;
 				bestFoundSolution=newSolution;
@@ -724,7 +726,7 @@ public class LocalSearchHeuristicSolver {
 	 * @param currentSolution
 	 * @throws Exception 
 	 */
-	public FeasibleSolution Neighbourhood(FeasibleSolution currentSolution) throws Exception {
+	public FeasibleSolution Neighbourhood(FeasibleSolution currentSolution,int fileCount) throws Exception {
 		
 		//1. For start, we need to identify the empty vehicle run edge
 		Map<Cycle,Map<Integer,Integer>> emptyVehicleEdgeRecord=new HashMap<>();//inside map record how many edges are empty for edgeIndex(key)
@@ -926,7 +928,7 @@ public class LocalSearchHeuristicSolver {
 		}
 		
 //		List<Cycle> cycleSolution=SolveVehicleCover(flowSum[minIndex],totalFlowCostArray[minIndex]);
-		List<Cycle> cycleSolution=SolveVehicleCoverCGHeuristic(flowSum[minIndex],totalFlowCostArray[minIndex],false);
+		List<Cycle> cycleSolution=SolveVehicleCoverCGHeuristic(flowSum[minIndex],totalFlowCostArray[minIndex],false,fileCount);
 		
 		//4. Adjust flow based on the cycleSolution
 		System.out.println("Step 4-AdjustFlow");
@@ -1099,12 +1101,13 @@ public class LocalSearchHeuristicSolver {
 		//cplex solving
         IloCplex cplex=new IloCplex();
 //		FileOutputStream outputStream=new FileOutputStream(new File("./output/cplexOut.txt"));
-        cplex.setParam(IloCplex.DoubleParam.EpGap, 0.005);
+        cplex.setParam(IloCplex.DoubleParam.EpGap, 0.02);
+		cplex.setParam(IloCplex.DoubleParam.TiLim, 900); //15 mins
 //		cplex.setOut(null);
 		
 		cplex.setParam(IloCplex.IntParam.Threads, 4);
 		cplex.setParam(IloCplex.Param.Simplex.Tolerances.Markowitz, 0.1);
-		cplex.setParam(IloCplex.DoubleParam.TiLim, 180); //3 mins
+
 		List<Map<Integer,IloNumVar>> x; //map:edgeIndex, x variable
 		Map<Path,IloNumVar> pathVarMap=new HashMap<>();
 		
@@ -1266,7 +1269,7 @@ public class LocalSearchHeuristicSolver {
 		
 	}
 	
- 	public List<Cycle> SolveVehicleCoverCGHeuristic(double[] flowCover,double totalFlowCost,boolean ifAccelerationForUB) throws TimeLimitExceededException, IloException{
+ 	public List<Cycle> SolveVehicleCoverCGHeuristic(double[] flowCover,double totalFlowCost,boolean ifAccelerationForUB,int fileCount) throws TimeLimitExceededException, IloException{
         List<Cycle> cycleList = new ArrayList<>();
         int bestObjValue=Integer.MAX_VALUE;
 		System.out.println("-------------Start to solve SolveVehicleCoverCGHeuristic()---------------");
@@ -1289,7 +1292,14 @@ public class LocalSearchHeuristicSolver {
         // cutHandler.addCutGenerator(cutGen);
 
         // Create the Master Problem
-        modelData.flowCover=Arrays.copyOf(flowCover, flowCover.length);
+//        modelData.flowCover=Arrays.copyOf(flowCover, flowCover.length);
+        modelData.flowCover=new double[flowCover.length];
+        int count0=0;
+        for(int i=0;i<modelData.flowCover.length;i++) {
+        	modelData.flowCover[i]=flowCover[i];
+        	if(flowCover[i]>0.01) count0++;
+        }
+        System.out.println("flowCoverCount="+count0);
         modelData.totalFlowCost=totalFlowCost;
         MasterForVehicleCover master = new MasterForVehicleCover(modelData, pricingProblems, cutHandler, cutGen, false);
 
@@ -1322,93 +1332,20 @@ public class LocalSearchHeuristicSolver {
         // ----------------------------------generateInitialFeasibleSolution-------------------------------------------------//
         
         
-        ColGen<SNDRC, Cycle, SNDRCPricingProblem> cg = new ColGen<SNDRC, Cycle, SNDRCPricingProblem>(modelData, master,
-                pricingProblems, solvers, artificalVars, Integer.MAX_VALUE, Double.MIN_VALUE);
+//        ColGen<SNDRC, Cycle, SNDRCPricingProblem> cg = new ColGen<SNDRC, Cycle, SNDRCPricingProblem>(modelData, master,
+//                pricingProblems, solvers, artificalVars, Integer.MAX_VALUE, Double.MIN_VALUE);
+        long timeLimit=System.currentTimeMillis()+180000;
+        ColGenConditionalTerminate cg = new ColGenConditionalTerminate(modelData, master, pricingProblems, solvers, artificalVars, Integer.MAX_VALUE, Double.MIN_VALUE,timeLimit);
 
         // SimpleDebugger debugger = new SimpleDebugger(cg);
 
-        // SimpleCGLogger logger = new SimpleCGLogger(cg, new
-        // File("./output/cgLogger.log"));
+         SimpleCGLogger logger = new SimpleCGLogger(cg, new File("./output/cgLogger"+fileCount+".log"));
         
         
 //        cg.solve(System.currentTimeMillis() + 36000000L); // 10 hour limit
-        cg.solve(System.currentTimeMillis() + 180000); // 3 mins limit
+        cg.solve(System.currentTimeMillis() + 36000000); // 3 mins limit
 
         System.out.println("Time of first LP solve= " + (System.currentTimeMillis() - runTime));
-
-        if (ifAccelerationForUB) {
-            /// -------------------------------AccelerationForUB------------------------------------///
-            List<Cycle> solution = cg.getSolution();
-
-            while (!isIntegerNode(solution)) {
-
-                boolean ifAllBelowThresholdValue = true;
-                solution = cg.getSolution();
-
-                for (Cycle cycle : solution) {
-                    if (MathProgrammingUtil.isFractional(cycle.value)) {
-                        double decimalValue = cycle.value - (int) cycle.value;
-                        if (decimalValue > 0.6) {
-                            ifAllBelowThresholdValue = false;
-                            ((Master) master).addFixVarConstraint(cycle);
-                        }
-                    }
-                }
-
-                // if all cycles' value are below the threshold value, fix the
-                // variable with highest fractional decimal value
-                double record = 0;
-                Cycle cycleRecord = null;
-                if (ifAllBelowThresholdValue) {
-                    for (Cycle cycle : solution) {
-                        if (MathProgrammingUtil.isFractional(cycle.value)) {
-                            double decimalValue = cycle.value - (int) cycle.value;
-                            if (decimalValue > record) {
-                                cycleRecord = cycle;
-                                record = decimalValue;
-                            }
-                        }
-                    }
-
-                    if (cycleRecord != null) {
-                        ((Master) master).addFixVarConstraint(cycleRecord);
-                    } else {
-                        break;
-                    }
-                }
-
-                // here we should check if the master problem is feasible
-                if (((Master) master).CheckFeasibility() == false) {
-                    break;
-                }
-
-                List<Cycle> nullList = new ArrayList<>();
-                cg = new ColGen<>(modelData, master, pricingProblems, solvers, nullList, Integer.MAX_VALUE,
-                        Double.MIN_VALUE);
-                cg.solve(System.currentTimeMillis() + 18000000L); // 5 hour
-
-                if (isInfeasibleNode(cg.getSolution())) {
-                    break;
-                }
-
-                if (isIntegerNode(cg.getSolution())) {
-                    int integerObjective = MathProgrammingUtil.doubleToInt(cg.getObjective());
-                    System.out.println("By acceleration,we find a feasible solution: " + integerObjective+"+"+totalFlowCost+"="+(integerObjective+totalFlowCost));
-
-                    bestObjValue=integerObjective;
-                    for (Cycle cycle : cg.getSolution()) {
-                        cycleList.add(cycle);
-                    }
-                    
-                    
-                    break;
-                }
-
-            }
-
-            /// -------------------------------AccelerationForUB------------------------------------///
-            System.out.println("Time of acceleration LP solve= " + (System.currentTimeMillis() - runTime));
-        }
         
         
         // pick up all the cycles in master problem
@@ -2307,7 +2244,12 @@ public class LocalSearchHeuristicSolver {
 		Comparator<Cycle> averageFixCostComparator= new Comparator<Cycle>() {
 			@Override
 			public int compare(Cycle cycle1,Cycle cycle2){
-				return (int) (averageFixCostForAllEdges.get(cycle2)-averageFixCostForAllEdges.get(cycle1));
+				if(cycle1.equals(cycle2)) return 0;
+				if(averageFixCostForAllEdges.get(cycle2)-averageFixCostForAllEdges.get(cycle1)>0.01) {
+					return 1;
+				}
+				return -1;
+//				return (int) (averageFixCostForAllEdges.get(cycle2)-averageFixCostForAllEdges.get(cycle1));
 			}
 		};
 		
@@ -2582,12 +2524,18 @@ public class LocalSearchHeuristicSolver {
 //		LocalSearchHeuristicSolver solver = new LocalSearchHeuristicSolver("./data/testset/test0_5_10_10_5.txt", 3,5,3,3,20);	
 //		LocalSearchHeuristicSolver solver = new LocalSearchHeuristicSolver("./data/testset/test1_5_10_15_20.txt", 3,5,3,3,60);
 //		LocalSearchHeuristicSolver solver = new LocalSearchHeuristicSolver("./data/testset/test5_5_15_15_200.txt", 3,5,3,3,60);
-		LocalSearchHeuristicSolver solver = new LocalSearchHeuristicSolver("./data/testset/test12_10_50_30_100A.txt", 2,5,3,5,100);
-
+//		LocalSearchHeuristicSolver solver = new LocalSearchHeuristicSolver("./data/testset/test12_10_50_30_100A.txt", 2,5,3,5,100);
+//		LocalSearchHeuristicSolver solver = new LocalSearchHeuristicSolver("./data/testset/test15_10_50_50_400.txt", 2,5,3,5,150);
+//		LocalSearchHeuristicSolver solver = new LocalSearchHeuristicSolver("./data/testset/testL3_20_230_48_200.txt", 2,5,3,5,300);
+		LocalSearchHeuristicSolver solver = new LocalSearchHeuristicSolver("./data/testset/testL4_30_516_48_400.txt", 2,5,3,5,480);
+		
+		
+		
+		
 //		List<FeasibleSolution> solutionList=solver.Initialization();
 		List<FeasibleSolution> solutionList=solver.InitializationCGHeuristic();
 	    long endTime = System.currentTimeMillis();
-		solver.TabuSearch(solutionList.get(0),10,200);
+		solver.TabuSearch(solutionList.get(0),10,500);
 		
 		endTime = System.currentTimeMillis();
 		System.out.println("total run time=" + (endTime - startTime) + "ms");

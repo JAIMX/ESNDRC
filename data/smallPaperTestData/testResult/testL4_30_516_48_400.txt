@@ -1,0 +1,4 @@
+LocalSearchHeuristicSolver solver = new LocalSearchHeuristicSolver("./data/testset/testL4_30_516_48_400.txt", 2,5,3,5,480);
+solver.TabuSearch(solutionList.get(0),10,500);
+
+intensify  15mins
