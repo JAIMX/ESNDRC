@@ -435,7 +435,7 @@ Commodity	Origin node	Destination node	Time available Time due	Volume
 23	66	86	37	37	6
 24	50	97	50	50	6
 25	12	38	71	71	6
-26	94	89	37	37	6
+26	94	8	37	37	6
 27	73	51	36	36	8
 28	21	46	64	64	6
 29	75	58	42	42	7

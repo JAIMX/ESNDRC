@@ -1,0 +1,5 @@
+LocalSearchHeuristicSolver solver = new LocalSearchHeuristicSolver("./data/testset/testL5_100_400_72_30.txt", 2,5,3,5,2400);
+solver.TabuSearch(solutionList.get(0),10,200);
+intensify  15mins
+
+直接停掉了不知道为啥，初始的cg没有求解完。

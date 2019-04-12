@@ -59,6 +59,7 @@ import model.SNDRC.Demand;
 import model.SNDRC.Edge;
 import model.SNDRC.Path;
 import model.SNDRC.Service;
+import sun.awt.ModalExclude;
 
 public class LocalSearchHeuristicSolver {
 	private SNDRC modelData;
@@ -790,7 +791,6 @@ public class LocalSearchHeuristicSolver {
 //			System.out.println("totalRemoveFixCost="+totalRemoveFixCost);
 	
 			
-			
 			//2.3 Create the residual network for each subPath in commoditySubpathList and redirect the flow
 			
 			//Now we can drop the cycle info and only record the vehicle edge info on each service edge.
@@ -837,6 +837,7 @@ public class LocalSearchHeuristicSolver {
 
 			//Currently, we plan the commodities in a sequence in commoditySubpathList
 			double residualNetworkCost=rebuildSubPath(flowEdgeCover, vehicleEdgeCover, commoditySubpathList, averageFixCostForCapacityType);
+
 			
 			//Calculate total cost modification
 			double variableCost1=0;
@@ -908,7 +909,7 @@ public class LocalSearchHeuristicSolver {
 			totalFlowCostArray[terminalIndex]=totalFlowCost;
 			
 		}
-		
+
 		
 		//3. Using bnp to solve vehicle cover problem
 //		System.out.println();
@@ -933,6 +934,7 @@ public class LocalSearchHeuristicSolver {
 		//4. Adjust flow based on the cycleSolution
 		System.out.println("Step 4-AdjustFlow");
 		List<Map<Integer, Double>> optXValues=AdjustFlow(cycleSolution);
+//		List<Map<Integer, Double>> optXValues=AdjustFlowGreedy(cycleSolution);
 		
 		FeasibleSolution output=new FeasibleSolution(optXValues, cycleSolution);
 		
@@ -957,6 +959,126 @@ public class LocalSearchHeuristicSolver {
 		return output;
 	}
 	
+	public  List<Map<Integer, Double>> AdjustFlowGreedy(List<Cycle> cycleSolution) throws Exception{
+		modelData.ModifyEdgesForX(edgesForXRecord);
+		
+		double[] totalVehicleCapacity=new double[modelData.numServiceArc];
+		//calculate total vehicle capacity for each service edge
+		for(Cycle cycle:cycleSolution){
+			int capacity=modelData.capacity[cycle.associatedPricingProblem.capacityTypeS];
+			for(int edgeIndex:cycle.edgeIndexSet){
+				Edge edge=modelData.edgeSet.get(edgeIndex);
+				if(edge.edgeType==0){
+					totalVehicleCapacity[edgeIndex]+=capacity*cycle.value;
+				}
+			}
+		}
+		
+		
+		List<Map<Integer, Double>> resultXValue=new ArrayList<>();
+		for(int i=0;i<modelData.numDemand;i++) {
+			resultXValue.add(new HashMap<>());
+		}
+		
+		//find shortest path for each demand k
+		for(int k=0;k<modelData.numDemand;k++) {
+			Map<Integer, Double> mapForX=resultXValue.get(k);
+			Demand demand=modelData.demandSet.get(k);
+			double quantity=demand.volume;
+			
+			int startTime=demand.timeAvailable;
+			int endTime=demand.timeDue;
+			int timeLength=endTime-startTime;
+            int start = demand.origin * modelData.timePeriod + demand.timeAvailable;
+            int end = demand.destination * modelData.timePeriod + demand.timeDue;
+            
+			if(timeLength<=0) {
+				timeLength+=modelData.timePeriod;
+			}
+			
+			while(quantity>0.9) {
+				double[] f=new double[modelData.abstractNumNode];
+				for(int i=0;i<f.length;i++){
+					f[i]=Integer.MAX_VALUE;
+				}
+				f[start]=0;
+				int[] record=new int[modelData.abstractNumNode];
+				
+				
+				for(int time=0;time<timeLength;time++) {
+					int timeIndex=startTime+time;
+					timeIndex=timeIndex%modelData.timePeriod;
+					
+					for(int terminalIndex=0;terminalIndex<modelData.numNode;terminalIndex++) {
+						int nodeIndex=terminalIndex*modelData.timePeriod+timeIndex;
+						
+						if(f[nodeIndex]<Integer.MAX_VALUE-1000){
+							for(int edgeIndex:modelData.pointToEdgeSet.get(nodeIndex)){
+								Edge edge=modelData.edgeSet.get(edgeIndex);
+								int duration=edge.duration;
+								if(edge.edgeType==1){
+									duration=1;
+								}
+								
+								if(time+duration<=timeLength){
+
+										if(edge.edgeType==0&&totalVehicleCapacity[edgeIndex]>0.5){
+												double distance=f[nodeIndex]+edge.duration;
+												if(f[edge.end]>distance){
+													f[edge.end]=distance;
+													record[edge.end]=edgeIndex;
+												}							
+										}else{ //holding edge
+											if(edge.edgeType==1&&f[edge.end]>f[nodeIndex]){
+												f[edge.end]=f[nodeIndex];
+												record[edge.end]=edgeIndex;
+											}
+										}
+									
+
+								}
+							}
+						}
+					}
+				}
+				if(f[end]>100000000) throw new Exception("greedy flow adjust is infeasible.");
+				ArrayList<Integer> shortestPath=new ArrayList<>();
+			    int nodeIndex=end;
+			    
+			    while(nodeIndex!=start) {
+			    	int edgeIndex=record[nodeIndex];
+			    	shortestPath.add(edgeIndex);
+			    	nodeIndex=modelData.edgeSet.get(edgeIndex).start;
+			    }
+			    
+			    
+			    //find the minimal capacity of this shortest path
+			    double minValue=Double.MAX_VALUE;
+			    for(int edgeIndex:shortestPath) {
+
+			    	if(edgeIndex<modelData.numServiceArc&&totalVehicleCapacity[edgeIndex]>=0.9) {
+				    	minValue=Math.min(minValue, totalVehicleCapacity[edgeIndex]);
+			    	}
+			    }
+			    for(int edgeIndex:shortestPath) {
+			    	if(edgeIndex<modelData.numServiceArc) {
+				    	totalVehicleCapacity[edgeIndex]-=minValue;
+			    	}
+			    	if(mapForX.containsKey(edgeIndex)) {
+			    		mapForX.put(edgeIndex, mapForX.get(edgeIndex)+minValue);
+			    	}else {
+			    		mapForX.put(edgeIndex, minValue);
+			    	}
+			    }
+			    
+			    quantity-=minValue;				
+				
+			}
+		}
+		return resultXValue;
+		
+		
+	}
 	public List<Map<Integer, Double>> AdjustFlow(List<Cycle> cycleSolution) throws IloException{
 		modelData.ModifyEdgesForX(edgesForXRecord);
 		
@@ -971,6 +1093,15 @@ public class LocalSearchHeuristicSolver {
 				}
 			}
 		}
+		
+		//x variables are limited in this set
+		Set<Integer> serviceEdgeSet=new HashSet<>();
+		for(int edgeIndex=0;edgeIndex<modelData.numServiceArc;edgeIndex++) {
+			if(totalVehicleCapacity[edgeIndex]>0.5) {
+				serviceEdgeSet.add(edgeIndex);
+			}
+		}
+		
 		
 		IloCplex cplex = new IloCplex();
 
@@ -990,6 +1121,8 @@ public class LocalSearchHeuristicSolver {
         // add x variables
         for (int p = 0; p < modelData.numDemand; p++) {
             for (int edgeIndex : modelData.edgesForX.get(p)) {
+            	if(edgeIndex<modelData.numServiceArc&&!serviceEdgeSet.contains(edgeIndex)) continue;
+            	
                 Edge edge = modelData.edgeSet.get(edgeIndex);
                 IloNumVar varX = cplex.numVar(0,modelData.demandSet.get(p).volume,
                         "x" + p + "," + edge.start + "," + edge.end);
@@ -1619,8 +1752,9 @@ public class LocalSearchHeuristicSolver {
 			
 			double amount=subPath.amount;
 			int[][] modifyVehicleEdgeCover=new int[modelData.numServiceArc][modelData.numOfCapacity];
+
 			double[] residualNetwork=createResidualNetwork(flowEdgeCover,vehicleEdgeCover,subPath,modifyVehicleEdgeCover,averageFixCostForCapacityType);
-			
+
 			
 			totalCost+=findShortestPath(subPath,residualNetwork,shortestPath);
 			
@@ -1707,7 +1841,6 @@ public class LocalSearchHeuristicSolver {
 		}
 		
 		
-		//闂佹眹鍨硅ぐ澶岃姳椤掑偊鎷峰☉娅亜锕㈤敓锟� tabu list 闂佸憡鐟崹鐢稿礂濮楋拷楠炲秹宕ｉ妷褏鎲归梺鍛婂笧婢ф銆掗崼鏇熷剹妞ゆ搫绱曢悢鍛存煥濞戞鐒风紒缁樼墵閺屽瞼浠﹂幆褏浜繛瀵稿閸撴繄鎹㈤幋锕�鐐婇柣鎰暯閺佸嫰鏌ｉ妸銉ヮ伂缂佹梻鍠栧鍧楀幢濡や礁顏疍ouble.MaxValue,闁哄鏅滈弻銊ッ洪弽顓炶Е閹兼番鍊ら崵濉甽ow婵炲濮寸粔鐢碉拷鍨矒閹ゎ槺缂佺媴缍佸鑽ゅ鐎ｎ剛鍞撮悗鍨緲鐎氼厾绮婇敂鑺ヤ氦闁搞儵顥撶粈澶愭煕濮橆剚婀版俊鐐插�绘禍鎼佸幢濞嗘劗銈查梺绋跨箰閻ゅ洨绮╅悢鍝ヮ浄鐎瑰憡顩竍u list 婵炴垶鎼╅崢鍏兼櫠瑜斿浠嬫晸閿燂拷
 		
 //		System.out.println(f[subPath.endNodeIndex]);
 		if(f[subPath.endNodeIndex]>100000000){
@@ -1738,15 +1871,16 @@ public class LocalSearchHeuristicSolver {
 				nodeIndex=modelData.edgeSet.get(edgeIndex).start;
 				
 				if(shortestPath.size()>50){
-					System.out.println();
-					System.out.println("Error!!!");
-					System.out.println(f[subPath.endNodeIndex]);
-					System.out.println(subPath.toString());
-					for(int serviceEdgeIndex=0;serviceEdgeIndex<modelData.numServiceArc;serviceEdgeIndex++){
-						Edge edge=modelData.edgeSet.get(serviceEdgeIndex);
-						System.out.println(edge.toString()+":"+residualNetwork[serviceEdgeIndex]);
-					}
-					throw new Exception("闂佸搫鐗為幏鐑芥煟椤撗冨绩闁活厼澧界划璇参旀担鎭掞拷濠囨煕濞嗘劕鐏╅柡浣规崌閺屻劌鈻庨幒婵嗘");
+//					System.out.println();
+//					System.out.println("Error!!!");
+//					System.out.println(f[subPath.endNodeIndex]);
+//					System.out.println(subPath.toString());
+//					for(int serviceEdgeIndex=0;serviceEdgeIndex<modelData.numServiceArc;serviceEdgeIndex++){
+//						Edge edge=modelData.edgeSet.get(serviceEdgeIndex);
+//						System.out.println(edge.toString()+":"+residualNetwork[serviceEdgeIndex]);
+//					}
+//					throw new Exception("闂佸搫鐗為幏鐑芥煟椤撗冨绩闁活厼澧界划璇参旀担鎭掞拷濠囨煕濞嗘劕鐏╅柡浣规崌閺屻劌鈻庨幒婵嗘");
+					System.out.println("Maybe error!!!    shortestPath.size()>50");
 				}
 			}
 //			System.out.println();
@@ -1781,9 +1915,8 @@ public class LocalSearchHeuristicSolver {
 				int capacityType=-1;
 				double amount_copy=amount;
 				while(amount_copy>0.01){
-					
 					for(int capacityIndex=0;capacityIndex<modelData.numOfCapacity;capacityIndex++){
-						if(modelData.capacity[capacityIndex]>amount-0.001){
+						if(modelData.capacity[capacityIndex]>amount_copy-0.001){
 							capacityType=capacityIndex;
 							break;
 						}
@@ -1879,7 +2012,7 @@ public class LocalSearchHeuristicSolver {
 						cost2=Double.MAX_VALUE;
 					}
 					
-					
+
 					
 					
 					//compare the cost and decide if we add vehicles or modify vehicle types
@@ -1898,7 +2031,7 @@ public class LocalSearchHeuristicSolver {
 			
 		}
 		
-		
+
 		//add surplus value on residual network based on flowEdgeCover
 		
 		//Firstly, we find the nearest node
@@ -2527,7 +2660,9 @@ public class LocalSearchHeuristicSolver {
 //		LocalSearchHeuristicSolver solver = new LocalSearchHeuristicSolver("./data/testset/test12_10_50_30_100A.txt", 2,5,3,5,100);
 //		LocalSearchHeuristicSolver solver = new LocalSearchHeuristicSolver("./data/testset/test15_10_50_50_400.txt", 2,5,3,5,150);
 //		LocalSearchHeuristicSolver solver = new LocalSearchHeuristicSolver("./data/testset/testL3_20_230_48_200.txt", 2,5,3,5,300);
-		LocalSearchHeuristicSolver solver = new LocalSearchHeuristicSolver("./data/testset/testL4_30_516_48_400.txt", 2,5,3,5,480);
+//		LocalSearchHeuristicSolver solver = new LocalSearchHeuristicSolver("./data/testset/testL4_30_516_48_400.txt", 2,5,3,5,480);
+//		LocalSearchHeuristicSolver solver = new LocalSearchHeuristicSolver("./data/testset/testL5_100_400_72_30.txt", 2,5,3,5,2400);
+		LocalSearchHeuristicSolver solver = new LocalSearchHeuristicSolver("./data/testset/testL6_20_300_72_200.txt", 2,5,3,5,200);
 		
 		
 		
@@ -2535,7 +2670,7 @@ public class LocalSearchHeuristicSolver {
 //		List<FeasibleSolution> solutionList=solver.Initialization();
 		List<FeasibleSolution> solutionList=solver.InitializationCGHeuristic();
 	    long endTime = System.currentTimeMillis();
-		solver.TabuSearch(solutionList.get(0),10,500);
+		solver.TabuSearch(solutionList.get(0),10,200);
 		
 		endTime = System.currentTimeMillis();
 		System.out.println("total run time=" + (endTime - startTime) + "ms");

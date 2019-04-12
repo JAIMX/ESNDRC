@@ -397,12 +397,7 @@ public class SNDRC implements ModelInterface {
     }
 
     public SNDRC(String filename) throws IOException {
-        // if (readType == 1) {
-        // readData1(filename);
-        // }
-        // if (readType == 2) {
-        // readData2(filename);
-        // }
+
 
     	this.filename=filename;
 
@@ -559,6 +554,7 @@ public class SNDRC implements ModelInterface {
                 newEdge.edgeType = 0;
                 newEdge.serviceIndex = serviceIndex;
 
+
                 edgeSet.add(newEdge);
                 pointToEdgeSet.get(start).add(edgeSet.size() - 1);
                 pointFromEdgeSet.get(end).add(edgeSet.size() - 1);
@@ -618,7 +614,7 @@ public class SNDRC implements ModelInterface {
 
         numHoldingArc = abstractNumNode;
         numArc = numServiceArc + numHoldingArc;
-        
+
     	this.pointToService=new ArrayList<>();
     	HashSet<Integer> tempSet;
     	for(int i=0;i<numNode;i++){

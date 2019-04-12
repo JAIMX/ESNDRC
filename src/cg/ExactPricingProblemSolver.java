@@ -146,7 +146,8 @@ public class ExactPricingProblemSolver extends AbstractPricingProblemSolver<SNDR
             if (dpFunction[originNodeIndex] < Double.MAX_VALUE - 1) {
                 // if(dpFunction[originNodeIndex]+modifiedCost<-config.PRECISION)
                 // {
-            	
+            	boolean checkIfless=false;
+            	if(dpFunction[originNodeIndex] + modifiedCost<this.objective-0.0001) checkIfless=true;
             	this.objective=Math.min(this.objective, dpFunction[originNodeIndex] + modifiedCost);
                 if (dpFunction[originNodeIndex] + modifiedCost < -0.1) {
                     Set<Integer> edgeIndexSet = new HashSet<>();
@@ -194,7 +195,8 @@ public class ExactPricingProblemSolver extends AbstractPricingProblemSolver<SNDR
 
                     if (!repeat) {
                         Cycle cycle = new Cycle(pricingProblem, false, "exactPricing", edgeIndexSet, cost, startTime,0,pattern);
-                        if (!pricingProblem.fixCycleSet.contains(cycle)) {
+                        if (!pricingProblem.fixCycleSet.contains(cycle)&&checkIfless) {
+                        	while(newRoutes.size()>0) newRoutes.remove(newRoutes.size()-1);
                             newRoutes.add(cycle);
                         }
                     }

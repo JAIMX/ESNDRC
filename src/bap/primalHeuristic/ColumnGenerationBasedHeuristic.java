@@ -18,6 +18,8 @@ import bap.branching.BranchOnLocalService;
 import bap.branching.BranchOnLocalServiceForAllPricingProblems;
 import bap.branching.BranchOnServiceEdge;
 import bap.branching.BranchOnTimeService;
+import cg.ColGenConditionalTerminate;
+import cg.ColGenPlus;
 import cg.Cycle;
 import cg.ExactPricingProblemSolver;
 import cg.SNDRCPricingProblem;
@@ -113,13 +115,14 @@ public class ColumnGenerationBasedHeuristic {
 
         // ----------------------------------generateInitialFeasibleSolution-------------------------------------------------//
 
-        ColGen<SNDRC, Cycle, SNDRCPricingProblem> cg = new ColGen<SNDRC, Cycle, SNDRCPricingProblem>(dataModel, master,
-                pricingProblems, solvers, artificalVars, Integer.MAX_VALUE, Double.MIN_VALUE);
+//        ColGen<SNDRC, Cycle, SNDRCPricingProblem> cg = new ColGen<SNDRC, Cycle, SNDRCPricingProblem>(dataModel, master,
+//                pricingProblems, solvers, artificalVars, Integer.MAX_VALUE, Double.MIN_VALUE);
+        long timeLimit=System.currentTimeMillis()+180000; //3mins
+        ColGenConditionalTerminate cg = new ColGenConditionalTerminate(dataModel, master, pricingProblems, solvers, artificalVars, Integer.MAX_VALUE, Double.MIN_VALUE,timeLimit);
 
         // SimpleDebugger debugger = new SimpleDebugger(cg);
 
-        // SimpleCGLogger logger = new SimpleCGLogger(cg, new
-        // File("./output/cgLogger.log"));
+         SimpleCGLogger logger = new SimpleCGLogger(cg, new File("./output/cgBasedHeuristicLogger.log"));
 
 //        cg.solve(System.currentTimeMillis() + 36000000L); // 10 hour limit
         cgTimeLimit=cgTimeLimit*1000;
@@ -174,8 +177,10 @@ public class ColumnGenerationBasedHeuristic {
                 }
 
                 List<Cycle> nullList = new ArrayList<>();
-                cg = new ColGen<>(dataModel, master, pricingProblems, solvers, nullList, Integer.MAX_VALUE,
-                        Double.MIN_VALUE);
+//                cg = new ColGen<>(dataModel, master, pricingProblems, solvers, nullList, Integer.MAX_VALUE,
+//                        Double.MIN_VALUE);
+                timeLimit=System.currentTimeMillis()+180000;
+                cg = new ColGenConditionalTerminate(dataModel, master, pricingProblems, solvers, artificalVars, Integer.MAX_VALUE, Double.MIN_VALUE,timeLimit);
                 cg.solve(System.currentTimeMillis() + 18000000L); // 5 hour
 
                 if (isInfeasibleNode(cg.getSolution())) {
