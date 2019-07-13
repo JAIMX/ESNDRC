@@ -142,8 +142,11 @@ public class SNDRC implements ModelInterface {
     public final double[][] fixedCost;
     public final int[] capacity;
     public final int[][] vehicleLimit;
-    public final double distanceLimit;
-    public final int legLimit;
+    public final int[] storeLimit;
+    public final int[] chargeLimit;
+    public final int chargeObjPara,chargeOnceDistance,powerCapacity;
+//    public final double distanceLimit;
+//    public final int legLimit;
 
     // graph parameter
     public final ArrayList<Edge> edgeSet;
@@ -181,12 +184,18 @@ public class SNDRC implements ModelInterface {
         this.alpha = sndrcParent.alpha;
         this.speed = sndrcParent.speed;
         this.drivingTimePerDay = sndrcParent.drivingTimePerDay;
-        this.beta = sndrcParent.beta;
+        this.beta=sndrcParent.beta;
         this.fixedCost = sndrcParent.fixedCost;
         this.capacity = sndrcParent.capacity;
         this.vehicleLimit = sndrcParent.vehicleLimit;
-        this.distanceLimit = sndrcParent.distanceLimit;
-        this.legLimit = sndrcParent.legLimit;
+        this.storeLimit=sndrcParent.storeLimit;
+        this.chargeLimit=sndrcParent.chargeLimit;
+        this.chargeObjPara=sndrcParent.chargeObjPara;
+        this.chargeOnceDistance=sndrcParent.chargeOnceDistance;
+        this.powerCapacity=sndrcParent.powerCapacity;
+        
+//        this.distanceLimit = sndrcParent.distanceLimit;
+//        this.legLimit = sndrcParent.legLimit;
 
         edgeSet = new ArrayList<Edge>();
         pointToEdgeSet = new ArrayList<HashSet<Integer>>();
@@ -508,14 +517,36 @@ public class SNDRC implements ModelInterface {
             }
         }
 
-        // distance limit
+        // store limit
         in.nextLine();
         in.nextLine();
-        distanceLimit = in.nextDouble();
-        // leg limit
+//        distanceLimit = in.nextDouble();
+        storeLimit=new int[abstractNumNode];
+        for(int l=0;l<abstractNumNode;l++) {
+        	storeLimit[l]=in.nextInt();
+        }
+        // charge limit
         in.nextLine();
         in.nextLine();
-        legLimit = in.nextInt();
+//        legLimit = in.nextInt();
+        chargeLimit=new int[abstractNumNode];
+        for(int l=0;l<abstractNumNode;l++) {
+        	chargeLimit[l]=in.nextInt();
+        }
+        
+        in.nextLine();
+        in.nextLine();
+        chargeObjPara=in.nextInt();
+        in.nextLine();
+        in.nextLine();
+        chargeOnceDistance=in.nextInt();
+        in.nextLine();
+        in.nextLine();
+        powerCapacity=in.nextInt();
+        
+        
+        
+        
 
         in.close();
 

@@ -17,9 +17,10 @@ public final class Cycle  extends AbstractColumn<SNDRC, SNDRCPricingProblem>{
 	public final double cost;// parameter in the objective expression
 	public final int ifForResourceBoundConstraints;//0: no; 1:yes; 2:for holding branch constraints
 	public final int[] pattern; //record the using numbers of each service
+	public final Set<Integer> ifCharge;
 	
 	
-	public Cycle(SNDRCPricingProblem associatedPricingProblem, boolean isArtificial, String creator, Set<Integer> edgeIndexSet,double cost,int startTime,int ifForResourceBoundConstraints,int[] pattern) {
+	public Cycle(SNDRCPricingProblem associatedPricingProblem, boolean isArtificial, String creator, Set<Integer> edgeIndexSet,double cost,int startTime,int ifForResourceBoundConstraints,int[] pattern,HashSet<Integer> ifCharge) {
 		super(associatedPricingProblem,isArtificial,creator);
 		this.edgeIndexSet=edgeIndexSet;
 		this.cost=cost;
@@ -28,6 +29,7 @@ public final class Cycle  extends AbstractColumn<SNDRC, SNDRCPricingProblem>{
 		
 		this.pattern=new int[pattern.length];
 		System.arraycopy(pattern,0, this.pattern, 0, pattern.length);
+		this.ifCharge=ifCharge;
 		
 	}
 	
@@ -42,7 +44,7 @@ public final class Cycle  extends AbstractColumn<SNDRC, SNDRCPricingProblem>{
 		}
 		
 		Cycle other=(Cycle)o;
-		return this.edgeIndexSet.equals(other.edgeIndexSet)&& (this.isArtificialColumn==other.isArtificialColumn)&&(this.associatedPricingProblem==other.associatedPricingProblem)&&(this.ifForResourceBoundConstraints==other.ifForResourceBoundConstraints);
+		return this.edgeIndexSet.equals(other.edgeIndexSet)&&this.ifCharge.equals(other.ifCharge)&&(this.isArtificialColumn==other.isArtificialColumn)&&(this.associatedPricingProblem==other.associatedPricingProblem)&&(this.ifForResourceBoundConstraints==other.ifForResourceBoundConstraints);
 		
 	}
 	
@@ -53,7 +55,7 @@ public final class Cycle  extends AbstractColumn<SNDRC, SNDRCPricingProblem>{
 	
 	@Override
 	public String toString() {
-		return "artificial: "+isArtificialColumn+" set: "+edgeIndexSet.toString()+" start node= "+associatedPricingProblem.originNodeO+" start time= "+this.startTime+" capacity type= "+associatedPricingProblem.capacityTypeS;
+		return "artificial: "+isArtificialColumn+" edgeIndexset: "+edgeIndexSet.toString()+" start node= "+associatedPricingProblem.originNodeO+" start time= "+this.startTime+" capacity type= "+associatedPricingProblem.capacityTypeS+" ifChargeSet: "+ifCharge.toString();
 	}
 	
 //	public Cycle copy(Cycle cycle) {

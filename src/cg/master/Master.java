@@ -2,6 +2,7 @@ package cg.master;
 
 import java.util.*;
 
+import javax.naming.NoInitialContextException;
 import javax.naming.TimeLimitExceededException;
 
 import org.jorlib.frameworks.columnGeneration.branchAndPrice.AbstractBranchCreator;
@@ -11,6 +12,8 @@ import org.jorlib.frameworks.columnGeneration.master.OptimizationSense;
 import org.jorlib.frameworks.columnGeneration.master.cutGeneration.AbstractInequality;
 import org.jorlib.frameworks.columnGeneration.master.cutGeneration.CutHandler;
 import org.jorlib.frameworks.columnGeneration.util.OrderedBiMap;
+
+import com.sun.media.sound.ModelDestination;
 
 import bap.branching.branchingDecisions.RoundHoldingEdge;
 import bap.branching.branchingDecisions.RoundLocalService;
@@ -28,6 +31,7 @@ import ilog.concert.*;
 import ilog.cplex.*;
 import ilog.cplex.IloCplex.UnknownObjectException;
 import model.SNDRC;
+import model.SNDRC.Demand;
 import model.SNDRC.Edge;
 
 public class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProblem, SNDRCMasterData> {
@@ -39,6 +43,9 @@ public class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProblem, SN
     protected  IloRange[][] flowBalanceConstraints;
     protected  IloRange[] weakForcingConstraints;
     protected  IloRange[][] resourceBoundConstraints;
+    protected  IloRange[][] storeBoundConstraints;
+    protected  IloRange[][] chargeBoundConstraints;
+    
 
     // branch on q variables
     protected  Set<RoundQ> qBranchingSet;
@@ -230,6 +237,45 @@ public class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProblem, SN
                 }
             }
             
+            //Define storeBoundConstraints
+            storeBoundConstraints=new IloRange[dataModel.abstractNumNode][dataModel.timePeriod];
+            
+            for(int l=0;l<dataModel.abstractNumNode;l++) {
+            	for(int t=0;t<dataModel.timePeriod;t++) {
+            		expr.clear();
+            		int nodeIndex=l*dataModel.timePeriod+t;
+            		//search holding arc index
+            		int holdingEdgeIndex=-1;
+            		for(int i=dataModel.numServiceArc;i<dataModel.numArc;i++) {
+            			Edge edge=dataModel.edgeSet.get(i);
+            			if(edge.start==nodeIndex) {
+            				holdingEdgeIndex=i;
+            				break;
+            			}
+            		}
+            		
+            		for(int k=0;k<dataModel.numDemand;k++) {
+            			Demand demand=dataModel.demandSet.get(k);
+            			if(demand.destination!=l) {
+            				if(x.get(k).containsKey(holdingEdgeIndex)) {
+                				expr.addTerm(1, x.get(k).get(holdingEdgeIndex));
+            				}
+            			}
+            		}
+            		
+            		storeBoundConstraints[l][t]=cplex.addGe(dataModel.storeLimit[l], expr);
+            	}
+            }
+            
+            //Define chargeBoundConstraints
+            chargeBoundConstraints=new IloRange[dataModel.abstractNumNode][dataModel.timePeriod];
+            
+            for(int l=0;l<dataModel.abstractNumNode;l++) {
+            	for(int t=0;t<dataModel.timePeriod;t++) {
+            		expr.clear();
+            		chargeBoundConstraints[l][t]=cplex.addGe(dataModel.chargeLimit[l], expr);
+            	}
+            }
             
   //----------------------------------------------modify resource bound constraints------------------------------------------------//
 //            resourceBoundConstraints = new IloRange[dataModel.numOfCapacity][dataModel.numNode];
@@ -556,7 +602,6 @@ public class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProblem, SN
                     iloColumn = iloColumn.and(masterData.cplex.column(weakForcingConstraints[edgeIndex],
                             -dataModel.capacity[column.associatedPricingProblem.capacityTypeS]));
                 }
-
             }
 
             // resource bound constraints
@@ -569,6 +614,22 @@ public class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProblem, SN
             if (column.isArtificialColumn && column.ifForResourceBoundConstraints == 1) {
                 IloRange constraint = resourceBoundConstraints[column.associatedPricingProblem.capacityTypeS][column.associatedPricingProblem.originNodeO];
                 iloColumn = iloColumn.and(masterData.cplex.column(constraint, 1));
+            }
+            
+            // charge bound constraints
+            if(!column.isArtificialColumn) {
+            	for(int chargeNodeIndex:column.ifCharge) {
+            		int l=chargeNodeIndex/dataModel.timePeriod;
+            		int t=chargeNodeIndex%dataModel.timePeriod;
+            		iloColumn=iloColumn.and(masterData.cplex.column(chargeBoundConstraints[l][t],1));
+            	}
+            }
+            
+            //add artificial cycles(ifForResourceBoundConstraints=1) for charge bound constraints
+            if(column.isArtificialColumn&&column.ifForResourceBoundConstraints==1) {
+            	for(int t=0;t<dataModel.timePeriod;t++) {
+            		iloColumn=iloColumn.and(masterData.cplex.column(chargeBoundConstraints[column.associatedPricingProblem.originNodeO][t],1));
+            	}
             }
 
             // service edge branching constraints
@@ -808,6 +869,7 @@ public class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProblem, SN
     /**
      * Extracts information from the master problem which is required by the
      * pricing problems, e.g. the reduced costs/dual values
+     * Attention: We store the charge related cost on holding arcs of modifiedCosts[]!!!
      * 
      * @param pricingProblem
      *            pricing problem
@@ -822,10 +884,15 @@ public class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProblem, SN
 
             // initialize for holding arcs
             for (int edgeIndex = dataModel.numServiceArc; edgeIndex < dataModel.numArc; edgeIndex++) {
-                modifiedCosts[edgeIndex] = 0;
+                modifiedCosts[edgeIndex] = dataModel.chargeObjPara;
+            }
+            //charge constraints
+            for(int edgeIndex=dataModel.numServiceArc;edgeIndex<dataModel.numArc;edgeIndex++) {
+            	Edge edge=dataModel.edgeSet.get(edgeIndex);
+            	modifiedCosts[edgeIndex]-=masterData.cplex.getDual(chargeBoundConstraints[edge.u][edge.t1]);
             }
 
-            // week force constraints and cj in objective
+            // week force constraints and vij in objective
             for (int edgeIndex = 0; edgeIndex < dataModel.numServiceArc; edgeIndex++) {
                 modifiedCosts[edgeIndex] = masterData.cplex.getDual(weakForcingConstraints[edgeIndex])
                         * dataModel.capacity[pricingProblem.capacityTypeS];
