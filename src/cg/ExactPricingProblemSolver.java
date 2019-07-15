@@ -48,12 +48,13 @@ public class ExactPricingProblemSolver extends AbstractPricingProblemSolver<SNDR
         for (int startTime = 0; startTime < dataModel.timePeriod; startTime++) {
 
             int originNodeIndex = pricingProblem.originNodeO * dataModel.timePeriod + startTime;
+//            System.out.println("originNodeIndex="+originNodeIndex);
 
             double[][] dpFunction = new double[dataModel.abstractNumNode][dataModel.powerCapacity+1];
-            int[][] pathRecord = new int[dataModel.abstractNumNode][dataModel.powerCapacity];
+            int[][] pathRecord = new int[dataModel.abstractNumNode][dataModel.powerCapacity+1];
             HashMap<Integer, Integer> chargeRecord=new HashMap<>();
             for (int i = 0; i < dpFunction.length; i++) {
-                for(int power=0;power<dataModel.powerCapacity;power++){
+                for(int power=0;power<=dataModel.powerCapacity;power++){
                 	dpFunction[i][power]=Double.MAX_VALUE;
                 }
             }
@@ -66,11 +67,12 @@ public class ExactPricingProblemSolver extends AbstractPricingProblemSolver<SNDR
 
             // update for the following nodes
             for (int currentTime = startTime; currentTime < startTime + dataModel.timePeriod; currentTime++) {
-                durationLimit--;
+
                 int time = currentTime % dataModel.timePeriod;
 
                 for (int localNode = 0; localNode < dataModel.numNode; localNode++) {
                     int currentNodeIndex = localNode * dataModel.timePeriod + time;
+//                    System.out.println("currentNodeIndex="+currentNodeIndex);
                     
                     //check dominated label for currentNode
                     for(int power1=0;power1<dataModel.powerCapacity;power1++){
@@ -81,7 +83,8 @@ public class ExactPricingProblemSolver extends AbstractPricingProblemSolver<SNDR
                     	}
                     }
                     
-                    for(int power=0;power<dataModel.powerCapacity;power++){
+                    for(int power=0;power<=dataModel.powerCapacity;power++){
+//                    	System.out.println("power="+power);
                     	
                         if (dpFunction[currentNodeIndex][power] < Double.MAX_VALUE - 1) {
                         	int holdingEdgeIndex=-1;
@@ -97,6 +100,7 @@ public class ExactPricingProblemSolver extends AbstractPricingProblemSolver<SNDR
                                     		if(dpFunction[edge.end][power-edge.duration]>dpFunction[currentNodeIndex][power]+modifiedCosts[edgeIndex]){
                                     			dpFunction[edge.end][power-edge.duration]=dpFunction[currentNodeIndex][power]+modifiedCosts[edgeIndex];
                                     			pathRecord[edge.end][power-edge.duration]=edgeIndex;
+//                                    			System.out.println("service arc-We update df "+edge.end+","+(power-edge.duration)+"="+dpFunction[edge.end][power-edge.duration]);
                                     		}
                                     	}
                                     }
@@ -106,6 +110,7 @@ public class ExactPricingProblemSolver extends AbstractPricingProblemSolver<SNDR
                                         if (dpFunction[edge.end][power] > dpFunction[currentNodeIndex][power]+0) {
                                         	dpFunction[edge.end][power] = dpFunction[currentNodeIndex][power];
                                             pathRecord[edge.end][power] = edgeIndex;
+//                                            System.out.println("holding arc-We update df "+edge.end+","+(power)+"="+dpFunction[edge.end][power]);
                                         }
                                     }
                                 }
@@ -120,12 +125,14 @@ public class ExactPricingProblemSolver extends AbstractPricingProblemSolver<SNDR
                             			dpFunction[edge.end][chargePower]=dpFunction[currentNodeIndex][power]+modifiedCosts[holdingEdgeIndex];
                             			pathRecord[edge.end][chargePower]=holdingEdgeIndex;
                             			chargeRecord.put(edge.end, power);
+//                            			System.out.println("charge arc-We update df "+edge.end+","+(chargePower)+"="+dpFunction[edge.end][chargePower]);
                             		}
                             	}
                             }
                         }
                     }
                 }
+                durationLimit--;
             }
 
             double minimalValue=Double.MAX_VALUE;

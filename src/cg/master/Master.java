@@ -618,7 +618,8 @@ public class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProblem, SN
             
             // charge bound constraints
             if(!column.isArtificialColumn) {
-            	for(int chargeNodeIndex:column.ifCharge) {
+            	for(int holdingEdgeIndex:column.ifCharge) {
+            		int chargeNodeIndex=dataModel.edgeSet.get(holdingEdgeIndex).start;
             		int l=chargeNodeIndex/dataModel.timePeriod;
             		int t=chargeNodeIndex%dataModel.timePeriod;
             		iloColumn=iloColumn.and(masterData.cplex.column(chargeBoundConstraints[l][t],1));
@@ -1372,7 +1373,7 @@ public class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProblem, SN
 
     // output the current masterData.cplex.tostring file
     public void Output(int nodeIndex) throws IloException {
-        masterData.cplex.exportModel(config.EXPORT_MASTER_DIR + nodeIndex + ".lp");
+        masterData.cplex.exportModel("./output/" + nodeIndex + ".lp");
     }
 
     public List<Map<Integer, Double>> getXValues() throws UnknownObjectException, IloException {

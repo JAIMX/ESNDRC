@@ -229,8 +229,7 @@ public class BranchAndPriceA <V> extends AbstractBranchAndPrice<SNDRC, Cycle, SN
             // Solve the next BAPNode
             try {
                 
-                
-
+            	this.solveBAPNode(bapNode, timeLimit);
                 
                 if(bapNode.nodeID==0){
                     System.out.println("root node bound= "+bapNode.getBound());
@@ -240,12 +239,12 @@ public class BranchAndPriceA <V> extends AbstractBranchAndPrice<SNDRC, Cycle, SN
                 }
 
                 // output the model
-//                ((Master) master).Output(bapNode.nodeID);
+                ((Master) master).Output(bapNode.nodeID);
 //                nodeBoundRecord[bapNode.nodeID] = bapNode.getBound();
 
                 
 
-            } catch (IloException e) {
+            } catch (IloException | TimeLimitExceededException e) {
                 queue.add(bapNode);
                 lowBoundQueue.add(bapNode);
                 notifier.fireTimeOutEvent(bapNode);
