@@ -17,7 +17,7 @@ public final class Cycle  extends AbstractColumn<SNDRC, SNDRCPricingProblem>{
 	public final double cost;// parameter in the objective expression
 	public final int ifForResourceBoundConstraints;//0: no; 1:yes; 2:for holding branch constraints
 	public final int[] pattern; //record the using numbers of each service
-	public final Set<Integer> ifCharge;
+	public final Set<Integer> ifCharge; //record charge edge
 	
 	
 	public Cycle(SNDRCPricingProblem associatedPricingProblem, boolean isArtificial, String creator, Set<Integer> edgeIndexSet,double cost,int startTime,int ifForResourceBoundConstraints,int[] pattern,HashSet<Integer> ifCharge) {

@@ -522,15 +522,16 @@ public class SNDRC implements ModelInterface {
         in.nextLine();
 //        distanceLimit = in.nextDouble();
         storeLimit=new int[abstractNumNode];
-        for(int l=0;l<abstractNumNode;l++) {
+
+        for(int l=0;l<numNode;l++) {
         	storeLimit[l]=in.nextInt();
         }
         // charge limit
         in.nextLine();
         in.nextLine();
 //        legLimit = in.nextInt();
-        chargeLimit=new int[abstractNumNode];
-        for(int l=0;l<abstractNumNode;l++) {
+        chargeLimit=new int[numNode];
+        for(int l=0;l<numNode;l++) {
         	chargeLimit[l]=in.nextInt();
         }
         

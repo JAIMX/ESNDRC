@@ -238,9 +238,9 @@ public class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProblem, SN
             }
             
             //Define storeBoundConstraints
-            storeBoundConstraints=new IloRange[dataModel.abstractNumNode][dataModel.timePeriod];
+            storeBoundConstraints=new IloRange[dataModel.numNode][dataModel.timePeriod];
             
-            for(int l=0;l<dataModel.abstractNumNode;l++) {
+            for(int l=0;l<dataModel.numNode;l++) {
             	for(int t=0;t<dataModel.timePeriod;t++) {
             		expr.clear();
             		int nodeIndex=l*dataModel.timePeriod+t;
@@ -268,9 +268,9 @@ public class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProblem, SN
             }
             
             //Define chargeBoundConstraints
-            chargeBoundConstraints=new IloRange[dataModel.abstractNumNode][dataModel.timePeriod];
+            chargeBoundConstraints=new IloRange[dataModel.numNode][dataModel.timePeriod];
             
-            for(int l=0;l<dataModel.abstractNumNode;l++) {
+            for(int l=0;l<dataModel.numNode;l++) {
             	for(int t=0;t<dataModel.timePeriod;t++) {
             		expr.clear();
             		chargeBoundConstraints[l][t]=cplex.addGe(dataModel.chargeLimit[l], expr);

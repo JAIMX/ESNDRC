@@ -106,7 +106,7 @@ public class SNDRCSolver {
         bap.setNodeOrdering(new NodeBoundbapNodeComparator());
 
         // OPTIONAL: Attach a debugger
-        // SimpleDebugger debugger=new SimpleDebugger(bap, true);
+         SimpleDebugger debugger=new SimpleDebugger(bap, true);
 
         // OPTIONAL: Attach a logger to the Branch-and-Price procedure.
         // BapLoggerA logger=new BapLoggerA(bap, new
@@ -483,7 +483,7 @@ public class SNDRCSolver {
     
 	public static void main(String[] args) throws IOException {
     	
-    	SNDRC sndrc=new SNDRC("./data/testset/test6_5_15_40_200A.txt");
+    	SNDRC sndrc=new SNDRC("./data/testset/example.txt");
 //    	sndrc.outputFeature("./learningData/result/1-1.txt");
     	SNDRCSolver solver=new SNDRCSolver(sndrc,"BAPlogger");
 //    	solver.output("./learningData/result/1-2.txt", solver.bap);
