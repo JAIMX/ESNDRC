@@ -2,6 +2,7 @@ package cg;
 
 import java.util.*;
 
+import org.jorlib.demo.frameworks.columnGeneration.cuttingStockCG.cg.PricingProblem;
 import org.jorlib.frameworks.columnGeneration.io.TimeLimitExceededException;
 import org.jorlib.frameworks.columnGeneration.pricing.AbstractPricingProblemSolver;
 
@@ -52,10 +53,11 @@ public class ExactPricingProblemSolver extends AbstractPricingProblemSolver<SNDR
 
             double[][] dpFunction = new double[dataModel.abstractNumNode][dataModel.powerCapacity+1];
             int[][] pathRecord = new int[dataModel.abstractNumNode][dataModel.powerCapacity+1];
-            HashMap<Integer, Integer> chargeRecord=new HashMap<>();
+            int[][] chargeRecord=new int[dataModel.abstractNumNode][dataModel.powerCapacity+1]; //record the power left at last node
             for (int i = 0; i < dpFunction.length; i++) {
                 for(int power=0;power<=dataModel.powerCapacity;power++){
                 	dpFunction[i][power]=Double.MAX_VALUE;
+                	chargeRecord[i][power]=-1;
                 }
             }
 
@@ -64,6 +66,9 @@ public class ExactPricingProblemSolver extends AbstractPricingProblemSolver<SNDR
             dpFunction[originNodeIndex][dataModel.powerCapacity]=0;
 
             int durationLimit = dataModel.timePeriod;
+            
+//            boolean debug=false;
+//            if(originNodeIndex==23&&pricingProblem.capacityTypeS==1) debug=true;
 
             // update for the following nodes
             for (int currentTime = startTime; currentTime < startTime + dataModel.timePeriod; currentTime++) {
@@ -72,7 +77,7 @@ public class ExactPricingProblemSolver extends AbstractPricingProblemSolver<SNDR
 
                 for (int localNode = 0; localNode < dataModel.numNode; localNode++) {
                     int currentNodeIndex = localNode * dataModel.timePeriod + time;
-//                    System.out.println("currentNodeIndex="+currentNodeIndex);
+//                    if(debug) System.out.println("currentNodeIndex="+currentNodeIndex);
                     
                     //check dominated label for currentNode
                     for(int power1=0;power1<dataModel.powerCapacity;power1++){
@@ -84,7 +89,7 @@ public class ExactPricingProblemSolver extends AbstractPricingProblemSolver<SNDR
                     }
                     
                     for(int power=0;power<=dataModel.powerCapacity;power++){
-//                    	System.out.println("power="+power);
+//                    	if(debug) System.out.println("power="+power);
                     	
                         if (dpFunction[currentNodeIndex][power] < Double.MAX_VALUE - 1) {
                         	int holdingEdgeIndex=-1;
@@ -100,7 +105,8 @@ public class ExactPricingProblemSolver extends AbstractPricingProblemSolver<SNDR
                                     		if(dpFunction[edge.end][power-edge.duration]>dpFunction[currentNodeIndex][power]+modifiedCosts[edgeIndex]){
                                     			dpFunction[edge.end][power-edge.duration]=dpFunction[currentNodeIndex][power]+modifiedCosts[edgeIndex];
                                     			pathRecord[edge.end][power-edge.duration]=edgeIndex;
-//                                    			System.out.println("service arc-We update df "+edge.end+","+(power-edge.duration)+"="+dpFunction[edge.end][power-edge.duration]);
+                                    			chargeRecord[edge.end][power-edge.duration]=-1;
+//                                    			if(debug) System.out.println("service arc-We update df "+edge.end+","+(power-edge.duration)+"="+dpFunction[edge.end][power-edge.duration]);
                                     		}
                                     	}
                                     }
@@ -110,7 +116,8 @@ public class ExactPricingProblemSolver extends AbstractPricingProblemSolver<SNDR
                                         if (dpFunction[edge.end][power] > dpFunction[currentNodeIndex][power]+0) {
                                         	dpFunction[edge.end][power] = dpFunction[currentNodeIndex][power];
                                             pathRecord[edge.end][power] = edgeIndex;
-//                                            System.out.println("holding arc-We update df "+edge.end+","+(power)+"="+dpFunction[edge.end][power]);
+                                            chargeRecord[edge.end][power]=-1;
+//                                            if(debug) System.out.println("holding arc-We update df "+edge.end+","+(power)+"="+dpFunction[edge.end][power]);
                                         }
                                     }
                                 }
@@ -124,8 +131,9 @@ public class ExactPricingProblemSolver extends AbstractPricingProblemSolver<SNDR
                             		if(dpFunction[edge.end][chargePower]>dpFunction[currentNodeIndex][power]+modifiedCosts[holdingEdgeIndex]){
                             			dpFunction[edge.end][chargePower]=dpFunction[currentNodeIndex][power]+modifiedCosts[holdingEdgeIndex];
                             			pathRecord[edge.end][chargePower]=holdingEdgeIndex;
-                            			chargeRecord.put(edge.end, power);
-//                            			System.out.println("charge arc-We update df "+edge.end+","+(chargePower)+"="+dpFunction[edge.end][chargePower]);
+//                            			chargeRecord.put(edge.end, power);
+                            			chargeRecord[edge.end][chargePower]=power;
+//                            			if(debug)System.out.println("charge arc-We update df "+edge.end+","+(chargePower)+"="+dpFunction[edge.end][chargePower]);
                             		}
                             	}
                             }
@@ -163,11 +171,11 @@ public class ExactPricingProblemSolver extends AbstractPricingProblemSolver<SNDR
                         // update lastNodeIndex
                     	int record=pathRecord[currentNodeIndex][powerLeft];
                     	Edge edge=dataModel.edgeSet.get(record);
-                    	if(edge.edgeType==1&&chargeRecord.containsKey(currentNodeIndex)){ //charge
+                    	if(edge.edgeType==1&&chargeRecord[currentNodeIndex][powerLeft]>=0){ //charge
                             totalLength += edge.duration;
                     		edgeIndexSet.add(record);
                     		chargeEdgeSet.add(record);
-                    		powerLeft=chargeRecord.get(currentNodeIndex);
+                    		powerLeft=chargeRecord[currentNodeIndex][powerLeft];
                     		currentNodeIndex=edge.start;
                     	}else{
                     		totalLength+=edge.duration;

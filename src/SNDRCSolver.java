@@ -106,7 +106,7 @@ public class SNDRCSolver {
         bap.setNodeOrdering(new NodeBoundbapNodeComparator());
 
         // OPTIONAL: Attach a debugger
-         SimpleDebugger debugger=new SimpleDebugger(bap, true);
+//         SimpleDebugger debugger=new SimpleDebugger(bap, true);
 
         // OPTIONAL: Attach a logger to the Branch-and-Price procedure.
         // BapLoggerA logger=new BapLoggerA(bap, new
@@ -386,6 +386,10 @@ public class SNDRCSolver {
     public String out(Cycle column) {
 
         Queue<Edge> path = new PriorityQueue<>();
+        Set<Edge> chargeEdgeSet=new HashSet<>();
+        for(int edgeIndex:column.edgeIndexSet){
+        	if(column.ifCharge.contains(edgeIndex)) chargeEdgeSet.add(dataModel.edgeSet.get(edgeIndex));
+        }
 
         if (!ifOptGetFromSubGraph) {
             for (int edgeIndex : column.edgeIndexSet) {
@@ -399,17 +403,6 @@ public class SNDRCSolver {
 
         StringBuilder pathRecord = new StringBuilder();
 
-        // int count=0;
-        // for(Edge edge:path) {
-        // count++;
-        // pathRecord.append(edge.start);
-        //
-        // if(count!=column.edgeIndexSet.size()) {
-        // pathRecord.append("->");
-        // }
-        //
-        // }
-
         Edge edge = null;
         int size = path.size();
         for (int i = 0; i < size; i++) {
@@ -422,6 +415,9 @@ public class SNDRCSolver {
             pathRecord.append(')');
 
             pathRecord.append("->");
+            if(chargeEdgeSet.contains(edge)){
+            	pathRecord.append("charge");
+            }
 
         }
 

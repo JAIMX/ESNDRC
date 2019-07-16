@@ -239,7 +239,7 @@ public class BranchAndPriceA <V> extends AbstractBranchAndPrice<SNDRC, Cycle, SN
                 }
 
                 // output the model
-                ((Master) master).Output(bapNode.nodeID);
+//                ((Master) master).Output(bapNode.nodeID);
 //                nodeBoundRecord[bapNode.nodeID] = bapNode.getBound();
 
                 
