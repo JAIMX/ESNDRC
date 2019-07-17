@@ -46,7 +46,13 @@ fixed cost of different trucks
 amount of vehicle limit
 20 20 20 20 20
 20 20 20 20 20
-maximal distance limit
-20
-maximal leg limit
-4
+store limit
+10 10 10 10 10
+charge limit
+1 1 1 1 1
+charge parameter
+5
+charge once distance
+2
+power capacity
+5
