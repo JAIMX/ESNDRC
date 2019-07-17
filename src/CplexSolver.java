@@ -1,4 +1,4 @@
-import java.io.File;
+ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -26,6 +26,7 @@ import ilog.concert.IloObjective;
 import ilog.concert.IloRange;
 import ilog.cplex.IloCplex;
 import model.SNDRC;
+import model.SNDRC.Demand;
 import model.SNDRC.Edge;
 
 public class CplexSolver {
@@ -36,7 +37,8 @@ public class CplexSolver {
 	private class Node{
 		private int nodeIndex;
 		private boolean ifUsed;
-		private int pathDuration;
+//		private int pathDuration;
+		private int powerLeft;
 		private int leadEdgeIndex;
 	}
 	
@@ -44,6 +46,7 @@ public class CplexSolver {
 		private int originNode;
 		private int capacityType;
 		private Set<Integer> edgeIndexSet;
+		private Set<Integer> ifChargeSet;
 	}
 	
 	
@@ -147,8 +150,6 @@ public class CplexSolver {
 		
 		// Define resourceBoundConstraints
 		IloRange[][] resourceBoundConstraints = new IloRange[dataModel.numOfCapacity][dataModel.numNode];
-
-
 		for (int s = 0; s < dataModel.numOfCapacity; s++) {
 			for (int o = 0; o < dataModel.numNode; o++) {
 //				expr.clear();
@@ -160,6 +161,45 @@ public class CplexSolver {
 			}
 		}
 		
+        //Define storeBoundConstraints
+        IloRange[][] storeBoundConstraints=new IloRange[dataModel.numNode][dataModel.timePeriod];
+        for(int l=0;l<dataModel.numNode;l++) {
+        	for(int t=0;t<dataModel.timePeriod;t++) {
+        		expr.clear();
+        		int nodeIndex=l*dataModel.timePeriod+t;
+        		//search holding arc index
+        		int holdingEdgeIndex=-1;
+        		for(int i=dataModel.numServiceArc;i<dataModel.numArc;i++) {
+        			Edge edge=dataModel.edgeSet.get(i);
+        			if(edge.start==nodeIndex) {
+        				holdingEdgeIndex=i;
+        				break;
+        			}
+        		}
+        		
+        		for(int k=0;k<dataModel.numDemand;k++) {
+        			Demand demand=dataModel.demandSet.get(k);
+        			if(demand.destination!=l) {
+        				if(x.get(k).containsKey(holdingEdgeIndex)) {
+            				expr.addTerm(1, x.get(k).get(holdingEdgeIndex));
+        				}
+        			}
+        		}
+        		
+        		storeBoundConstraints[l][t]=cplex.addGe(dataModel.storeLimit[l], expr);
+        	}
+        }
+        
+        //Define chargeBoundConstraints
+        IloRange[][] chargeBoundConstraints=new IloRange[dataModel.numNode][dataModel.timePeriod];
+        
+        for(int l=0;l<dataModel.numNode;l++) {
+        	for(int t=0;t<dataModel.timePeriod;t++) {
+        		expr.clear();
+        		chargeBoundConstraints[l][t]=cplex.addGe(dataModel.chargeLimit[l], expr);
+        	}
+        }
+		
 		
 		
 		
@@ -169,22 +209,31 @@ public class CplexSolver {
 		int count2=0;
 		
 		for(int originNode=0;originNode<dataModel.numNode;originNode++) {
+//			System.out.println("originNode="+originNode);
 			int count=0;
-			
-
 			
 			in.nextLine();
 			
-			Set<Integer> pathEdgeSet=new HashSet<Integer>();
+			Set<Integer> pathEdgeSet;
+			Set<Integer> chargeEdgeSet;
 			String path=in.nextLine();
 			
-			while(path.charAt(0)!='-') {
+			while(path.charAt(0)!='e') {
+//				System.out.println(path);
 				
 				String[] stringSet=path.split(" ");
 				pathEdgeSet=new HashSet<Integer>();
+				chargeEdgeSet=new HashSet<Integer>();
 				for(int i=0;i<stringSet.length;i++) {
-					pathEdgeSet.add(Integer.parseInt(stringSet[i]));
+					int value=Integer.parseInt(stringSet[i]);
+					if(value>=0){
+						pathEdgeSet.add(value);
+					}else{
+						pathEdgeSet.add(-value);
+						chargeEdgeSet.add(-value);
+					}
 				}
+				
 				
 //				System.out.println(pathEdgeSet.toString());
 				
@@ -194,10 +243,10 @@ public class CplexSolver {
 				}
 				
 				for(int capacityType=0;capacityType<dataModel.numOfCapacity;capacityType++) {
-
 					
 					double cost=0;
 					cost+=dataModel.alpha*pathLength/(dataModel.speed*dataModel.drivingTimePerDay)+dataModel.fixedCost[originNode][capacityType];
+					cost+=dataModel.chargeObjPara*chargeEdgeSet.size();
 					
 					// Register column with objective
 					IloColumn iloColumn = cplex.column(obj, cost);
@@ -208,12 +257,19 @@ public class CplexSolver {
 							iloColumn = iloColumn.and(cplex.column(weakForcingConstraints[edgeIndex],
 									-dataModel.capacity[capacityType]));
 						}
-
 					}
 					
 					
 					// resource bound constraints
 					iloColumn = iloColumn.and(cplex.column(resourceBoundConstraints[capacityType][originNode],1));
+					
+					//charge bound constraints
+					for(int chargeEdgeIndex:chargeEdgeSet){
+	            		int chargeNodeIndex=dataModel.edgeSet.get(chargeEdgeIndex).start;
+	            		int l=chargeNodeIndex/dataModel.timePeriod;
+	            		int t=chargeNodeIndex%dataModel.timePeriod;
+	            		iloColumn=iloColumn.and(cplex.column(chargeBoundConstraints[l][t],1));
+					}
 //					cplex.exportModel("check.lp");
 					
 					
@@ -226,22 +282,16 @@ public class CplexSolver {
 					newPath.capacityType=capacityType;
 					newPath.originNode=originNode;
 					newPath.edgeIndexSet=pathEdgeSet;
+					newPath.ifChargeSet=chargeEdgeSet;
 					
 					pathVarMap.put(newPath, var);
 					count++;
-					
 				}
-				
-				
 				
 				path=in.nextLine();
 			}
 			
 			//path.charAt(0)=='-'
-			
-			
-
-			
 			
 		}
 		in.close();
@@ -278,8 +328,12 @@ public class CplexSolver {
 				
 				//------------------------------------check---------------------------------------//					
 				Queue<Edge> outPath=new PriorityQueue<>();
+				Set<Edge> chargeEdgeSet=new HashSet<>();
 				for(int edgeIndex:path.edgeIndexSet) {
 					outPath.add(dataModel.edgeSet.get(edgeIndex));
+					if(path.ifChargeSet.contains(edgeIndex)){
+						chargeEdgeSet.add(dataModel.edgeSet.get(edgeIndex));
+					}
 				}
 				
 				System.out.println();
@@ -299,6 +353,9 @@ public class CplexSolver {
 					
 //				    pathRecord.append(edge.start);
 					pathRecord.append("->");
+					if(chargeEdgeSet.contains(edge)){
+						pathRecord.append("charge");
+					}
 
 				}
 				
@@ -335,7 +392,7 @@ public class CplexSolver {
 		
 		for(int originNode=0;originNode<dataModel.numNode;originNode++) {
 			
-			Set<Set<Integer>> checkRepeat=new HashSet<>();
+			Set<Set<Integer>> checkRepeat=new HashSet<>();//if charge, we set the edge index as negative one
 			
 			out.println(originNode);
 			
@@ -344,40 +401,66 @@ public class CplexSolver {
 				
 				Stack<Node> stack=new Stack<>();
 				List<Integer> pathEdgeRecord=new ArrayList<>();
+				int pathDuration=0;
 				
 				Node node=new Node();
 				node.nodeIndex=startNodeIndex;
 				node.ifUsed=false;
-				node.pathDuration=0;
-				node.leadEdgeIndex=-1;
+//				node.pathDuration=0;
+				node.leadEdgeIndex=-100000000;
+				node.powerLeft=dataModel.powerCapacity;
 				stack.add(node);
 				
 				while(stack.size()>0) {
 					Node currentNode=stack.peek();
 					if(!currentNode.ifUsed) {   // need to generate new nodes
 						
-						if(currentNode.leadEdgeIndex>=0) {
+						if(currentNode.leadEdgeIndex!=-100000000){
 							pathEdgeRecord.add(currentNode.leadEdgeIndex);
+							Edge edge=dataModel.edgeSet.get(Math.abs(currentNode.leadEdgeIndex));
+							if(edge.edgeType==0){
+								pathDuration+=edge.duration;
+							}else{
+								pathDuration+=1;
+							}
 						}
 						
-						
-						if(currentNode.leadEdgeIndex<0||currentNode.nodeIndex!=startNodeIndex) {
+						if(currentNode.leadEdgeIndex==-100000000||currentNode.nodeIndex!=startNodeIndex) {
+							int holdingEdgeIndex=-1;
 							for(int edgeIndex:dataModel.pointToEdgeSet.get(currentNode.nodeIndex)) {
 								Edge edge=dataModel.edgeSet.get(edgeIndex);
+								if(edge.edgeType==1) holdingEdgeIndex=edgeIndex;
+								
 								int duration=0;
 								if(edge.edgeType==0) {
 									duration=(int) edge.duration;
 								}else duration=1;
-								if((currentNode.pathDuration+duration<dataModel.timePeriod)||(currentNode.pathDuration+duration==dataModel.timePeriod&&edge.end==startNodeIndex)) {
+								if((pathDuration+duration<dataModel.timePeriod)||(pathDuration+duration==dataModel.timePeriod&&edge.end==startNodeIndex)) {
+									if(currentNode.powerLeft>=edge.duration){
+										Node newNode=new Node();
+										newNode.nodeIndex=edge.end;
+										newNode.ifUsed=false;
+										newNode.leadEdgeIndex=edgeIndex;
+										newNode.powerLeft=currentNode.powerLeft-edge.duration;
+//										newNode.pathDuration=(int) (currentNode.pathDuration+duration);
+										stack.add(newNode);
+									}
+								}
+						    }
+							
+							//charge
+							if(currentNode.powerLeft<dataModel.powerCapacity){
+								if(pathDuration+1<dataModel.timePeriod){
+									Edge edge=dataModel.edgeSet.get(holdingEdgeIndex);
 									Node newNode=new Node();
 									newNode.nodeIndex=edge.end;
 									newNode.ifUsed=false;
-									newNode.leadEdgeIndex=edgeIndex;
-									newNode.pathDuration=(int) (currentNode.pathDuration+duration);
-									
+									newNode.leadEdgeIndex=-holdingEdgeIndex;
+									newNode.powerLeft=Math.min(dataModel.powerCapacity, currentNode.powerLeft+dataModel.chargeOnceDistance);
 									stack.add(newNode);
 								}
-						    }
+							}
+							
 						}else {   // currentNode.nodeIndex==startNodeIndex
 							
 							Set pathEdgeSet=new HashSet<>();
@@ -435,19 +518,19 @@ public class CplexSolver {
 //							
 //		//-----------------------------------------------------------------------------//					
 							
-							
-							
-							
-
-
 						}
 						
 						currentNode.ifUsed=true;
 						
-						
 					}else { //currentNode.ifUsed==true
 						if(pathEdgeRecord.size()>0) {
-							pathEdgeRecord.remove(pathEdgeRecord.size()-1);
+							int edgeIndex=pathEdgeRecord.remove(pathEdgeRecord.size()-1);
+							Edge edge=dataModel.edgeSet.get(Math.abs(edgeIndex));
+							if(edge.edgeType==0){
+								pathDuration-=edge.duration;
+							}else{
+								pathDuration-=1;
+							}
 						}
 
 						stack.remove(currentNode);
@@ -458,7 +541,7 @@ public class CplexSolver {
 				
 			}
 			
-			out.println(-1);
+			out.println("end");
 				
 		}
 		
@@ -476,7 +559,7 @@ public class CplexSolver {
 			SNDRC sndrc=new SNDRC(arg);
 			
 			CplexSolver cplexSolver=new CplexSolver(sndrc,"./output/path/outpath.txt");
-			cplexSolver.GeneratePathFile();
+//			cplexSolver.GeneratePathFile();
 			cplexSolver.Solve();
 			
 			long time1=System.currentTimeMillis();
