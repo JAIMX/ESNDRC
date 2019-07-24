@@ -52,7 +52,7 @@ amount of vehicle limit
 20 20 20 20 20
 20 20 20 20 20
 store limit
-10 10 10 10 10
+1000 1000 1000 1000 1000
 charge limit
 1 1 1 1 1
 charge parameter

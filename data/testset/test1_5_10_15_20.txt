@@ -70,4 +70,4 @@ charge parameter
 charge once distance
 2
 power capacity
-10
+15

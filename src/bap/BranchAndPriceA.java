@@ -12,6 +12,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
+import java.util.Queue;
 import java.util.Set;
 
 import org.jorlib.frameworks.columnGeneration.branchAndPrice.AbstractBranchAndPrice;
@@ -234,8 +235,45 @@ public class BranchAndPriceA <V> extends AbstractBranchAndPrice<SNDRC, Cycle, SN
                 if(bapNode.nodeID==0){
                     System.out.println("root node bound= "+bapNode.getBound());
                     
+                    //explore the performance on non-improvement LP solutions
+                    List<Cycle> solution =bapNode.getSolution();
+                    for(Cycle cycle:solution){
+                        System.out.println(cycle);
+                        System.out.println(out(cycle) + ":" + cycle.value);
+                        System.out.println();
+                    }
+                    
+
+                    
                     xValuesForRootLP=new ArrayList<>();
                     xValuesForRootLP=((Master) master).getXValues();
+                    
+                    
+                    // output x variables
+                    for (int demand = 0; demand < dataModel.numDemand; demand++) {
+                        for (int edgeIndex : xValuesForRootLP.get(demand).keySet()) {
+                            if (xValuesForRootLP.get(demand).get(edgeIndex) > 0.01) {
+                                Edge edge;
+
+                                if (!ifOptGetFromSubGraph) {
+                                    edge = dataModel.edgeSet.get(edgeIndex);
+                                } else {
+                                    edge = dataModel.subEdgeSet.get(edgeIndex);
+                                }
+
+                                
+                                if(edge.edgeType==0){
+                                    System.out.println("x[" + demand + "]:" + edge.u + "," + edge.t1 + "->" + edge.v + "," + edge.t2
+                                            + "= " + xValuesForRootLP.get(demand).get(edgeIndex) + " " + edge.duration);
+                                }
+
+                            }
+                        }
+                        System.out.println();
+                    }
+                    
+                    System.out.println("End");
+                    
                 }
 
                 // output the model
@@ -433,6 +471,7 @@ public class BranchAndPriceA <V> extends AbstractBranchAndPrice<SNDRC, Cycle, SN
                         for(BAPNode<SNDRC, Cycle> child:newBranches){
                             ((Master) master).AddBranchDecisionForCut(child.getBranchingDecision());
                         }
+                        
                     }
                     
                     notifier.fireBranchEvent(bapNode, Collections.unmodifiableList(newBranches));
@@ -465,6 +504,54 @@ public class BranchAndPriceA <V> extends AbstractBranchAndPrice<SNDRC, Cycle, SN
         }
         notifier.fireStopBAPEvent(); // Signal that BAP has been completed
         this.runtime = System.currentTimeMillis() - runtime;
+    }
+    
+    public String out(Cycle column) {
+
+        Queue<Edge> path = new PriorityQueue<>();
+        Set<Edge> chargeEdgeSet=new HashSet<>();
+        for(int edgeIndex:column.edgeIndexSet){
+        	if(column.ifCharge.contains(edgeIndex)) chargeEdgeSet.add(dataModel.edgeSet.get(edgeIndex));
+        }
+
+        if (!ifOptGetFromSubGraph) {
+            for (int edgeIndex : column.edgeIndexSet) {
+                path.add(dataModel.edgeSet.get(edgeIndex));
+            }
+        } else {
+            for (int edgeIndex : column.edgeIndexSet) {
+                path.add(dataModel.subEdgeSet.get(edgeIndex));
+            }
+        }
+
+        StringBuilder pathRecord = new StringBuilder();
+
+        Edge edge = null;
+        int size = path.size();
+        for (int i = 0; i < size; i++) {
+
+            edge = path.poll();
+            pathRecord.append('(');
+            pathRecord.append(edge.u);
+            pathRecord.append(',');
+            pathRecord.append(edge.t1);
+            pathRecord.append(')');
+
+            pathRecord.append("->");
+            if(chargeEdgeSet.contains(edge)){
+            	pathRecord.append("charge");
+            }
+
+        }
+
+        pathRecord.append('(');
+        pathRecord.append(edge.v);
+        pathRecord.append(',');
+        pathRecord.append(edge.t2);
+        pathRecord.append(')');
+
+        return pathRecord.toString();
+
     }
 
     public Double CalculateProb() {

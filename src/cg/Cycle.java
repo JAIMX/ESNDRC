@@ -1,6 +1,8 @@
 package cg;
 
 import java.util.HashSet;
+import java.util.PriorityQueue;
+import java.util.Queue;
 import java.util.Set;
 
 import org.jorlib.frameworks.columnGeneration.colgenMain.AbstractColumn;
@@ -8,6 +10,7 @@ import org.jorlib.frameworks.columnGeneration.colgenMain.AbstractColumn;
 import com.oracle.webservices.internal.api.databinding.DatabindingMode;
 
 import model.SNDRC;
+import model.SNDRC.Edge;
 
 public final class Cycle  extends AbstractColumn<SNDRC, SNDRCPricingProblem>{
 
@@ -58,14 +61,6 @@ public final class Cycle  extends AbstractColumn<SNDRC, SNDRCPricingProblem>{
 		return "artificial: "+isArtificialColumn+" edgeIndexset: "+edgeIndexSet.toString()+" start node= "+associatedPricingProblem.originNodeO+" start time= "+this.startTime+" capacity type= "+associatedPricingProblem.capacityTypeS+" ifChargeSet: "+ifCharge.toString();
 	}
 	
-//	public Cycle copy(Cycle cycle) {
-//		Set<Integer> edgeIndexSet=new HashSet<>();
-//		
-//		for(int edgeIndex:cycle.edgeIndexSet) {
-//			edgeIndexSet.add(edgeIndex);
-//		}
-//		
-//		Cycle newCycle=new Cycle(cycle.associatedPricingProblem, cycle.isArtificialColumn, cycle.creator, edgeIndexSet, cycle.cost, cycle.startTime, cycle.ifForResourceBoundConstraints)
-//	}
+
 	
 }

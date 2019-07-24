@@ -158,7 +158,7 @@ public class ExactPricingProblemSolver extends AbstractPricingProblemSolver<SNDR
             	boolean checkIfless=false;
             	if(dpFunction[originNodeIndex][powerRecord] + modifiedCost<this.objective-0.0001) checkIfless=true;
             	this.objective=Math.min(this.objective, dpFunction[originNodeIndex][powerRecord] + modifiedCost);
-                if (dpFunction[originNodeIndex][powerRecord] + modifiedCost < -0.1) {
+                if (dpFunction[originNodeIndex][powerRecord] + modifiedCost < -0.001) {
                     HashSet<Integer> edgeIndexSet = new HashSet<Integer>();
                     HashSet<Integer> chargeEdgeSet=new HashSet<Integer>();
                     double cost = 0;
