@@ -1,0 +1,1650 @@
+number of service arcs=225
+number of holding arcs=75
+
+root node bound= 16390.719999999998
+artificial: false edgeIndexset: [80, 240, 229, 151, 40] start node= 1 start time= 0 capacity type= 1 ifChargeSet: [229]
+(1,0)->(1,1)->(0,4)->charge(0,5)->(2,10)->(1,0):0.76
+
+artificial: false edgeIndexset: [81, 241, 230, 152, 41] start node= 1 start time= 1 capacity type= 1 ifChargeSet: [230]
+(1,1)->(1,2)->(0,5)->charge(0,6)->(2,11)->(1,1):0.84
+
+artificial: false edgeIndexset: [83, 243, 232, 154, 43] start node= 1 start time= 3 capacity type= 1 ifChargeSet: [232]
+(1,3)->(1,4)->(0,7)->charge(0,8)->(2,13)->(1,3):0.58
+
+artificial: false edgeIndexset: [160, 34, 89, 249, 238] start node= 1 start time= 9 capacity type= 1 ifChargeSet: [238]
+(2,4)->(1,9)->(1,10)->(0,13)->charge(0,14)->(2,4):0.22000000000000003
+
+artificial: false edgeIndexset: [240, 177, 241, 242, 67, 243, 244, 245, 246] start node= 1 start time= 0 capacity type= 1 ifChargeSet: []
+(1,0)->(1,1)->(1,2)->(1,3)->(1,4)->(1,5)->(1,6)->(1,7)->(3,12)->(1,0):0.46
+
+artificial: false edgeIndexset: [241, 178, 242, 243, 68, 244, 245, 246, 247] start node= 1 start time= 1 capacity type= 1 ifChargeSet: []
+(1,1)->(1,2)->(1,3)->(1,4)->(1,5)->(1,6)->(1,7)->(1,8)->(3,13)->(1,1):0.06
+
+artificial: false edgeIndexset: [242, 179, 243, 244, 69, 245, 246, 247, 248] start node= 1 start time= 2 capacity type= 1 ifChargeSet: []
+(1,2)->(1,3)->(1,4)->(1,5)->(1,6)->(1,7)->(1,8)->(1,9)->(3,14)->(1,2):0.22
+
+artificial: false edgeIndexset: [243, 244, 165, 245, 70, 246, 247, 248, 249] start node= 1 start time= 3 capacity type= 1 ifChargeSet: []
+(3,0)->(1,3)->(1,4)->(1,5)->(1,6)->(1,7)->(1,8)->(1,9)->(1,10)->(3,0):0.72
+
+artificial: false edgeIndexset: [244, 245, 166, 246, 71, 247, 248, 249, 250] start node= 1 start time= 4 capacity type= 1 ifChargeSet: []
+(3,1)->(1,4)->(1,5)->(1,6)->(1,7)->(1,8)->(1,9)->(1,10)->(1,11)->(3,1):0.52
+
+artificial: false edgeIndexset: [247, 248, 169, 249, 74, 250, 251, 252, 253] start node= 1 start time= 7 capacity type= 1 ifChargeSet: []
+(3,4)->(1,7)->(1,8)->(1,9)->(1,10)->(1,11)->(1,12)->(1,13)->(1,14)->(3,4):0.22
+
+artificial: false edgeIndexset: [240, 241, 242, 251, 252, 173, 253, 254, 63] start node= 1 start time= 11 capacity type= 1 ifChargeSet: []
+(1,0)->(1,1)->(1,2)->(1,3)->(3,8)->(1,11)->(1,12)->(1,13)->(1,14)->(1,0):0.52
+
+artificial: false edgeIndexset: [240, 65, 241, 242, 243, 244, 253, 254, 175] start node= 1 start time= 13 capacity type= 1 ifChargeSet: []
+(1,0)->(1,1)->(1,2)->(1,3)->(1,4)->(1,5)->(3,10)->(1,13)->(1,14)->(1,0):1.0
+
+artificial: false edgeIndexset: [176, 240, 241, 66, 242, 243, 244, 245, 254] start node= 1 start time= 14 capacity type= 1 ifChargeSet: []
+(1,0)->(1,1)->(1,2)->(1,3)->(1,4)->(1,5)->(1,6)->(3,11)->(1,14)->(1,0):0.44
+
+artificial: false edgeIndexset: [240, 241, 242, 243, 39, 109, 254] start node= 1 start time= 0 capacity type= 1 ifChargeSet: []
+(1,0)->(1,1)->(1,2)->(1,3)->(1,4)->(2,9)->(1,14)->(1,0):0.7000000000000001
+
+artificial: false edgeIndexset: [34, 119, 249, 250, 251, 252, 253] start node= 1 start time= 9 capacity type= 1 ifChargeSet: []
+(2,4)->(1,9)->(1,10)->(1,11)->(1,12)->(1,13)->(1,14)->(2,4):0.15999999999999998
+
+artificial: false edgeIndexset: [35, 259, 119, 250, 251, 252, 253] start node= 1 start time= 10 capacity type= 1 ifChargeSet: []
+(2,4)->(2,5)->(1,10)->(1,11)->(1,12)->(1,13)->(1,14)->(2,4):0.3
+
+artificial: false edgeIndexset: [180, 260, 261, 262, 263, 264, 265, 221] start node= 2 start time= 5 capacity type= 1 ifChargeSet: []
+(3,0)->(2,5)->(2,6)->(2,7)->(2,8)->(2,9)->(2,10)->(2,11)->(3,0):0.3
+
+artificial: false edgeIndexset: [182, 262, 263, 264, 265, 266, 267, 223] start node= 2 start time= 7 capacity type= 1 ifChargeSet: []
+(3,2)->(2,7)->(2,8)->(2,9)->(2,10)->(2,11)->(2,12)->(2,13)->(3,2):0.46
+
+artificial: false edgeIndexset: [224, 183, 263, 264, 265, 266, 267, 268] start node= 2 start time= 8 capacity type= 1 ifChargeSet: []
+(3,3)->(2,8)->(2,9)->(2,10)->(2,11)->(2,12)->(2,13)->(2,14)->(3,3):0.44
+
+artificial: false edgeIndexset: [211, 185, 265, 266, 267, 268, 269, 255] start node= 2 start time= 10 capacity type= 1 ifChargeSet: []
+(2,0)->(2,1)->(3,5)->(2,10)->(2,11)->(2,12)->(2,13)->(2,14)->(2,0):0.22
+
+artificial: false edgeIndexset: [256, 212, 186, 266, 267, 268, 269, 255] start node= 2 start time= 11 capacity type= 1 ifChargeSet: []
+(2,0)->(2,1)->(2,2)->(3,6)->(2,11)->(2,12)->(2,13)->(2,14)->(2,0):0.3
+
+artificial: false edgeIndexset: [256, 257, 277, 213, 188, 268, 269, 255] start node= 2 start time= 13 capacity type= 1 ifChargeSet: []
+(2,0)->(2,1)->(2,2)->(2,3)->(3,7)->(3,8)->(2,13)->(2,14)->(2,0):0.44
+
+artificial: false edgeIndexset: [130, 197, 246, 157, 285, 286] start node= 4 start time= 0 capacity type= 1 ifChargeSet: [246]
+(4,0)->(4,1)->(4,2)->(1,6)->charge(1,7)->(0,10)->(4,0):0.6000000000000001
+
+artificial: false edgeIndexset: [160, 288, 289, 133, 200, 249] start node= 4 start time= 3 capacity type= 1 ifChargeSet: [249]
+(4,3)->(4,4)->(4,5)->(1,9)->charge(1,10)->(0,13)->(4,3):0.3
+
+artificial: false edgeIndexset: [163, 291, 292, 121, 203, 252] start node= 4 start time= 6 capacity type= 1 ifChargeSet: [252]
+(0,1)->(4,6)->(4,7)->(4,8)->(1,12)->charge(1,13)->(0,1):0.08
+
+artificial: false edgeIndexset: [164, 292, 293, 122, 204, 253] start node= 4 start time= 7 capacity type= 1 ifChargeSet: [253]
+(0,2)->(4,7)->(4,8)->(4,9)->(1,13)->charge(1,14)->(0,2):0.42
+
+artificial: false edgeIndexset: [293, 150, 294, 123, 205, 254] start node= 4 start time= 8 capacity type= 1 ifChargeSet: [254]
+(1,0)->(0,3)->(4,8)->(4,9)->(4,10)->(1,14)->charge(1,0):0.06
+
+artificial: false edgeIndexset: [240, 294, 151, 295, 124, 206] start node= 4 start time= 9 capacity type= 1 ifChargeSet: [240]
+(1,0)->charge(1,1)->(0,4)->(4,9)->(4,10)->(4,11)->(1,0):0.44
+
+artificial: false edgeIndexset: [241, 295, 152, 296, 125, 207] start node= 4 start time= 10 capacity type= 1 ifChargeSet: [241]
+(1,1)->charge(1,2)->(0,5)->(4,10)->(4,11)->(4,12)->(1,1):0.04
+
+artificial: false edgeIndexset: [208, 242, 296, 153, 297, 126] start node= 4 start time= 11 capacity type= 1 ifChargeSet: [242]
+(1,2)->charge(1,3)->(0,6)->(4,11)->(4,12)->(4,13)->(1,2):0.8400000000000001
+
+artificial: false edgeIndexset: [209, 243, 297, 154, 298, 127] start node= 4 start time= 12 capacity type= 1 ifChargeSet: [243]
+(1,3)->charge(1,4)->(0,7)->(4,12)->(4,13)->(4,14)->(1,3):0.52
+
+artificial: false edgeIndexset: [128, 195, 244, 298, 155, 299] start node= 4 start time= 13 capacity type= 1 ifChargeSet: [244]
+(4,0)->(1,4)->charge(1,5)->(0,8)->(4,13)->(4,14)->(4,0):0.26
+
+artificial: false edgeIndexset: [129, 196, 245, 299, 156, 285] start node= 4 start time= 14 capacity type= 1 ifChargeSet: [245]
+(4,0)->(4,1)->(1,5)->charge(1,6)->(0,9)->(4,14)->(4,0):0.44
+
+artificial: false edgeIndexset: [16, 145, 260, 216, 285] start node= 4 start time= 0 capacity type= 1 ifChargeSet: [260]
+(4,0)->(4,1)->(2,5)->charge(2,6)->(3,10)->(4,0):0.3
+
+artificial: false edgeIndexset: [17, 146, 261, 217, 286] start node= 4 start time= 1 capacity type= 1 ifChargeSet: [261]
+(4,1)->(4,2)->(2,6)->charge(2,7)->(3,11)->(4,1):0.16000000000000003
+
+artificial: false edgeIndexset: [17, 147, 261, 281, 217] start node= 4 start time= 2 capacity type= 1 ifChargeSet: [261]
+(4,2)->(2,6)->charge(2,7)->(3,11)->(3,12)->(4,2):0.4
+
+artificial: false edgeIndexset: [290, 21, 135, 265, 221] start node= 4 start time= 5 capacity type= 1 ifChargeSet: [265]
+(3,0)->(4,5)->(4,6)->(2,10)->charge(2,11)->(3,0):0.07999999999999999
+
+artificial: false edgeIndexset: [292, 23, 137, 267, 223] start node= 4 start time= 7 capacity type= 1 ifChargeSet: [267]
+(3,2)->(4,7)->(4,8)->(2,12)->charge(2,13)->(3,2):0.48000000000000004
+
+artificial: false edgeIndexset: [210, 294, 25, 139, 269] start node= 4 start time= 9 capacity type= 1 ifChargeSet: [269]
+(2,0)->(3,4)->(4,9)->(4,10)->(2,14)->charge(2,0):0.34
+
+artificial: false edgeIndexset: [258, 214, 298, 29, 143] start node= 4 start time= 13 capacity type= 1 ifChargeSet: [258]
+(2,3)->charge(2,4)->(3,8)->(4,13)->(4,14)->(2,3):0.52
+
+artificial: false edgeIndexset: [144, 259, 215, 299, 15] start node= 4 start time= 14 capacity type= 1 ifChargeSet: [259]
+(4,0)->(2,4)->charge(2,5)->(3,9)->(4,14)->(4,0):0.36
+
+artificial: false edgeIndexset: [289, 290, 99, 291, 292, 293, 134] start node= 4 start time= 4 capacity type= 1 ifChargeSet: []
+(4,4)->(4,5)->(4,6)->(4,7)->(4,8)->(4,9)->(0,14)->(4,4):0.8999999999999999
+
+artificial: false edgeIndexset: [290, 291, 100, 292, 293, 294, 120] start node= 4 start time= 5 capacity type= 1 ifChargeSet: []
+(0,0)->(4,5)->(4,6)->(4,7)->(4,8)->(4,9)->(4,10)->(0,0):0.92
+
+artificial: false edgeIndexset: [291, 292, 101, 293, 294, 295, 121] start node= 4 start time= 6 capacity type= 1 ifChargeSet: []
+(0,1)->(4,6)->(4,7)->(4,8)->(4,9)->(4,10)->(4,11)->(0,1):0.98
+
+artificial: false edgeIndexset: [226, 292, 101, 293, 294, 295, 122] start node= 4 start time= 7 capacity type= 1 ifChargeSet: []
+(0,1)->(0,2)->(4,7)->(4,8)->(4,9)->(4,10)->(4,11)->(0,1):0.18
+
+artificial: false edgeIndexset: [145, 2, 276, 277, 278, 279, 285, 286] start node= 4 start time= 0 capacity type= 1 ifChargeSet: []
+(4,0)->(4,1)->(4,2)->(3,6)->(3,7)->(3,8)->(3,9)->(3,10)->(4,0):0.24000000000000005
+
+artificial: false edgeIndexset: [288, 289, 290, 291, 148, 292, 293, 9] start node= 4 start time= 3 capacity type= 1 ifChargeSet: []
+(4,3)->(4,4)->(4,5)->(4,6)->(4,7)->(4,8)->(4,9)->(3,13)->(4,3):0.98
+
+artificial: false edgeIndexset: [290, 291, 292, 293, 294, 135, 10, 284] start node= 4 start time= 5 capacity type= 1 ifChargeSet: []
+(3,0)->(4,5)->(4,6)->(4,7)->(4,8)->(4,9)->(4,10)->(3,14)->(3,0):0.8
+
+artificial: false edgeIndexset: [292, 293, 294, 295, 296, 137, 297, 13] start node= 4 start time= 7 capacity type= 1 ifChargeSet: []
+(3,2)->(4,7)->(4,8)->(4,9)->(4,10)->(4,11)->(4,12)->(4,13)->(3,2):0.39999999999999997
+
+artificial: false edgeIndexset: [293, 294, 295, 296, 297, 138, 298, 14] start node= 4 start time= 8 capacity type= 1 ifChargeSet: []
+(3,3)->(4,8)->(4,9)->(4,10)->(4,11)->(4,12)->(4,13)->(4,14)->(3,3):0.44
+
+artificial: false edgeIndexset: [288, 289, 290, 55, 201, 285, 286, 287] start node= 4 start time= 0 capacity type= 1 ifChargeSet: []
+(4,0)->(4,1)->(4,2)->(4,3)->(4,4)->(4,5)->(4,6)->(1,10)->(4,0):0.3000000000000001
+
+artificial: false edgeIndexset: [288, 289, 290, 291, 56, 202, 286, 287] start node= 4 start time= 1 capacity type= 1 ifChargeSet: []
+(4,1)->(4,2)->(4,3)->(4,4)->(4,5)->(4,6)->(4,7)->(1,11)->(4,1):0.22
+
+artificial: false edgeIndexset: [288, 289, 290, 291, 292, 57, 203, 287] start node= 4 start time= 2 capacity type= 1 ifChargeSet: []
+(4,2)->(4,3)->(4,4)->(4,5)->(4,6)->(4,7)->(4,8)->(1,12)->(4,2):0.76
+
+artificial: false edgeIndexset: [51, 197, 296, 297, 298, 299, 285, 286] start node= 4 start time= 11 capacity type= 1 ifChargeSet: []
+(4,0)->(4,1)->(4,2)->(1,6)->(4,11)->(4,12)->(4,13)->(4,14)->(4,0):0.11999999999999994
+
+artificial: false edgeIndexset: [288, 53, 199, 298, 299, 285, 286, 287] start node= 4 start time= 13 capacity type= 1 ifChargeSet: []
+(4,0)->(4,1)->(4,2)->(4,3)->(4,4)->(1,8)->(4,13)->(4,14)->(4,0):0.1
+
+x[0]:2,2->3,6= 15.0 4
+x[0]:2,13->3,2= 6.0 4
+
+x[1]:1,12->4,2= 17.0 5
+
+x[2]:4,0->1,4= 6.0 4
+x[2]:4,2->1,6= 23.0 4
+
+x[3]:4,9->0,14= 16.0 5
+x[3]:4,11->0,1= 11.0 5
+
+x[4]:0,10->4,0= 15.0 5
+x[4]:4,0->1,4= 7.0 4
+x[4]:4,1->1,5= 8.0 4
+
+x[5]:3,6->2,11= 15.0 5
+x[5]:3,8->2,13= 5.0 5
+
+x[6]:0,8->2,13= 16.0 5
+
+x[7]:3,10->1,13= 15.0 3
+
+x[8]:1,6->3,11= 22.0 5
+
+x[9]:1,1->0,4= 3.0 3
+x[9]:1,7->0,10= 11.0 3
+x[9]:3,4->1,7= 11.0 3
+x[9]:3,13->1,1= 3.0 3
+
+x[10]:4,10->0,0= 28.0 5
+
+x[11]:0,5->2,10= 27.0 5
+
+x[12]:2,9->1,14= 27.0 5
+
+x[13]:2,4->3,8= 11.0 4
+x[13]:2,5->3,9= 18.0 4
+
+x[14]:2,10->1,0= 16.0 5
+
+x[15]:4,10->0,0= 18.0 5
+
+x[16]:1,2->0,5= 22.0 3
+x[16]:2,10->1,0= 22.0 5
+
+x[17]:4,8->2,12= 24.0 4
+
+x[18]:2,6->3,10= 15.0 4
+
+x[19]:1,4->0,7= 29.0 3
+x[19]:2,13->1,3= 29.0 5
+
+x[20]:1,10->3,0= 21.0 5
+
+x[21]:1,1->0,4= 4.0 3
+x[21]:1,14->0,2= 21.0 3
+
+x[22]:0,13->4,3= 15.0 5
+x[22]:0,14->4,4= 6.0 5
+x[22]:0,0->4,5= 1.0 5
+
+x[23]:0,6->2,11= 27.0 5
+
+x[24]:1,8->4,13= 5.0 5
+x[24]:1,12->4,2= 21.0 5
+
+x[25]:3,8->4,13= 26.0 5
+
+x[26]:3,8->1,11= 22.0 3
+
+x[27]:0,6->4,11= 30.0 5
+
+x[28]:0,10->4,0= 13.0 5
+x[28]:4,2->1,6= 13.0 4
+
+x[29]:4,9->0,14= 29.0 5
+
+x[30]:3,2->2,7= 23.0 5
+
+x[31]:1,5->3,10= 12.0 5
+
+x[32]:4,11->0,1= 10.0 5
+
+x[33]:0,14->4,4= 5.0 5
+x[33]:4,4->1,8= 5.0 4
+x[33]:4,9->1,13= 11.0 4
+x[33]:0,4->4,9= 11.0 5
+
+x[34]:2,7->3,11= 28.0 4
+
+x[35]:1,3->3,8= 11.0 5
+
+x[36]:1,7->3,12= 23.0 5
+
+x[37]:1,5->0,8= 13.0 3
+x[37]:2,11->1,1= 13.0 5
+
+x[38]:0,1->4,6= 26.0 5
+
+x[39]:4,11->1,0= 12.0 4
+
+x[40]:4,10->3,14= 30.0 4
+
+x[41]:2,1->3,5= 11.0 4
+
+x[42]:1,4->0,7= 26.0 3
+x[42]:1,13->0,1= 4.0 3
+x[42]:3,1->1,4= 26.0 3
+x[42]:3,10->1,13= 4.0 3
+
+x[43]:2,4->3,8= 15.0 4
+
+x[44]:1,1->0,4= 29.0 3
+x[44]:2,11->1,1= 29.0 5
+
+x[45]:3,2->4,7= 20.0 5
+
+x[46]:1,6->4,11= 5.999999999999997 5
+x[46]:1,10->4,0= 15.000000000000004 5
+
+x[47]:4,9->3,13= 30.0 4
+x[47]:0,2->4,7= 30.0 5
+
+x[48]:1,7->0,10= 19.0 3
+
+x[49]:4,8->1,12= 30.0 4
+x[49]:0,1->4,6= 27.0 5
+x[49]:0,3->4,8= 3.0 5
+
+x[50]:1,9->3,14= 11.0 5
+
+x[51]:1,4->2,9= 12.0 5
+
+x[52]:2,5->1,10= 15.0 5
+
+x[53]:1,6->0,9= 21.0 3
+
+x[54]:1,10->3,0= 15.0 5
+x[54]:1,14->3,4= 11.0 5
+
+x[55]:2,4->1,9= 19.0 5
+x[55]:2,9->1,14= 8.0 5
+
+x[56]:3,13->4,3= 28.0 5
+
+x[57]:4,9->1,13= 10.0 4
+x[57]:4,10->1,14= 3.0 4
+x[57]:4,11->1,0= 10.0 4
+x[57]:0,4->4,9= 11.0 5
+x[57]:0,5->4,10= 2.0 5
+x[57]:0,6->4,11= 10.0 5
+
+x[58]:3,10->4,0= 27.0 5
+
+x[59]:1,3->3,8= 15.0 5
+x[59]:1,8->3,13= 3.0 5
+
+x[60]:4,5->1,9= 15.0 4
+x[60]:0,0->4,5= 15.0 5
+
+x[61]:1,14->2,4= 12.0 5
+
+x[62]:3,3->4,8= 22.0 5
+x[62]:2,14->3,3= 22.0 4
+
+x[63]:0,0->4,5= 30.0 5
+
+x[64]:1,0->0,3= 3.0 3
+x[64]:1,6->0,9= 1.0 3
+x[64]:1,10->0,13= 26.0 3
+
+x[65]:1,1->0,4= 24.0 3
+
+x[66]:4,1->1,5= 14.0 4
+
+x[67]:4,11->0,1= 19.0 5
+
+x[68]:1,11->4,1= 11.0 5
+
+x[69]:4,2->2,6= 13.0 4
+
+x[70]:3,0->2,5= 11.0 5
+x[70]:3,8->2,13= 17.0 5
+
+x[71]:4,1->2,5= 7.0 4
+x[71]:4,10->2,14= 17.0 4
+
+x[72]:3,2->4,7= 24.0 5
+
+x[73]:2,13->3,2= 14.0 4
+
+x[74]:3,12->4,2= 20.0 5
+
+x[75]:2,3->3,7= 22.0 4
+
+x[76]:1,11->3,1= 26.0 5
+
+x[77]:1,5->3,10= 26.0 5
+
+x[78]:1,5->3,10= 12.0 5
+
+x[79]:3,3->2,8= 22.0 5
+x[79]:3,5->2,10= 1.0 5
+
+x[80]:4,6->1,10= 4.0 4
+x[80]:4,14->1,3= 26.0 4
+
+x[81]:3,0->4,5= 19.0 5
+x[81]:2,11->3,0= 19.0 4
+
+x[82]:1,3->0,6= 20.0 3
+x[82]:3,12->1,0= 20.0 3
+
+x[83]:4,11->0,1= 18.0 5
+
+x[84]:1,14->2,4= 11.0 5
+
+x[85]:0,8->4,13= 10.0 5
+x[85]:4,13->3,2= 10.0 4
+
+x[86]:4,13->1,2= 22.0 4
+x[86]:0,7->4,12= 22.0 5
+
+x[87]:1,3->0,6= 22.0 3
+
+x[88]:3,11->4,1= 8.000000000000002 5
+x[88]:3,13->4,3= 21.0 5
+
+x[89]:3,4->4,9= 12.0 5
+x[89]:3,9->4,14= 1.0 5
+
+x[90]:3,0->2,5= 4.0 5
+x[90]:3,5->2,10= 10.0 5
+
+x[91]:3,0->4,5= 25.0 5
+x[91]:3,4->4,9= 5.0 5
+
+x[92]:0,9->4,14= 22.0 5
+x[92]:4,2->3,6= 2.0 4
+x[92]:0,10->4,0= 2.0 5
+x[92]:4,14->3,3= 22.0 4
+
+x[93]:1,2->0,5= 22.0 3
+
+x[94]:2,13->3,2= 27.0 4
+
+x[95]:0,6->2,11= 6.0 5
+x[95]:0,8->2,13= 13.0 5
+
+x[96]:1,4->2,9= 23.0 5
+
+x[97]:3,9->4,14= 17.0 5
+x[97]:2,0->3,4= 17.0 4
+
+x[98]:4,13->1,2= 20.0 4
+
+x[99]:4,10->3,14= 10.0 4
+
+End
+==================Intensification===================
+Tried aggregator 2 times.
+MIP Presolve eliminated 4361 rows and 2688 columns.
+Aggregator did 1214 substitutions.
+Reduced MIP has 2310 rows, 5299 columns, and 14430 nonzeros.
+Reduced MIP has 31 binaries, 38 generals, 0 SOSs, and 0 indicators.
+Presolve time = 0.05 sec. (11.64 ticks)
+Probing fixed 0 vars, tightened 2 bounds.
+Probing time = 0.02 sec. (0.29 ticks)
+Tried aggregator 1 time.
+MIP Presolve eliminated 22 rows and 51 columns.
+Reduced MIP has 2288 rows, 5248 columns, and 14294 nonzeros.
+Reduced MIP has 31 binaries, 38 generals, 0 SOSs, and 0 indicators.
+Presolve time = 0.02 sec. (6.22 ticks)
+Probing time = 0.00 sec. (0.25 ticks)
+Clique table members: 3.
+MIP emphasis: balance optimality and feasibility.
+MIP search method: dynamic search.
+Parallel mode: deterministic, using up to 4 threads.
+Root relaxation solution time = 0.13 sec. (42.02 ticks)
+
+        Nodes                                         Cuts/
+   Node  Left     Objective  IInf  Best Integer    Best Bound    ItCnt     Gap
+
+      0     0    16390.7200    48                  16390.7200     1779         
+      0     0    16390.7200    19                    Cuts: 19     1819         
+*     0+    0                        18543.0000    16390.7200     1819   11.61%
+      0     0    16390.7200    27    18543.0000     Cuts: 138     2005   11.61%
+*     0+    0                        16701.0000    16390.7200     2045    1.86%
+      0     0    16390.7200    19    16701.0000      Cuts: 11     2045    1.86%
+      0     0    16390.7200    26    16701.0000     Cuts: 175     2172    1.86%
+*     0+    0                        16586.0000    16390.7200     2172    1.18%
+      0     2    16390.7200    11    16586.0000    16390.7200     2172    1.18%
+Elapsed time = 1.64 sec. (566.99 ticks, tree = 0.01 MB, solutions = 3)
+      9     9    16390.7200    20    16586.0000    16390.7200     2282    1.18%
+    332   269    16530.0600    10    16586.0000    16390.7200    12484    1.18%
+    405   326    16438.8800    16    16586.0000    16390.7200    15437    1.18%
+    980   756    16528.0400    16    16586.0000    16390.7200    29344    1.18%
+   1554  1203    16555.9200     8    16586.0000    16394.0800    42002    1.16%
+   2160  1702    16468.4800    26    16586.0000    16394.0800    55885    1.16%
+   2379  1893    16408.4034    16    16586.0000    16408.4034    65090    1.07%
+   2380  1894    16408.4034    14    16586.0000    16408.4034    65094    1.07%
+   2382  1894    16575.4434    34    16586.0000    16408.4034    65346    1.07%
+   3010  1651    16532.2200    16    16586.0000    16410.7381    82910    1.06%
+Elapsed time = 14.54 sec. (6074.40 ticks, tree = 3.19 MB, solutions = 3)
+   4314  2083    16577.3800     6    16586.0000    16415.7105   122085    1.03%
+   6232  3232    16571.1800    20    16586.0000    16421.2948   174483    0.99%
+   8252  4861    16574.2200     3    16586.0000    16422.9181   228233    0.98%
+  10061  6362    16497.7000    26    16586.0000    16424.7105   283282    0.97%
+  11645  7554    16582.8600    21    16586.0000    16425.2381   331139    0.97%
+  13462  9074    16507.8900    21    16586.0000    16425.2381   388851    0.97%
+  14782 10140    16539.6000    21    16586.0000    16427.7381   433684    0.95%
+  16606 11618        cutoff          16586.0000    16427.8905   489175    0.95%
+  16886 11848    16447.5500    28    16586.0000    16427.8905   498243    0.95%
+  18815 13419    16552.0000    22    16586.0000    16429.4881   559389    0.94%
+Elapsed time = 36.68 sec. (15833.13 ticks, tree = 22.79 MB, solutions = 3)
+  20587 14847    16513.8200    17    16586.0000    16430.2105   617276    0.94%
+  22499 16439    16552.0000    27    16586.0000    16430.2105   675171    0.94%
+  24292 17924    16552.0000    20    16586.0000    16430.2105   731654    0.94%
+
+Implied bound cuts applied:  21
+Flow cuts applied:  14
+Mixed integer rounding cuts applied:  123
+Flow path cuts applied:  6
+Lift and project cuts applied:  1
+Gomory fractional cuts applied:  11
+
+Root node processing (before b&c):
+  Real time             =    1.64 sec. (565.72 ticks)
+Parallel b&c, 4 threads:
+  Real time             =   58.41 sec. (25131.96 ticks)
+  Sync time (average)   =    6.16 sec.
+  Wait time (average)   =    0.00 sec.
+                          ------------
+Total (root+branch&cut) =   60.05 sec. (25697.67 ticks)
+We use intensification finding a better solution: 16586.0
+==================Intensification===================
+Tried aggregator 2 times.
+MIP Presolve eliminated 4205 rows and 2029 columns.
+Aggregator did 1072 substitutions.
+Reduced MIP has 2608 rows, 6121 columns, and 16630 nonzeros.
+Reduced MIP has 40 binaries, 50 generals, 0 SOSs, and 0 indicators.
+Presolve time = 0.05 sec. (11.93 ticks)
+Probing time = 0.02 sec. (0.30 ticks)
+Tried aggregator 1 time.
+MIP Presolve eliminated 24 rows and 56 columns.
+Reduced MIP has 2584 rows, 6065 columns, and 16481 nonzeros.
+Reduced MIP has 40 binaries, 50 generals, 0 SOSs, and 0 indicators.
+Presolve time = 0.02 sec. (7.17 ticks)
+Probing time = 0.02 sec. (0.30 ticks)
+Clique table members: 6.
+MIP emphasis: balance optimality and feasibility.
+MIP search method: dynamic search.
+Parallel mode: deterministic, using up to 4 threads.
+Root relaxation solution time = 0.19 sec. (73.24 ticks)
+
+        Nodes                                         Cuts/
+   Node  Left     Objective  IInf  Best Integer    Best Bound    ItCnt     Gap
+
+*     0+    0                        31489.0000     -783.0000     2342  102.49%
+      0     0    16390.7200    51    31489.0000    16390.7200     2342   47.95%
+      0     0    16390.7200    32    31489.0000      Cuts: 31     2435   47.95%
+      0     0    16390.7200    33    31489.0000     Cuts: 257     2674   47.95%
+*     0+    0                        17864.0000    16390.7200     2701    8.25%
+      0     0    16390.7200    17    17864.0000      Cuts: 21     2701    8.25%
+      0     0    16390.7200    28    17864.0000     Cuts: 114     2780    8.25%
+*     0+    0                        17050.0000    16390.7200     2780    3.87%
+*     0+    0                        16901.0000    16390.7200     2780    3.02%
+      0     2    16390.7200    10    16901.0000    16390.7200     2780    3.02%
+Elapsed time = 2.25 sec. (721.48 ticks, tree = 0.01 MB, solutions = 4)
+*     4+    4                        16896.0000    16390.7200     2965    2.99%
+*     5+    5                        16725.0000    16390.7200     2967    2.00%
+     15    15    16390.7200    27    16725.0000    16390.7200     3625    2.00%
+*   161+  155                        16713.0000    16390.7200     8299    1.93%
+    245   226    16428.8000    23    16713.0000    16390.7200    13267    1.93%
+*   340+  311                        16701.0000    16390.7200    16650    1.86%
+    447   403    16621.8600     2    16701.0000    16390.7200    23166    1.86%
+*   458+  408                        16654.0000    16390.7200    23583    1.58%
+*   568   400      integral     0    16643.0000    16390.7200    30497    1.52%
+*   712+  513                        16626.0000    16390.7200    37019    1.42%
+    777   546    16586.6000     5    16626.0000    16390.7200    39952    1.42%
+   1016   724    16433.4400    19    16626.0000    16390.7200    48874    1.42%
+*  1096   793      integral     0    16606.0000    16390.7200    51513    1.30%
+   1371   966        cutoff          16606.0000    16390.7200    63746    1.30%
+   1756  1285        cutoff          16606.0000    16390.7200    78637    1.30%
+*  1893  1395      integral     0    16603.0000    16390.7200    85164    1.28%
+Elapsed time = 8.94 sec. (3708.01 ticks, tree = 2.81 MB, solutions = 13)
+   2380  1785    16500.5400    12    16603.0000    16390.7200   102219    1.28%
+*  2384+ 1192                        16586.0000    16396.2021   105644    1.14%
+   2384  1193    16396.2021    12    16586.0000    16396.2021   105644    1.14%
+   2553  1085    16463.5400    26    16586.0000    16396.2021   110639    1.14%
+   2857  1126        cutoff          16586.0000    16398.0800   124341    1.13%
+   4179  1610    16421.2600    27    16586.0000    16402.0432   162776    1.11%
+   5863  3019    16558.0394    10    16586.0000    16410.7381   210090    1.06%
+   7658  4567    16549.6400    23    16586.0000    16414.2400   260036    1.04%
+   9276  5860    16415.3421    33    16586.0000    16415.3421   310370    1.03%
+  10958  7305    16537.5000    18    16586.0000    16415.3421   363903    1.03%
+  11910  8111    16525.6200    33    16586.0000    16415.6200   392711    1.03%
+Elapsed time = 38.11 sec. (16294.98 ticks, tree = 15.18 MB, solutions = 14)
+  13258  9233    16498.7000    22    16586.0000    16417.4400   438003    1.02%
+  15029 10670    16490.9600    20    16586.0000    16417.4400   501341    1.02%
+  16979 12326    16483.2500    23    16586.0000    16421.2600   555591    0.99%
+  19012 14014    16525.6200    33    16586.0000    16421.2600   611133    0.99%
+  20529 15091    16428.8000    21    16586.0000    16428.8000   668230    0.95%
+  21712 15989    16529.6338    11    16586.0000    16428.8000   727324    0.95%
+  22693 16746    16567.4000     2    16586.0000    16428.8000   776519    0.95%
+  23072 17002    16499.2000    10    16586.0000    16428.8000   799654    0.95%
+
+Implied bound cuts applied:  27
+Flow cuts applied:  17
+Mixed integer rounding cuts applied:  112
+Flow path cuts applied:  3
+Gomory fractional cuts applied:  1
+
+Root node processing (before b&c):
+  Real time             =    2.26 sec. (720.70 ticks)
+Parallel b&c, 4 threads:
+  Real time             =   57.77 sec. (25176.76 ticks)
+  Sync time (average)   =    9.14 sec.
+  Wait time (average)   =    0.00 sec.
+                          ------------
+Total (root+branch&cut) =   60.03 sec. (25897.46 ticks)
+==================Intensification===================
+Tried aggregator 2 times.
+MIP Presolve eliminated 4124 rows and 1526 columns.
+Aggregator did 956 substitutions.
+Reduced MIP has 2805 rows, 6769 columns, and 18412 nonzeros.
+Reduced MIP has 55 binaries, 64 generals, 0 SOSs, and 0 indicators.
+Presolve time = 0.05 sec. (12.33 ticks)
+Probing fixed 0 vars, tightened 1 bounds.
+Probing time = 0.00 sec. (0.41 ticks)
+Tried aggregator 1 time.
+MIP Presolve eliminated 25 rows and 60 columns.
+Reduced MIP has 2780 rows, 6709 columns, and 18252 nonzeros.
+Reduced MIP has 55 binaries, 64 generals, 0 SOSs, and 0 indicators.
+Presolve time = 0.03 sec. (7.92 ticks)
+Probing time = 0.02 sec. (0.37 ticks)
+Clique table members: 16.
+MIP emphasis: balance optimality and feasibility.
+MIP search method: dynamic search.
+Parallel mode: deterministic, using up to 4 threads.
+Root relaxation solution time = 0.20 sec. (73.96 ticks)
+
+        Nodes                                         Cuts/
+   Node  Left     Objective  IInf  Best Integer    Best Bound    ItCnt     Gap
+
+*     0+    0                        41086.0000    -1039.0000     2347  102.53%
+      0     0    16390.7200    56    41086.0000    16390.7200     2347   60.11%
+      0     0    16390.7200    18    41086.0000   MIRcuts: 17     2367   60.11%
+*     0+    0                        18530.0000    16390.7200     2367   11.54%
+      0     0    16390.7200    38    18530.0000     Cuts: 151     2546   11.54%
+      0     0    16390.7200    14    18530.0000    MIRcuts: 1     2548   11.54%
+*     0+    0                        18190.0000    16390.7200     2548    9.89%
+      0     0    16390.7200    28    18190.0000     Cuts: 119     2632    9.89%
+*     0+    0                        17743.0000    16390.7200     2632    7.62%
+*     0+    0                        16904.0000    16390.7200     2632    3.04%
+*     0+    0                        16779.0000    16390.7200     2632    2.31%
+*     0+    0                        16671.0000    16390.7200     2632    1.68%
+      0     2    16390.7200    12    16671.0000    16390.7200     2632    1.68%
+Elapsed time = 2.51 sec. (875.71 ticks, tree = 0.01 MB, solutions = 7)
+*     4+    3                        16643.0000    16390.7200     2722    1.52%
+*     5+    4                        16643.0000    16390.7200     2734    1.52%
+    102    91    16489.4948    23    16643.0000    16390.7200     5655    1.52%
+    303   280    16459.2000    17    16643.0000    16390.7200    13034    1.52%
+*   388+  359                        16586.0000    16390.7200    16245    1.18%
+    496   407    16390.7200    21    16586.0000    16390.7200    20598    1.18%
+    742   612    16546.9200    20    16586.0000    16390.7200    26915    1.18%
+   1153   951        cutoff          16586.0000    16390.7200    38772    1.18%
+   1498  1264    16448.8600    17    16586.0000    16390.7200    51806    1.18%
+   1681  1413    16510.0000     7    16586.0000    16390.7200    61630    1.18%
+   1963  1648    16473.4400    19    16586.0000    16390.7200    72626    1.18%
+   2340  1954    16421.2600    36    16586.0000    16390.7200    84762    1.18%
+   2418  2022    16421.2600    28    16586.0000    16390.7200    88025    1.18%
+Elapsed time = 11.89 sec. (5050.23 ticks, tree = 5.81 MB, solutions = 10)
+*  2422+ 1349                        16584.0000    16391.9983    91597    1.16%
+   2422  1350    16391.1976    16    16584.0000    16392.1162    91597    1.16%
+   2504   853    16578.5400    34    16584.0000    16392.1162    94356    1.16%
+   2768   881    16483.3200    35    16584.0000    16392.7794   105447    1.15%
+   3637  1210    16442.5200    30    16584.0000    16405.3200   138459    1.08%
+   4785  1979    16415.9080    28    16584.0000    16405.4272   176554    1.08%
+   6152  3084    16493.1080    29    16584.0000    16408.3454   218755    1.06%
+   7646  4359    16473.5000    28    16584.0000    16410.5886   263342    1.05%
+*  7957  4611      integral     0    16582.0000    16411.7849   273686    1.03%
+*  8587  5078      integral     0    16572.0000    16413.2766   293684    0.96%
+   9972  5838        cutoff          16572.0000    16415.9080   336292    0.94%
+Elapsed time = 36.43 sec. (15508.43 ticks, tree = 11.27 MB, solutions = 13)
+  11639  7141    16503.2400    17    16572.0000    16416.5480   378800    0.94%
+  13002  8266    16494.6400    17    16572.0000    16416.5480   417504    0.94%
+  14481  9476    16494.9200    28    16572.0000    16416.5480   459131    0.94%
+  15405 10198    16464.4000    21    16572.0000    16416.5480   484052    0.94%
+  16788 11324    16539.7800    10    16572.0000    16416.5480   523492    0.94%
+  18299 12551    16559.2000    13    16572.0000    16416.5480   565915    0.94%
+  19798 13785    16565.6400    14    16572.0000    16417.4400   606909    0.93%
+  21273 15064        cutoff          16572.0000    16417.5080   650822    0.93%
+* 21793 15504      integral     0    16554.0000    16417.5080   669242    0.82%
+
+Implied bound cuts applied:  21
+Flow cuts applied:  14
+Mixed integer rounding cuts applied:  102
+Flow path cuts applied:  4
+Gomory fractional cuts applied:  8
+
+Root node processing (before b&c):
+  Real time             =    2.51 sec. (874.73 ticks)
+Parallel b&c, 4 threads:
+  Real time             =   57.52 sec. (24978.66 ticks)
+  Sync time (average)   =    6.71 sec.
+  Wait time (average)   =    0.00 sec.
+                          ------------
+Total (root+branch&cut) =   60.03 sec. (25853.39 ticks)
+We use intensification finding a better solution: 16554.0
+==================Intensification===================
+Tried aggregator 2 times.
+MIP Presolve eliminated 4085 rows and 1224 columns.
+Aggregator did 922 substitutions.
+Reduced MIP has 2878 rows, 7111 columns, and 19405 nonzeros.
+Reduced MIP has 63 binaries, 62 generals, 0 SOSs, and 0 indicators.
+Presolve time = 0.05 sec. (12.51 ticks)
+Probing time = 0.01 sec. (0.36 ticks)
+Tried aggregator 1 time.
+MIP Presolve eliminated 26 rows and 64 columns.
+Reduced MIP has 2852 rows, 7047 columns, and 19234 nonzeros.
+Reduced MIP has 63 binaries, 62 generals, 0 SOSs, and 0 indicators.
+Presolve time = 0.03 sec. (8.33 ticks)
+Probing time = 0.01 sec. (0.37 ticks)
+Clique table members: 15.
+MIP emphasis: balance optimality and feasibility.
+MIP search method: dynamic search.
+Parallel mode: deterministic, using up to 4 threads.
+Root relaxation solution time = 0.19 sec. (72.89 ticks)
+
+        Nodes                                         Cuts/
+   Node  Left     Objective  IInf  Best Integer    Best Bound    ItCnt     Gap
+
+      0     0    16390.7200    57                  16390.7200     2187         
+*     0+    0                        21304.0000    16390.7200     2212   23.06%
+      0     0    16390.7200    25    21304.0000      Cuts: 35     2212   23.06%
+      0     0    16390.7200    37    21304.0000     Cuts: 210     2458   23.06%
+*     0+    0                        16882.0000    16390.7200     2496    2.91%
+      0     0    16390.7200    28    16882.0000      Cuts: 38     2496    2.91%
+      0     0    16390.7200    35    16882.0000     Cuts: 224     2677    2.91%
+*     0+    0                        16855.0000    16390.7200     2677    2.75%
+*     0+    0                        16711.0000    16390.7200     2677    1.92%
+*     0+    0                        16586.0000    16390.7200     2677    1.18%
+      0     2    16390.7200    14    16586.0000    16390.7200     2677    1.18%
+Elapsed time = 2.28 sec. (925.76 ticks, tree = 0.01 MB, solutions = 5)
+     41    31    16390.7200    19    16586.0000    16390.7200     3185    1.18%
+    244   218    16395.1600    21    16586.0000    16390.7200    10076    1.18%
+    443   389    16468.0800    13    16586.0000    16390.7200    17404    1.18%
+    778   653    16525.6200    33    16586.0000    16390.7200    29318    1.18%
+   1178   990    16517.0122    31    16586.0000    16390.7200    39368    1.18%
+   1217  1014    16517.0122    34    16586.0000    16390.7200    40507    1.18%
+   1422  1187    16540.6900    31    16586.0000    16390.7200    45503    1.18%
+   1787  1512    16494.0400     9    16586.0000    16390.7200    57606    1.18%
+   2142  1810    16575.5600    15    16586.0000    16390.7200    68910    1.18%
+   2371  1991    16390.7200    12    16586.0000    16390.7200    84002    1.18%
+Elapsed time = 17.41 sec. (7071.64 ticks, tree = 10.57 MB, solutions = 5)
+   2372  1992    16390.7200    13    16586.0000    16390.7200    84006    1.18%
+   2475  2044    16470.3000    28    16586.0000    16390.7200    87728    1.18%
+   3030  2080    16390.7200    21    16586.0000    16390.7200   110009    1.18%
+   4174  2437    16390.7200    20    16586.0000    16390.7200   146638    1.18%
+   5696  2903    16525.6200    25    16586.0000    16390.7200   189132    1.18%
+   7161  3978    16559.6400    12    16586.0000    16390.7200   236355    1.18%
+   8526  5078    16390.7200    21    16586.0000    16390.7200   281862    1.18%
+   9758  6097    16560.7600    19    16586.0000    16390.7200   326599    1.18%
+* 10738  6918      integral     0    16574.0000    16390.7200   360493    1.11%
+  11944  7248    16426.0000    24    16574.0000    16390.7200   402769    1.11%
+Elapsed time = 39.59 sec. (16611.80 ticks, tree = 15.31 MB, solutions = 6)
+  13166  8228    16390.7200    24    16574.0000    16390.7200   446397    1.11%
+  13543  8557    16476.7800    13    16574.0000    16390.7200   459218    1.11%
+  14259  9154    16519.2500    27    16574.0000    16390.7200   484678    1.11%
+  15382 10085    16571.2600     7    16574.0000    16390.7200   523601    1.11%
+  16813 11302    16537.1600    16    16574.0000    16390.7200   570453    1.11%
+  17872 12147    16591.5600     8    16574.0000    16390.7200   613410    1.11%
+  18560 12739    16453.4400    28    16574.0000    16390.7200   637582    1.11%
+  20151 14115    16502.2800    16    16574.0000    16390.7200   696659    1.11%
+
+Implied bound cuts applied:  2
+Flow cuts applied:  1
+Mixed integer rounding cuts applied:  13
+Gomory fractional cuts applied:  3
+
+Root node processing (before b&c):
+  Real time             =    2.28 sec. (924.24 ticks)
+Parallel b&c, 4 threads:
+  Real time             =   57.75 sec. (24552.56 ticks)
+  Sync time (average)   =    8.11 sec.
+  Wait time (average)   =    0.00 sec.
+                          ------------
+Total (root+branch&cut) =   60.03 sec. (25476.80 ticks)
+==================Intensification===================
+Tried aggregator 2 times.
+MIP Presolve eliminated 4093 rows and 1291 columns.
+Aggregator did 924 substitutions.
+Reduced MIP has 2868 rows, 7042 columns, and 19188 nonzeros.
+Reduced MIP has 59 binaries, 66 generals, 0 SOSs, and 0 indicators.
+Presolve time = 0.05 sec. (13.48 ticks)
+Probing fixed 0 vars, tightened 19 bounds.
+Probing time = 0.00 sec. (0.37 ticks)
+Tried aggregator 1 time.
+MIP Presolve eliminated 27 rows and 66 columns.
+Reduced MIP has 2841 rows, 6976 columns, and 19012 nonzeros.
+Reduced MIP has 59 binaries, 66 generals, 0 SOSs, and 0 indicators.
+Presolve time = 0.03 sec. (8.26 ticks)
+Probing time = 0.00 sec. (0.36 ticks)
+Clique table members: 16.
+MIP emphasis: balance optimality and feasibility.
+MIP search method: dynamic search.
+Parallel mode: deterministic, using up to 4 threads.
+Root relaxation solution time = 0.13 sec. (44.58 ticks)
+
+        Nodes                                         Cuts/
+   Node  Left     Objective  IInf  Best Integer    Best Bound    ItCnt     Gap
+
+      0     0    16390.7200    57                  16390.7200     1806         
+*     0+    0                        23132.0000    16390.7200     1919   29.14%
+      0     0    16390.7200    31    23132.0000      Cuts: 28     1919   29.14%
+      0     0    16390.7200    41    23132.0000     Cuts: 227     2151   29.14%
+*     0+    0                        16714.0000    16390.7200     2163    1.93%
+      0     0    16391.0122    17    16714.0000   MIRcuts: 16     2163    1.93%
+      0     0    16391.0122    34    16714.0000     Cuts: 141     2247    1.93%
+*     0+    0                        16711.0000    16391.0122     2247    1.91%
+      0     2    16391.0122    14    16711.0000    16391.0122     2247    1.91%
+Elapsed time = 1.79 sec. (751.23 ticks, tree = 0.01 MB, solutions = 3)
+      9    11    16398.0800    30    16711.0000    16392.4000     2566    1.91%
+    196   198    16403.7600    25    16711.0000    16392.4000     9007    1.91%
+    320   322    16438.3000    14    16711.0000    16392.4000    13900    1.91%
+*   370+  370                        16701.0000    16392.4000    15358    1.85%
+*   379+  379                        16586.0000    16392.4000    15865    1.17%
+    539   483    16569.9500     2    16586.0000    16392.4000    23380    1.17%
+    809   681    16549.5000    15    16586.0000    16392.4000    32640    1.17%
+   1106   937    16470.0000    22    16586.0000    16392.4000    44873    1.17%
+   1185  1002    16395.6018    16    16586.0000    16397.2704    51589    1.14%
+   1186  1003    16395.8380    17    16586.0000    16397.2704    51601    1.14%
+   1188  1004    16442.6000    30    16586.0000    16397.2704    52036    1.14%
+   1196  1009    16454.3600    28    16586.0000    16397.7698    52318    1.13%
+Elapsed time = 16.60 sec. (7029.53 ticks, tree = 3.63 MB, solutions = 5)
+   1663  1149    16525.4600     9    16586.0000    16401.8350    72504    1.11%
+*  2476+ 1342                        16575.0000    16401.8350    99476    1.04%
+   2568  1333    16417.4400    28    16575.0000    16401.8350   102295    1.04%
+   4041  2428    16428.8000    31    16575.0000    16401.8350   142240    1.04%
+   5368  3551    16542.8000     8    16575.0000    16401.8600   187821    1.04%
+   6449  4447    16486.4937    15    16575.0000    16401.8600   233230    1.04%
+   7600  5338    16486.5600    23    16575.0000    16401.8600   274487    1.04%
+   7960  5622        cutoff          16575.0000    16401.8600   287094    1.04%
+   9142  6558    16590.5400    35    16575.0000    16401.8600   333540    1.04%
+  10081  7337    16449.1700    28    16575.0000    16401.8600   380209    1.04%
+  11006  8098    16402.1564    38    16575.0000    16401.8600   427335    1.04%
+Elapsed time = 42.87 sec. (16840.74 ticks, tree = 17.69 MB, solutions = 6)
+  12216  9118    16458.4914    30    16575.0000    16401.8600   476302    1.04%
+  13224  9999    16401.8696    33    16575.0000    16401.8696   521271    1.04%
+  14577 11106    16409.6600    40    16575.0000    16401.8696   570258    1.04%
+  15854 12107        cutoff          16575.0000    16401.8696   621296    1.04%
+  16713 12803    16487.0600    15    16575.0000    16401.8696   661186    1.04%
+  17220 13213    16519.2800    32    16575.0000    16401.8696   683828    1.04%
+* 18207+14020                        16574.0000    16401.8696   723619    1.04%
+  18377 14166    16504.2800    16    16574.0000    16401.8696   732247    1.04%
+
+Implied bound cuts applied:  20
+Flow cuts applied:  21
+Mixed integer rounding cuts applied:  120
+Flow path cuts applied:  1
+Gomory fractional cuts applied:  6
+
+Root node processing (before b&c):
+  Real time             =    1.78 sec. (749.77 ticks)
+Parallel b&c, 4 threads:
+  Real time             =   58.25 sec. (23176.07 ticks)
+  Sync time (average)   =    9.07 sec.
+  Wait time (average)   =    0.00 sec.
+                          ------------
+Total (root+branch&cut) =   60.03 sec. (23925.84 ticks)
+==================Intensification===================
+Tried aggregator 2 times.
+MIP Presolve eliminated 4000 rows and 675 columns.
+Aggregator did 783 substitutions.
+Reduced MIP has 3102 rows, 7862 columns, and 21519 nonzeros.
+Reduced MIP has 101 binaries, 87 generals, 0 SOSs, and 0 indicators.
+Presolve time = 0.05 sec. (12.93 ticks)
+Probing time = 0.00 sec. (0.42 ticks)
+Tried aggregator 1 time.
+MIP Presolve eliminated 27 rows and 68 columns.
+Reduced MIP has 3075 rows, 7794 columns, and 21337 nonzeros.
+Reduced MIP has 101 binaries, 87 generals, 0 SOSs, and 0 indicators.
+Presolve time = 0.05 sec. (9.28 ticks)
+Probing time = 0.02 sec. (0.44 ticks)
+Clique table members: 28.
+MIP emphasis: balance optimality and feasibility.
+MIP search method: dynamic search.
+Parallel mode: deterministic, using up to 4 threads.
+Root relaxation solution time = 0.23 sec. (80.38 ticks)
+
+        Nodes                                         Cuts/
+   Node  Left     Objective  IInf  Best Integer    Best Bound    ItCnt     Gap
+
+*     0+    0                        23547.0000     -486.0000     2276  102.06%
+*     0+    0                        22253.0000     -486.0000     2276  102.18%
+*     0+    0                        21437.0000     -486.0000     2276  102.27%
+      0     0    16390.7200    66    21437.0000    16390.7200     2276   23.54%
+      0     0    16390.7200    35    21437.0000      Cuts: 23     2322   23.54%
+      0     0    16390.7200    41    21437.0000     Cuts: 328     2579   23.54%
+      0     0    16390.7200    21    21437.0000   MIRcuts: 12     2603   23.54%
+*     0+    0                        18936.0000    16391.0122     2603   13.44%
+      0     0    16391.0122    34    18936.0000     Cuts: 158     2702   13.44%
+*     0+    0                        18090.0000    16391.0122     2702    9.39%
+*     0+    0                        17457.0000    16391.0122     2702    6.11%
+*     0+    0                        17274.0000    16391.0122     2702    5.11%
+      0     2    16391.0122    15    17274.0000    16391.0122     2702    5.11%
+Elapsed time = 2.59 sec. (930.95 ticks, tree = 0.01 MB, solutions = 7)
+*     4+    4                        16871.0000    16391.0122     2837    2.85%
+*    13+   13                        16804.0000    16391.0122     3023    2.46%
+*    13+   13                        16792.0000    16391.0122     3023    2.39%
+*    13+   13                        16786.0000    16391.0122     3023    2.35%
+*    13+   13                        16769.0000    16391.0122     3023    2.25%
+*    13+   13                        16764.0000    16391.0122     3023    2.22%
+     13    15    16391.0122    24    16764.0000    16391.0122     3023    2.22%
+    254   252    16462.4600    28    16764.0000    16391.0122     9947    2.22%
+*   260+  255                        16701.0000    16391.0122    10101    1.86%
+    441   398    16489.6242    22    16701.0000    16391.0122    19169    1.86%
+*   629   576      integral     0    16624.0000    16391.0122    28129    1.40%
+*   790   567      integral     0    16600.0000    16391.0122    36443    1.26%
+    955   707    16539.4939    14    16600.0000    16391.0122    43732    1.26%
+*  1104+  823                        16586.0000    16391.0122    51995    1.18%
+   1104   825    16423.3600    24    16586.0000    16391.0122    51995    1.18%
+   1442  1024    16531.8255    15    16586.0000    16391.0122    62336    1.18%
+   1754  1285    16416.2365    21    16586.0000    16391.0122    71892    1.18%
+   2580  1972    16462.8200    18    16586.0000    16391.0122   102028    1.18%
+Elapsed time = 13.53 sec. (5694.40 ticks, tree = 9.43 MB, solutions = 19)
+   2584  1976    16391.1976    22    16586.0000    16391.1976   105321    1.17%
+   2585  1977    16391.1976    25    16586.0000    16391.1976   105336    1.17%
+   2649  1982    16446.1503    45    16586.0000    16392.8383   108498    1.16%
+   3005  2025    16513.8600    13    16586.0000    16392.8383   127391    1.16%
+   3561  1996    16469.2174    40    16586.0000    16397.5056   154204    1.14%
+   4607  2391    16506.0600    18    16586.0000    16403.4400   186065    1.10%
+   5399  2697        cutoff          16586.0000    16403.4400   221287    1.10%
+   6626  3378    16572.0600    29    16586.0000    16403.4400   258538    1.10%
+   7677  4245    16515.8600    25    16586.0000    16403.4400   297072    1.10%
+   8574  4977    16583.9400    27    16586.0000    16403.4400   335335    1.10%
+Elapsed time = 40.08 sec. (17172.42 ticks, tree = 14.54 MB, solutions = 19)
+   9376  5652    16504.3800    29    16586.0000    16403.4400   367994    1.10%
+  10417  6559    16561.6200    15    16586.0000    16403.4400   408655    1.10%
+  11515  7492        cutoff          16586.0000    16403.4400   454376    1.10%
+  12583  8404    16554.8000    15    16586.0000    16403.4400   494793    1.10%
+  13128  8891    16547.6400    23    16586.0000    16403.4400   514012    1.10%
+* 13142+ 8902                        16576.0000    16403.4400   514451    1.04%
+  14200  9273    16526.2400    26    16576.0000    16403.4400   553052    1.04%
+
+Implied bound cuts applied:  9
+Flow cuts applied:  15
+Mixed integer rounding cuts applied:  153
+Flow path cuts applied:  1
+Gomory fractional cuts applied:  9
+
+Root node processing (before b&c):
+  Real time             =    2.57 sec. (930.07 ticks)
+Parallel b&c, 4 threads:
+  Real time             =   57.46 sec. (24991.21 ticks)
+  Sync time (average)   =    9.03 sec.
+  Wait time (average)   =    0.00 sec.
+                          ------------
+Total (root+branch&cut) =   60.03 sec. (25921.28 ticks)
+==================Intensification===================
+Tried aggregator 2 times.
+MIP Presolve eliminated 3947 rows and 334 columns.
+Aggregator did 746 substitutions.
+Reduced MIP has 3192 rows, 8308 columns, and 22885 nonzeros.
+Reduced MIP has 143 binaries, 113 generals, 0 SOSs, and 0 indicators.
+Presolve time = 0.05 sec. (13.45 ticks)
+Probing time = 0.00 sec. (0.41 ticks)
+Tried aggregator 1 time.
+MIP Presolve eliminated 27 rows and 70 columns.
+Reduced MIP has 3165 rows, 8238 columns, and 22697 nonzeros.
+Reduced MIP has 143 binaries, 113 generals, 0 SOSs, and 0 indicators.
+Presolve time = 0.03 sec. (9.91 ticks)
+Probing time = 0.00 sec. (0.45 ticks)
+Clique table members: 42.
+MIP emphasis: balance optimality and feasibility.
+MIP search method: dynamic search.
+Parallel mode: deterministic, using up to 4 threads.
+Root relaxation solution time = 0.25 sec. (92.30 ticks)
+
+        Nodes                                         Cuts/
+   Node  Left     Objective  IInf  Best Integer    Best Bound    ItCnt     Gap
+
+      0     0    16390.7200    62                  16390.7200     2663         
+*     0+    0                        23011.0000    16390.7200     2678   28.77%
+      0     0    16390.7200    18    23011.0000       Cuts: 7     2678   28.77%
+*     0+    0                        18517.0000    16390.7200     2678   11.48%
+      0     0    16390.7200    45    18517.0000     Cuts: 169     2858   11.48%
+*     0+    0                        18223.0000    16390.7200     2906   10.05%
+      0     0    16390.7200    19    18223.0000      Cuts: 42     2906   10.05%
+      0     0    16390.7200    38    18223.0000     Cuts: 232     3090   10.05%
+*     0+    0                        17983.0000    16390.7200     3090    8.85%
+*     0+    0                        16640.0000    16390.7200     3090    1.50%
+      0     2    16390.7200    13    16640.0000    16390.7200     3090    1.50%
+Elapsed time = 2.76 sec. (1085.56 ticks, tree = 0.01 MB, solutions = 5)
+     13    12    16390.7200    21    16640.0000    16390.7200     3348    1.50%
+    162   143    16390.7200    25    16640.0000    16390.7200     6375    1.50%
+    310   291    16559.1000    30    16640.0000    16390.7200    11873    1.50%
+    507   483    16480.4800     8    16640.0000    16390.7200    18170    1.50%
+*   630   597      integral     0    16609.0000    16390.7200    22646    1.31%
+    824   742    16390.7200    21    16609.0000    16390.7200    29875    1.31%
+*   999+  904                        16586.0000    16390.7200    36421    1.18%
+    999   906    16418.3400    25    16586.0000    16390.7200    36421    1.18%
+*  1031+  926                        16586.0000    16390.7200    37217    1.18%
+   1315  1135    16525.3200    13    16586.0000    16390.7200    48439    1.18%
+   1507  1310    16560.6000     9    16586.0000    16390.7200    57099    1.18%
+   2427  2069    16433.6000    36    16586.0000    16390.7200    87614    1.18%
+Elapsed time = 14.77 sec. (6417.71 ticks, tree = 25.09 MB, solutions = 8)
+   2431  2073    16390.7200    13    16586.0000    16390.7200    90711    1.18%
+   2443  2076    16390.7200    18    16586.0000    16390.7200    90996    1.18%
+   2653  2153    16561.1600    38    16586.0000    16390.7200    97861    1.18%
+   3070  2318    16582.9100    14    16586.0000    16390.7200   114831    1.18%
+   3733  2540        cutoff          16586.0000    16390.7200   137400    1.18%
+   5291  3226    16549.1500    13    16586.0000    16390.7200   171623    1.18%
+   6358  3664    16390.7200    18    16586.0000    16390.7200   203229    1.18%
+   7967  4914        cutoff          16586.0000    16390.7200   235537    1.18%
+   9526  6255    16575.6800    29    16586.0000    16390.7200   271478    1.18%
+  10076  6714    16390.7200    19    16586.0000    16390.7200   283847    1.18%
+Elapsed time = 40.84 sec. (17520.62 ticks, tree = 17.72 MB, solutions = 8)
+  11432  7887    16568.5800    21    16586.0000    16390.7200   321571    1.18%
+  12565  8877    16546.1600    12    16586.0000    16390.7200   362773    1.18%
+  13456  9676    16518.4600    20    16586.0000    16390.7200   389764    1.18%
+  14549 10549    16547.5000    14    16586.0000    16390.7200   413154    1.18%
+  15784 11674    16544.8000     6    16586.0000    16390.7200   446623    1.18%
+* 16192 12031      integral     0    16574.0000    16390.7200   457290    1.11%
+  17362 12326    16553.1000    11    16574.0000    16390.7200   486191    1.11%
+  18602 13287    16491.9200    13    16574.0000    16390.7200   524924    1.11%
+
+Implied bound cuts applied:  1
+Flow cuts applied:  1
+Mixed integer rounding cuts applied:  16
+Gomory fractional cuts applied:  1
+
+Root node processing (before b&c):
+  Real time             =    2.75 sec. (1083.88 ticks)
+Parallel b&c, 4 threads:
+  Real time             =   57.28 sec. (24701.41 ticks)
+  Sync time (average)   =    8.34 sec.
+  Wait time (average)   =    0.00 sec.
+                          ------------
+Total (root+branch&cut) =   60.03 sec. (25785.29 ticks)
+==================Intensification===================
+Tried aggregator 2 times.
+MIP Presolve eliminated 3909 rows and 125 columns.
+Aggregator did 705 substitutions.
+Reduced MIP has 3271 rows, 8738 columns, and 24294 nonzeros.
+Reduced MIP has 231 binaries, 205 generals, 0 SOSs, and 0 indicators.
+Presolve time = 0.05 sec. (14.58 ticks)
+Probing time = 0.02 sec. (0.54 ticks)
+Tried aggregator 1 time.
+MIP Presolve eliminated 27 rows and 70 columns.
+Reduced MIP has 3244 rows, 8668 columns, and 24106 nonzeros.
+Reduced MIP has 231 binaries, 205 generals, 0 SOSs, and 0 indicators.
+Presolve time = 0.03 sec. (10.75 ticks)
+Probing time = 0.00 sec. (0.56 ticks)
+Clique table members: 59.
+MIP emphasis: balance optimality and feasibility.
+MIP search method: dynamic search.
+Parallel mode: deterministic, using up to 4 threads.
+Root relaxation solution time = 0.28 sec. (102.87 ticks)
+
+        Nodes                                         Cuts/
+   Node  Left     Objective  IInf  Best Integer    Best Bound    ItCnt     Gap
+
+      0     0    16390.7200    79                  16390.7200     2621         
+*     0+    0                        23220.0000    16390.7200     2655   29.41%
+      0     0    16390.7200    23    23220.0000   MIRcuts: 14     2655   29.41%
+      0     0    16390.7200    37    23220.0000     Cuts: 172     2794   29.41%
+*     0+    0                        16863.0000    16390.7200     2824    2.80%
+      0     0    16390.7200    18    16863.0000   MIRcuts: 29     2824    2.80%
+      0     0    16390.7200    33    16863.0000     Cuts: 117     2947    2.80%
+*     0+    0                        16762.0000    16390.7200     2947    2.22%
+      0     2    16390.7200    15    16762.0000    16390.7200     2947    2.22%
+Elapsed time = 2.54 sec. (1049.09 ticks, tree = 0.01 MB, solutions = 3)
+*     4+    4                        16754.0000    16390.7200     3181    2.17%
+*     4+    4                        16626.0000    16390.7200     3181    1.42%
+*    12+   10                        16615.0000    16390.7200     3634    1.35%
+     12    12    16516.7200    29    16615.0000    16390.7200     3634    1.35%
+    158   128    16517.5200    24    16615.0000    16390.7200     7240    1.35%
+    397   358    16550.0800    22    16615.0000    16390.7200    13642    1.35%
+*   448+  405                        16586.0000    16390.7200    16240    1.18%
+    508   454    16565.8800    19    16586.0000    16390.7200    18282    1.18%
+    799   690    16419.7600    42    16586.0000    16390.7200    28557    1.18%
+    941   798        cutoff          16586.0000    16390.7200    33992    1.18%
+   1205  1008    16408.3200    32    16586.0000    16390.7200    44036    1.18%
+   1652  1324    16435.7600    22    16586.0000    16390.7200    53847    1.18%
+   1989  1623    16541.6000    25    16586.0000    16390.7200    65775    1.18%
+   2341  1916    16538.2800    23    16586.0000    16390.7200    74636    1.18%
+Elapsed time = 11.09 sec. (4695.78 ticks, tree = 10.07 MB, solutions = 7)
+   2345  1916    16390.7200    13    16586.0000    16390.7200    77495    1.18%
+   2394  1940    16516.7200    40    16586.0000    16390.7200    79026    1.18%
+   2706  2014    16447.5360    25    16586.0000    16390.7200    86674    1.18%
+   3267  2113    16391.3600    32    16586.0000    16390.7200   106775    1.18%
+   3756  2303    16509.4100    18    16586.0000    16390.7200   131748    1.18%
+   4605  2682    16548.1600    14    16586.0000    16390.7200   160427    1.18%
+   5679  3072    16573.8500    11    16586.0000    16390.7200   185681    1.18%
+   7167  4215    16568.0009    11    16586.0000    16390.7200   212208    1.18%
+   8656  5506    16398.7200    21    16586.0000    16390.7200   240016    1.18%
+   9722  6384        cutoff          16586.0000    16390.7200   275673    1.18%
+Elapsed time = 35.93 sec. (15138.96 ticks, tree = 23.79 MB, solutions = 7)
+  11547  8038    16390.7200    24    16586.0000    16390.7200   303616    1.18%
+  13598  9946    16390.7200    33    16586.0000    16390.7200   330483    1.18%
+  15204 11259    16531.7200    31    16586.0000    16390.7200   366794    1.18%
+  16668 12501    16577.8000    17    16586.0000    16390.7200   394861    1.18%
+  18720 14242    16545.9200    29    16586.0000    16390.7200   426708    1.18%
+  20742 16065    16579.8000    31    16586.0000    16390.7200   455324    1.18%
+* 22278+17396                        16584.0000    16390.7200   483949    1.17%
+  22278 17398    16564.9000    20    16584.0000    16390.7200   483949    1.17%
+
+Implied bound cuts applied:  1
+Flow cuts applied:  1
+Mixed integer rounding cuts applied:  14
+
+Root node processing (before b&c):
+  Real time             =    2.54 sec. (1047.25 ticks)
+Parallel b&c, 4 threads:
+  Real time             =   57.49 sec. (24469.64 ticks)
+  Sync time (average)   =    9.36 sec.
+  Wait time (average)   =    0.00 sec.
+                          ------------
+Total (root+branch&cut) =   60.03 sec. (25516.89 ticks)
+==================Intensification===================
+Tried aggregator 2 times.
+MIP Presolve eliminated 3897 rows and 10 columns.
+Aggregator did 684 substitutions.
+Reduced MIP has 3304 rows, 9216 columns, and 25955 nonzeros.
+Reduced MIP has 360 binaries, 418 generals, 0 SOSs, and 0 indicators.
+Presolve time = 0.06 sec. (16.58 ticks)
+Found incumbent of value 46948.187500 after 0.19 sec. (61.80 ticks)
+Probing time = 0.02 sec. (0.88 ticks)
+Tried aggregator 1 time.
+MIP Presolve eliminated 27 rows and 70 columns.
+Reduced MIP has 3277 rows, 9146 columns, and 25767 nonzeros.
+Reduced MIP has 360 binaries, 418 generals, 0 SOSs, and 0 indicators.
+Presolve time = 0.05 sec. (12.08 ticks)
+Probing time = 0.02 sec. (0.95 ticks)
+Clique table members: 60.
+MIP emphasis: balance optimality and feasibility.
+MIP search method: dynamic search.
+Parallel mode: deterministic, using up to 4 threads.
+Root relaxation solution time = 0.20 sec. (77.44 ticks)
+
+        Nodes                                         Cuts/
+   Node  Left     Objective  IInf  Best Integer    Best Bound    ItCnt     Gap
+
+*     0+    0                        46948.1875        0.0000     2254  100.00%
+*     0+    0                        23920.0000        0.0000     2254  100.00%
+      0     0    16390.7200    82    23920.0000    16390.7200     2254   31.48%
+      0     0    16390.7200    32    23920.0000      Cuts: 10     2326   31.48%
+      0     0    16390.7200    54    23920.0000     Cuts: 145     2618   31.48%
+      0     0    16390.7200    19    23920.0000    MIRcuts: 5     2639   31.48%
+*     0+    0                        18525.0000    16390.7200     2639   11.52%
+      0     0    16390.7200    37    18525.0000      Cuts: 87     2731   11.52%
+*     0+    0                        17886.0000    16390.7200     2731    8.36%
+*     0+    0                        17122.0000    16390.7200     2731    4.27%
+*     0+    0                        16808.0000    16390.7200     2731    2.48%
+*     0+    0                        16771.0000    16390.7200     2731    2.27%
+*     0+    0                        16671.0000    16390.7200     2731    1.68%
+*     0+    0                        16657.0000    16390.7200     2731    1.60%
+      0     2    16390.7200    15    16657.0000    16390.7200     2731    1.60%
+Elapsed time = 3.54 sec. (1329.06 ticks, tree = 0.01 MB, solutions = 8)
+    200   200    16516.7200    39    16657.0000    16390.7200     5774    1.60%
+    376   374    16391.3600    34    16657.0000    16390.7200     9960    1.60%
+    547   545    16612.1200    26    16657.0000    16390.7200    15520    1.60%
+    805   793    16537.5000    29    16657.0000    16390.7200    21608    1.60%
+   1075  1031    16603.3600    27    16657.0000    16390.7200    26400    1.60%
+*  1199+ 1149                        16640.0000    16390.7200    29835    1.50%
+*  1199+ 1149                        16639.0000    16390.7200    29835    1.49%
+*  1199+ 1149                        16626.0000    16390.7200    29835    1.42%
+   1199  1151    16423.3600    25    16626.0000    16390.7200    29835    1.42%
+*  1202+ 1152                        16618.0000    16390.7200    29859    1.37%
+*  1202+ 1152                        16614.0000    16390.7200    29859    1.34%
+*  1203+  737                        16586.0000    16398.2800    34367    1.13%
+   1203   738    16398.2800    14    16586.0000    16398.2800    34367    1.13%
+   1210   741    16398.2800    20    16586.0000    16398.2800    34496    1.13%
+   1221   744    16398.2800    20    16586.0000    16398.2800    34733    1.13%
+   1426   807    16417.6700    34    16586.0000    16398.2800    38309    1.13%
+Elapsed time = 21.54 sec. (9167.85 ticks, tree = 17.62 MB, solutions = 16)
+   1818   916    16529.9400    31    16586.0000    16398.2800    46775    1.13%
+   2197  1121    16460.7771    31    16586.0000    16398.2800    65098    1.13%
+   2567  1307    16461.6500    31    16586.0000    16398.2800    87682    1.13%
+   3112  1790    16398.2800    14    16586.0000    16398.2800   108566    1.13%
+   3894  2473    16417.6700    29    16586.0000    16398.2800   118467    1.13%
+*  4806  3187      integral     0    16582.0000    16398.2800   134553    1.11%
+   6469  4735    16557.9600    20    16582.0000    16398.2800   151161    1.11%
+   8370  6568    16557.9600    17    16582.0000    16398.2800   168041    1.11%
+   9487  7641    16502.4825    30    16582.0000    16398.2800   178586    1.11%
+  11067  9140        cutoff          16582.0000    16398.2800   194816    1.11%
+Elapsed time = 47.52 sec. (19714.23 ticks, tree = 95.50 MB, solutions = 17)
+  12727 10736    16398.2800    29    16582.0000    16398.2800   215496    1.11%
+  14438 12410    16398.2800    26    16582.0000    16398.2800   234203    1.11%
+  16431 14340    16470.6700    25    16582.0000    16398.2800   249951    1.11%
+  17774 15629    16398.2800    19    16582.0000    16398.2800   270692    1.11%
+
+Flow cuts applied:  16
+Mixed integer rounding cuts applied:  124
+Gomory fractional cuts applied:  7
+
+Root node processing (before b&c):
+  Real time             =    3.54 sec. (1327.68 ticks)
+Parallel b&c, 4 threads:
+  Real time             =   56.49 sec. (23500.77 ticks)
+  Sync time (average)   =    6.68 sec.
+  Wait time (average)   =    0.00 sec.
+                          ------------
+Total (root+branch&cut) =   60.03 sec. (24828.45 ticks)
+================ Solution ================
+BAP terminated with objective : 16532
+Total Number of iterations: 8261
+Total Number of processed nodes: 1521
+Total Time spent on master problems: 594226 Total time spent on pricing problems: 84964
+Best bound : 16532.0
+[1, 8, 19, 25, 28, 30, 39, 44, 49, 55, 66, 71, 82, 85, 95, 104, 107, 123, 124, 126, 128, 130, 133, 136, 139, 140, 142, 148, 150, 153, 154, 155, 156, 160, 162, 166, 177, 182, 195, 200, 201, 203, 205, 206, 208, 210, 213, 219, 223]
+The number of service edges used= 49
+
+Solution is optimal: true
+Columns (only non-zero columns are returned):
+artificial: false edgeIndexset: [182, 262, 263, 264, 265, 266, 267, 223] start node= 2 start time= 7 capacity type= 0 ifChargeSet: []
+(3,2)->(2,7)->(2,8)->(2,9)->(2,10)->(2,11)->(2,12)->(2,13)->(3,2):4.0
+Fix cost= 100 variable cost= 36
+
+artificial: false edgeIndexset: [225, 226, 162, 227, 123, 203] start node= 4 start time= 8 capacity type= 0 ifChargeSet: [227]
+(0,0)->(0,1)->(0,2)->charge(0,3)->(4,8)->(1,12)->(0,0):1.0
+Fix cost= 50 variable cost= 53
+
+artificial: false edgeIndexset: [244, 245, 166, 246, 71, 247, 248, 249, 250] start node= 1 start time= 4 capacity type= 1 ifChargeSet: []
+(3,1)->(1,4)->(1,5)->(1,6)->(1,7)->(1,8)->(1,9)->(1,10)->(1,11)->(3,1):3.0
+Fix cost= 200 variable cost= 32
+
+artificial: false edgeIndexset: [85, 245, 234, 156, 30] start node= 1 start time= 5 capacity type= 1 ifChargeSet: [234]
+(2,0)->(1,5)->(1,6)->(0,9)->charge(0,10)->(2,0):1.0
+Fix cost= 200 variable cost= 57
+
+artificial: false edgeIndexset: [82, 154, 267, 44, 268] start node= 1 start time= 4 capacity type= 1 ifChargeSet: [268]
+(1,4)->(0,7)->(2,12)->(2,13)->charge(2,14)->(1,4):1.0
+Fix cost= 200 variable cost= 57
+
+artificial: false edgeIndexset: [240, 177, 241, 66, 242, 243, 244, 245, 281] start node= 1 start time= 0 capacity type= 1 ifChargeSet: []
+(1,0)->(1,1)->(1,2)->(1,3)->(1,4)->(1,5)->(1,6)->(3,11)->(3,12)->(1,0):1.0
+Fix cost= 200 variable cost= 32
+
+artificial: false edgeIndexset: [240, 241, 262, 39, 263, 107, 254] start node= 1 start time= 14 capacity type= 1 ifChargeSet: []
+(1,0)->(1,1)->(1,2)->(2,7)->(2,8)->(2,9)->(1,14)->(1,0):2.0
+Fix cost= 200 variable cost= 40
+
+artificial: false edgeIndexset: [160, 288, 289, 133, 200, 249] start node= 4 start time= 3 capacity type= 1 ifChargeSet: [249]
+(4,3)->(4,4)->(4,5)->(1,9)->charge(1,10)->(0,13)->(4,3):1.0
+Fix cost= 150 variable cost= 53
+
+artificial: false edgeIndexset: [293, 150, 294, 123, 205, 254] start node= 4 start time= 8 capacity type= 1 ifChargeSet: [254]
+(1,0)->(0,3)->(4,8)->(4,9)->(4,10)->(1,14)->charge(1,0):1.0
+Fix cost= 150 variable cost= 53
+
+artificial: false edgeIndexset: [208, 242, 296, 153, 297, 126] start node= 4 start time= 11 capacity type= 1 ifChargeSet: [242]
+(1,2)->charge(1,3)->(0,6)->(4,11)->(4,12)->(4,13)->(1,2):1.0
+Fix cost= 150 variable cost= 53
+
+artificial: false edgeIndexset: [128, 195, 244, 298, 155, 299] start node= 4 start time= 13 capacity type= 1 ifChargeSet: [244]
+(4,0)->(1,4)->charge(1,5)->(0,8)->(4,13)->(4,14)->(4,0):1.0
+Fix cost= 150 variable cost= 53
+
+artificial: false edgeIndexset: [210, 294, 25, 139, 269] start node= 4 start time= 9 capacity type= 1 ifChargeSet: [269]
+(2,0)->(3,4)->(4,9)->(4,10)->(2,14)->charge(2,0):1.0
+Fix cost= 150 variable cost= 57
+
+artificial: false edgeIndexset: [288, 289, 130, 285, 286, 95, 287] start node= 4 start time= 0 capacity type= 1 ifChargeSet: []
+(4,0)->(4,1)->(4,2)->(4,3)->(4,4)->(4,5)->(0,10)->(4,0):2.0
+Fix cost= 150 variable cost= 40
+
+artificial: false edgeIndexset: [294, 295, 104, 296, 297, 298, 124] start node= 4 start time= 9 capacity type= 1 ifChargeSet: []
+(0,4)->(4,9)->(4,10)->(4,11)->(4,12)->(4,13)->(4,14)->(0,4):1.0
+Fix cost= 150 variable cost= 40
+
+artificial: false edgeIndexset: [1, 295, 296, 297, 298, 299, 140, 285] start node= 4 start time= 10 capacity type= 1 ifChargeSet: []
+(4,0)->(4,1)->(3,5)->(4,10)->(4,11)->(4,12)->(4,13)->(4,14)->(4,0):1.0
+Fix cost= 150 variable cost= 36
+
+artificial: false edgeIndexset: [288, 289, 290, 55, 201, 285, 286, 287] start node= 4 start time= 1 capacity type= 1 ifChargeSet: []
+(4,0)->(4,1)->(4,2)->(4,3)->(4,4)->(4,5)->(4,6)->(1,10)->(4,0):1.0
+Fix cost= 150 variable cost= 36
+
+artificial: false edgeIndexset: [288, 19, 148, 263, 219] start node= 4 start time= 3 capacity type= 1 ifChargeSet: [263]
+(4,3)->(4,4)->(2,8)->charge(2,9)->(3,13)->(4,3):1.0
+Fix cost= 150 variable cost= 57
+
+artificial: false edgeIndexset: [291, 292, 136, 8, 282, 283, 284, 270] start node= 4 start time= 6 capacity type= 1 ifChargeSet: []
+(3,0)->(3,1)->(4,6)->(4,7)->(4,8)->(3,12)->(3,13)->(3,14)->(3,0):1.0
+Fix cost= 150 variable cost= 36
+
+artificial: false edgeIndexset: [257, 213, 297, 28, 142] start node= 4 start time= 12 capacity type= 1 ifChargeSet: [257]
+(2,2)->charge(2,3)->(3,7)->(4,12)->(4,13)->(2,2):1.0
+Fix cost= 150 variable cost= 57
+
+artificial: false edgeIndexset: [240, 49, 241, 242, 243, 294, 295, 206] start node= 4 start time= 9 capacity type= 1 ifChargeSet: []
+(1,0)->(1,1)->(1,2)->(1,3)->(1,4)->(4,9)->(4,10)->(4,11)->(1,0):1.0
+Fix cost= 150 variable cost= 36
+
+fix cost+variable cost+commodity cost= 4150+1166+11216.0=16532.0
+
+vehicle dowork= 12510 commodity dowork= 11216.0
+no load ratio= 0.10343725019984013
+
+Total vehicles used= 27
+
+vehicleCoverServiceEdge information:
+{128=1, 1=1, 130=2, 133=1, 136=1, 8=1, 139=1, 140=1, 142=1, 19=1, 148=1, 150=1, 153=1, 25=1, 154=1, 155=1, 156=1, 28=1, 30=1, 160=1, 162=1, 166=3, 39=2, 44=1, 177=1, 49=1, 182=4, 55=1, 66=1, 195=1, 71=3, 200=1, 201=1, 203=1, 205=1, 206=1, 208=1, 82=1, 210=1, 85=1, 213=1, 219=1, 223=4, 95=2, 104=1, 107=2, 123=2, 124=1, 126=1}
+
+commodityFlowIntoTerminal information:
+20 0 0 50 50 0 50 50 50 50 99 0 0 50 0 
+95 0 0 0 187 50 0 0 0 50 19 0 20 0 150 
+43 0 0 0 0 0 0 174 50 0 0 0 50 0 11 
+0 150 80 0 50 50 0 50 0 0 0 50 50 50 0 
+107 0 0 100 0 0 50 0 70 150 50 49 50 26 0 
+
+vehicle pattern information:
+[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1]
+[0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 1, 0]
+[0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0]
+[0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0]
+[0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0]
+[0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
+[0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0]
+[1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0]
+[0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0]
+x[0]:2,3->3,7= 21.0 4
+total cost= 84.0
+
+x[1]:1,4->4,9= 10.0 5
+x[1]:1,10->4,0= 7.0 5
+total cost= 85.0
+
+x[2]:4,5->1,9= 2.0 4
+x[2]:4,11->1,0= 27.0 4
+total cost= 116.0
+
+x[3]:4,14->0,4= 27.0 5
+total cost= 135.0
+
+x[4]:0,13->4,3= 15.0 5
+x[4]:4,5->1,9= 15.0 4
+total cost= 135.0
+
+x[5]:3,2->2,7= 20.0 5
+total cost= 100.0
+
+x[6]:0,10->2,0= 16.0 5
+total cost= 80.0
+
+x[7]:3,1->1,4= 15.0 3
+total cost= 45.0
+
+x[8]:1,6->3,11= 2.0 5
+x[8]:1,11->3,1= 20.0 5
+total cost= 110.0
+
+x[9]:1,0->0,3= 14.0 3
+x[9]:3,12->1,0= 14.0 3
+total cost= 84.0
+
+x[10]:4,5->0,10= 24.0 5
+x[10]:4,14->0,4= 4.0 5
+total cost= 140.0
+
+x[11]:0,7->2,12= 27.0 5
+total cost= 135.0
+
+x[12]:2,9->1,14= 18.0 5
+x[12]:2,14->1,4= 9.0 5
+total cost= 135.0
+
+x[13]:2,0->3,4= 29.0 4
+total cost= 116.0
+
+x[14]:2,9->1,14= 16.0 5
+total cost= 80.0
+
+x[15]:4,5->0,10= 18.0 5
+total cost= 90.0
+
+x[16]:1,4->0,7= 22.0 3
+x[16]:2,9->1,14= 22.0 5
+total cost= 176.0
+
+x[17]:4,4->2,8= 24.0 4
+total cost= 96.0
+
+x[18]:2,13->3,2= 15.0 4
+total cost= 60.0
+
+x[19]:1,6->0,9= 29.0 3
+x[19]:2,0->1,5= 6.0 5
+x[19]:2,14->1,4= 23.0 5
+total cost= 232.0
+
+x[20]:1,11->3,1= 21.0 5
+total cost= 105.0
+
+x[21]:1,3->0,6= 4.0 3
+x[21]:1,6->0,9= 21.0 3
+total cost= 75.0
+
+x[22]:0,13->4,3= 19.0 5
+x[22]:0,4->4,9= 3.0 5
+total cost= 110.0
+
+x[23]:0,7->2,12= 4.0 5
+x[23]:0,10->2,0= 23.0 5
+total cost= 135.0
+
+x[24]:1,10->4,0= 26.0 5
+total cost= 130.0
+
+x[25]:3,7->4,12= 26.0 5
+total cost= 130.0
+
+x[26]:3,1->1,4= 22.0 3
+total cost= 66.0
+
+x[27]:0,13->4,3= 3.0 5
+x[27]:0,6->4,11= 27.0 5
+total cost= 150.0
+
+x[28]:0,13->4,3= 13.0 5
+x[28]:4,5->1,9= 13.0 4
+total cost= 117.0
+
+x[29]:4,5->0,10= 29.0 5
+total cost= 145.0
+
+x[30]:3,2->2,7= 23.0 5
+total cost= 115.0
+
+x[31]:1,11->3,1= 12.0 5
+total cost= 60.0
+
+x[32]:4,5->0,10= 10.0 5
+total cost= 50.0
+
+x[33]:4,10->1,14= 16.0 4
+x[33]:0,3->4,8= 16.0 5
+total cost= 144.0
+
+x[34]:2,3->3,7= 28.0 4
+total cost= 112.0
+
+x[35]:1,11->3,1= 11.0 5
+total cost= 55.0
+
+x[36]:1,11->3,1= 23.0 5
+total cost= 115.0
+
+x[37]:1,5->0,8= 13.0 3
+x[37]:2,14->1,4= 13.0 5
+total cost= 104.0
+
+x[38]:0,8->4,13= 26.0 5
+total cost= 130.0
+
+x[39]:4,6->1,10= 12.0 4
+total cost= 48.0
+
+x[40]:4,1->3,5= 30.0 4
+total cost= 120.0
+
+x[41]:2,0->3,4= 3.0 4
+x[41]:2,9->3,13= 6.0 4
+x[41]:2,13->3,2= 2.0 4
+total cost= 44.0
+
+x[42]:1,5->0,8= 30.0 3
+x[42]:3,1->1,4= 30.0 3
+total cost= 180.0
+
+x[43]:2,3->3,7= 1.0 4
+x[43]:2,9->3,13= 14.0 4
+total cost= 60.0
+
+x[44]:1,0->0,3= 29.0 3
+x[44]:2,9->1,14= 29.0 5
+total cost= 232.0
+
+x[45]:3,5->4,10= 20.0 5
+total cost= 100.0
+
+x[46]:1,4->4,9= 21.0 5
+total cost= 105.0
+
+x[47]:4,8->3,12= 30.0 4
+x[47]:0,3->4,8= 30.0 5
+total cost= 270.0
+
+x[48]:1,3->0,6= 19.0 3
+total cost= 57.0
+
+x[49]:4,10->1,14= 17.0 4
+x[49]:4,11->1,0= 13.0 4
+x[49]:0,4->4,9= 30.0 5
+total cost= 270.0
+
+x[50]:1,11->3,1= 11.0 5
+total cost= 55.0
+
+x[51]:1,2->2,7= 12.0 5
+total cost= 60.0
+
+x[52]:2,9->1,14= 15.0 5
+total cost= 75.0
+
+x[53]:1,3->0,6= 8.0 3
+x[53]:1,4->0,7= 8.0 3
+x[53]:1,5->0,8= 5.0 3
+total cost= 63.0
+
+x[54]:1,11->3,1= 26.0 5
+total cost= 130.0
+
+x[55]:2,0->1,5= 27.0 5
+total cost= 135.0
+
+x[56]:3,1->4,6= 28.0 5
+total cost= 140.0
+
+x[57]:4,8->1,12= 6.0 4
+x[57]:4,10->1,14= 17.0 4
+x[57]:0,3->4,8= 6.0 5
+x[57]:0,4->4,9= 17.0 5
+total cost= 207.0
+
+x[58]:3,4->4,9= 24.0 5
+x[58]:1,4->4,9= 3.0 5
+x[58]:3,12->1,0= 3.0 3
+total cost= 144.0
+
+x[59]:1,6->3,11= 10.0 5
+x[59]:1,2->2,7= 8.0 5
+x[59]:2,9->3,13= 8.0 4
+total cost= 122.0
+
+x[60]:0,10->4,0= 15.0 5
+x[60]:4,0->1,4= 15.0 4
+total cost= 135.0
+
+x[61]:1,2->2,7= 12.0 5
+total cost= 60.0
+
+x[62]:3,13->4,3= 22.0 5
+x[62]:2,9->3,13= 22.0 4
+total cost= 198.0
+
+x[63]:0,10->4,0= 22.0 5
+x[63]:0,3->4,8= 8.0 5
+total cost= 150.0
+
+x[64]:1,5->0,8= 2.0 3
+x[64]:1,10->0,13= 28.0 3
+total cost= 90.0
+
+x[65]:1,0->0,3= 7.0 3
+x[65]:1,3->0,6= 17.0 3
+total cost= 72.0
+
+x[66]:4,8->1,12= 14.0 4
+total cost= 56.0
+
+x[67]:4,14->0,4= 19.0 5
+total cost= 95.0
+
+x[68]:1,4->4,9= 11.0 5
+total cost= 55.0
+
+x[69]:4,4->2,8= 2.0 4
+x[69]:4,10->2,14= 11.0 4
+total cost= 52.0
+
+x[70]:1,2->2,7= 28.0 5
+x[70]:3,12->1,0= 28.0 3
+total cost= 224.0
+
+x[71]:4,4->2,8= 24.0 4
+total cost= 96.0
+
+x[72]:3,4->4,9= 24.0 5
+total cost= 120.0
+
+x[73]:2,0->3,4= 14.0 4
+total cost= 56.0
+
+x[74]:3,13->4,3= 20.0 5
+total cost= 100.0
+
+x[75]:2,13->3,2= 22.0 4
+total cost= 88.0
+
+x[76]:1,6->3,11= 26.0 5
+total cost= 130.0
+
+x[77]:1,11->3,1= 26.0 5
+total cost= 130.0
+
+x[78]:1,6->3,11= 12.0 5
+total cost= 60.0
+
+x[79]:3,2->2,7= 23.0 5
+total cost= 115.0
+
+x[80]:4,0->1,4= 13.0 4
+x[80]:4,6->1,10= 7.0 4
+x[80]:4,11->1,0= 10.0 4
+total cost= 120.0
+
+x[81]:3,5->4,10= 14.0 5
+x[81]:2,14->1,4= 5.0 5
+x[81]:1,4->4,9= 5.0 5
+x[81]:2,13->3,2= 14.0 4
+total cost= 176.0
+
+x[82]:1,4->0,7= 20.0 3
+x[82]:3,1->1,4= 20.0 3
+total cost= 120.0
+
+x[83]:4,5->0,10= 18.0 5
+total cost= 90.0
+
+x[84]:1,2->2,7= 11.0 5
+total cost= 55.0
+
+x[85]:4,8->3,12= 10.0 4
+x[85]:0,3->4,8= 10.0 5
+total cost= 90.0
+
+x[86]:4,0->1,4= 22.0 4
+x[86]:0,6->4,11= 22.0 5
+total cost= 198.0
+
+x[87]:1,10->0,13= 22.0 3
+total cost= 66.0
+
+x[88]:3,5->4,10= 5.0 5
+x[88]:3,7->4,12= 24.0 5
+total cost= 145.0
+
+x[89]:3,4->4,9= 2.0 5
+x[89]:3,5->4,10= 11.0 5
+total cost= 65.0
+
+x[90]:3,2->2,7= 14.0 5
+total cost= 70.0
+
+x[91]:3,1->4,6= 22.0 5
+x[91]:3,13->4,3= 8.0 5
+total cost= 150.0
+
+x[92]:4,1->3,5= 20.0 4
+x[92]:0,10->4,0= 20.0 5
+x[92]:2,0->3,4= 4.0 4
+x[92]:0,10->2,0= 4.0 5
+total cost= 216.0
+
+x[93]:1,3->0,6= 2.0 3
+x[93]:1,12->0,0= 20.0 3
+total cost= 66.0
+
+x[94]:2,13->3,2= 27.0 4
+total cost= 108.0
+
+x[95]:0,7->2,12= 19.0 5
+total cost= 95.0
+
+x[96]:1,2->2,7= 23.0 5
+total cost= 115.0
+
+x[97]:2,0->1,5= 17.0 5
+x[97]:1,10->4,0= 17.0 5
+total cost= 170.0
+
+x[98]:4,5->1,9= 20.0 4
+total cost= 80.0
+
+x[99]:4,8->3,12= 10.0 4
+total cost= 40.0
+

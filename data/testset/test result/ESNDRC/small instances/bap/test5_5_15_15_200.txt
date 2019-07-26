@@ -1,0 +1,1769 @@
+number of service arcs=225
+number of holding arcs=75
+
+root node bound= 32853.799999999996
+artificial: false edgeIndexset: [35, 105, 250, 251, 252, 253, 254] start node= 1 start time= 10 capacity type= 1 ifChargeSet: []
+(1,0)->(2,5)->(1,10)->(1,11)->(1,12)->(1,13)->(1,14)->(1,0):1.1
+
+artificial: false edgeIndexset: [240, 36, 106, 251, 252, 253, 254] start node= 1 start time= 11 capacity type= 1 ifChargeSet: []
+(1,0)->(1,1)->(2,6)->(1,11)->(1,12)->(1,13)->(1,14)->(1,0):0.36
+
+artificial: false edgeIndexset: [240, 241, 242, 243, 39, 109, 254] start node= 1 start time= 14 capacity type= 1 ifChargeSet: []
+(1,0)->(1,1)->(1,2)->(1,3)->(1,4)->(2,9)->(1,14)->(1,0):0.14
+
+artificial: false edgeIndexset: [241, 178, 242, 263, 219, 108] start node= 1 start time= 1 capacity type= 1 ifChargeSet: []
+(1,1)->(1,2)->(1,3)->(2,8)->(2,9)->(3,13)->(1,1):1.52
+
+artificial: false edgeIndexset: [242, 179, 263, 264, 220, 108] start node= 1 start time= 2 capacity type= 1 ifChargeSet: []
+(1,2)->(1,3)->(2,8)->(2,9)->(2,10)->(3,14)->(1,2):0.42
+
+artificial: false edgeIndexset: [243, 244, 165, 245, 221, 111] start node= 1 start time= 3 capacity type= 1 ifChargeSet: []
+(3,0)->(1,3)->(1,4)->(1,5)->(1,6)->(2,11)->(3,0):2.46
+
+artificial: false edgeIndexset: [244, 245, 166, 266, 222, 111] start node= 1 start time= 4 capacity type= 1 ifChargeSet: []
+(3,1)->(1,4)->(1,5)->(1,6)->(2,11)->(2,12)->(3,1):1.18
+
+artificial: false edgeIndexset: [245, 167, 266, 267, 223, 111] start node= 1 start time= 5 capacity type= 1 ifChargeSet: []
+(3,2)->(1,5)->(1,6)->(2,11)->(2,12)->(2,13)->(3,2):0.26
+
+artificial: false edgeIndexset: [224, 168, 266, 267, 268, 111] start node= 1 start time= 6 capacity type= 1 ifChargeSet: []
+(3,3)->(1,6)->(2,11)->(2,12)->(2,13)->(2,14)->(3,3):0.98
+
+artificial: false edgeIndexset: [210, 115, 247, 248, 169, 249] start node= 1 start time= 7 capacity type= 1 ifChargeSet: []
+(2,0)->(3,4)->(1,7)->(1,8)->(1,9)->(1,10)->(2,0):3.32
+
+artificial: false edgeIndexset: [211, 116, 248, 249, 170, 250] start node= 1 start time= 8 capacity type= 1 ifChargeSet: []
+(2,1)->(3,5)->(1,8)->(1,9)->(1,10)->(1,11)->(2,1):2.04
+
+artificial: false edgeIndexset: [212, 117, 249, 250, 171, 251] start node= 1 start time= 9 capacity type= 1 ifChargeSet: []
+(2,2)->(3,6)->(1,9)->(1,10)->(1,11)->(1,12)->(2,2):2.64
+
+artificial: false edgeIndexset: [213, 118, 250, 251, 172, 252] start node= 1 start time= 10 capacity type= 1 ifChargeSet: []
+(2,3)->(3,7)->(1,10)->(1,11)->(1,12)->(1,13)->(2,3):1.54
+
+artificial: false edgeIndexset: [259, 215, 119, 252, 253, 174] start node= 1 start time= 12 capacity type= 1 ifChargeSet: []
+(2,4)->(2,5)->(3,9)->(1,12)->(1,13)->(1,14)->(2,4):0.36
+
+artificial: false edgeIndexset: [176, 259, 260, 261, 119, 217] start node= 1 start time= 14 capacity type= 1 ifChargeSet: []
+(2,4)->(2,5)->(2,6)->(2,7)->(3,11)->(1,14)->(2,4):1.02
+
+artificial: false edgeIndexset: [130, 198, 157, 285, 286, 287] start node= 4 start time= 0 capacity type= 1 ifChargeSet: []
+(4,0)->(4,1)->(4,2)->(4,3)->(1,7)->(0,10)->(4,0):0.5
+
+artificial: false edgeIndexset: [288, 131, 199, 158, 286, 287] start node= 4 start time= 1 capacity type= 1 ifChargeSet: []
+(4,1)->(4,2)->(4,3)->(4,4)->(1,8)->(0,11)->(4,1):0.98
+
+artificial: false edgeIndexset: [288, 289, 132, 200, 159, 287] start node= 4 start time= 2 capacity type= 1 ifChargeSet: []
+(4,2)->(4,3)->(4,4)->(4,5)->(1,9)->(0,12)->(4,2):0.38
+
+artificial: false edgeIndexset: [160, 288, 289, 290, 133, 201] start node= 4 start time= 3 capacity type= 1 ifChargeSet: []
+(4,3)->(4,4)->(4,5)->(4,6)->(1,10)->(0,13)->(4,3):0.31
+
+artificial: false edgeIndexset: [162, 290, 291, 292, 120, 203] start node= 4 start time= 5 capacity type= 1 ifChargeSet: []
+(0,0)->(4,5)->(4,6)->(4,7)->(4,8)->(1,12)->(0,0):0.02999999999999997
+
+artificial: false edgeIndexset: [208, 295, 152, 296, 297, 125] start node= 4 start time= 10 capacity type= 1 ifChargeSet: []
+(1,2)->(0,5)->(4,10)->(4,11)->(4,12)->(4,13)->(1,2):0.13999999999999999
+
+artificial: false edgeIndexset: [195, 297, 154, 298, 299, 127] start node= 4 start time= 12 capacity type= 1 ifChargeSet: []
+(4,0)->(1,4)->(0,7)->(4,12)->(4,13)->(4,14)->(4,0):0.42
+
+artificial: false edgeIndexset: [129, 197, 299, 156, 285, 286] start node= 4 start time= 14 capacity type= 1 ifChargeSet: []
+(4,0)->(4,1)->(4,2)->(1,6)->(0,9)->(4,14)->(4,0):0.12
+
+artificial: false edgeIndexset: [145, 65, 195, 244] start node= 4 start time= 0 capacity type= 1 ifChargeSet: [244]
+(4,0)->(1,4)->charge(1,5)->(3,10)->(4,0):0.54
+
+artificial: false edgeIndexset: [146, 66, 196, 245] start node= 4 start time= 1 capacity type= 1 ifChargeSet: [245]
+(4,1)->(1,5)->charge(1,6)->(3,11)->(4,1):0.97
+
+artificial: false edgeIndexset: [147, 67, 197, 246] start node= 4 start time= 2 capacity type= 1 ifChargeSet: [246]
+(4,2)->(1,6)->charge(1,7)->(3,12)->(4,2):0.74
+
+artificial: false edgeIndexset: [148, 68, 198, 247] start node= 4 start time= 3 capacity type= 1 ifChargeSet: [247]
+(4,3)->(1,7)->charge(1,8)->(3,13)->(4,3):0.37
+
+artificial: false edgeIndexset: [149, 69, 199, 248] start node= 4 start time= 4 capacity type= 1 ifChargeSet: [248]
+(4,4)->(1,8)->charge(1,9)->(3,14)->(4,4):0.98
+
+artificial: false edgeIndexset: [70, 135, 200, 249] start node= 4 start time= 5 capacity type= 1 ifChargeSet: [249]
+(3,0)->(4,5)->(1,9)->charge(1,10)->(3,0):1.0
+
+artificial: false edgeIndexset: [71, 136, 201, 250] start node= 4 start time= 6 capacity type= 1 ifChargeSet: [250]
+(3,1)->(4,6)->(1,10)->charge(1,11)->(3,1):1.0
+
+artificial: false edgeIndexset: [72, 137, 202, 251] start node= 4 start time= 7 capacity type= 1 ifChargeSet: [251]
+(3,2)->(4,7)->(1,11)->charge(1,12)->(3,2):0.8900000000000001
+
+artificial: false edgeIndexset: [73, 138, 203, 252] start node= 4 start time= 8 capacity type= 1 ifChargeSet: [252]
+(3,3)->(4,8)->(1,12)->charge(1,13)->(3,3):1.0
+
+artificial: false edgeIndexset: [74, 139, 204, 253] start node= 4 start time= 9 capacity type= 1 ifChargeSet: [253]
+(3,4)->(4,9)->(1,13)->charge(1,14)->(3,4):1.0
+
+artificial: false edgeIndexset: [140, 60, 205, 254] start node= 4 start time= 10 capacity type= 1 ifChargeSet: [254]
+(1,0)->(3,5)->(4,10)->(1,14)->charge(1,0):0.97
+
+artificial: false edgeIndexset: [240, 141, 61, 206] start node= 4 start time= 11 capacity type= 1 ifChargeSet: [240]
+(1,0)->charge(1,1)->(3,6)->(4,11)->(1,0):1.0
+
+artificial: false edgeIndexset: [241, 142, 62, 207] start node= 4 start time= 12 capacity type= 1 ifChargeSet: [241]
+(1,1)->charge(1,2)->(3,7)->(4,12)->(1,1):0.92
+
+artificial: false edgeIndexset: [208, 242, 143, 63] start node= 4 start time= 13 capacity type= 1 ifChargeSet: [242]
+(1,2)->charge(1,3)->(3,8)->(4,13)->(1,2):0.78
+
+artificial: false edgeIndexset: [144, 64, 209, 243] start node= 4 start time= 14 capacity type= 1 ifChargeSet: [243]
+(1,3)->charge(1,4)->(3,9)->(4,14)->(1,3):0.96
+
+artificial: false edgeIndexset: [128, 230, 231, 232, 298, 90, 299] start node= 4 start time= 0 capacity type= 1 ifChargeSet: []
+(4,0)->(0,5)->(0,6)->(0,7)->(0,8)->(4,13)->(4,14)->(4,0):0.76
+
+artificial: false edgeIndexset: [128, 298, 299, 285, 93, 286, 287] start node= 4 start time= 1 capacity type= 1 ifChargeSet: []
+(4,0)->(4,1)->(4,2)->(4,3)->(0,8)->(4,13)->(4,14)->(4,0):1.76
+
+artificial: false edgeIndexset: [289, 290, 99, 291, 292, 293, 134] start node= 4 start time= 4 capacity type= 1 ifChargeSet: []
+(4,4)->(4,5)->(4,6)->(4,7)->(4,8)->(4,9)->(0,14)->(4,4):2.44
+
+artificial: false edgeIndexset: [290, 291, 100, 292, 293, 294, 120] start node= 4 start time= 5 capacity type= 1 ifChargeSet: []
+(0,0)->(4,5)->(4,6)->(4,7)->(4,8)->(4,9)->(4,10)->(0,0):1.9500000000000002
+
+artificial: false edgeIndexset: [291, 292, 101, 293, 294, 295, 121] start node= 4 start time= 6 capacity type= 1 ifChargeSet: []
+(0,1)->(4,6)->(4,7)->(4,8)->(4,9)->(4,10)->(4,11)->(0,1):1.78
+
+artificial: false edgeIndexset: [292, 293, 102, 294, 295, 296, 122] start node= 4 start time= 7 capacity type= 1 ifChargeSet: []
+(0,2)->(4,7)->(4,8)->(4,9)->(4,10)->(4,11)->(4,12)->(0,2):1.28
+
+artificial: false edgeIndexset: [293, 294, 103, 295, 296, 297, 123] start node= 4 start time= 8 capacity type= 1 ifChargeSet: []
+(0,3)->(4,8)->(4,9)->(4,10)->(4,11)->(4,12)->(4,13)->(0,3):0.9
+
+artificial: false edgeIndexset: [228, 294, 103, 295, 296, 297, 124] start node= 4 start time= 9 capacity type= 1 ifChargeSet: []
+(0,3)->(0,4)->(4,9)->(4,10)->(4,11)->(4,12)->(4,13)->(0,3):0.54
+
+artificial: false edgeIndexset: [295, 296, 297, 90, 298, 299, 125] start node= 4 start time= 10 capacity type= 1 ifChargeSet: []
+(4,0)->(0,5)->(4,10)->(4,11)->(4,12)->(4,13)->(4,14)->(4,0):1.15
+
+artificial: false edgeIndexset: [230, 296, 297, 90, 298, 299, 126] start node= 4 start time= 11 capacity type= 1 ifChargeSet: []
+(4,0)->(0,5)->(0,6)->(4,11)->(4,12)->(4,13)->(4,14)->(4,0):0.56
+
+artificial: false edgeIndexset: [292, 293, 294, 295, 296, 137, 297, 13] start node= 4 start time= 7 capacity type= 1 ifChargeSet: []
+(3,2)->(4,7)->(4,8)->(4,9)->(4,10)->(4,11)->(4,12)->(4,13)->(3,2):0.21999999999999975
+
+x[0]:4,0->0,5= 12.0 5
+
+x[1]:4,0->0,5= 13.0 5
+
+x[2]:2,2->3,6= 11.0 4
+
+x[3]:2,12->3,1= 11.0 4
+
+x[4]:2,0->3,4= 9.0 4
+x[4]:2,5->3,9= 18.0 4
+
+x[5]:4,9->0,14= 20.0 5
+
+x[6]:1,3->2,8= 23.0 5
+
+x[7]:2,0->3,4= 28.0 4
+
+x[8]:3,8->4,13= 21.0 5
+
+x[9]:2,12->3,1= 11.0 4
+
+x[10]:0,14->4,4= 11.0 5
+x[10]:4,4->1,8= 11.0 4
+
+x[11]:2,0->3,4= 21.0 4
+
+x[12]:1,1->2,6= 18.0 5
+
+x[13]:3,0->4,5= 18.0 5
+
+x[14]:4,11->0,1= 30.0 5
+
+x[15]:4,13->0,3= 19.0 5
+
+x[16]:1,4->2,9= 7.0 5
+x[16]:1,14->2,4= 10.0 5
+
+x[17]:1,0->2,5= 23.0 5
+
+x[18]:4,5->1,9= 10.0 4
+x[18]:4,11->1,0= 11.0 4
+x[18]:0,0->4,5= 21.0 5
+
+x[19]:1,0->2,5= 14.0 5
+
+x[20]:1,12->2,2= 13.0 5
+
+x[21]:1,12->2,2= 13.0 5
+
+x[22]:3,12->4,2= 13.0 5
+
+x[23]:4,11->1,0= 20.0 4
+x[23]:0,5->4,10= 20.0 5
+
+x[24]:4,12->1,1= 21.0 4
+x[24]:0,7->4,12= 21.0 5
+
+x[25]:3,11->4,1= 20.0 5
+
+x[26]:2,1->3,5= 6.0 4
+x[26]:2,11->3,0= 17.0 4
+
+x[27]:1,0->2,5= 18.0 5
+
+x[28]:1,10->2,0= 15.0 5
+
+x[29]:1,13->2,3= 21.0 5
+
+x[30]:4,10->1,14= 24.0 4
+x[30]:0,3->4,8= 24.0 5
+
+x[31]:4,8->1,12= 21.0 4
+x[31]:0,1->4,6= 21.0 5
+
+x[32]:3,2->4,7= 1.0 5
+x[32]:3,10->4,0= 27.0 5
+
+x[33]:3,9->4,14= 27.0 5
+
+x[34]:2,3->3,7= 23.0 4
+
+x[35]:2,3->3,7= 30.0 4
+
+x[36]:1,10->2,0= 11.0 5
+
+x[37]:3,12->4,2= 24.0 5
+
+x[38]:0,11->4,1= 28.0 5
+x[38]:4,3->1,7= 28.0 4
+
+x[39]:4,11->0,1= 19.0 5
+
+x[40]:0,14->4,4= 17.5 5
+x[40]:4,4->1,8= 17.5 4
+x[40]:4,7->1,11= 1.5 4
+x[40]:0,1->4,6= 1.5 5
+
+x[41]:1,10->2,0= 23.0 5
+
+x[42]:2,11->3,0= 13.0 4
+
+x[43]:3,2->4,7= 1.0 5
+x[43]:3,4->4,9= 15.0 5
+
+x[44]:1,14->2,4= 29.0 5
+
+x[45]:1,13->2,3= 12.0 5
+
+x[46]:4,0->0,5= 25.0 5
+
+x[47]:2,14->3,3= 10.0 4
+
+x[48]:4,11->1,0= 11.0 4
+x[48]:0,5->4,10= 11.0 5
+
+x[49]:4,6->1,10= 20.0 4
+x[49]:0,1->4,6= 20.0 5
+
+x[50]:2,2->3,6= 30.0 4
+
+x[51]:3,3->4,8= 25.0 5
+
+x[52]:1,11->2,1= 29.0 5
+
+x[53]:2,1->3,5= 29.0 4
+
+x[54]:4,9->1,13= 6.5 4
+x[54]:4,12->1,1= 3.5 4
+x[54]:0,2->4,7= 6.5 5
+x[54]:0,5->4,10= 3.5 5
+
+x[55]:1,10->2,0= 20.0 5
+
+x[56]:3,5->4,10= 11.0 5
+
+x[57]:0,14->4,4= 24.0 5
+x[57]:4,5->1,9= 24.0 4
+
+x[58]:4,6->1,10= 23.0 4
+x[58]:0,0->4,5= 23.0 5
+
+x[59]:2,12->3,1= 17.0 4
+
+x[60]:2,7->3,11= 21.0 4
+
+x[61]:3,8->4,13= 10.0 5
+
+x[62]:1,11->2,1= 26.0 5
+
+x[63]:4,10->0,0= 29.0 5
+
+x[64]:3,6->4,11= 14.5 5
+x[64]:3,13->4,3= 4.5 5
+
+x[65]:4,9->1,13= 2.5 4
+x[65]:4,10->1,14= 24.5 4
+x[65]:0,4->4,9= 27.0 5
+
+x[66]:4,3->0,8= 26.0 5
+
+x[67]:1,10->2,0= 10.0 5
+
+x[68]:4,0->0,5= 18.0 5
+
+x[69]:0,8->4,13= 18.0 5
+x[69]:4,13->1,2= 18.0 4
+
+x[70]:4,7->1,11= 15.0 4
+x[70]:0,2->4,7= 15.0 5
+
+x[71]:1,6->2,11= 20.0 5
+
+x[72]:0,10->4,0= 25.0 5
+x[72]:4,0->1,4= 25.0 4
+
+x[73]:1,3->2,8= 25.0 5
+
+x[74]:2,11->3,0= 22.0 4
+
+x[75]:1,11->2,1= 10.0 5
+
+x[76]:2,3->3,7= 3.0 4
+x[76]:2,13->3,2= 13.0 4
+
+x[77]:1,13->2,3= 29.0 5
+
+x[78]:0,8->4,13= 13.0 5
+x[78]:4,2->1,6= 13.0 4
+
+x[79]:0,12->4,2= 19.0 5
+x[79]:4,2->1,6= 19.0 4
+
+x[80]:0,11->4,1= 21.0 5
+x[80]:4,1->1,5= 21.0 4
+
+x[81]:4,6->1,10= 15.0 4
+x[81]:4,11->1,0= 8.0 4
+x[81]:0,1->4,6= 23.0 5
+
+x[82]:4,0->0,5= 22.0 5
+
+x[83]:2,1->3,5= 25.0 4
+
+x[84]:4,9->0,14= 29.0 5
+
+x[85]:1,6->2,11= 18.0 5
+x[85]:1,14->2,4= 3.0 5
+
+x[86]:3,2->4,7= 10.5 5
+x[86]:3,11->4,1= 16.5 5
+
+x[87]:4,10->0,0= 29.0 5
+
+x[88]:3,9->4,14= 21.0 5
+
+x[89]:1,3->2,8= 21.0 5
+
+x[90]:0,8->4,13= 11.0 5
+x[90]:4,2->1,6= 11.0 4
+
+x[91]:3,4->4,9= 26.0 5
+
+x[92]:2,7->3,11= 30.0 4
+
+x[93]:3,14->4,4= 20.0 5
+
+x[94]:1,11->2,1= 16.0 5
+
+x[95]:3,0->4,5= 17.0 5
+
+x[96]:0,8->4,13= 10.0 5
+x[96]:4,13->1,2= 10.0 4
+
+x[97]:1,6->2,11= 16.0 5
+
+x[98]:4,3->0,8= 11.0 5
+
+x[99]:4,9->1,13= 21.0 4
+x[99]:0,3->4,8= 21.0 5
+
+x[100]:3,6->4,11= 11.0 5
+
+x[101]:3,14->4,4= 26.0 5
+
+x[102]:4,11->0,1= 16.0 5
+
+x[103]:4,11->0,1= 13.0 5
+
+x[104]:1,12->2,2= 15.0 5
+
+x[105]:0,8->4,13= 23.0 5
+x[105]:4,0->1,4= 23.0 4
+
+x[106]:2,1->3,5= 21.0 4
+
+x[107]:4,12->1,1= 19.0 4
+x[107]:4,14->1,3= 9.0 4
+x[107]:0,6->4,11= 28.0 5
+
+x[108]:2,0->3,4= 26.0 4
+
+x[109]:1,11->2,1= 21.0 5
+
+x[110]:2,9->3,13= 16.0 4
+
+x[111]:4,3->0,8= 14.0 5
+
+x[112]:0,14->4,4= 22.0 5
+x[112]:4,4->1,8= 22.0 4
+
+x[113]:3,2->4,7= 18.0 5
+
+x[114]:2,11->3,0= 19.0 4
+
+x[115]:1,10->2,0= 24.0 5
+
+x[116]:1,12->2,2= 29.0 5
+
+x[117]:4,9->0,14= 20.0 5
+
+x[118]:3,0->4,5= 15.0 5
+x[118]:3,4->4,9= 9.0 5
+
+x[119]:4,3->0,8= 14.0 5
+
+x[120]:2,12->3,1= 20.0 4
+
+x[121]:1,6->2,11= 25.0 5
+
+x[122]:1,10->2,0= 18.0 5
+
+x[123]:4,12->0,2= 19.0 5
+
+x[124]:2,10->3,14= 21.0 4
+
+x[125]:1,14->2,4= 27.0 5
+
+x[126]:4,7->1,11= 14.500000000000002 4
+x[126]:4,8->1,12= 14.499999999999998 4
+x[126]:0,2->4,7= 29.0 5
+
+x[127]:4,3->0,8= 23.0 5
+
+x[128]:2,14->3,3= 14.0 4
+
+x[129]:4,13->0,3= 19.0 5
+
+x[130]:4,6->1,10= 7.5 4
+x[130]:4,7->1,11= 13.5 4
+x[130]:0,1->4,6= 7.5 5
+x[130]:0,2->4,7= 13.5 5
+
+x[131]:3,5->4,10= 20.0 5
+
+x[132]:2,3->3,7= 21.0 4
+
+x[133]:2,11->3,0= 20.0 4
+
+x[134]:4,9->0,14= 15.0 5
+
+x[135]:0,8->4,13= 16.0 5
+x[135]:0,9->4,14= 6.0 5
+x[135]:4,14->1,3= 22.0 4
+
+x[136]:2,2->3,6= 22.0 4
+
+x[137]:4,5->1,9= 17.0 4
+x[137]:0,0->4,5= 17.0 5
+
+x[138]:4,11->0,1= 11.0 5
+
+x[139]:4,10->0,0= 17.0 5
+
+x[140]:4,9->0,14= 6.5 5
+x[140]:4,10->0,0= 6.5 5
+
+x[141]:0,8->4,13= 18.0 5
+x[141]:4,13->1,2= 18.0 4
+
+x[142]:0,8->4,13= 17.0 5
+x[142]:4,14->1,3= 17.0 4
+
+x[143]:4,8->1,12= 16.0 4
+x[143]:0,1->4,6= 16.0 5
+
+x[144]:3,1->4,6= 3.0 5
+x[144]:3,3->4,8= 25.0 5
+
+x[145]:3,8->4,13= 8.0 5
+x[145]:3,14->4,4= 3.0 5
+
+x[146]:1,10->2,0= 23.0 5
+
+x[147]:2,0->3,4= 10.0 4
+
+x[148]:4,9->1,13= 20.0 4
+x[148]:0,0->4,5= 20.0 5
+
+x[149]:2,9->3,13= 21.0 4
+
+x[150]:2,9->3,13= 24.0 4
+
+x[151]:3,13->4,3= 14.0 5
+
+x[152]:2,11->3,0= 18.0 4
+
+x[153]:4,13->0,3= 12.0 5
+
+x[154]:2,0->3,4= 26.0 4
+
+x[155]:1,12->2,2= 24.0 5
+
+x[156]:1,3->2,8= 28.0 5
+
+x[157]:1,6->2,11= 20.0 5
+
+x[158]:2,14->3,3= 11.0 4
+
+x[159]:4,10->0,0= 16.0 5
+
+x[160]:3,5->4,10= 17.5 5
+x[160]:3,6->4,11= 12.5 5
+
+x[161]:4,1->1,5= 27.5 4
+x[161]:4,12->1,1= 2.5 4
+x[161]:0,5->4,10= 30.0 5
+
+x[162]:1,6->2,11= 19.0 5
+
+x[163]:4,13->0,3= 22.0 5
+
+x[164]:2,0->3,4= 13.0 4
+
+x[165]:3,2->4,7= 25.0 5
+
+x[166]:2,0->3,4= 17.0 4
+
+x[167]:2,0->3,4= 16.0 4
+
+x[168]:1,6->2,11= 24.0 5
+
+x[169]:1,12->2,2= 16.0 5
+
+x[170]:3,6->4,11= 12.0 5
+
+x[171]:2,2->3,6= 28.0 4
+
+x[172]:3,11->4,1= 12.0 5
+
+x[173]:2,2->3,6= 21.0 4
+
+x[174]:3,7->4,12= 20.0 5
+
+x[175]:2,14->3,3= 14.0 4
+
+x[176]:3,7->4,12= 26.0 5
+
+x[177]:4,12->0,2= 27.0 5
+
+x[178]:4,9->0,14= 24.0 5
+
+x[179]:0,14->4,4= 25.0 5
+x[179]:4,4->1,8= 25.0 4
+
+x[180]:4,5->1,9= 18.0 4
+x[180]:0,0->4,5= 18.0 5
+
+x[181]:1,13->2,3= 15.0 5
+
+x[182]:1,6->2,11= 21.0 5
+
+x[183]:4,12->0,2= 18.0 5
+
+x[184]:2,9->3,13= 15.0 4
+
+x[185]:1,6->2,11= 17.0 5
+
+x[186]:0,13->4,3= 15.5 5
+x[186]:0,14->4,4= 4.5 5
+x[186]:4,3->1,7= 15.5 4
+x[186]:4,4->1,8= 4.5 4
+
+x[187]:2,11->3,0= 14.0 4
+
+x[188]:3,1->4,6= 28.0 5
+
+x[189]:1,12->2,2= 15.0 5
+
+x[190]:4,0->0,5= 8.5 5
+x[190]:4,9->0,14= 7.5 5
+
+x[191]:2,2->3,6= 20.0 4
+
+x[192]:0,14->4,4= 18.0 5
+x[192]:4,4->1,8= 18.0 4
+
+x[193]:1,6->2,11= 23.0 5
+
+x[194]:1,10->2,0= 22.0 5
+
+x[195]:4,0->0,5= 25.0 5
+
+x[196]:1,6->2,11= 20.0 5
+x[196]:1,12->2,2= 7.0 5
+
+x[197]:1,6->2,11= 21.0 5
+
+x[198]:3,1->4,6= 19.0 5
+
+x[199]:2,1->3,5= 21.0 4
+
+End
+==================Intensification===================
+Tried aggregator 2 times.
+MIP Presolve eliminated 8779 rows and 6374 columns.
+Aggregator did 2554 substitutions.
+Reduced MIP has 4052 rows, 9651 columns, and 26361 nonzeros.
+Reduced MIP has 23 binaries, 50 generals, 0 SOSs, and 0 indicators.
+Presolve time = 0.09 sec. (22.82 ticks)
+Probing time = 0.02 sec. (0.39 ticks)
+Tried aggregator 2 times.
+MIP Presolve eliminated 225 rows and 560 columns.
+Aggregator did 3 substitutions.
+Reduced MIP has 3824 rows, 9088 columns, and 24823 nonzeros.
+Reduced MIP has 23 binaries, 50 generals, 0 SOSs, and 0 indicators.
+Presolve time = 0.05 sec. (13.27 ticks)
+Probing time = 0.00 sec. (0.38 ticks)
+Clique table members: 1.
+MIP emphasis: balance optimality and feasibility.
+MIP search method: dynamic search.
+Parallel mode: deterministic, using up to 4 threads.
+Root relaxation solution time = 0.25 sec. (94.70 ticks)
+
+        Nodes                                         Cuts/
+   Node  Left     Objective  IInf  Best Integer    Best Bound    ItCnt     Gap
+
+*     0+    0                        83466.0000    -2495.0000     2966  102.99%
+      0     0    32853.8000    35    83466.0000    32853.8000     2966   60.64%
+*     0+    0                        35882.0000    32853.8000     2966    8.44%
+      0     0    32853.8000    33    35882.0000     Cuts: 250     3105    8.44%
+      0     0    32853.8000    30    35882.0000     Cuts: 193     3241    8.44%
+*     0+    0                        34883.0000    32853.8000     3441    5.82%
+      0     0    32853.8000    37    34883.0000     Cuts: 168     3441    5.82%
+*     0+    0                        33172.0000    32853.8000     3441    0.96%
+      0     0    32853.8000    27    33172.0000     Cuts: 210     3632    0.96%
+*     0+    0                        32989.0000    32853.8000     3751    0.41%
+
+Implied bound cuts applied:  16
+Flow cuts applied:  7
+Mixed integer rounding cuts applied:  319
+Flow path cuts applied:  3
+Gomory fractional cuts applied:  8
+
+Root node processing (before b&c):
+  Real time             =    2.07 sec. (721.33 ticks)
+Parallel b&c, 4 threads:
+  Real time             =    0.00 sec. (0.00 ticks)
+  Sync time (average)   =    0.00 sec.
+  Wait time (average)   =    0.00 sec.
+                          ------------
+Total (root+branch&cut) =    2.07 sec. (721.33 ticks)
+We use intensification finding a better solution: 32989.0
+==================Intensification===================
+Tried aggregator 2 times.
+MIP Presolve eliminated 8565 rows and 5646 columns.
+Aggregator did 2448 substitutions.
+Reduced MIP has 4372 rows, 10491 columns, and 28570 nonzeros.
+Reduced MIP has 29 binaries, 50 generals, 0 SOSs, and 0 indicators.
+Presolve time = 0.09 sec. (23.25 ticks)
+Probing time = 0.02 sec. (0.44 ticks)
+Tried aggregator 1 time.
+MIP Presolve eliminated 251 rows and 625 columns.
+Reduced MIP has 4121 rows, 9866 columns, and 26871 nonzeros.
+Reduced MIP has 29 binaries, 50 generals, 0 SOSs, and 0 indicators.
+Presolve time = 0.05 sec. (13.01 ticks)
+Probing fixed 0 vars, tightened 16 bounds.
+Probing time = 0.02 sec. (0.53 ticks)
+Clique table members: 5.
+MIP emphasis: balance optimality and feasibility.
+MIP search method: dynamic search.
+Parallel mode: deterministic, using up to 4 threads.
+Root relaxation solution time = 0.34 sec. (134.30 ticks)
+
+        Nodes                                         Cuts/
+   Node  Left     Objective  IInf  Best Integer    Best Bound    ItCnt     Gap
+
+*     0+    0                        80018.0000    -2887.0000     3661  103.61%
+      0     0    32853.8000    35    80018.0000    32853.8000     3661   58.94%
+*     0+    0                        35791.0000    32853.8000     3661    8.21%
+*     0+    0                        35782.0000    32853.8000     3916    8.18%
+      0     0    32854.3261    36    35782.0000     Cuts: 275     3916    8.18%
+      0     0    32854.3261    29    35782.0000     Cuts: 226     4114    8.18%
+      0     0    32854.3261    29    35782.0000     Cuts: 137     4220    8.18%
+*     0+    0                        35242.0000    32854.3261     4220    6.78%
+*     0+    0                        33152.0000    32854.3261     4220    0.90%
+      0     0    32854.3261    30    33152.0000     Cuts: 147     4302    0.90%
+      0     2    32854.3261    30    33152.0000    32854.3261     4302    0.90%
+Elapsed time = 3.70 sec. (1397.19 ticks, tree = 0.01 MB, solutions = 5)
+     29    31    32854.3261    32    33152.0000    32854.3261     5389    0.90%
+     72    74    32854.8523    29    33152.0000    32854.3261     7963    0.90%
+*   151+  151                        33125.0000    32854.3261    12411    0.82%
+    151   153    32869.6904    24    33125.0000    32854.3261    12411    0.82%
+*   183+  183                        33065.0000    32854.3261    14412    0.64%
+*   278   273      integral     0    33004.0000    32854.3261    18369    0.45%
+
+Implied bound cuts applied:  17
+Flow cuts applied:  16
+Mixed integer rounding cuts applied:  133
+Lift and project cuts applied:  1
+Gomory fractional cuts applied:  3
+
+Root node processing (before b&c):
+  Real time             =    3.68 sec. (1394.82 ticks)
+Parallel b&c, 4 threads:
+  Real time             =    2.79 sec. (1151.96 ticks)
+  Sync time (average)   =    0.93 sec.
+  Wait time (average)   =    0.00 sec.
+                          ------------
+Total (root+branch&cut) =    6.48 sec. (2546.77 ticks)
+==================Intensification===================
+Tried aggregator 2 times.
+MIP Presolve eliminated 8464 rows and 5118 columns.
+Aggregator did 2338 substitutions.
+Reduced MIP has 4583 rows, 11142 columns, and 30329 nonzeros.
+Reduced MIP has 33 binaries, 59 generals, 0 SOSs, and 0 indicators.
+Presolve time = 0.08 sec. (23.59 ticks)
+Probing time = 0.00 sec. (0.47 ticks)
+Tried aggregator 2 times.
+MIP Presolve eliminated 259 rows and 648 columns.
+Aggregator did 1 substitutions.
+Reduced MIP has 4323 rows, 10493 columns, and 28574 nonzeros.
+Reduced MIP has 33 binaries, 59 generals, 0 SOSs, and 0 indicators.
+Presolve time = 0.05 sec. (15.72 ticks)
+Probing fixed 0 vars, tightened 16 bounds.
+Probing time = 0.02 sec. (0.58 ticks)
+Clique table members: 7.
+MIP emphasis: balance optimality and feasibility.
+MIP search method: dynamic search.
+Parallel mode: deterministic, using up to 4 threads.
+Root relaxation solution time = 0.36 sec. (156.12 ticks)
+
+        Nodes                                         Cuts/
+   Node  Left     Objective  IInf  Best Integer    Best Bound    ItCnt     Gap
+
+*     0+    0                        79018.0000    -1999.0000     4682  102.53%
+      0     0    32853.8000    37    79018.0000    32853.8000     4682   58.42%
+*     0+    0                        36289.0000    32853.8000     4682    9.47%
+      0     0    32853.8000    38    36289.0000     Cuts: 298     4891    9.47%
+*     0+    0                        33371.0000    32853.8000     4891    1.55%
+      0     0    32853.8000    30    33371.0000     Cuts: 291     5065    1.55%
+      0     0    32853.8000    28    33371.0000     Cuts: 142     5165    1.55%
+*     0+    0                        33072.0000    32853.8000     5165    0.66%
+      0     2    32853.8000    28    33072.0000    32853.8000     5165    0.66%
+Elapsed time = 2.64 sec. (939.36 ticks, tree = 0.01 MB, solutions = 4)
+     12    14    32853.8000    34    33072.0000    32853.8000     5347    0.66%
+     93    95    32866.7600    20    33072.0000    32853.8000     8574    0.66%
+    171   173    32861.7800    20    33072.0000    32853.8000    14084    0.66%
+    290   292    32913.9500    11    33072.0000    32853.8000    20840    0.66%
+*   296+  296                        32965.0000    32853.8000    21029    0.34%
+
+Implied bound cuts applied:  12
+Flow cuts applied:  16
+Mixed integer rounding cuts applied:  81
+Lift and project cuts applied:  1
+Gomory fractional cuts applied:  5
+
+Root node processing (before b&c):
+  Real time             =    2.61 sec. (936.53 ticks)
+Parallel b&c, 4 threads:
+  Real time             =    3.14 sec. (1332.32 ticks)
+  Sync time (average)   =    1.13 sec.
+  Wait time (average)   =    0.00 sec.
+                          ------------
+Total (root+branch&cut) =    5.74 sec. (2268.86 ticks)
+We use intensification finding a better solution: 32965.0
+==================Intensification===================
+Tried aggregator 2 times.
+MIP Presolve eliminated 8801 rows and 6521 columns.
+Aggregator did 2620 substitutions.
+Reduced MIP has 3964 rows, 9437 columns, and 25728 nonzeros.
+Reduced MIP has 28 binaries, 44 generals, 0 SOSs, and 0 indicators.
+Presolve time = 0.09 sec. (22.64 ticks)
+Probing time = 0.00 sec. (0.40 ticks)
+Tried aggregator 2 times.
+MIP Presolve eliminated 219 rows and 541 columns.
+Aggregator did 2 substitutions.
+Reduced MIP has 3743 rows, 8894 columns, and 24254 nonzeros.
+Reduced MIP has 28 binaries, 44 generals, 0 SOSs, and 0 indicators.
+Presolve time = 0.03 sec. (13.41 ticks)
+Probing fixed 0 vars, tightened 15 bounds.
+Probing time = 0.02 sec. (0.51 ticks)
+Clique table members: 6.
+MIP emphasis: balance optimality and feasibility.
+MIP search method: dynamic search.
+Parallel mode: deterministic, using up to 4 threads.
+Root relaxation solution time = 0.22 sec. (85.28 ticks)
+
+        Nodes                                         Cuts/
+   Node  Left     Objective  IInf  Best Integer    Best Bound    ItCnt     Gap
+
+*     0+    0                        84691.0000    -2492.0000     3130  102.94%
+      0     0    32856.6600    36    84691.0000    32856.6600     3130   61.20%
+*     0+    0                        35768.0000    32856.6600     3130    8.14%
+      0     0    32856.6600    33    35768.0000     Cuts: 268     3316    8.14%
+      0     0    32856.6600    33    35768.0000     Cuts: 239     3540    8.14%
+*     0+    0                        33945.0000    32856.6600     3540    3.21%
+*     0+    0                        33225.0000    32856.6600     3540    1.11%
+*     0+    0                        33065.0000    32856.6600     3540    0.63%
+      0     2    32856.6600    12    33065.0000    32856.6600     3540    0.63%
+Elapsed time = 2.84 sec. (1030.68 ticks, tree = 0.01 MB, solutions = 5)
+     86    88    32856.6600    16    33065.0000    32856.6600     7154    0.63%
+    290   284    32891.5600     7    33065.0000    32856.6600    13205    0.63%
+*   313   296      integral     0    32981.0000    32856.6600    13854    0.38%
+
+Implied bound cuts applied:  3
+Mixed integer rounding cuts applied:  7
+Flow path cuts applied:  1
+Lift and project cuts applied:  1
+
+Root node processing (before b&c):
+  Real time             =    2.84 sec. (1029.02 ticks)
+Parallel b&c, 4 threads:
+  Real time             =    1.23 sec. (503.46 ticks)
+  Sync time (average)   =    0.24 sec.
+  Wait time (average)   =    0.00 sec.
+                          ------------
+Total (root+branch&cut) =    4.07 sec. (1532.47 ticks)
+================ Solution ================
+BAP terminated with objective : 32965
+Total Number of iterations: 1318
+Total Number of processed nodes: 129
+Total Time spent on master problems: 157756 Total time spent on pricing problems: 15880
+Best bound : 32965.0
+[0, 38, 39, 60, 61, 62, 63, 64, 66, 67, 69, 70, 71, 72, 73, 74, 90, 93, 94, 99, 100, 102, 103, 108, 109, 111, 115, 116, 117, 118, 119, 120, 122, 124, 125, 126, 127, 128, 129, 130, 132, 134, 135, 136, 137, 138, 139, 140, 141, 142, 143, 144, 145, 146, 147, 149, 154, 157, 159, 166, 167, 168, 169, 170, 171, 172, 174, 176, 178, 195, 196, 197, 198, 199, 200, 201, 202, 203, 204, 205, 206, 207, 208, 209, 210, 211, 212, 213, 215, 217, 219, 222, 223, 224]
+The number of service edges used= 94
+
+Solution is optimal: true
+Columns (only non-zero columns are returned):
+artificial: false edgeIndexset: [288, 129, 299, 285, 94, 286, 287] start node= 4 start time= 0 capacity type= 1 ifChargeSet: []
+(4,0)->(4,1)->(4,2)->(4,3)->(4,4)->(0,9)->(4,14)->(4,0):2.0
+Fix cost= 150 variable cost= 40
+
+artificial: false edgeIndexset: [240, 141, 61, 206] start node= 4 start time= 11 capacity type= 1 ifChargeSet: [240]
+(1,0)->charge(1,1)->(3,6)->(4,11)->(1,0):1.0
+Fix cost= 150 variable cost= 61
+
+artificial: false edgeIndexset: [176, 259, 260, 261, 119, 217] start node= 1 start time= 14 capacity type= 1 ifChargeSet: []
+(2,4)->(2,5)->(2,6)->(2,7)->(3,11)->(1,14)->(2,4):1.0
+Fix cost= 200 variable cost= 48
+
+artificial: false edgeIndexset: [241, 142, 62, 207] start node= 4 start time= 12 capacity type= 1 ifChargeSet: [241]
+(1,1)->charge(1,2)->(3,7)->(4,12)->(1,1):1.0
+Fix cost= 150 variable cost= 61
+
+artificial: false edgeIndexset: [128, 298, 299, 285, 93, 286, 287] start node= 4 start time= 1 capacity type= 1 ifChargeSet: []
+(4,0)->(4,1)->(4,2)->(4,3)->(0,8)->(4,13)->(4,14)->(4,0):2.0
+Fix cost= 150 variable cost= 40
+
+artificial: false edgeIndexset: [0, 145, 274, 275, 276, 277, 278, 279] start node= 4 start time= 0 capacity type= 0 ifChargeSet: []
+(4,0)->(3,4)->(3,5)->(3,6)->(3,7)->(3,8)->(3,9)->(3,10)->(4,0):1.0
+Fix cost= 50 variable cost= 36
+
+artificial: false edgeIndexset: [146, 66, 196, 245] start node= 4 start time= 1 capacity type= 1 ifChargeSet: [245]
+(4,1)->(1,5)->charge(1,6)->(3,11)->(4,1):1.0
+Fix cost= 150 variable cost= 61
+
+artificial: false edgeIndexset: [70, 135, 200, 249] start node= 4 start time= 5 capacity type= 1 ifChargeSet: [249]
+(3,0)->(4,5)->(1,9)->charge(1,10)->(3,0):1.0
+Fix cost= 150 variable cost= 61
+
+artificial: false edgeIndexset: [208, 242, 143, 63] start node= 4 start time= 13 capacity type= 1 ifChargeSet: [242]
+(1,2)->charge(1,3)->(3,8)->(4,13)->(1,2):1.0
+Fix cost= 150 variable cost= 61
+
+artificial: false edgeIndexset: [290, 291, 100, 292, 293, 294, 120] start node= 4 start time= 5 capacity type= 1 ifChargeSet: []
+(0,0)->(4,5)->(4,6)->(4,7)->(4,8)->(4,9)->(4,10)->(0,0):1.0
+Fix cost= 150 variable cost= 40
+
+artificial: false edgeIndexset: [147, 67, 197, 246] start node= 4 start time= 2 capacity type= 1 ifChargeSet: [246]
+(4,2)->(1,6)->charge(1,7)->(3,12)->(4,2):1.0
+Fix cost= 150 variable cost= 61
+
+artificial: false edgeIndexset: [71, 136, 201, 250] start node= 4 start time= 6 capacity type= 1 ifChargeSet: [250]
+(3,1)->(4,6)->(1,10)->charge(1,11)->(3,1):1.0
+Fix cost= 150 variable cost= 61
+
+artificial: false edgeIndexset: [140, 60, 205, 254] start node= 4 start time= 10 capacity type= 1 ifChargeSet: [254]
+(1,0)->(3,5)->(4,10)->(1,14)->charge(1,0):1.0
+Fix cost= 150 variable cost= 61
+
+artificial: false edgeIndexset: [144, 64, 209, 243] start node= 4 start time= 14 capacity type= 1 ifChargeSet: [243]
+(1,3)->charge(1,4)->(3,9)->(4,14)->(1,3):1.0
+Fix cost= 150 variable cost= 61
+
+artificial: false edgeIndexset: [72, 137, 202, 251] start node= 4 start time= 7 capacity type= 1 ifChargeSet: [251]
+(3,2)->(4,7)->(1,11)->charge(1,12)->(3,2):1.0
+Fix cost= 150 variable cost= 61
+
+artificial: false edgeIndexset: [224, 168, 266, 267, 268, 111] start node= 1 start time= 6 capacity type= 1 ifChargeSet: []
+(3,3)->(1,6)->(2,11)->(2,12)->(2,13)->(2,14)->(3,3):2.0
+Fix cost= 200 variable cost= 48
+
+artificial: false edgeIndexset: [289, 290, 99, 291, 292, 293, 134] start node= 4 start time= 4 capacity type= 1 ifChargeSet: []
+(4,4)->(4,5)->(4,6)->(4,7)->(4,8)->(4,9)->(0,14)->(4,4):3.0
+Fix cost= 150 variable cost= 40
+
+artificial: false edgeIndexset: [149, 69, 199, 248] start node= 4 start time= 4 capacity type= 1 ifChargeSet: [248]
+(4,4)->(1,8)->charge(1,9)->(3,14)->(4,4):1.0
+Fix cost= 150 variable cost= 61
+
+artificial: false edgeIndexset: [73, 138, 203, 252] start node= 4 start time= 8 capacity type= 1 ifChargeSet: [252]
+(3,3)->(4,8)->(1,12)->charge(1,13)->(3,3):1.0
+Fix cost= 150 variable cost= 61
+
+artificial: false edgeIndexset: [74, 139, 204, 253] start node= 4 start time= 9 capacity type= 1 ifChargeSet: [253]
+(3,4)->(4,9)->(1,13)->charge(1,14)->(3,4):1.0
+Fix cost= 150 variable cost= 61
+
+artificial: false edgeIndexset: [292, 293, 102, 294, 295, 296, 122] start node= 4 start time= 7 capacity type= 1 ifChargeSet: []
+(0,2)->(4,7)->(4,8)->(4,9)->(4,10)->(4,11)->(4,12)->(0,2):1.0
+Fix cost= 150 variable cost= 40
+
+artificial: false edgeIndexset: [295, 296, 297, 90, 298, 299, 125] start node= 4 start time= 10 capacity type= 1 ifChargeSet: []
+(4,0)->(0,5)->(4,10)->(4,11)->(4,12)->(4,13)->(4,14)->(4,0):1.0
+Fix cost= 150 variable cost= 40
+
+artificial: false edgeIndexset: [259, 260, 261, 38, 262, 119, 253] start node= 2 start time= 4 capacity type= 0 ifChargeSet: []
+(2,4)->(2,5)->(2,6)->(2,7)->(2,8)->(1,13)->(1,14)->(2,4):1.0
+Fix cost= 100 variable cost= 40
+
+artificial: false edgeIndexset: [130, 198, 157, 285, 286, 287] start node= 4 start time= 0 capacity type= 1 ifChargeSet: []
+(4,0)->(4,1)->(4,2)->(4,3)->(1,7)->(0,10)->(4,0):1.0
+Fix cost= 150 variable cost= 48
+
+artificial: false edgeIndexset: [288, 289, 132, 200, 159, 287] start node= 4 start time= 2 capacity type= 1 ifChargeSet: []
+(4,2)->(4,3)->(4,4)->(4,5)->(1,9)->(0,12)->(4,2):1.0
+Fix cost= 150 variable cost= 48
+
+artificial: false edgeIndexset: [210, 115, 247, 248, 169, 249] start node= 1 start time= 7 capacity type= 1 ifChargeSet: []
+(2,0)->(3,4)->(1,7)->(1,8)->(1,9)->(1,10)->(2,0):2.0
+Fix cost= 200 variable cost= 48
+
+artificial: false edgeIndexset: [240, 241, 242, 243, 39, 109, 254] start node= 1 start time= 14 capacity type= 1 ifChargeSet: []
+(1,0)->(1,1)->(1,2)->(1,3)->(1,4)->(2,9)->(1,14)->(1,0):1.0
+Fix cost= 200 variable cost= 40
+
+artificial: false edgeIndexset: [195, 297, 154, 298, 299, 127] start node= 4 start time= 12 capacity type= 1 ifChargeSet: []
+(4,0)->(1,4)->(0,7)->(4,12)->(4,13)->(4,14)->(4,0):1.0
+Fix cost= 150 variable cost= 48
+
+artificial: false edgeIndexset: [211, 116, 248, 249, 170, 250] start node= 1 start time= 8 capacity type= 1 ifChargeSet: []
+(2,1)->(3,5)->(1,8)->(1,9)->(1,10)->(1,11)->(2,1):3.0
+Fix cost= 200 variable cost= 48
+
+artificial: false edgeIndexset: [212, 117, 249, 250, 171, 251] start node= 1 start time= 9 capacity type= 1 ifChargeSet: []
+(2,2)->(3,6)->(1,9)->(1,10)->(1,11)->(1,12)->(2,2):2.0
+Fix cost= 200 variable cost= 48
+
+artificial: false edgeIndexset: [241, 178, 242, 263, 219, 108] start node= 1 start time= 1 capacity type= 1 ifChargeSet: []
+(1,1)->(1,2)->(1,3)->(2,8)->(2,9)->(3,13)->(1,1):1.0
+Fix cost= 200 variable cost= 48
+
+artificial: false edgeIndexset: [230, 296, 297, 90, 298, 299, 126] start node= 4 start time= 11 capacity type= 1 ifChargeSet: []
+(4,0)->(0,5)->(0,6)->(4,11)->(4,12)->(4,13)->(4,14)->(4,0):1.0
+Fix cost= 150 variable cost= 40
+
+artificial: false edgeIndexset: [228, 294, 103, 295, 296, 297, 124] start node= 4 start time= 9 capacity type= 1 ifChargeSet: []
+(0,3)->(0,4)->(4,9)->(4,10)->(4,11)->(4,12)->(4,13)->(0,3):2.0
+Fix cost= 150 variable cost= 40
+
+artificial: false edgeIndexset: [244, 245, 166, 266, 222, 111] start node= 1 start time= 4 capacity type= 1 ifChargeSet: []
+(3,1)->(1,4)->(1,5)->(1,6)->(2,11)->(2,12)->(3,1):2.0
+Fix cost= 200 variable cost= 48
+
+artificial: false edgeIndexset: [213, 118, 250, 251, 172, 252] start node= 1 start time= 10 capacity type= 1 ifChargeSet: []
+(2,3)->(3,7)->(1,10)->(1,11)->(1,12)->(1,13)->(2,3):1.0
+Fix cost= 200 variable cost= 48
+
+artificial: false edgeIndexset: [259, 215, 119, 252, 253, 174] start node= 1 start time= 12 capacity type= 1 ifChargeSet: []
+(2,4)->(2,5)->(3,9)->(1,12)->(1,13)->(1,14)->(2,4):1.0
+Fix cost= 200 variable cost= 48
+
+artificial: false edgeIndexset: [245, 167, 266, 267, 223, 111] start node= 1 start time= 5 capacity type= 1 ifChargeSet: []
+(3,2)->(1,5)->(1,6)->(2,11)->(2,12)->(2,13)->(3,2):3.0
+Fix cost= 200 variable cost= 48
+
+fix cost+variable cost+commodity cost= 8300+2437+22228.0=32965.0
+
+vehicle dowork= 29080 commodity dowork= 22228.0
+no load ratio= 0.23562585969738653
+
+Total vehicles used= 50
+
+vehicleCoverServiceEdge information:
+{128=2, 0=1, 129=2, 130=1, 132=1, 134=3, 135=1, 136=1, 137=1, 138=1, 139=1, 140=1, 141=1, 142=1, 143=1, 144=1, 145=1, 146=1, 147=1, 149=1, 154=1, 157=1, 159=1, 38=1, 166=2, 39=1, 167=3, 168=2, 169=2, 170=3, 171=2, 172=1, 174=1, 176=1, 178=1, 60=1, 61=1, 62=1, 63=1, 64=1, 66=1, 67=1, 195=1, 196=1, 197=1, 69=1, 70=1, 198=1, 71=1, 199=1, 200=2, 72=1, 201=1, 73=1, 202=1, 74=1, 203=1, 204=1, 205=1, 206=1, 207=1, 208=1, 209=1, 210=2, 211=3, 212=2, 213=1, 215=1, 217=1, 90=2, 219=1, 93=2, 94=2, 222=2, 223=3, 224=2, 99=3, 100=1, 102=1, 103=2, 108=1, 109=1, 111=7, 115=2, 116=3, 117=2, 118=1, 119=3, 120=1, 122=1, 124=2, 125=1, 126=1, 127=1}
+
+commodityFlowIntoTerminal information:
+50 0 50 100 0 100 0 0 100 100 5 0 0 0 150 
+50 50 50 50 50 50 50 55 50 100 50 50 50 50 50 
+100 150 100 50 120 0 0 0 46 50 0 350 0 0 0 
+0 99 140 99 105 150 100 50 0 48 0 49 0 50 0 
+70 50 100 0 197 98 50 100 50 150 100 100 100 150 150 
+
+vehicle pattern information:
+[0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0]
+[0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0]
+[0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1]
+[1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0]
+[0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0]
+[0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 1, 0]
+x[0]:4,0->3,4= 2.666666666666668 4
+x[0]:4,13->0,3= 9.0 5
+x[0]:1,4->0,7= 0.33333333333333304 3
+x[0]:1,7->0,10= 2.666666666666668 3
+x[0]:3,4->1,7= 2.666666666666668 3
+x[0]:4,0->1,4= 0.33333333333333304 4
+total cost= 74.0
+
+x[1]:4,0->0,5= 13.0 5
+total cost= 65.0
+
+x[2]:2,13->3,2= 11.0 4
+total cost= 44.0
+
+x[3]:2,0->3,4= 11.0 4
+total cost= 44.0
+
+x[4]:2,0->3,4= 27.0 4
+total cost= 108.0
+
+x[5]:4,3->0,8= 20.0 5
+total cost= 100.0
+
+x[6]:1,6->2,11= 23.0 5
+total cost= 115.0
+
+x[7]:2,2->3,6= 13.0 4
+x[7]:2,12->3,1= 15.0 4
+total cost= 112.0
+
+x[8]:3,7->4,12= 12.0 5
+x[8]:3,10->4,0= 9.0 5
+total cost= 105.0
+
+x[9]:2,2->3,6= 11.0 4
+total cost= 44.0
+
+x[10]:4,0->3,4= 0.6666666666666696 4
+x[10]:0,10->4,0= 6.999999999999998 5
+x[10]:0,14->4,4= 4.000000000000002 5
+x[10]:3,6->1,9= 0.6666666666666696 3
+x[10]:4,3->1,7= 6.333333333333329 4
+x[10]:4,4->1,8= 4.000000000000002 4
+total cost= 101.0
+
+x[11]:2,2->3,6= 21.0 4
+total cost= 84.0
+
+x[12]:1,3->2,8= 0.9999999999999893 5
+x[12]:1,4->2,9= 8.0 5
+x[12]:1,6->2,11= 9.00000000000001 5
+total cost= 90.0
+
+x[13]:3,1->4,6= 18.0 5
+total cost= 90.0
+
+x[14]:4,3->0,8= 15.0 5
+x[14]:4,9->0,14= 6.0 5
+x[14]:4,12->0,2= 9.0 5
+total cost= 150.0
+
+x[15]:4,13->0,3= 19.0 5
+total cost= 95.0
+
+x[16]:1,11->2,1= 17.0 5
+total cost= 85.0
+
+x[17]:1,6->2,11= 23.0 5
+total cost= 115.0
+
+x[18]:4,7->1,11= 0.9999999999999982 4
+x[18]:4,9->1,13= 7.5 4
+x[18]:4,10->1,14= 9.000000000000002 4
+x[18]:4,11->1,0= 3.5 4
+x[18]:0,2->4,7= 4.833333333333332 5
+x[18]:0,4->4,9= 12.666666666666668 5
+x[18]:0,6->4,11= 3.5 5
+total cost= 189.0
+
+x[19]:1,6->2,11= 14.0 5
+total cost= 70.0
+
+x[20]:1,4->2,9= 13.0 5
+total cost= 65.0
+
+x[21]:1,11->2,1= 13.0 5
+total cost= 65.0
+
+x[22]:3,0->4,5= 0.999999999999936 5
+x[22]:3,1->4,6= 6.0 5
+x[22]:3,12->4,2= 6.000000000000064 5
+total cost= 65.0
+
+x[23]:0,8->4,13= 16.666666666666668 5
+x[23]:4,1->1,5= 16.666666666666668 4
+x[23]:4,10->1,14= 3.333333333333332 4
+x[23]:0,5->4,10= 3.333333333333332 5
+total cost= 179.99999999999997
+
+x[24]:0,10->4,0= 10.333333333333334 5
+x[24]:4,0->1,4= 10.333333333333334 4
+x[24]:4,11->1,0= 10.666666666666666 4
+x[24]:0,4->4,9= 10.666666666666666 5
+total cost= 189.0
+
+x[25]:3,7->4,12= 20.0 5
+total cost= 100.0
+
+x[26]:2,7->3,11= 23.0 4
+total cost= 92.0
+
+x[27]:1,3->2,8= 0.9999999999999893 5
+x[27]:1,4->2,9= 8.0 5
+x[27]:1,6->2,11= 9.00000000000001 5
+total cost= 90.0
+
+x[28]:1,6->2,11= 15.0 5
+total cost= 75.0
+
+x[29]:1,4->2,9= 21.0 5
+total cost= 105.0
+
+x[30]:4,9->1,13= 24.0 4
+x[30]:0,4->4,9= 24.0 5
+total cost= 216.0
+
+x[31]:0,14->4,4= 12.66666666666667 5
+x[31]:4,5->1,9= 12.66666666666667 4
+x[31]:4,8->1,12= 8.33333333333333 4
+x[31]:0,2->4,7= 8.33333333333333 5
+total cost= 189.0
+
+x[32]:3,0->4,5= 28.0 5
+total cost= 140.0
+
+x[33]:3,3->4,8= 24.0 5
+x[33]:3,6->4,11= 3.0 5
+total cost= 135.0
+
+x[34]:2,2->3,6= 23.0 4
+total cost= 92.0
+
+x[35]:2,14->3,3= 30.0 4
+total cost= 120.0
+
+x[36]:1,10->2,0= 10.999999999999993 5
+total cost= 54.999999999999964
+
+x[37]:3,11->4,1= 24.0 5
+total cost= 120.0
+
+x[38]:0,8->4,13= 28.0 5
+x[38]:4,1->1,5= 18.666666666666664 4
+x[38]:4,2->1,6= 9.333333333333336 4
+total cost= 252.0
+
+x[39]:4,13->0,3= 19.0 5
+total cost= 95.0
+
+x[40]:0,12->4,2= 9.666666666666664 5
+x[40]:0,14->4,4= 3.833333333333333 5
+x[40]:4,2->1,6= 0.4999999999999991 4
+x[40]:4,6->1,10= 13.0 4
+x[40]:4,7->1,11= 5.500000000000002 4
+x[40]:0,2->4,7= 5.500000000000002 5
+total cost= 171.0
+
+x[41]:1,11->2,1= 23.0 5
+total cost= 115.0
+
+x[42]:2,5->3,9= 13.0 4
+total cost= 52.0
+
+x[43]:3,2->4,7= 16.0 5
+total cost= 80.0
+
+x[44]:1,11->2,1= 29.0 5
+total cost= 145.0
+
+x[45]:1,11->2,1= 12.0 5
+total cost= 60.0
+
+x[46]:4,4->0,9= 25.0 5
+total cost= 125.0
+
+x[47]:2,2->3,6= 10.0 4
+total cost= 40.0
+
+x[48]:4,1->1,5= 11.0 4
+x[48]:0,6->4,11= 11.0 5
+total cost= 99.0
+
+x[49]:4,5->1,9= 9.0 4
+x[49]:4,9->1,13= 11.0 4
+x[49]:0,0->4,5= 9.0 5
+x[49]:0,4->4,9= 11.0 5
+total cost= 180.0
+
+x[50]:2,14->3,3= 30.0 4
+total cost= 120.0
+
+x[51]:3,12->4,2= 25.0 5
+total cost= 125.0
+
+x[52]:1,6->2,11= 29.0 5
+total cost= 145.0
+
+x[53]:2,13->3,2= 29.0 4
+total cost= 116.0
+
+x[54]:0,8->4,13= 9.333333333333332 5
+x[54]:4,12->1,1= 0.6666666666666679 4
+x[54]:4,13->1,2= 9.333333333333332 4
+x[54]:0,7->4,12= 0.6666666666666679 5
+total cost= 90.0
+
+x[55]:1,12->2,2= 20.0 5
+total cost= 100.0
+
+x[56]:3,10->4,0= 11.0 5
+total cost= 55.0
+
+x[57]:0,14->4,4= 24.0 5
+x[57]:4,6->1,10= 24.0 4
+total cost= 216.0
+
+x[58]:0,12->4,2= 8.66666666666667 5
+x[58]:0,14->4,4= 14.33333333333333 5
+x[58]:4,3->1,7= 8.66666666666667 4
+x[58]:4,5->1,9= 14.33333333333333 4
+total cost= 207.0
+
+x[59]:2,0->3,4= 17.0 4
+total cost= 68.0
+
+x[60]:2,1->3,5= 20.0 4
+x[60]:2,9->3,13= 1.0 4
+total cost= 84.0
+
+x[61]:3,8->4,13= 10.0 5
+total cost= 50.0
+
+x[62]:1,6->2,11= 26.0 5
+total cost= 130.0
+
+x[63]:4,0->0,5= 24.0 5
+x[63]:4,13->0,3= 5.0 5
+total cost= 145.0
+
+x[64]:3,12->4,2= 18.999999999999936 5
+total cost= 94.99999999999969
+
+x[65]:0,9->4,14= 27.0 5
+x[65]:4,14->1,3= 27.0 4
+total cost= 243.0
+
+x[66]:4,0->0,5= 26.0 5
+total cost= 130.0
+
+x[67]:1,10->2,0= 10.0 5
+total cost= 50.0
+
+x[68]:4,3->0,8= 18.0 5
+total cost= 90.0
+
+x[69]:0,8->4,13= 18.0 5
+x[69]:4,13->1,2= 18.0 4
+total cost= 162.0
+
+x[70]:0,14->4,4= 15.0 5
+x[70]:4,8->1,12= 15.0 4
+total cost= 135.0
+
+x[71]:1,11->2,1= 20.0 5
+total cost= 100.0
+
+x[72]:4,11->1,0= 5.666666666666668 4
+x[72]:4,13->1,2= 19.333333333333332 4
+x[72]:0,6->4,11= 5.666666666666668 5
+x[72]:0,7->4,12= 19.333333333333332 5
+total cost= 225.0
+
+x[73]:1,6->2,11= 25.0 5
+total cost= 125.0
+
+x[74]:2,9->3,13= 22.0 4
+total cost= 88.0
+
+x[75]:1,6->2,11= 10.0 5
+total cost= 50.0
+
+x[76]:2,0->3,4= 16.0 4
+total cost= 64.0
+
+x[77]:1,6->2,11= 29.0 5
+total cost= 145.0
+
+x[78]:4,3->1,7= 13.0 4
+x[78]:0,7->4,12= 13.0 5
+total cost= 117.0
+
+x[79]:0,12->4,2= 9.666666666666664 5
+x[79]:0,14->4,4= 3.833333333333333 5
+x[79]:4,2->1,6= 0.4999999999999991 4
+x[79]:4,6->1,10= 13.0 4
+x[79]:4,7->1,11= 5.500000000000002 4
+x[79]:0,2->4,7= 5.500000000000002 5
+total cost= 171.0
+
+x[80]:0,10->4,0= 21.0 5
+x[80]:4,2->1,6= 21.0 4
+total cost= 189.0
+
+x[81]:4,11->1,0= 23.0 4
+x[81]:0,5->4,10= 23.0 5
+total cost= 207.0
+
+x[82]:4,12->0,2= 9.0 5
+x[82]:4,13->0,3= 13.0 5
+total cost= 110.0
+
+x[83]:2,13->3,2= 25.0 4
+total cost= 100.0
+
+x[84]:4,4->0,9= 29.0 5
+total cost= 145.0
+
+x[85]:1,14->2,4= 21.0 5
+total cost= 105.0
+
+x[86]:3,9->4,14= 27.0 5
+total cost= 135.0
+
+x[87]:4,9->0,14= 29.0 5
+total cost= 145.0
+
+x[88]:3,6->4,11= 21.0 5
+total cost= 105.0
+
+x[89]:1,3->2,8= 21.0 5
+total cost= 105.0
+
+x[90]:0,10->4,0= 11.0 5
+x[90]:4,0->1,4= 11.0 4
+total cost= 99.0
+
+x[91]:3,1->4,6= 3.5 5
+x[91]:3,2->4,7= 2.0 5
+x[91]:3,4->4,9= 4.0 5
+x[91]:3,6->4,11= 7.5 5
+x[91]:3,7->4,12= 9.0 5
+total cost= 130.0
+
+x[92]:2,12->3,1= 30.0 4
+total cost= 120.0
+
+x[93]:3,0->4,5= 20.0 5
+total cost= 100.0
+
+x[94]:1,14->2,4= 16.0 5
+total cost= 80.0
+
+x[95]:3,4->4,9= 17.0 5
+total cost= 85.0
+
+x[96]:0,9->4,14= 9.333333333333334 5
+x[96]:0,10->4,0= 0.6666666666666667 5
+x[96]:4,2->1,6= 0.6666666666666667 4
+x[96]:4,14->1,3= 9.333333333333334 4
+total cost= 90.0
+
+x[97]:1,14->2,4= 16.0 5
+total cost= 80.0
+
+x[98]:4,3->0,8= 11.0 5
+total cost= 55.0
+
+x[99]:4,7->1,11= 0.9999999999999982 4
+x[99]:4,9->1,13= 7.5 4
+x[99]:4,10->1,14= 9.000000000000002 4
+x[99]:4,11->1,0= 3.5 4
+x[99]:0,2->4,7= 4.833333333333332 5
+x[99]:0,4->4,9= 12.666666666666668 5
+x[99]:0,6->4,11= 3.5 5
+total cost= 189.0
+
+x[100]:3,6->4,11= 11.0 5
+total cost= 55.0
+
+x[101]:3,3->4,8= 26.0 5
+total cost= 130.0
+
+x[102]:4,12->0,2= 16.0 5
+total cost= 80.0
+
+x[103]:4,13->0,3= 13.0 5
+total cost= 65.0
+
+x[104]:1,10->2,0= 15.0 5
+total cost= 75.0
+
+x[105]:4,12->1,1= 23.0 4
+x[105]:0,5->4,10= 23.0 5
+total cost= 207.0
+
+x[106]:2,5->3,9= 21.0 4
+total cost= 84.0
+
+x[107]:0,8->4,13= 28.0 5
+x[107]:4,0->1,4= 28.0 4
+total cost= 252.0
+
+x[108]:2,1->3,5= 26.0 4
+total cost= 104.0
+
+x[109]:1,6->2,11= 3.4999999999999893 5
+x[109]:1,10->2,0= 2.0000000000000036 5
+x[109]:1,11->2,1= 3.0000000000000053 5
+x[109]:1,13->2,3= 12.5 5
+total cost= 105.0
+
+x[110]:2,13->3,2= 16.0 4
+total cost= 64.0
+
+x[111]:4,9->0,14= 14.0 5
+total cost= 70.0
+
+x[112]:0,12->4,2= 22.0 5
+x[112]:4,5->1,9= 22.0 4
+total cost= 198.0
+
+x[113]:3,5->4,10= 16.0 5
+x[113]:3,8->4,13= 2.0 5
+total cost= 90.0
+
+x[114]:2,1->3,5= 19.0 4
+total cost= 76.0
+
+x[115]:1,3->2,8= 24.0 5
+total cost= 120.0
+
+x[116]:1,12->2,2= 29.0 5
+total cost= 145.0
+
+x[117]:4,9->0,14= 20.0 5
+total cost= 100.0
+
+x[118]:3,9->4,14= 10.0 5
+x[118]:3,11->4,1= 6.0 5
+x[118]:3,14->4,4= 8.0 5
+total cost= 120.0
+
+x[119]:4,0->0,5= 14.0 5
+total cost= 70.0
+
+x[120]:2,3->3,7= 20.0 4
+total cost= 80.0
+
+x[121]:1,13->2,3= 25.0 5
+total cost= 125.0
+
+x[122]:1,10->2,0= 18.0 5
+total cost= 90.0
+
+x[123]:4,9->0,14= 4.0 5
+x[123]:4,10->0,0= 15.0 5
+total cost= 95.0
+
+x[124]:2,0->3,4= 0.6666666666666714 4
+x[124]:2,7->3,11= 1.6666666666666652 4
+x[124]:2,12->3,1= 18.333333333333332 4
+x[124]:2,14->3,3= 0.33333333333333215 4
+total cost= 84.0
+
+x[125]:1,6->2,11= 27.0 5
+total cost= 135.0
+
+x[126]:4,10->1,14= 25.333333333333332 4
+x[126]:4,11->1,0= 3.6666666666666665 4
+x[126]:0,4->4,9= 29.0 5
+total cost= 261.0
+
+x[127]:4,0->0,5= 23.0 5
+total cost= 115.0
+
+x[128]:2,13->3,2= 14.0 4
+total cost= 56.0
+
+x[129]:4,10->0,0= 19.0 5
+total cost= 95.0
+
+x[130]:4,7->1,11= 21.0 4
+x[130]:0,2->4,7= 21.0 5
+total cost= 189.0
+
+x[131]:3,11->4,1= 20.0 5
+total cost= 100.0
+
+x[132]:2,13->3,2= 21.0 4
+total cost= 84.0
+
+x[133]:2,1->3,5= 20.0 4
+total cost= 80.0
+
+x[134]:4,3->0,8= 15.0 5
+total cost= 75.0
+
+x[135]:0,9->4,14= 22.0 5
+x[135]:4,3->1,7= 22.0 4
+total cost= 198.0
+
+x[136]:2,7->3,11= 22.0 4
+total cost= 88.0
+
+x[137]:0,14->4,4= 17.0 5
+x[137]:4,5->1,9= 17.0 4
+total cost= 153.0
+
+x[138]:4,9->0,14= 11.0 5
+total cost= 55.0
+
+x[139]:4,9->0,14= 17.0 5
+total cost= 85.0
+
+x[140]:4,13->0,3= 13.0 5
+total cost= 65.0
+
+x[141]:0,9->4,14= 18.0 5
+x[141]:4,2->1,6= 18.0 4
+total cost= 162.0
+
+x[142]:4,13->1,2= 3.333333333333333 4
+x[142]:4,14->1,3= 13.666666666666666 4
+x[142]:0,7->4,12= 17.0 5
+total cost= 153.0
+
+x[143]:4,7->1,11= 16.0 4
+x[143]:0,0->4,5= 16.0 5
+total cost= 144.0
+
+x[144]:3,8->4,13= 27.0 5
+x[144]:3,9->4,14= 1.0 5
+total cost= 140.0
+
+x[145]:3,8->4,13= 11.0 5
+total cost= 55.0
+
+x[146]:1,12->2,2= 23.0 5
+total cost= 115.0
+
+x[147]:2,14->3,3= 10.0 4
+total cost= 40.0
+
+x[148]:0,14->4,4= 20.0 5
+x[148]:4,4->1,8= 20.0 4
+total cost= 180.0
+
+x[149]:2,0->3,4= 0.6666666666666714 4
+x[149]:2,7->3,11= 1.6666666666666652 4
+x[149]:2,12->3,1= 18.333333333333332 4
+x[149]:2,14->3,3= 0.33333333333333215 4
+total cost= 84.0
+
+x[150]:2,13->3,2= 24.0 4
+total cost= 96.0
+
+x[151]:3,5->4,10= 14.0 5
+total cost= 70.0
+
+x[152]:2,14->3,3= 18.0 4
+total cost= 72.0
+
+x[153]:4,0->3,4= 2.666666666666668 4
+x[153]:4,13->0,3= 9.0 5
+x[153]:1,4->0,7= 0.33333333333333304 3
+x[153]:1,7->0,10= 2.666666666666668 3
+x[153]:3,4->1,7= 2.666666666666668 3
+x[153]:4,0->1,4= 0.33333333333333304 4
+total cost= 74.0
+
+x[154]:2,0->3,4= 26.0 4
+total cost= 104.0
+
+x[155]:1,6->2,11= 12.0 5
+x[155]:1,12->2,2= 0.5 5
+x[155]:1,14->2,4= 11.5 5
+total cost= 120.0
+
+x[156]:1,14->2,4= 28.0 5
+total cost= 140.0
+
+x[157]:1,6->2,11= 20.0 5
+total cost= 100.0
+
+x[158]:2,14->3,3= 11.0 4
+total cost= 44.0
+
+x[159]:4,10->0,0= 16.0 5
+total cost= 80.0
+
+x[160]:3,2->4,7= 30.0 5
+total cost= 150.0
+
+x[161]:0,9->4,14= 3.666666666666668 5
+x[161]:4,1->1,5= 3.666666666666668 4
+x[161]:4,12->1,1= 26.333333333333332 4
+x[161]:0,6->4,11= 26.333333333333332 5
+total cost= 270.0
+
+x[162]:1,10->2,0= 19.0 5
+total cost= 95.0
+
+x[163]:4,4->0,9= 22.0 5
+total cost= 110.0
+
+x[164]:2,1->3,5= 13.0 4
+total cost= 52.0
+
+x[165]:3,4->4,9= 25.0 5
+total cost= 125.0
+
+x[166]:2,1->3,5= 17.0 4
+total cost= 68.0
+
+x[167]:2,3->3,7= 16.0 4
+total cost= 64.0
+
+x[168]:1,6->2,11= 12.0 5
+x[168]:1,12->2,2= 0.5 5
+x[168]:1,14->2,4= 11.5 5
+total cost= 120.0
+
+x[169]:1,14->2,4= 16.0 5
+total cost= 80.0
+
+x[170]:3,14->4,4= 12.0 5
+total cost= 60.0
+
+x[171]:2,2->3,6= 1.0 4
+x[171]:2,9->3,13= 27.0 4
+total cost= 112.0
+
+x[172]:3,9->4,14= 12.0 5
+total cost= 60.0
+
+x[173]:2,0->3,4= 0.6666666666666714 4
+x[173]:2,7->3,11= 1.6666666666666652 4
+x[173]:2,12->3,1= 18.333333333333332 4
+x[173]:2,14->3,3= 0.33333333333333215 4
+total cost= 84.0
+
+x[174]:3,5->4,10= 20.0 5
+total cost= 100.0
+
+x[175]:2,1->3,5= 14.0 4
+total cost= 56.0
+
+x[176]:3,1->4,6= 3.5 5
+x[176]:3,2->4,7= 2.0 5
+x[176]:3,4->4,9= 4.0 5
+x[176]:3,6->4,11= 7.5 5
+x[176]:3,7->4,12= 9.0 5
+total cost= 130.0
+
+x[177]:4,3->0,8= 3.0 5
+x[177]:4,4->0,9= 24.0 5
+total cost= 135.0
+
+x[178]:4,9->0,14= 24.0 5
+total cost= 120.0
+
+x[179]:4,5->1,9= 25.0 4
+x[179]:0,0->4,5= 25.0 5
+total cost= 225.0
+
+x[180]:0,14->4,4= 17.666666666666664 5
+x[180]:4,4->1,8= 2.999999999999999 4
+x[180]:4,8->1,12= 13.333333333333336 4
+x[180]:4,10->1,14= 1.6666666666666652 4
+x[180]:0,5->4,10= 0.3333333333333357 5
+total cost= 162.0
+
+x[181]:1,11->2,1= 14.999999999999995 5
+total cost= 74.99999999999997
+
+x[182]:1,6->2,11= 3.4999999999999893 5
+x[182]:1,10->2,0= 2.0000000000000036 5
+x[182]:1,11->2,1= 3.0000000000000053 5
+x[182]:1,13->2,3= 12.5 5
+total cost= 105.0
+
+x[183]:4,3->0,8= 18.0 5
+total cost= 90.0
+
+x[184]:2,1->3,5= 15.0 4
+total cost= 60.0
+
+x[185]:1,6->2,11= 17.0 5
+total cost= 85.0
+
+x[186]:0,9->4,14= 20.0 5
+x[186]:4,4->1,8= 20.0 4
+total cost= 180.0
+
+x[187]:2,5->3,9= 14.0 4
+total cost= 56.0
+
+x[188]:3,14->4,4= 28.0 5
+total cost= 140.0
+
+x[189]:1,11->2,1= 14.999999999999995 5
+total cost= 74.99999999999997
+
+x[190]:4,12->0,2= 16.0 5
+total cost= 80.0
+
+x[191]:2,1->3,5= 6.0 4
+x[191]:2,3->3,7= 14.0 4
+total cost= 80.0
+
+x[192]:0,14->4,4= 17.666666666666664 5
+x[192]:4,4->1,8= 2.999999999999999 4
+x[192]:4,8->1,12= 13.333333333333336 4
+x[192]:4,10->1,14= 1.6666666666666652 4
+x[192]:0,5->4,10= 0.3333333333333357 5
+total cost= 162.0
+
+x[193]:1,10->2,0= 23.0 5
+total cost= 115.0
+
+x[194]:1,6->2,11= 22.0 5
+total cost= 110.0
+
+x[195]:4,9->0,14= 25.0 5
+total cost= 125.0
+
+x[196]:1,12->2,2= 27.0 5
+total cost= 135.0
+
+x[197]:1,6->2,11= 21.0 5
+total cost= 105.0
+
+x[198]:3,1->4,6= 19.0 5
+total cost= 95.0
+
+x[199]:2,2->3,6= 21.0 4
+total cost= 84.0
+

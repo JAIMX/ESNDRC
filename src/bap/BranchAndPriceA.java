@@ -79,6 +79,8 @@ public class BranchAndPriceA <V> extends AbstractBranchAndPrice<SNDRC, Cycle, SN
     private boolean ifUseLearningUB;
     private final boolean ifOptGetFromSubGraph;
     private ArrayList<List<Cycle>> cycleRecordForIntesification;
+    private int freqForInten0=10;
+    private int freqForIntensification=freqForInten0;
     
     
     
@@ -208,6 +210,7 @@ public class BranchAndPriceA <V> extends AbstractBranchAndPrice<SNDRC, Cycle, SN
 
         lowBoundQueue.add(rootNode);
         this.cycleRecordForIntesification=new ArrayList<>();
+
         
         // Start processing nodes until the queue is empty
         while (!queue.isEmpty()) {
@@ -404,7 +407,7 @@ public class BranchAndPriceA <V> extends AbstractBranchAndPrice<SNDRC, Cycle, SN
             
             //record cycles for intensification
             cycleRecordForIntesification.add(bapNode.getSolution());
-            if(cycleRecordForIntesification.size()>=10){
+            if(cycleRecordForIntesification.size()>=freqForIntensification){
             	Set<Cycle> cycleSet=new HashSet<>();
             	for(List<Cycle> cycleList:cycleRecordForIntesification){
             		for(Cycle cycle:cycleList){
@@ -548,6 +551,7 @@ public class BranchAndPriceA <V> extends AbstractBranchAndPrice<SNDRC, Cycle, SN
 		cplex.setParam(IloCplex.IntParam.Threads, 4);
 		cplex.setParam(IloCplex.Param.Simplex.Tolerances.Markowitz, 0.1);
 		cplex.setParam(IloCplex.DoubleParam.TiLim, 60); //1 minute
+		cplex.setParam(IloCplex.DoubleParam.EpGap,0.005);
 		List<Map<Integer,IloNumVar>> x; //map:edgeIndex, x variable
 //		Map<Path,IloNumVar> pathVarMap=new HashMap<>();
 		
@@ -755,7 +759,10 @@ public class BranchAndPriceA <V> extends AbstractBranchAndPrice<SNDRC, Cycle, SN
     			optXValues.add(map);
     		}
 
+    		freqForIntensification=freqForInten0;
     		System.out.println("We use intensification finding a better solution: "+cplex.getObjValue());
+        }else{
+            freqForIntensification=freqForIntensification*2;
         }
         
         //update cycleRecordForIntesification

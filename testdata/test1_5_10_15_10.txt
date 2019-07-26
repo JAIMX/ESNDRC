@@ -18,7 +18,7 @@ Connection	Origin	Destination		Service duration
 9	5	3	5
 10	5	4	4
 Demand
-20
+10
 Commodity	Origin node	Destination node	Time available Time due	Volume
 1	2	3	4	4	30
 2	3	4	13	13	10
@@ -30,16 +30,6 @@ Commodity	Origin node	Destination node	Time available Time due	Volume
 8	1	4	12	12	21
 9	3	2	10	10	27
 10	2	5	4	4	20
-11	4	1	15	15	10
-12	5	4	3	3	21
-13	1	4	2	2	14
-14	5	3	10	10	11
-15	5	2	14	14	28
-16	3	1	10	10	21
-17	3	4	15	15	21
-18	4	2	14	14	20
-19	1	2	5	5	16
-20	5	3	3	3	24
 Alpha
 2000
 beta
@@ -62,12 +52,12 @@ amount of vehicle limit
 20 20 20 20 20
 20 20 20 20 20
 store limit
-100 100 100 100 100
+10 10 10 10 10
 charge limit
 1 1 1 1 1
 charge parameter
 5
 charge once distance
-3
+2
 power capacity
 10

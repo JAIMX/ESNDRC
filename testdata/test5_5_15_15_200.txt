@@ -244,15 +244,15 @@ fixed cost of different trucks
 250 300
 50 150
 amount of vehicle limit
-200 200 200 200 200
-200 200 200 200 200
+20 20 20 20 20
+20 20 20 20 20
 store limit
-10000 10000 10000 10000 10000
+10 10 10 10 10
 charge limit
 1 1 1 1 1
 charge parameter
 5
 charge once distance
-3
+2
 power capacity
-12
+10
