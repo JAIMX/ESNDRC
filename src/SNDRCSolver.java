@@ -479,9 +479,10 @@ public class SNDRCSolver {
     
 	public static void main(String[] args) throws IOException {
     	
-    	SNDRC sndrc=new SNDRC("./data/testset/example.txt");
+//    	SNDRC sndrc=new SNDRC("./data/testset/example.txt");
 //    	SNDRC sndrc=new SNDRC("./data/testset/test1_5_10_15_10.txt");
 //    	SNDRC sndrc=new SNDRC("./data/testset/test3_5_15_25_25.txt");
+		SNDRC sndrc=new SNDRC("./data/testset/test4_5_15_15_100.txt");
 //    	SNDRC sndrc=new SNDRC("./data/testset/test5_5_15_15_200.txt");
     	
 //    	sndrc.outputFeature("./learningData/result/1-1.txt");

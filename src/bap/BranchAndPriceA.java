@@ -2,7 +2,9 @@ package bap;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.PrintWriter;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -13,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Queue;
+import java.util.Scanner;
 import java.util.Set;
 
 import org.jorlib.frameworks.columnGeneration.branchAndPrice.AbstractBranchAndPrice;
@@ -39,10 +42,17 @@ import cg.master.Master;
 import cg.master.SNDRCMasterData;
 import cg.master.cuts.StrongInequality;
 import cg.master.cuts.StrongInequalityGenerator;
+import ilog.concert.IloColumn;
 import ilog.concert.IloException;
+import ilog.concert.IloLinearNumExpr;
+import ilog.concert.IloNumVar;
+import ilog.concert.IloObjective;
+import ilog.concert.IloRange;
+import ilog.cplex.IloCplex;
 import ilog.cplex.IloCplex.UnknownObjectException;
 import logger.BapLoggerA;
 import model.SNDRC;
+import model.SNDRC.Demand;
 import model.SNDRC.Edge;
 import model.SNDRC.Service;
 
@@ -68,6 +78,7 @@ public class BranchAndPriceA <V> extends AbstractBranchAndPrice<SNDRC, Cycle, SN
     private int timeCompress;
     private boolean ifUseLearningUB;
     private final boolean ifOptGetFromSubGraph;
+    private ArrayList<List<Cycle>> cycleRecordForIntesification;
     
     
     
@@ -196,7 +207,8 @@ public class BranchAndPriceA <V> extends AbstractBranchAndPrice<SNDRC, Cycle, SN
             rootNode.addInitialColumns(this.generateInitialFeasibleSolution(rootNode));
 
         lowBoundQueue.add(rootNode);
-
+        this.cycleRecordForIntesification=new ArrayList<>();
+        
         // Start processing nodes until the queue is empty
         while (!queue.isEmpty()) {
             BAPNode<SNDRC, Cycle> bapNode = queue.poll();
@@ -389,6 +401,25 @@ public class BranchAndPriceA <V> extends AbstractBranchAndPrice<SNDRC, Cycle, SN
                 nodesProcessed++;
                 continue;
             }
+            
+            //record cycles for intensification
+            cycleRecordForIntesification.add(bapNode.getSolution());
+            if(cycleRecordForIntesification.size()>=10){
+            	Set<Cycle> cycleSet=new HashSet<>();
+            	for(List<Cycle> cycleList:cycleRecordForIntesification){
+            		for(Cycle cycle:cycleList){
+            			if(!cycleSet.contains(cycle)){
+            				cycleSet.add(cycle);
+            			}
+            		}
+            	}
+            	try {
+					Intensification(cycleSet);
+				} catch (IloException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+            }
 
             // If solution is integral, check whether it is better than the
             // current best solution
@@ -506,6 +537,233 @@ public class BranchAndPriceA <V> extends AbstractBranchAndPrice<SNDRC, Cycle, SN
         this.runtime = System.currentTimeMillis() - runtime;
     }
     
+    public void Intensification(Set<Cycle> cycleSet) throws IloException{
+    	
+    	System.out.println("==================Intensification===================");
+		IloCplex cplex=new IloCplex();
+		
+//		FileOutputStream outputStream=new FileOutputStream(new File("./output/cplexOut.txt"));
+//		cplex.setOut(outputStream);
+		
+		cplex.setParam(IloCplex.IntParam.Threads, 4);
+		cplex.setParam(IloCplex.Param.Simplex.Tolerances.Markowitz, 0.1);
+		cplex.setParam(IloCplex.DoubleParam.TiLim, 60); //1 minute
+		List<Map<Integer,IloNumVar>> x; //map:edgeIndex, x variable
+//		Map<Path,IloNumVar> pathVarMap=new HashMap<>();
+		
+		// Define variables x
+		x=new ArrayList<Map<Integer,IloNumVar>>();
+		for(int p=0;p<dataModel.numDemand;p++) {
+			Map<Integer,IloNumVar> initialX=new HashMap<Integer,IloNumVar>();
+			x.add(initialX);
+		}
+		
+		// add x variables
+		for(int p=0;p<dataModel.numDemand;p++) {
+			for(int edgeIndex:dataModel.edgesForX.get(p)) {
+				Edge edge=dataModel.edgeSet.get(edgeIndex);
+				IloNumVar varX=cplex.numVar(0, dataModel.demandSet.get(p).volume,"x" +p+","+ edge.start + "," + edge.end );
+				x.get(p).put(edgeIndex, varX);
+			}
+		}
+		
+		
+		// Define the objective
+		/**
+		 * Here we assume the cost of edge AT is 0
+		 */
+		IloLinearNumExpr exprObj = cplex.linearNumExpr();
+		
+		for(int p=0;p<dataModel.numDemand;p++) {
+			Map<Integer,IloNumVar> map=x.get(p);
+			for(int edgeIndex:map.keySet()) {
+				exprObj.addTerm(dataModel.beta*dataModel.edgeSet.get(edgeIndex).duration, map.get(edgeIndex));
+			}
+		}
+		
+
+		IloObjective obj = cplex.addMinimize(exprObj);
+		
+		
+		
+		// Define flowBalanceConstraints
+		IloRange[][] flowBalanceConstraints = new IloRange[dataModel.numDemand][dataModel.abstractNumNode];
+
+		IloLinearNumExpr expr = cplex.linearNumExpr();
+		for (int p = 0; p < dataModel.numDemand; p++) {
+			Map<Integer,IloNumVar> map=x.get(p);
+			
+			for (int i = 0; i < dataModel.abstractNumNode; i++) {
+				expr.clear();
+				// edges which point from i
+				for (int edgeIndex : dataModel.pointToEdgeSet.get(i)) {
+					if(map.containsKey(edgeIndex)) {
+						expr.addTerm(1, map.get(edgeIndex));
+					}
+				}
+
+				// edges which point to i
+				for (int edgeIndex : dataModel.pointFromEdgeSet.get(i)) {
+					if(map.containsKey(edgeIndex)) {
+						expr.addTerm(-1, map.get(edgeIndex));
+					}
+				}
+				flowBalanceConstraints[p][i] = cplex.addEq(dataModel.b[p][i], expr);
+
+			}
+		}
+		
+		
+		// Define weakForcingConstraints
+		IloRange[] weakForcingConstraints = new IloRange[dataModel.numServiceArc];
+		for (int arcIndex = 0; arcIndex < dataModel.numServiceArc; arcIndex++) {
+			expr.clear();
+			for (int p = 0; p < dataModel.numDemand; p++) {
+				if(x.get(p).containsKey(arcIndex)) {
+					expr.addTerm(1, x.get(p).get(arcIndex));
+				}
+			}
+
+			weakForcingConstraints[arcIndex] = cplex.addGe(0, expr);
+		}
+		
+		
+		
+		
+		// Define resourceBoundConstraints
+		IloRange[][] resourceBoundConstraints = new IloRange[dataModel.numOfCapacity][dataModel.numNode];
+		for (int s = 0; s < dataModel.numOfCapacity; s++) {
+			for (int o = 0; o < dataModel.numNode; o++) {
+//				expr.clear();
+//				expr.addTerm(1, q[s][o]);
+				expr.clear();
+//				resourceBoundConstraints[s][o] = cplex.addEq(dataModel.vehicleLimit[s][o], 0);
+//				resourceBoundConstraints[s][o]=cplex.range(0,dataModel.vehicleLimit[s][o]);
+				resourceBoundConstraints[s][o]=cplex.addRange(0,dataModel.vehicleLimit[s][o]);
+			}
+		}
+		
+        //Define storeBoundConstraints
+        IloRange[][] storeBoundConstraints=new IloRange[dataModel.numNode][dataModel.timePeriod];
+        for(int l=0;l<dataModel.numNode;l++) {
+        	for(int t=0;t<dataModel.timePeriod;t++) {
+        		expr.clear();
+        		int nodeIndex=l*dataModel.timePeriod+t;
+        		//search holding arc index
+        		int holdingEdgeIndex=-1;
+        		for(int i=dataModel.numServiceArc;i<dataModel.numArc;i++) {
+        			Edge edge=dataModel.edgeSet.get(i);
+        			if(edge.start==nodeIndex) {
+        				holdingEdgeIndex=i;
+        				break;
+        			}
+        		}
+        		
+        		for(int k=0;k<dataModel.numDemand;k++) {
+        			Demand demand=dataModel.demandSet.get(k);
+        			if(demand.destination!=l) {
+        				if(x.get(k).containsKey(holdingEdgeIndex)) {
+            				expr.addTerm(1, x.get(k).get(holdingEdgeIndex));
+        				}
+        			}
+        		}
+        		
+        		storeBoundConstraints[l][t]=cplex.addGe(dataModel.storeLimit[l], expr);
+        	}
+        }
+        
+        //Define chargeBoundConstraints
+        IloRange[][] chargeBoundConstraints=new IloRange[dataModel.numNode][dataModel.timePeriod];
+        
+        for(int l=0;l<dataModel.numNode;l++) {
+        	for(int t=0;t<dataModel.timePeriod;t++) {
+        		expr.clear();
+        		chargeBoundConstraints[l][t]=cplex.addGe(dataModel.chargeLimit[l], expr);
+        	}
+        }
+		
+		
+		
+		
+		// add all columns
+        int count=0;
+        Map<Cycle,IloNumVar> cycleVarMap=new HashMap<>();
+		for(Cycle cycle:cycleSet) {
+			// Register column with objective
+			IloColumn iloColumn = cplex.column(obj, cycle.cost);
+
+			// weak forcing constraints
+			for (int edgeIndex : cycle.edgeIndexSet) {
+				if(dataModel.edgeSet.get(edgeIndex).edgeType==0) {
+					iloColumn = iloColumn.and(cplex.column(weakForcingConstraints[edgeIndex],
+							-dataModel.capacity[cycle.associatedPricingProblem.capacityTypeS]));
+				}
+			}
+			
+			
+			// resource bound constraints
+			iloColumn = iloColumn.and(cplex.column(resourceBoundConstraints[cycle.associatedPricingProblem.capacityTypeS][cycle.associatedPricingProblem.originNodeO],1));
+			
+			//charge bound constraints
+			for(int chargeEdgeIndex:cycle.ifCharge){
+        		int chargeNodeIndex=dataModel.edgeSet.get(chargeEdgeIndex).start;
+        		int l=chargeNodeIndex/dataModel.timePeriod;
+        		int t=chargeNodeIndex%dataModel.timePeriod;
+        		iloColumn=iloColumn.and(cplex.column(chargeBoundConstraints[l][t],1));
+			}
+//			cplex.exportModel("check.lp");
+			
+			
+			// Create the variable and store it
+//			IloNumVar var =cplex.intVar(iloColumn, 0, dataModel.vehicleLimit[capacityType][originNode],"z_" + capacityType + ","+originNode+","+count);
+			IloNumVar var =cplex.intVar(iloColumn, 0, Integer.MAX_VALUE,"z_" + cycle.associatedPricingProblem.capacityTypeS + ","+cycle.associatedPricingProblem.originNodeO+","+count);
+			cycleVarMap.put(cycle, var);
+			count++;
+			
+		}
+		
+		
+		
+		cplex.solve();
+		
+		
+        int integerObjective = MathProgrammingUtil.doubleToInt(cplex.getObjValue());
+        
+        if (integerObjective < this.upperBoundOnObjective) {
+            this.objectiveIncumbentSolution = integerObjective;
+            this.upperBoundOnObjective = integerObjective;
+            this.incumbentSolution = new ArrayList<>();
+            for (Cycle cycle : cycleSet) {
+            	int value=MathProgrammingUtil.doubleToInt(cplex.getValue(cycleVarMap.get(cycle)));
+            	if(value>0){
+                    this.incumbentSolution.add(cycle);
+            	}
+            }
+            
+            optSolutionValueMap = new HashMap<>();
+            for (Cycle cycle : incumbentSolution) {
+            	double value=cplex.getValue(cycleVarMap.get(cycle));
+                optSolutionValueMap.put(cycle, value);
+            }
+            
+            optXValues=new ArrayList<>();
+    		for (int demand = 0; demand < dataModel.numDemand; demand++) {
+    			Map<Integer,Double> map=new HashMap<>();
+    			for (int edgeIndex: x.get(demand).keySet()) {
+    				map.put(edgeIndex, cplex.getValue(x.get(demand).get(edgeIndex)));
+    			}
+    			optXValues.add(map);
+    		}
+
+    		System.out.println("We use intensification finding a better solution: "+cplex.getObjValue());
+        }
+        
+        //update cycleRecordForIntesification
+        cycleRecordForIntesification.clear();
+        cycleRecordForIntesification.add(incumbentSolution);
+		
+    }
+    
     public String out(Cycle column) {
 
         Queue<Edge> path = new PriorityQueue<>();
@@ -557,7 +815,8 @@ public class BranchAndPriceA <V> extends AbstractBranchAndPrice<SNDRC, Cycle, SN
     public Double CalculateProb() {
         double prob = 2 - probLB;
         prob -= (2 - 2 * probLB) / (1 + Math.pow(Math.E, -c * nrNonImproForAcce));
-        return prob;
+//        return prob;
+        return -1.0;
     }
 
     public void AccelerationForUB(BAPNode<SNDRC, Cycle> bapNode) throws IloException {
