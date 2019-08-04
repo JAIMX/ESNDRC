@@ -481,9 +481,10 @@ public class SNDRCSolver {
     	
 //    	SNDRC sndrc=new SNDRC("./data/testset/test2_5_15_20_25.txt");
 //    	SNDRC sndrc=new SNDRC("./data/testset/test1_5_10_15_20.txt");
-    	SNDRC sndrc=new SNDRC("./data/testset/test3_5_15_25_25.txt");
+//    	SNDRC sndrc=new SNDRC("./data/testset/test3_5_15_20_50.txt");
 //		SNDRC sndrc=new SNDRC("./data/testset/test4_5_15_15_100.txt");
 //    	SNDRC sndrc=new SNDRC("./data/testset/test5_5_15_15_200.txt");
+    	SNDRC sndrc=new SNDRC("./testdata/test3_5_15_20_50.txt");
     	
 //    	sndrc.outputFeature("./learningData/result/1-1.txt");
     	SNDRCSolver solver=new SNDRCSolver(sndrc,"BAPlogger");

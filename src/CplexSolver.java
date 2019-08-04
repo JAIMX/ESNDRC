@@ -538,18 +538,17 @@ public class CplexSolver {
 
     public static void main(String[] args) throws IOException, IloException {
 
-        // for(String arg:args) {
-        // long time0=System.currentTimeMillis();
-        // SNDRC sndrc=new SNDRC(arg);
-        //
-        // CplexSolver cplexSolver=new
-        // CplexSolver(sndrc,"./output/path/outpath.txt");
-        // cplexSolver.GeneratePathFile();
-        // cplexSolver.Solve();
-        //
-        // long time1=System.currentTimeMillis();
-        // System.out.println("Total time= "+(time1-time0));
-        // }
+//        for (String arg : args) {
+//            long time0 = System.currentTimeMillis();
+//            SNDRC sndrc = new SNDRC(arg);
+//
+//            CplexSolver cplexSolver = new CplexSolver(sndrc, "./output/path/outpath.txt");
+//            cplexSolver.GeneratePathFile();
+//            cplexSolver.Solve();
+//
+//            long time1 = System.currentTimeMillis();
+//            System.out.println("Total time= " + (time1 - time0));
+//        }
 
         String path = "./testdata/";
 //        String path = "./data/testset/";
