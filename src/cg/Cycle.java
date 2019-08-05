@@ -58,7 +58,7 @@ public final class Cycle  extends AbstractColumn<SNDRC, SNDRCPricingProblem>{
 	
 	@Override
 	public String toString() {
-		return "artificial: "+isArtificialColumn+" edgeIndexset: "+edgeIndexSet.toString()+" start node= "+associatedPricingProblem.originNodeO+" start time= "+this.startTime+" capacity type= "+associatedPricingProblem.capacityTypeS+" ifChargeSet: "+ifCharge.toString();
+		return "artificial: "+isArtificialColumn+" edgeIndexset: "+edgeIndexSet.toString()+" start node= "+associatedPricingProblem.originNodeO+" start time= "+this.startTime+" capacity type= "+associatedPricingProblem.capacityTypeS+" edgeSet: "+edgeIndexSet.toString()+" ifChargeSet: "+ifCharge.toString();
 	}
 	
 

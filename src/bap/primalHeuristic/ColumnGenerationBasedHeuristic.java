@@ -35,6 +35,7 @@ import ilog.concert.IloObjective;
 import ilog.concert.IloRange;
 import ilog.cplex.IloCplex;
 import model.SNDRC;
+import model.SNDRC.Demand;
 import model.SNDRC.Edge;
 
 public class ColumnGenerationBasedHeuristic {
@@ -97,20 +98,23 @@ public class ColumnGenerationBasedHeuristic {
         for (int edgeIndex = 0; edgeIndex < dataModel.numServiceArc; edgeIndex++) {
             Set<Integer> set = new HashSet<>();
             set.add(edgeIndex);
-            Cycle cycle = new Cycle(pricingProblems.get(0), true, "Artificial", set, 100000000, 0, 0,temp);
+            HashSet<Integer> set2=new HashSet<>();
+            Cycle cycle = new Cycle(pricingProblems.get(0), true, "Artificial", set, 100000000, 0, 0,temp,set2);
             artificalVars.add(cycle);
         }
 
         // for resource bound constraints(ifForResourceBoundConstraints=1)
         for (SNDRCPricingProblem pricingProblem : pricingProblems) {
             Set<Integer> set = new HashSet<>();
-            Cycle cycle = new Cycle(pricingProblem, true, "Artificial", set, 100000000, 0, 1,temp);
+            HashSet<Integer> set2=new HashSet<>();
+            Cycle cycle = new Cycle(pricingProblem, true, "Artificial", set, 100000000, 0, 1,temp,set2);
             artificalVars.add(cycle);
         }
 
         // for holding edge branch constraints(ifForResourceBoundConstraints=2)
         Set<Integer> set = new HashSet<>();
-        Cycle cycle0 = new Cycle(pricingProblems.get(0), true, "Artificial", set, 100000000, 0, 2,temp);
+        HashSet<Integer> set2=new HashSet<>();
+        Cycle cycle0 = new Cycle(pricingProblems.get(0), true, "Artificial", set, 100000000, 0, 2,temp,set2);
         artificalVars.add(cycle0);
 
         // ----------------------------------generateInitialFeasibleSolution-------------------------------------------------//
@@ -310,6 +314,46 @@ public class ColumnGenerationBasedHeuristic {
                 resourceBoundConstraints[s][o] = cplex.addRange(0, dataModel.vehicleLimit[s][o]);
             }
         }
+        
+        //Define storeBoundConstraints
+        IloRange[][] storeBoundConstraints=new IloRange[dataModel.numNode][dataModel.timePeriod];
+        
+        for(int l=0;l<dataModel.numNode;l++) {
+            for(int t=0;t<dataModel.timePeriod;t++) {
+                expr.clear();
+                int nodeIndex=l*dataModel.timePeriod+t;
+                //search holding arc index
+                int holdingEdgeIndex=-1;
+                for(int i=dataModel.numServiceArc;i<dataModel.numArc;i++) {
+                    Edge edge=dataModel.edgeSet.get(i);
+                    if(edge.start==nodeIndex) {
+                        holdingEdgeIndex=i;
+                        break;
+                    }
+                }
+                
+                for(int k=0;k<dataModel.numDemand;k++) {
+                    Demand demand=dataModel.demandSet.get(k);
+                    if(demand.destination!=l) {
+                        if(x.get(k).containsKey(holdingEdgeIndex)) {
+                            expr.addTerm(1, x.get(k).get(holdingEdgeIndex));
+                        }
+                    }
+                }
+                
+                storeBoundConstraints[l][t]=cplex.addGe(dataModel.storeLimit[l], expr);
+            }
+        }
+        
+        //Define chargeBoundConstraints
+        IloRange[][] chargeBoundConstraints=new IloRange[dataModel.numNode][dataModel.timePeriod];
+        
+        for(int l=0;l<dataModel.numNode;l++) {
+            for(int t=0;t<dataModel.timePeriod;t++) {
+                expr.clear();
+                chargeBoundConstraints[l][t]=cplex.addGe(dataModel.chargeLimit[l], expr);
+            }
+        }
 
         // add all columns in cycleSet
         this.cycleVar = new HashMap<>();
@@ -330,11 +374,21 @@ public class ColumnGenerationBasedHeuristic {
                     }
 
                 }
+                
+
 
                 // resource bound constraints
                 iloColumn = iloColumn.and(cplex.column(
                         resourceBoundConstraints[cycle.associatedPricingProblem.capacityTypeS][cycle.associatedPricingProblem.originNodeO],
                         1));
+                
+                // charge bound constraints
+                for (int chargeEdgeIndex : cycle.ifCharge) {                   
+                    int chargeNodeIndex = dataModel.edgeSet.get(chargeEdgeIndex).start;
+                    int l = chargeNodeIndex / dataModel.timePeriod;
+                    int t = chargeNodeIndex % dataModel.timePeriod;
+                    iloColumn = iloColumn.and(cplex.column(chargeBoundConstraints[l][t], 1));
+                }
 
                 // Create the variable and store it
                 IloIntVar var = cplex.intVar(iloColumn, 0, Integer.MAX_VALUE,
@@ -361,7 +415,7 @@ public class ColumnGenerationBasedHeuristic {
 
         runTime = System.currentTimeMillis() - runTime;
 //        long timeLeft = 3600000 - runTime;
-        long timeLeft = 180000; //3 mins
+        long timeLeft = 7200000; //3 mins
 //        long timeLeft = 20000 - runTime;
         cplex.setParam(IloCplex.DoubleParam.TiLim, timeLeft / 1000);
         cplex.setParam(IloCplex.DoubleParam.EpGap, 0.01);
@@ -494,7 +548,7 @@ public class ColumnGenerationBasedHeuristic {
             // properties.setProperty("PRECISION", "0.001");
             Configuration.readFromFile(properties);
 
-            ColumnGenerationBasedHeuristic solver = new ColumnGenerationBasedHeuristic(sndrc, 0.65, true,3600);
+            ColumnGenerationBasedHeuristic solver = new ColumnGenerationBasedHeuristic(sndrc, 0.65, true,180);
             solver.Solve();
             long time1 = System.currentTimeMillis();
             System.out.println("Total time= " + (time1 - time0));

@@ -1,0 +1,58 @@
+Fleet size
+6
+No of nodes
+5
+Time periods
+15
+Service connections and holding arcs
+10
+Connection	Origin	Destination		Service duration
+1	1	5	3
+2	1	2	4
+3	2	3	4
+4	2	1	5
+5	3	4	3
+6	3	1	4
+7	4	2	5
+8	4	5	4
+9	5	3	5
+10	5	4	4
+Demand
+5
+Commodity	Origin node	Destination node	Time available Time due	Volume
+1	2	3	4	4	30
+2	3	4	13	13	10
+3	1	3	2	2	30
+4	3	4	5	5	19
+5	3	1	7	7	17
+Alpha
+2000
+beta
+1
+speed
+50
+drivingtimeperday
+10
+number of type of capacities
+2
+capcity
+20 50
+fixed cost of different trucks
+200 300
+150 200
+100 300
+250 300
+50 150
+amount of vehicle limit
+20 20 20 20 20
+20 20 20 20 20
+store limit
+100 100 100 100 100
+charge limit
+10 10 10 10 10
+charge parameter
+5
+charge once distance
+2
+power capacity
+15
