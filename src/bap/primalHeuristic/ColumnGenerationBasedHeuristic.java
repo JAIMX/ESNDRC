@@ -48,18 +48,18 @@ public class ColumnGenerationBasedHeuristic {
     public Map<Cycle, Double> optSolutionValueMap;
     public List<Map<Integer, Double>> optXValues;
 
-
     Map<Cycle, IloIntVar> cycleVar;
     List<Map<Integer, IloNumVar>> x; // map:edgeIndex, x variable
     long runTime = 0;
     private int cgTimeLimit;
 
-    public ColumnGenerationBasedHeuristic(SNDRC dataModel, Double thresholdValue, boolean ifAccelerationForUB,int cgTimeLimit) {
+    public ColumnGenerationBasedHeuristic(SNDRC dataModel, Double thresholdValue, boolean ifAccelerationForUB,
+            int cgTimeLimit) {
         this.dataModel = dataModel;
         this.thresholdValue = thresholdValue;
         this.ifAccelerationForUB = ifAccelerationForUB;
         this.objectiveIncumbentSolution = Integer.MAX_VALUE;
-        this.cgTimeLimit=cgTimeLimit;
+        this.cgTimeLimit = cgTimeLimit;
     }
 
     public void Solve() throws TimeLimitExceededException, IloException {
@@ -92,44 +92,47 @@ public class ColumnGenerationBasedHeuristic {
                 .singletonList(ExactPricingProblemSolver.class);
 
         // ----------------------------------generateInitialFeasibleSolution-------------------------------------------------//
-        int[] temp=new int[dataModel.numService];
+        int[] temp = new int[dataModel.numService];
         List<Cycle> artificalVars = new ArrayList<Cycle>();
         // for weak forcing constraints(ifForResourceBoundConstraints=0)
         for (int edgeIndex = 0; edgeIndex < dataModel.numServiceArc; edgeIndex++) {
             Set<Integer> set = new HashSet<>();
             set.add(edgeIndex);
-            HashSet<Integer> set2=new HashSet<>();
-            Cycle cycle = new Cycle(pricingProblems.get(0), true, "Artificial", set, 100000000, 0, 0,temp,set2);
+            HashSet<Integer> set2 = new HashSet<>();
+            Cycle cycle = new Cycle(pricingProblems.get(0), true, "Artificial", set, 100000000, 0, 0, temp, set2);
             artificalVars.add(cycle);
         }
 
         // for resource bound constraints(ifForResourceBoundConstraints=1)
         for (SNDRCPricingProblem pricingProblem : pricingProblems) {
             Set<Integer> set = new HashSet<>();
-            HashSet<Integer> set2=new HashSet<>();
-            Cycle cycle = new Cycle(pricingProblem, true, "Artificial", set, 100000000, 0, 1,temp,set2);
+            HashSet<Integer> set2 = new HashSet<>();
+            Cycle cycle = new Cycle(pricingProblem, true, "Artificial", set, 100000000, 0, 1, temp, set2);
             artificalVars.add(cycle);
         }
 
         // for holding edge branch constraints(ifForResourceBoundConstraints=2)
         Set<Integer> set = new HashSet<>();
-        HashSet<Integer> set2=new HashSet<>();
-        Cycle cycle0 = new Cycle(pricingProblems.get(0), true, "Artificial", set, 100000000, 0, 2,temp,set2);
+        HashSet<Integer> set2 = new HashSet<>();
+        Cycle cycle0 = new Cycle(pricingProblems.get(0), true, "Artificial", set, 100000000, 0, 2, temp, set2);
         artificalVars.add(cycle0);
 
         // ----------------------------------generateInitialFeasibleSolution-------------------------------------------------//
 
-//        ColGen<SNDRC, Cycle, SNDRCPricingProblem> cg = new ColGen<SNDRC, Cycle, SNDRCPricingProblem>(dataModel, master,
-//                pricingProblems, solvers, artificalVars, Integer.MAX_VALUE, Double.MIN_VALUE);
-        long timeLimit=System.currentTimeMillis()+180000; //3mins
-        ColGenConditionalTerminate cg = new ColGenConditionalTerminate(dataModel, master, pricingProblems, solvers, artificalVars, Integer.MAX_VALUE, Double.MIN_VALUE,timeLimit);
+        // ColGen<SNDRC, Cycle, SNDRCPricingProblem> cg = new ColGen<SNDRC,
+        // Cycle, SNDRCPricingProblem>(dataModel, master,
+        // pricingProblems, solvers, artificalVars, Integer.MAX_VALUE,
+        // Double.MIN_VALUE);
+        long timeLimit = System.currentTimeMillis() + 180000; // 3mins
+        ColGenConditionalTerminate cg = new ColGenConditionalTerminate(dataModel, master, pricingProblems, solvers,
+                artificalVars, Integer.MAX_VALUE, Double.MIN_VALUE, timeLimit);
 
         // SimpleDebugger debugger = new SimpleDebugger(cg);
 
-         SimpleCGLogger logger = new SimpleCGLogger(cg, new File("./output/cgBasedHeuristicLogger.log"));
+        SimpleCGLogger logger = new SimpleCGLogger(cg, new File("./output/cgBasedHeuristicLogger.log"));
 
-//        cg.solve(System.currentTimeMillis() + 36000000L); // 10 hour limit
-        cgTimeLimit=cgTimeLimit*1000;
+        // cg.solve(System.currentTimeMillis() + 36000000L); // 10 hour limit
+        cgTimeLimit = cgTimeLimit * 1000;
         cg.solve(System.currentTimeMillis() + cgTimeLimit);
 
         System.out.println("Time of first LP solve= " + (System.currentTimeMillis() - runTime));
@@ -181,10 +184,12 @@ public class ColumnGenerationBasedHeuristic {
                 }
 
                 List<Cycle> nullList = new ArrayList<>();
-//                cg = new ColGen<>(dataModel, master, pricingProblems, solvers, nullList, Integer.MAX_VALUE,
-//                        Double.MIN_VALUE);
-                timeLimit=System.currentTimeMillis()+180000;
-                cg = new ColGenConditionalTerminate(dataModel, master, pricingProblems, solvers, artificalVars, Integer.MAX_VALUE, Double.MIN_VALUE,timeLimit);
+                // cg = new ColGen<>(dataModel, master, pricingProblems,
+                // solvers, nullList, Integer.MAX_VALUE,
+                // Double.MIN_VALUE);
+                timeLimit = System.currentTimeMillis() + 180000;
+                cg = new ColGenConditionalTerminate(dataModel, master, pricingProblems, solvers, artificalVars,
+                        Integer.MAX_VALUE, Double.MIN_VALUE, timeLimit);
                 cg.solve(System.currentTimeMillis() + 18000000L); // 5 hour
 
                 if (isInfeasibleNode(cg.getSolution())) {
@@ -229,7 +234,7 @@ public class ColumnGenerationBasedHeuristic {
         /// construct a cplex
         /// model------------------------------------------------------------------///
         IloCplex cplex = new IloCplex();
-//        cplex.setOut(null);
+        // cplex.setOut(null);
         cplex.setParam(IloCplex.IntParam.Threads, 4);
         cplex.setParam(IloCplex.Param.Simplex.Tolerances.Markowitz, 0.1);
 
@@ -314,44 +319,44 @@ public class ColumnGenerationBasedHeuristic {
                 resourceBoundConstraints[s][o] = cplex.addRange(0, dataModel.vehicleLimit[s][o]);
             }
         }
-        
-        //Define storeBoundConstraints
-        IloRange[][] storeBoundConstraints=new IloRange[dataModel.numNode][dataModel.timePeriod];
-        
-        for(int l=0;l<dataModel.numNode;l++) {
-            for(int t=0;t<dataModel.timePeriod;t++) {
+
+        // Define storeBoundConstraints
+        IloRange[][] storeBoundConstraints = new IloRange[dataModel.numNode][dataModel.timePeriod];
+
+        for (int l = 0; l < dataModel.numNode; l++) {
+            for (int t = 0; t < dataModel.timePeriod; t++) {
                 expr.clear();
-                int nodeIndex=l*dataModel.timePeriod+t;
-                //search holding arc index
-                int holdingEdgeIndex=-1;
-                for(int i=dataModel.numServiceArc;i<dataModel.numArc;i++) {
-                    Edge edge=dataModel.edgeSet.get(i);
-                    if(edge.start==nodeIndex) {
-                        holdingEdgeIndex=i;
+                int nodeIndex = l * dataModel.timePeriod + t;
+                // search holding arc index
+                int holdingEdgeIndex = -1;
+                for (int i = dataModel.numServiceArc; i < dataModel.numArc; i++) {
+                    Edge edge = dataModel.edgeSet.get(i);
+                    if (edge.start == nodeIndex) {
+                        holdingEdgeIndex = i;
                         break;
                     }
                 }
-                
-                for(int k=0;k<dataModel.numDemand;k++) {
-                    Demand demand=dataModel.demandSet.get(k);
-                    if(demand.destination!=l) {
-                        if(x.get(k).containsKey(holdingEdgeIndex)) {
+
+                for (int k = 0; k < dataModel.numDemand; k++) {
+                    Demand demand = dataModel.demandSet.get(k);
+                    if (demand.destination != l) {
+                        if (x.get(k).containsKey(holdingEdgeIndex)) {
                             expr.addTerm(1, x.get(k).get(holdingEdgeIndex));
                         }
                     }
                 }
-                
-                storeBoundConstraints[l][t]=cplex.addGe(dataModel.storeLimit[l], expr);
+
+                storeBoundConstraints[l][t] = cplex.addGe(dataModel.storeLimit[l], expr);
             }
         }
-        
-        //Define chargeBoundConstraints
-        IloRange[][] chargeBoundConstraints=new IloRange[dataModel.numNode][dataModel.timePeriod];
-        
-        for(int l=0;l<dataModel.numNode;l++) {
-            for(int t=0;t<dataModel.timePeriod;t++) {
+
+        // Define chargeBoundConstraints
+        IloRange[][] chargeBoundConstraints = new IloRange[dataModel.numNode][dataModel.timePeriod];
+
+        for (int l = 0; l < dataModel.numNode; l++) {
+            for (int t = 0; t < dataModel.timePeriod; t++) {
                 expr.clear();
-                chargeBoundConstraints[l][t]=cplex.addGe(dataModel.chargeLimit[l], expr);
+                chargeBoundConstraints[l][t] = cplex.addGe(dataModel.chargeLimit[l], expr);
             }
         }
 
@@ -374,16 +379,14 @@ public class ColumnGenerationBasedHeuristic {
                     }
 
                 }
-                
-
 
                 // resource bound constraints
                 iloColumn = iloColumn.and(cplex.column(
                         resourceBoundConstraints[cycle.associatedPricingProblem.capacityTypeS][cycle.associatedPricingProblem.originNodeO],
                         1));
-                
+
                 // charge bound constraints
-                for (int chargeEdgeIndex : cycle.ifCharge) {                   
+                for (int chargeEdgeIndex : cycle.ifCharge) {
                     int chargeNodeIndex = dataModel.edgeSet.get(chargeEdgeIndex).start;
                     int l = chargeNodeIndex / dataModel.timePeriod;
                     int t = chargeNodeIndex % dataModel.timePeriod;
@@ -405,7 +408,6 @@ public class ColumnGenerationBasedHeuristic {
         /// solve and
         /// output------------------------------------------------------------------///
 
-        
         cg.close();
         cutHandler.close();
 
@@ -414,13 +416,13 @@ public class ColumnGenerationBasedHeuristic {
         System.out.println();
 
         runTime = System.currentTimeMillis() - runTime;
-//        long timeLeft = 3600000 - runTime;
-        long timeLeft = 7200000; //3 mins
-//        long timeLeft = 20000 - runTime;
+        // long timeLeft = 3600000 - runTime;
+        long timeLeft = 7200000; // 3 mins
+        // long timeLeft = 20000 - runTime;
         cplex.setParam(IloCplex.DoubleParam.TiLim, timeLeft / 1000);
         cplex.setParam(IloCplex.DoubleParam.EpGap, 0.01);
-        
-//        cplex.exportModel("./output/masterLP/" + "check"  + ".lp");
+
+        // cplex.exportModel("./output/masterLP/" + "check" + ".lp");
         cplex.solve();
         System.out.println("optimal objective= " + cplex.getObjValue());
         System.out.println();
@@ -429,19 +431,19 @@ public class ColumnGenerationBasedHeuristic {
         if (cplex.getObjValue() < this.objectiveIncumbentSolution) {
 
             int integerObjective = MathProgrammingUtil.doubleToInt(cplex.getObjValue());
-//            int integerObjective = (int) Math.round(cplex.getObjValue());
+            // int integerObjective = (int) Math.round(cplex.getObjValue());
 
             this.objectiveIncumbentSolution = integerObjective;
             this.incumbentSolution = new ArrayList<>();
-            
+
             for (Cycle cycle : cycleVar.keySet()) {
                 IloIntVar var = cycleVar.get(cycle);
-//                int value = (int) cplex.getValue(var);
+                // int value = (int) cplex.getValue(var);
                 int value = MathProgrammingUtil.doubleToInt(cplex.getValue(var));
 
                 if (value > 0.01) {
                     this.incumbentSolution.add(cycle);
-                    cycle.value=value;
+                    cycle.value = value;
                 }
 
             }
@@ -537,21 +539,41 @@ public class ColumnGenerationBasedHeuristic {
     }
 
     public static void main(String[] args) throws IOException, TimeLimitExceededException, IloException {
-        SNDRC sndrc;
-        for (String arg : args) {
-            long time0 = System.currentTimeMillis();
-            sndrc = new SNDRC(arg);
-            // sndrc.Output();
-            Properties properties = new Properties();
-            // properties.setProperty("EXPORT_MODEL", "True");
-            // properties.setProperty("MAXTHREADS", "10");
-            // properties.setProperty("PRECISION", "0.001");
-            Configuration.readFromFile(properties);
+//        SNDRC sndrc;
+//        for (String arg : args) {
+//            long time0 = System.currentTimeMillis();
+//            sndrc = new SNDRC(arg);
+//            // sndrc.Output();
+//            Properties properties = new Properties();
+//            // properties.setProperty("EXPORT_MODEL", "True");
+//            // properties.setProperty("MAXTHREADS", "10");
+//            // properties.setProperty("PRECISION", "0.001");
+//            Configuration.readFromFile(properties);
+//
+//            ColumnGenerationBasedHeuristic solver = new ColumnGenerationBasedHeuristic(sndrc, 0.65, false, 180);
+//            solver.Solve();
+//            long time1 = System.currentTimeMillis();
+//            System.out.println("Total time= " + (time1 - time0));
+//        }
 
-            ColumnGenerationBasedHeuristic solver = new ColumnGenerationBasedHeuristic(sndrc, 0.65, true,180);
-            solver.Solve();
-            long time1 = System.currentTimeMillis();
-            System.out.println("Total time= " + (time1 - time0));
+        String path = "./testdata/";
+        // String path = "./data/testset/";
+        File file = new File(path);
+        File[] fs = file.listFiles();
+
+        for (File f : fs) {
+            if (!f.isDirectory() && !f.isHidden()) {
+
+                System.out.println("Solve for " + f.getName());
+                long time0 = System.currentTimeMillis();
+                SNDRC sndrc = new SNDRC(f.toString());
+                ColumnGenerationBasedHeuristic solver = new ColumnGenerationBasedHeuristic(sndrc, 0.65, false, 180);
+                solver.Solve();
+
+                long time1 = System.currentTimeMillis();
+                System.out.println("Total time= " + (time1 - time0));
+
+            }
         }
 
     }
