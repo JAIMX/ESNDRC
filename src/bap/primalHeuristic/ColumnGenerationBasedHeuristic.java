@@ -123,7 +123,7 @@ public class ColumnGenerationBasedHeuristic {
         // Cycle, SNDRCPricingProblem>(dataModel, master,
         // pricingProblems, solvers, artificalVars, Integer.MAX_VALUE,
         // Double.MIN_VALUE);
-        long timeLimit = System.currentTimeMillis() + 180000; // 3mins
+        long timeLimit = System.currentTimeMillis() + 600000; // 10mins
         ColGenConditionalTerminate cg = new ColGenConditionalTerminate(dataModel, master, pricingProblems, solvers,
                 artificalVars, Integer.MAX_VALUE, Double.MIN_VALUE, timeLimit);
 
@@ -567,7 +567,7 @@ public class ColumnGenerationBasedHeuristic {
                 System.out.println("Solve for " + f.getName());
                 long time0 = System.currentTimeMillis();
                 SNDRC sndrc = new SNDRC(f.toString());
-                ColumnGenerationBasedHeuristic solver = new ColumnGenerationBasedHeuristic(sndrc, 0.65, false, 180);
+                ColumnGenerationBasedHeuristic solver = new ColumnGenerationBasedHeuristic(sndrc, 0.65, false, 3600);
                 solver.Solve();
 
                 long time1 = System.currentTimeMillis();

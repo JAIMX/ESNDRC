@@ -484,33 +484,28 @@ public class SNDRCSolver {
 //    	SNDRC sndrc=new SNDRC("./data/testset/test3_5_15_20_50.txt");
 //		SNDRC sndrc=new SNDRC("./data/testset/test4_5_15_15_100.txt");
 //    	SNDRC sndrc=new SNDRC("./data/testset/test5_5_15_15_200.txt");
-    	SNDRC sndrc=new SNDRC("./testdata/test3_5_15_20_50.txt");
+//    	SNDRC sndrc=new SNDRC("./testdata/test3_5_15_20_50.txt");
     	
 //    	sndrc.outputFeature("./learningData/result/1-1.txt");
-    	SNDRCSolver solver=new SNDRCSolver(sndrc,"BAPlogger");
+//    	SNDRCSolver solver=new SNDRCSolver(sndrc,"BAPlogger");
 //    	solver.output("./learningData/result/1-2.txt", solver.bap);
     	
-//    	int count=0;
-//    	String path="../learningData/test";
-//    	File file=new File(path);
-//    	File[] fs=file.listFiles();
-//    	
-//    	for(File f:fs){
-//    		if(!f.isDirectory()&&!f.isHidden()){
-//    			String filename=count+"_0.txt";
-//    			
-//    		    System.out.println("Sovle for "+f.toString());
-//    		    System.out.println();
-//    	    	SNDRC sndrc=new SNDRC(f.toString());
-//    	    	sndrc.outputFeature("../learningData/result/"+filename);
-//    	    	SNDRCSolver solver=new SNDRCSolver(sndrc,"BAPlogger");
-//    	    	filename=count+"_1.txt";
-//    	    	solver.output("../learningData/result/"+filename, solver.bap);
-//    	    	
-//    	    	count++;
-//    			System.out.println();
-//    		}
-//    	}
+    	String path="./testdata/";
+    	File file=new File(path);
+    	File[] fs=file.listFiles();
+    	
+    	for(File f:fs){
+    		if(!f.isDirectory()&&!f.isHidden()){
+    		    long time0 = System.currentTimeMillis();
+    		    System.out.println("Sovle for "+f.getName());
+    	    	SNDRC sndrc=new SNDRC(f.toString());
+    	    	SNDRCSolver solver=new SNDRCSolver(sndrc,"BAPlogger");
+    	    	
+                long time1 = System.currentTimeMillis();
+                System.out.println("Total time= " + (time1 - time0));
+                System.out.println();
+    		}
+    	}
 
 //        SNDRC sndrc;
 //        for (String arg : args) {

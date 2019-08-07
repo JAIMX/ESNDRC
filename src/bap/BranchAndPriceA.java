@@ -79,7 +79,7 @@ public class BranchAndPriceA <V> extends AbstractBranchAndPrice<SNDRC, Cycle, SN
     private boolean ifUseLearningUB;
     private final boolean ifOptGetFromSubGraph;
     private ArrayList<List<Cycle>> cycleRecordForIntesification;
-    private int freqForInten0=10;
+    private int freqForInten0=5;
     private int freqForIntensification=freqForInten0;
     
     
@@ -550,7 +550,7 @@ public class BranchAndPriceA <V> extends AbstractBranchAndPrice<SNDRC, Cycle, SN
 		
 		cplex.setParam(IloCplex.IntParam.Threads, 4);
 		cplex.setParam(IloCplex.Param.Simplex.Tolerances.Markowitz, 0.1);
-		cplex.setParam(IloCplex.DoubleParam.TiLim, 60); //1 minute
+		cplex.setParam(IloCplex.DoubleParam.TiLim, 1200); //1 minute
 		cplex.setParam(IloCplex.DoubleParam.EpGap,0.005);
 		List<Map<Integer,IloNumVar>> x; //map:edgeIndex, x variable
 //		Map<Path,IloNumVar> pathVarMap=new HashMap<>();
