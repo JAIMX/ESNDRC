@@ -499,7 +499,7 @@ public class SNDRCSolver {
     		    long time0 = System.currentTimeMillis();
     		    System.out.println("Sovle for "+f.getName());
     	    	SNDRC sndrc=new SNDRC(f.toString());
-    	    	SNDRCSolver solver=new SNDRCSolver(sndrc,"BAPlogger");
+    	    	SNDRCSolver solver=new SNDRCSolver(sndrc,f.getName());
     	    	
                 long time1 = System.currentTimeMillis();
                 System.out.println("Total time= " + (time1 - time0));

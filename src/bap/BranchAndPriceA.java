@@ -30,6 +30,8 @@ import org.jorlib.frameworks.columnGeneration.master.cutGeneration.CutHandler;
 import org.jorlib.frameworks.columnGeneration.pricing.AbstractPricingProblemSolver;
 import org.jorlib.frameworks.columnGeneration.util.MathProgrammingUtil;
 
+import com.sun.xml.internal.bind.v2.runtime.unmarshaller.XsiNilLoader.Array;
+
 import bap.bapNodeComparators.NodeBoundbapNodeComparator;
 import bap.bapNodeComparators.NodeBoundbapNodeComparatorForLB;
 import bap.branching.BranchOnLocalService;
@@ -210,6 +212,7 @@ public class BranchAndPriceA <V> extends AbstractBranchAndPrice<SNDRC, Cycle, SN
 
         lowBoundQueue.add(rootNode);
         this.cycleRecordForIntesification=new ArrayList<>();
+        Map<Cycle,Double> lpSumColumnCount=new HashMap<>();
 
         
         // Start processing nodes until the queue is empty
@@ -407,6 +410,14 @@ public class BranchAndPriceA <V> extends AbstractBranchAndPrice<SNDRC, Cycle, SN
             
             //record cycles for intensification
             cycleRecordForIntesification.add(bapNode.getSolution());
+            for(Cycle cycle:bapNode.getSolution()){
+            	if(lpSumColumnCount.containsKey(cycle)){
+            		lpSumColumnCount.put(cycle, lpSumColumnCount.get(cycle)+cycle.value);
+            	}else{
+            		lpSumColumnCount.put(cycle, cycle.value);
+            	}
+            }
+            
             if(cycleRecordForIntesification.size()>=freqForIntensification){
             	Set<Cycle> cycleSet=new HashSet<>();
             	for(List<Cycle> cycleList:cycleRecordForIntesification){
@@ -416,13 +427,19 @@ public class BranchAndPriceA <V> extends AbstractBranchAndPrice<SNDRC, Cycle, SN
             			}
             		}
             	}
+            	
+            	System.out.println("Before intensification, we have "+cycleSet.size()+" columns");
+            	System.out.println("After pick up:");
+            	Set<Cycle> subCycleSet=subCycle(lpSumColumnCount,cycleSet);
             	try {
-					Intensification(cycleSet);
+					Intensification(subCycleSet);
 				} catch (IloException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
             }
+            
+            
 
             // If solution is integral, check whether it is better than the
             // current best solution
@@ -540,9 +557,149 @@ public class BranchAndPriceA <V> extends AbstractBranchAndPrice<SNDRC, Cycle, SN
         this.runtime = System.currentTimeMillis() - runtime;
     }
     
+    public Set<Cycle> subCycle(Map<Cycle, Double>lpSumColumnCount, Set<Cycle> cycleSet){
+
+    	//note that we store artificial variables
+    	Set<Cycle> artificialCycle=new HashSet<>();
+    	for(Cycle cycle:cycleSet){
+    		if(cycle.isArtificialColumn){
+    			cycleSet.remove(cycle);
+    			artificialCycle.add(cycle);
+    		}
+    	}
+    	
+//    	System.out.println(lpSumColumnCount.toString());
+//    	System.out.println(cycleSet.size());
+//    	System.out.println(artificialCycle.size());
+    	
+    	//classify by pattern,we transfer int[] to string to recognize
+    	Map<String,ArrayList<Cycle>> group=new HashMap<>();
+    	for(Cycle cycle:cycleSet){
+    		String string=Arrays.toString(cycle.pattern);
+    		if(!group.containsKey(string)){
+    			ArrayList<Cycle> list=new ArrayList<>();
+    			list.add(cycle);
+    			group.put(string, list);
+    		}else{
+    			group.get(string).add(cycle);
+    		}
+    	}
+    	
+//    	System.out.println("group");
+//    	for(String string:group.keySet()){
+//    		System.out.println(string+" "+group.get(string).size());
+//    	}
+    	
+    	//calculate distances in each group and record them in priority queue
+    	PriorityQueue<CyclePair> pq=new PriorityQueue<CyclePair>();
+    	for(String string:group.keySet()){
+    		ArrayList<Cycle> list=group.get(string);
+    		for(int i=0;i<list.size()-1;i++){
+    			for(int j=i+1;j<list.size();j++){
+    				Cycle cycle1=list.get(i);
+    				Cycle cycle2=list.get(j);
+    				CyclePair pair=new CyclePair(cycle1, cycle2, calDistance(cycle1,cycle2));
+    				pq.add(pair);
+    			}
+    		}
+    	}
+    	
+    	//delete cycles
+    	while(cycleSet.size()>40&&pq.size()>0){
+    		CyclePair pair=pq.poll();
+    		if(cycleSet.contains(pair.cycle1)&&cycleSet.contains(pair.cycle2)){
+        		if(lpSumColumnCount.get(pair.cycle1)>lpSumColumnCount.get(pair.cycle2)){
+        			cycleSet.remove(pair.cycle2);
+        		}else{
+        			cycleSet.remove(pair.cycle1);
+        		}
+    		}
+    	}
+    	
+    	cycleSet.addAll(artificialCycle);
+    	return cycleSet;
+    	
+    }
+    
+    public double calDistance(Cycle cycle1,Cycle cycle2){
+    	//for each service,we record the start time and calculate the difference
+    	ArrayList<Integer>[] record1=(ArrayList<Integer>[]) new ArrayList[dataModel.numService];
+    	ArrayList<Integer>[] record2=(ArrayList<Integer>[]) new ArrayList[dataModel.numService];
+    	for(int edgeIndex:cycle1.edgeIndexSet){
+    		Edge edge=dataModel.edgeSet.get(edgeIndex);
+    		if(edge.edgeType==0){ //service edge
+    			if(record1[edge.serviceIndex]==null){
+    				ArrayList<Integer> list=new ArrayList<>();
+    				list.add(edge.t1);
+    				record1[edge.serviceIndex]=list;
+    			}else{
+    				record1[edge.serviceIndex].add(edge.t1);
+    			}
+    		}
+    	}
+    	
+    	for(int edgeIndex:cycle2.edgeIndexSet){
+    		Edge edge=dataModel.edgeSet.get(edgeIndex);
+    		if(edge.edgeType==0){ //service edge
+    			if(record2[edge.serviceIndex]==null){
+    				ArrayList<Integer> list=new ArrayList<>();
+    				list.add(edge.t1);
+    				record2[edge.serviceIndex]=list;
+    			}else{
+    				record2[edge.serviceIndex].add(edge.t1);
+    			}
+    		}
+    	}
+    	
+    	double sum=0;
+    	int count=0;
+    	for(int i=0;i<dataModel.numService;i++){
+    		ArrayList<Integer> list1=record1[i];
+    		ArrayList<Integer> list2=record2[i];
+    		
+
+    		if(list1!=null){
+    			Collections.sort(list1);
+    			Collections.sort(list2);
+        		for(int j=0;j<list1.size();j++){
+        			sum+=Math.abs(list1.get(j)-list2.get(j));
+        			if(list1.get(j)!=list2.get(j)) count++;
+        		}
+    		}
+
+    	}
+    	
+    	return sum/count; 	
+    	
+    }
+    
+    private class CyclePair implements Comparable<CyclePair>{
+    	private Cycle cycle1,cycle2;
+    	private double distance;
+    	
+    	public CyclePair(Cycle cycle1,Cycle cycle2,double distance){
+    		this.cycle1=cycle1;
+    		this.cycle2=cycle2;
+    		this.distance=distance;
+    	}
+    	
+    	@Override
+    	public int compareTo(CyclePair that){
+            if(this.distance<that.distance-0.001){
+    			return -1;
+    		}else{
+    			if(this.distance>that.distance+0.001){
+    				return 1;
+    			}
+    		}
+            return 0;
+    	}
+    }
+    
     public void Intensification(Set<Cycle> cycleSet) throws IloException{
     	
     	System.out.println("==================Intensification===================");
+    	System.out.println("We add "+cycleSet.size()+" columns to cplex.");
 		IloCplex cplex=new IloCplex();
 		
 //		FileOutputStream outputStream=new FileOutputStream(new File("./output/cplexOut.txt"));
