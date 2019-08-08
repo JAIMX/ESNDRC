@@ -116,7 +116,7 @@ public class SNDRCSolver {
 //        BapLoggerB_M logger = new BapLoggerB_M(bap, new File("./output/BAPlogger.log"));
 //        BapLoggerB_M logger = new BapLoggerB_M(bap, new File("./output/"+fileName+".log"));
 //        BapLoggerA_M logger = new BapLoggerA_M(bap, new File("./output/BAPlogger.log"));
-        BapLoggerA logger = new BapLoggerA(bap, new File("./output/BAPlogger.log"));
+        BapLoggerA logger = new BapLoggerA(bap, new File("./output/"+fileName+".log"));
 
         // Solve the TSP problem through Branch-and-Price
         // bap.runBranchAndPrice(System.currentTimeMillis()+18000000L); //5

@@ -80,7 +80,8 @@ public class BranchAndPriceA <V> extends AbstractBranchAndPrice<SNDRC, Cycle, SN
     private int timeCompress;
     private boolean ifUseLearningUB;
     private final boolean ifOptGetFromSubGraph;
-    private ArrayList<List<Cycle>> cycleRecordForIntesification;
+    private int cycleRecordForIntesification;
+    private Set<Cycle> cycleSetRecord;
     private int freqForInten0=5;
     private int freqForIntensification=freqForInten0;
     
@@ -211,7 +212,7 @@ public class BranchAndPriceA <V> extends AbstractBranchAndPrice<SNDRC, Cycle, SN
             rootNode.addInitialColumns(this.generateInitialFeasibleSolution(rootNode));
 
         lowBoundQueue.add(rootNode);
-        this.cycleRecordForIntesification=new ArrayList<>();
+        this.cycleSetRecord=new HashSet<Cycle>();
         Map<Cycle,Double> lpSumColumnCount=new HashMap<>();
 
         
@@ -254,12 +255,12 @@ public class BranchAndPriceA <V> extends AbstractBranchAndPrice<SNDRC, Cycle, SN
                     System.out.println("root node bound= "+bapNode.getBound());
                     
                     //explore the performance on non-improvement LP solutions
-                    List<Cycle> solution =bapNode.getSolution();
-                    for(Cycle cycle:solution){
-                        System.out.println(cycle);
-                        System.out.println(out(cycle) + ":" + cycle.value);
-                        System.out.println();
-                    }
+//                    List<Cycle> solution =bapNode.getSolution();
+//                    for(Cycle cycle:solution){
+//                        System.out.println(cycle);
+//                        System.out.println(out(cycle) + ":" + cycle.value);
+//                        System.out.println();
+//                    }
                     
 
                     
@@ -268,29 +269,29 @@ public class BranchAndPriceA <V> extends AbstractBranchAndPrice<SNDRC, Cycle, SN
                     
                     
                     // output x variables
-                    for (int demand = 0; demand < dataModel.numDemand; demand++) {
-                        for (int edgeIndex : xValuesForRootLP.get(demand).keySet()) {
-                            if (xValuesForRootLP.get(demand).get(edgeIndex) > 0.01) {
-                                Edge edge;
-
-                                if (!ifOptGetFromSubGraph) {
-                                    edge = dataModel.edgeSet.get(edgeIndex);
-                                } else {
-                                    edge = dataModel.subEdgeSet.get(edgeIndex);
-                                }
-
-                                
-                                if(edge.edgeType==0){
-                                    System.out.println("x[" + demand + "]:" + edge.u + "," + edge.t1 + "->" + edge.v + "," + edge.t2
-                                            + "= " + xValuesForRootLP.get(demand).get(edgeIndex) + " " + edge.duration);
-                                }
-
-                            }
-                        }
-                        System.out.println();
-                    }
-                    
-                    System.out.println("End");
+//                    for (int demand = 0; demand < dataModel.numDemand; demand++) {
+//                        for (int edgeIndex : xValuesForRootLP.get(demand).keySet()) {
+//                            if (xValuesForRootLP.get(demand).get(edgeIndex) > 0.01) {
+//                                Edge edge;
+//
+//                                if (!ifOptGetFromSubGraph) {
+//                                    edge = dataModel.edgeSet.get(edgeIndex);
+//                                } else {
+//                                    edge = dataModel.subEdgeSet.get(edgeIndex);
+//                                }
+//
+//                                
+//                                if(edge.edgeType==0){
+//                                    System.out.println("x[" + demand + "]:" + edge.u + "," + edge.t1 + "->" + edge.v + "," + edge.t2
+//                                            + "= " + xValuesForRootLP.get(demand).get(edgeIndex) + " " + edge.duration);
+//                                }
+//
+//                            }
+//                        }
+//                        System.out.println();
+//                    }
+//                    
+//                    System.out.println("End");
                     
                 }
 
@@ -409,28 +410,29 @@ public class BranchAndPriceA <V> extends AbstractBranchAndPrice<SNDRC, Cycle, SN
             }
             
             //record cycles for intensification
-            cycleRecordForIntesification.add(bapNode.getSolution());
+            cycleRecordForIntesification++;
             for(Cycle cycle:bapNode.getSolution()){
             	if(lpSumColumnCount.containsKey(cycle)){
             		lpSumColumnCount.put(cycle, lpSumColumnCount.get(cycle)+cycle.value);
             	}else{
             		lpSumColumnCount.put(cycle, cycle.value);
             	}
+            	
+
+            }
+            for(SNDRCPricingProblem pri:pricingProblems) {
+            	for(Cycle cycle:master.getColumns(pri)) {
+                	if(!cycleSetRecord.contains(cycle)) {
+                		cycleSetRecord.add(cycle);           		
+                	}
+            	}
             }
             
-            if(cycleRecordForIntesification.size()>=freqForIntensification){
-            	Set<Cycle> cycleSet=new HashSet<>();
-            	for(List<Cycle> cycleList:cycleRecordForIntesification){
-            		for(Cycle cycle:cycleList){
-            			if(!cycleSet.contains(cycle)){
-            				cycleSet.add(cycle);
-            			}
-            		}
-            	}
+            if(cycleRecordForIntesification>=freqForIntensification){
             	
-            	System.out.println("Before intensification, we have "+cycleSet.size()+" columns");
+            	System.out.println("Before intensification, we have "+cycleSetRecord.size()+" columns");
             	System.out.println("After pick up:");
-            	Set<Cycle> subCycleSet=subCycle(lpSumColumnCount,cycleSet);
+            	Set<Cycle> subCycleSet=subCycle(lpSumColumnCount,cycleSetRecord);
             	try {
 					Intensification(subCycleSet);
 				} catch (IloException e) {
@@ -563,10 +565,10 @@ public class BranchAndPriceA <V> extends AbstractBranchAndPrice<SNDRC, Cycle, SN
     	Set<Cycle> artificialCycle=new HashSet<>();
     	for(Cycle cycle:cycleSet){
     		if(cycle.isArtificialColumn){
-    			cycleSet.remove(cycle);
     			artificialCycle.add(cycle);
     		}
     	}
+    	cycleSet.removeAll(artificialCycle);
     	
 //    	System.out.println(lpSumColumnCount.toString());
 //    	System.out.println(cycleSet.size());
@@ -605,14 +607,22 @@ public class BranchAndPriceA <V> extends AbstractBranchAndPrice<SNDRC, Cycle, SN
     	}
     	
     	//delete cycles
-    	while(cycleSet.size()>40&&pq.size()>0){
+    	while(cycleSet.size()>2000&&pq.size()>0){
     		CyclePair pair=pq.poll();
     		if(cycleSet.contains(pair.cycle1)&&cycleSet.contains(pair.cycle2)){
-        		if(lpSumColumnCount.get(pair.cycle1)>lpSumColumnCount.get(pair.cycle2)){
-        			cycleSet.remove(pair.cycle2);
-        		}else{
-        			cycleSet.remove(pair.cycle1);
-        		}
+    			if(lpSumColumnCount.containsKey(pair.cycle1)&&lpSumColumnCount.containsKey(pair.cycle2)) {
+            		if(lpSumColumnCount.get(pair.cycle1)>lpSumColumnCount.get(pair.cycle2)){
+            			cycleSet.remove(pair.cycle2);
+            		}else{
+            			cycleSet.remove(pair.cycle1);
+            		}
+    			}else {
+    				if(pair.cycle1.value>pair.cycle2.value) {
+    					cycleSet.remove(pair.cycle2);
+    				}else {
+    					cycleSet.remove(pair.cycle1);
+    				}
+    			}
     		}
     	}
     	
@@ -923,8 +933,9 @@ public class BranchAndPriceA <V> extends AbstractBranchAndPrice<SNDRC, Cycle, SN
         }
         
         //update cycleRecordForIntesification
-        cycleRecordForIntesification.clear();
-        cycleRecordForIntesification.add(incumbentSolution);
+        cycleRecordForIntesification=0;
+        cycleSetRecord.clear();
+        cycleSetRecord.addAll(incumbentSolution);
 		
     }
     
