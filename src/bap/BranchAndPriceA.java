@@ -435,6 +435,7 @@ public class BranchAndPriceA <V> extends AbstractBranchAndPrice<SNDRC, Cycle, SN
             	Set<Cycle> subCycleSet=subCycle(lpSumColumnCount,cycleSetRecord);
             	try {
 					Intensification(subCycleSet);
+					break;
 				} catch (IloException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -607,7 +608,7 @@ public class BranchAndPriceA <V> extends AbstractBranchAndPrice<SNDRC, Cycle, SN
     	}
     	
     	//delete cycles
-    	while(cycleSet.size()>1500&&pq.size()>0){
+    	while(cycleSet.size()>1000&&pq.size()>0){
     		CyclePair pair=pq.poll();
     		if(cycleSet.contains(pair.cycle1)&&cycleSet.contains(pair.cycle2)){
     			if(lpSumColumnCount.containsKey(pair.cycle1)&&lpSumColumnCount.containsKey(pair.cycle2)) {
@@ -728,7 +729,7 @@ public class BranchAndPriceA <V> extends AbstractBranchAndPrice<SNDRC, Cycle, SN
 		
 		cplex.setParam(IloCplex.IntParam.Threads, 4);
 		cplex.setParam(IloCplex.Param.Simplex.Tolerances.Markowitz, 0.1);
-		cplex.setParam(IloCplex.DoubleParam.TiLim, 1200); //1 minute
+		cplex.setParam(IloCplex.DoubleParam.TiLim, 7200); //2 hours
 		cplex.setParam(IloCplex.DoubleParam.EpGap,0.005);
 		List<Map<Integer,IloNumVar>> x; //map:edgeIndex, x variable
 //		Map<Path,IloNumVar> pathVarMap=new HashMap<>();
