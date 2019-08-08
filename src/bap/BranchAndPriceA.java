@@ -607,7 +607,7 @@ public class BranchAndPriceA <V> extends AbstractBranchAndPrice<SNDRC, Cycle, SN
     	}
     	
     	//delete cycles
-    	while(cycleSet.size()>2000&&pq.size()>0){
+    	while(cycleSet.size()>1500&&pq.size()>0){
     		CyclePair pair=pq.poll();
     		if(cycleSet.contains(pair.cycle1)&&cycleSet.contains(pair.cycle2)){
     			if(lpSumColumnCount.containsKey(pair.cycle1)&&lpSumColumnCount.containsKey(pair.cycle2)) {
@@ -617,16 +617,27 @@ public class BranchAndPriceA <V> extends AbstractBranchAndPrice<SNDRC, Cycle, SN
             			cycleSet.remove(pair.cycle1);
             		}
     			}else {
-    				if(pair.cycle1.value>pair.cycle2.value) {
+    				boolean temp=false;
+    				if(lpSumColumnCount.containsKey(pair.cycle1)){
+    					cycleSet.remove(pair.cycle2);
+    					temp=true;
+    				}
+    				if(lpSumColumnCount.containsKey(pair.cycle2)){
+    					cycleSet.remove(pair.cycle1);
+    					temp=true;
+    				}
+    				if(!temp&&pair.cycle1.value>pair.cycle2.value) {
     					cycleSet.remove(pair.cycle2);
     				}else {
-    					cycleSet.remove(pair.cycle1);
+    					if(!temp){
+        					cycleSet.remove(pair.cycle1);
+    					}
     				}
     			}
     		}
     	}
     	
-    	cycleSet.addAll(artificialCycle);
+//    	cycleSet.addAll(artificialCycle);
     	return cycleSet;
     	
     }
