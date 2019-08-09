@@ -498,6 +498,7 @@ public class SNDRCSolver {
     		if(!f.isDirectory()&&!f.isHidden()){
     		    long time0 = System.currentTimeMillis();
     		    System.out.println("Sovle for "+f.getName());
+    		    System.out.println("Colmun limit=1000");
     	    	SNDRC sndrc=new SNDRC(f.toString());
     	    	SNDRCSolver solver=new SNDRCSolver(sndrc,f.getName());
     	    	
