@@ -6472,3 +6472,24 @@ Colmun limit=1000
 number of service arcs=1500
 number of holding arcs=350
 
+javax.naming.TimeLimitExceededException
+	at cg.master.Master.solveMasterProblem(Master.java:517)
+	at org.jorlib.frameworks.columnGeneration.master.AbstractMaster.solve(AbstractMaster.java:152)
+	at org.jorlib.frameworks.columnGeneration.colgenMain.ColGen.invokeMaster(ColGen.java:271)
+	at org.jorlib.frameworks.columnGeneration.colgenMain.ColGen.solve(ColGen.java:224)
+	at org.jorlib.frameworks.columnGeneration.branchAndPrice.AbstractBranchAndPrice.solveBAPNode(AbstractBranchAndPrice.java:342)
+	at bap.BranchAndPriceA.runBranchAndPrice(BranchAndPriceA.java:252)
+	at SNDRCSolver.<init>(SNDRCSolver.java:124)
+	at SNDRCSolver.main(SNDRCSolver.java:503)
+================ Solution ================
+BAP terminated with objective : 2147483647
+Total Number of iterations: 13
+Total Number of processed nodes: 0
+Total Time spent on master problems: 7193432 Total time spent on pricing problems: 7163
+Best bound : 0.0
+[]
+The number of service edges used= 0
+
+Exception in thread "main" java.lang.NullPointerException
+	at SNDRCSolver.<init>(SNDRCSolver.java:235)
+	at SNDRCSolver.main(SNDRCSolver.java:503)
