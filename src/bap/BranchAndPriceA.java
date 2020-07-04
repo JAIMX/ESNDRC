@@ -82,7 +82,8 @@ public class BranchAndPriceA <V> extends AbstractBranchAndPrice<SNDRC, Cycle, SN
     private final boolean ifOptGetFromSubGraph;
     private int cycleRecordForIntesification;
     private Set<Cycle> cycleSetRecord;
-    private int freqForInten0=1;
+//    private int freqForInten0=1;
+    private int freqForInten0=Integer.MAX_VALUE;
     private int freqForIntensification=freqForInten0;
     
     
