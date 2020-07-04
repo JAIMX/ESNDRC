@@ -490,7 +490,7 @@ public class SNDRCSolver {
 //    	SNDRCSolver solver=new SNDRCSolver(sndrc,"BAPlogger");
 //    	solver.output("./learningData/result/1-2.txt", solver.bap);
     	
-    	String path="./testdata/";
+    	String path=args[0].toString();
     	File file=new File(path);
     	File[] fs=file.listFiles();
     	
