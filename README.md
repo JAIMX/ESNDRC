@@ -1,2 +1,2 @@
-# SNDRC
-Service network design problem with resource constraints
+# ESNDRC
+基于一种新型分枝定价算法的电动汽车支线镇际快递配送路径规划研究
